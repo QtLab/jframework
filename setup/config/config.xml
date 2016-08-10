@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+  <Name>JFrame</Name>
+  <Version>1.0.0</Version>
+  <Title>JFrame框架</Title>
+  <Publisher>Smartsoft</Publisher>
+  <StartMenuDir>Smartsoft Software</StartMenuDir>
+  <TargetDir>D:/@Publisher@/@Name@/@Version@</TargetDir>
+  <MaintenanceToolName>@Name@Uninstall</MaintenanceToolName>
+</Installer>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="gb2312" ?>
+<root>
+<Module Name = "GF_KZCenter.dll"  Info = "控制集，控制中心" Load = "1" ComponentDir = "GF_KZCenter" configName ="GF_KZCenter_DACK.xml"></Module>
+<Module Name = "GF_MapDeal.dll"  Info = "态势处理" Load = "2" ComponentDir = "GF_MapDeal" configName ="GF_MapDeal.xml"></Module>
+<Module Name = "CmdDataRecvSend.dll"  Info = "命令数据收发" Load = "2" ComponentDir = "CmdDataRecvSend" configName ="CmdDataRecvSend.xml"></Module>
+<Module Name = "CombatGroupPlugin.dll"  Info = "编成编组显控" Load = "2" ComponentDir = "CombatGroupPlugin" configName ="CombatGroupPlugin_DACK.xml"></Module>  
+<Module Name = "ToolBarDisplayPlugin.dll"  Info = "任务工具条" Load = "2" ComponentDir = "ToolBarDisplayPlugin" configName ="ToolBarDisplayPlugin.xml"></Module>
+<Module Name = "ZHTSCtrlPlugin.dll"  Info = "综合态势控制" Load = "2" ComponentDir = "ZHTSCtrlPlugin" configName ="ZHTSCtrlPlugin_DACK.xml"></Module>
+<Module Name = "ZHTSWarningPlugin.dll"  Info = "战场告警" Load = "2" ComponentDir = "ZHTSWarningPlugin" configName ="ZHTSWarningPlugin.xml"></Module>
+<Module Name = "TargetDistribute.dll"  Info = "干扰分配" Load = "2" ComponentDir = "TargetDistribute" configName ="TargetDistribute.xml"></Module>
+<Module Name = "ActionCtrlPlugin.dll"  Info = "行动控制" Load = "2" ComponentDir = "ActionCtrlPlugin" configName ="ActionCtrlPlugin.xml"></Module>
+<Module Name = "CalBatEffiencyData.dll"  Info = "效能计算" Load = "2" ComponentDir = "CalBatEffiencyData" configName ="CalBatEffiencyData.xml"></Module>
+</root>

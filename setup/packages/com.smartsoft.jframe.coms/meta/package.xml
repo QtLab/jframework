@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package>
+  <Name>com.smartsoft.jframe.coms</Name>
+  <DisplayName>软件组件</DisplayName>
+  <Description>软件组件，包括框架系统组件和用户组件</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2016-08-11</ReleaseDate>
+  <Script>installscript.js</Script>
+  <SortingPriority>3</SortingPriority>
+</Package>

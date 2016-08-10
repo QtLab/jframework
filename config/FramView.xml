@@ -1,0 +1,11 @@
+<root>
+<!--CloseKilled的取值为非0时直接退出，不卸载组建了/-->
+  <MainWindow 
+	Name = "C2 & Planning & Display Software" 
+	windowIcon = "Logo.png" 
+	StartSplashBmp ="StartSrceen.png" 
+	EndSplashBmp ="StartSrceen.png"
+	Style="Office2007"
+	CloseKilled="0"/>
+  <CurWorkMode  WorkModeID="1" CfgDirName="WorkMode_QT_DACK" WorkModeName="DACK"/>
+</root>
