@@ -5,13 +5,13 @@
 #include <QtConcurrentRun>
 
 // 获取分发器实例
-Q_EXTERN_C JFRAME_KERNEL_EXPORT INotifier* _func_jnotifier_create()
+extern "C" JFRAME_KERNEL_EXPORT INotifier* _func_jnotifier_create()
 {
     return new JNotifier();
 }
 
 // 销毁分发器实例
-Q_EXTERN_C JFRAME_KERNEL_EXPORT void _func_jnotifier_destroy(INotifier *notifier)
+extern "C" JFRAME_KERNEL_EXPORT void _func_jnotifier_destroy(INotifier *notifier)
 {
     if (notifier) {
         delete notifier;

@@ -59,3 +59,6 @@ target/
 #
 bin
 *.pro.user*
+.vscode/.BROWSE.VC.DB
+include
+lib

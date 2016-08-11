@@ -9,7 +9,7 @@ IJFrameFacade *jframeFacade()
 }
 
 //
-Q_EXTERN_C JFRAME_FACADE_EXPORT IJUnknown* _func_jframe_facade()
+extern "C" JFRAME_FACADE_EXPORT IJUnknown* _func_jframe_facade()
 {
     return jframeFacade();
 }

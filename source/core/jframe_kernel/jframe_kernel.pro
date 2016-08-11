@@ -4,7 +4,7 @@
 
 jframe_root = $$PWD/../../..
 
-QT += gui
+QT += gui concurrent
 
 DEFINES += \
     PRO_CORE

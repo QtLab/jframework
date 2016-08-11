@@ -1,7 +1,7 @@
 ﻿#ifndef JFRAME_FACADE_H
 #define JFRAME_FACADE_H
 
-#include "../jframe_factory.h"
+#include "../jframe_facade.h"
 #include <QMutex>
 
 // class JFrameFacade

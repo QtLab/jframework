@@ -53,7 +53,7 @@ win32|unix: {
     win32:excludefile = $$replace(excludefile, /, \\)
 
     ## copy files
-    dstdir = $${jframe_root}/include/frame
+    dstdir = $${jframe_root}/include/jframe
     win32:dstdir = $$replace(dstdir, /, \\)
     !exists("$$dstdir"):copyCommand += && $(MKDIR) "$$dstdir"
     srcdir = $$PWD/*.h

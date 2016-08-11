@@ -1,0 +1,8 @@
+3rdparty
+private
+stdafx.h
+precomp.h
+_p.h
+.cvsignore
+Makefile.am
+Makefile.in
