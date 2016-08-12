@@ -1,5 +1,5 @@
-﻿#ifndef JFRAME_FACADE_H
-#define JFRAME_FACADE_H
+﻿#ifndef JFRAME_FACADE_P_H
+#define JFRAME_FACADE_P_H
 
 #include "../jframe_facade.h"
 #include <QMutex>
@@ -34,6 +34,7 @@ public:
     std::string frameGlobalPath() const;
     std::string frameLayoutPath() const;
     std::string frameComponentPath() const;
+    std::string frameFramViewPath() const;
 
     std::string frameVersion() const;
     bool frameVersion(int &major, int &minor, int &patch) const;
@@ -46,7 +47,7 @@ public:
 
     void tryExitFrame();
     void exitFrame();
-    void restartFrame(const std::string<std::string> &arguments);
+    void restartFrame(const std::list<std::string> &arguments);
 
     bool loginFrame();
     bool logoutFrame();
@@ -86,7 +87,7 @@ private:
     bool loadConfig(const std::string &frameDirPath);
 
     //
-    bool generateAppQtConf(const std::map<std::string, std::sting> &values);
+    bool generateAppQtConf(const std::map<std::string, std::string> &values);
 
     // 获取模块后缀
     std::string dynamicSuffix() const;
@@ -119,4 +120,4 @@ private:
     static JFrameFacade* _instance;     // 单实例指针
 };
 
-#endif // JFRAME_FACADE_H
+#endif // JFRAME_FACADE_P_H

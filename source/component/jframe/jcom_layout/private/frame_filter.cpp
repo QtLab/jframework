@@ -1,7 +1,5 @@
 #include "precomp.h"
 #include "frame_filter.h"
-#include "QtnRibbonMainWindow.h"
-#include "QtnRibbonStyle.h"
 #include "IGF_Kernel.h"
 #include "kernel/jnotifier.h"
 
@@ -10,7 +8,7 @@
 struct FrameFilterData
 {
     INotifier *notifier;
-    QtHosoft::RibbonMainWindow *mainWindow;
+    QtRibbon::RibbonMainWindow *mainWindow;
 
     FrameFilterData()
         : notifier(0)
@@ -22,8 +20,7 @@ struct FrameFilterData
 
 // class FrameFilter
 
-
-FrameFilter::FrameFilter(INotifier *nofitier, IGF_Attempter *gAttempter, QObject *parent)
+FrameFilter::FrameFilter(INotifier *notifier, IGF_Attempter *gAttempter, QObject *parent)
     : QObject(parent)
 {
     data = new FrameFilterData;
@@ -31,10 +28,10 @@ FrameFilter::FrameFilter(INotifier *nofitier, IGF_Attempter *gAttempter, QObject
     //
     data->notifier = notifier;
 
-    // è§£æžä¸»çª—å£
-    data->mainWindow = qobject_cast<QtHosoft::RibbonMainWindow *>(parseMainWindow(gAttempter));
+    // ½âÎöÖ÷´°¿Ú
+    data->mainWindow = qobject_cast<QtRibbon::RibbonMainWindow *>(parseMainWindow(gAttempter));
     if (data->mainWindow) {
-        // å®‰è£…ä¸»çª—å£äº‹ä»¶è¿‡æ»¤
+        // °²×°Ö÷´°¿ÚÊÂ¼þ¹ýÂË
         data->mainWindow->installEventFilter(this);
     }
 }
@@ -46,14 +43,14 @@ FrameFilter::~FrameFilter()
 
 bool FrameFilter::init()
 {
-    // åŠ è½½é…ç½®
+    // ¼ÓÔØÅäÖÃ
     if (!loadConfig()) {
         return false;
     }
 
-    // è®¾ç½®æ¡†æž¶ä¸»çª—å£æ ‡é¢˜
+    // ÉèÖÃ¿ò¼ÜÖ÷´°¿Ú±êÌâ
     if (jframeLogin()->loginManager()->isValid()) {
-        const QString windowTitle = QString("%1 â€”â€” %1@%2")
+        const QString windowTitle = QString("%1 ¡ª¡ª %1@%2")
                 .arg(QString::fromStdString(jframeLogin()->loginManager()->currentSystem()))
                 .arg(QString::fromStdString(jframeLogin()->loginManager()->userName()))
                 .arg(QString::fromStdString(jframeLogin()->loginManager()->currentSeat()));
@@ -79,26 +76,26 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
         case QEvent::Resize:
             data->notifier->post("j_mainwindow_resized");
             break;
-        case QEvent::Moved:
+        case QEvent::Move:
             data->notifier->post("j_mainwindow_moved");
             break;
-        case QEvent::Moved:
+        case QEvent::Close:
         {
             const int result = QMessageBox::warning(data->mainWindow,
-                                                    QStringLiteral("è­¦å‘Š"),
-                                                    QStringLiteral("è¯·é€‰æ‹©ä»¥ä¸‹æŒ‰é’®ï¼Œç»§ç»­â€¦â€¦"),
-                                                    QStringLiteral("æ³¨é”€ï¼ˆé‡å¯ï¼‰"),
-                                                    QStringLiteral("é€€å‡º"),
-                                                    QStringLiteral("å–æ¶ˆ"), 1);
+                                                    QStringLiteral("¾¯¸æ"),
+                                                    QStringLiteral("ÇëÑ¡ÔñÒÔÏÂ°´Å¥£¬¼ÌÐø¡­¡­"),
+                                                    QStringLiteral("×¢Ïú£¨ÖØÆô£©"),
+                                                    QStringLiteral("ÍË³ö"),
+                                                    QStringLiteral("È¡Ïû"), 1);
             switch (result) {
-            case 0:     // æ³¨é”€ï¼ˆé‡å¯ï¼‰
+            case 0:     // ×¢Ïú£¨ÖØÆô£©
                 data->notifier->post("jlayout.notify_manager", "j_frame_restart");
                 break;
-            case 1:     // é€€å‡º
+            case 1:     // ÍË³ö
                 data->notifier->post("jlayout.notify_manager", "j_frame_exit");
                 break;
-            case 2:     // å–æ¶ˆ
-            default:    // å¿½ç•¥
+            case 2:     // È¡Ïû
+            default:    // ºöÂÔ
                 break;
             }
             event->ignore();
@@ -129,7 +126,7 @@ QWidget *FrameFilter::parseMainWindow(IGF_Attempter *gAttempter)
     //
     QWidget *widget = reinterpret_cast<QWidget *>(mainWindowInterface->GetMainWndHandle());
     if (!widget
-            || !widget->inherit("MainWindow")
+            || !widget->inherits("MainWindow")
             || widget->objectName() != "RibbonMainWindow") {
         return 0;
     }
@@ -149,9 +146,9 @@ bool FrameFilter::loadConfig()
     //
     QFile file(QString::fromStdString(jframeFacade()->frameFramViewPath()));
     if (!file.open(QFile::ReadOnly)) {
-        const QString text = QStringLiteral("GFæ¡†æž¶è§†å›¾é…ç½®æ–‡ä»¶\"%1\"æ‰“å¼€å¤±è´¥ï¼")
+        const QString text = QStringLiteral("GF¿ò¼ÜÊÓÍ¼ÅäÖÃÎÄ¼þ\"%1\"´ò¿ªÊ§°Ü£¡")
                 .arg(file.fileName());
-        QMessageBox::warning(data->mainWindow, QStringLiteral("è­¦å‘Š"), text);
+        QMessageBox::warning(data->mainWindow, QStringLiteral("¾¯¸æ"), text);
         return false;
     }
 
@@ -160,42 +157,42 @@ bool FrameFilter::loadConfig()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("GFæ¡†æž¶è§†å›¾é…ç½®æ–‡ä»¶\"%1\"è§£æžå¤±è´¥ï¼\n"
-                                            "é”™è¯¯æè¿°ï¼š%2\n"
-                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å¥½ï¼š%4ï¼‰")
+        const QString text = QStringLiteral("GF¿ò¼ÜÊÓÍ¼ÅäÖÃÎÄ¼þ\"%1\"½âÎöÊ§°Ü£¡\n"
+                                            "´íÎóÃèÊö£º%2\n"
+                                            "´íÎóÎ»ÖÃ£º£¨ÐÐºÅ£º%3£¬ÁÐºÃ£º%4£©")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(data->mainWindow, QStringLiteral("è­¦å‘Š"), text);
+        QMessageBox::warning(data->mainWindow, QStringLiteral("¾¯¸æ"), text);
         return false;
     }
 
-    // å…³é—­æ–‡ä»¶
+    // ¹Ø±ÕÎÄ¼þ
     file.close();
 
-    // èŽ·å–æ ¹èŠ‚ç‚¹
+    // »ñÈ¡¸ù½Úµã
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
         return false;
     }
 
-    // èŽ·å–MainWindowèŠ‚ç‚¹
+    // »ñÈ¡MainWindow½Úµã
     QDomElement emMainWindow = emRoot.firstChildElement("MainWindow");
     if (emMainWindow.isNull()) {
         return false;
     }
 
-    // èŽ·å–æ¡†æž¶ä¸»ä½“
+    // »ñÈ¡¿ò¼ÜÖ÷Ìå
     if (emMainWindow.hasAttribute("Style")) {
         jframeLayout()->setFrameTheme(emMainWindow.attribute("Style").toStdString().c_str());
     }
 
     /// for ribbon
 
-    // èŽ·å–RibbonBarèŠ‚ç‚¹
+    // »ñÈ¡RibbonBar½Úµã
     QDomElement emRibbonBar = emMainWindow.firstChildElement("RibbonBar");
     if (!emRibbonBar.isNull()) {
-        // èŽ·å–RibbonBarå¯¹è±¡
-        QtHosoft::RibbonBar *ribbonBar = data->mainWindow->ribbonBar();
+        // »ñÈ¡RibbonBar¶ÔÏó
+        QtRibbon::RibbonBar *ribbonBar = data->mainWindow->ribbonBar();
         if (ribbonBar) {
             // font
             ribbonBar->setFont(QFont("microsoft yahei", 9));
@@ -205,14 +202,14 @@ bool FrameFilter::loadConfig()
             }
             // minimized
             if (emRibbonBar.hasAttribute("minimized")) {
-                ribbonBar->setMinimized(QVarient(emRibbonBar.attribute("minimized")).toBool());
+                ribbonBar->setMinimized(QVariant(emRibbonBar.attribute("minimized")).toBool());
             }
         }
     }
 
     ///
 
-    // çª—å£åŽŸå§‹å¤§å°è°ƒæ•´
+    // ´°¿ÚÔ­Ê¼´óÐ¡µ÷Õû
     data->mainWindow->resize(1024, 600);
 
     // stylesheet - background

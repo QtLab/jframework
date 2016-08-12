@@ -4,44 +4,66 @@ rem -----
 
 set jframe_dir="%~dp0"
 set qt_dir="%QTDIR%"
+set debug_suffix=%1
 
 rem -----
 
-copy "%qt_dir%\bin\QtCored?.dll" "%jframe_dir%\bin\"
+if not exist "%jframe_dir%\bin\" (
+    mkdir "%jframe_dir%\bin\"
+)
+
+if not exist "%jframe_dir%\bin\3rdpart\" (
+    mkdir "%jframe_dir%\bin\3rdpart\"
+)
 
 rem -----
 
-rem copy "%jframe_dir%\lib\jframe\QtMFCMigrationd.dll" "%jframe_dir%\bin\"
-rem copy "%jframe_dir%\lib\jframe\QtRibbond.dll" "%jframe_dir%\bin\"
+copy "%qt_dir%\bin\Qt?Core%debug_suffix%*.dll" "%jframe_dir%\bin\"
+copy "%qt_dir%\bin\Qt?Gui%debug_suffix%*.dll" "%jframe_dir%\bin\"
+rem copy "%qt_dir%\bin\Qt?Widgets%debug_suffix%*.dll" "%jframe_dir%\bin\"
 
 rem -----
 
-if exist "%jframe_dir%\lib\jframe\jframe_factoryd.dll" (
+copy "%jframe_dir%\lib\3rdpart\jwt%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
+copy "%jframe_dir%\lib\3rdpart\log4cpp%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
+copy "%jframe_dir%\lib\3rdpart\qtribbon%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
+copy "%jframe_dir%\lib\3rdpart\qtwinmigrate%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
+copy "%jframe_dir%\lib\3rdpart\tinyxml%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
+
+rem -----
+
+if exist "%jframe_dir%\lib\jframe\jframe_core%debug_suffix%.dll" (
+    echo copy jframe_core
+    copy "%jframe_dir%\lib\jframe\jframe_core%debug_suffix%.dll" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_core%debug_suffix%.pdb" "%jframe_dir%\bin\"
+)
+
+if exist "%jframe_dir%\lib\jframe\jframe_factory%debug_suffix%.dll" (
     echo copy jframe_factory
-    copy "%jframe_dir%\lib\jframe\jframe_factoryd.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframe_factoryd.pdb" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_factory%debug_suffix%.dll" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_factory%debug_suffix%.pdb" "%jframe_dir%\bin\"
 )
 
-if exist "%jframe_dir%\lib\jframe\jframe_kerneld.dll" (
+if exist "%jframe_dir%\lib\jframe\jframe_kernel%debug_suffix%.dll" (
     echo copy jframe_kernel
-    copy "%jframe_dir%\lib\jframe\jframe_kerneld.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframe_kerneld.pdb" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_kernel%debug_suffix%.dll" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_kernel%debug_suffix%.pdb" "%jframe_dir%\bin\"
 )
 
-if exist "%jframe_dir%\lib\jframe\jframe_facaded.dll" (
+if exist "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.dll" (
     echo copy jframe_facade
-    copy "%jframe_dir%\lib\jframe\jframe_facaded.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframe_facaded.pdb" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.dll" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.pdb" "%jframe_dir%\bin\"
 )
 
-if exist "%jframe_dir%\lib\jframe\jframe_logind.dll" (
+if exist "%jframe_dir%\lib\jframe\jframe_login%debug_suffix%.dll" (
     echo copy jframe_login
-    copy "%jframe_dir%\lib\jframe\jframe_logind.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframe_logind.pdb" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_login%debug_suffix%.dll" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_login%debug_suffix%.pdb" "%jframe_dir%\bin\"
 )
 
-if exist "%jframe_dir%\lib\jframe\jframe_layoutd.dll" (
+if exist "%jframe_dir%\lib\jframe\jframe_layout%debug_suffix%.dll" (
     echo copy jframe_layoutd
-    copy "%jframe_dir%\lib\jframe\jframe_layoutd.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframe_layoutd.pdb" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_layout%debug_suffix%.dll" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframe_layout%debug_suffix%.pdb" "%jframe_dir%\bin\"
 )

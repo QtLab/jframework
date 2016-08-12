@@ -1,5 +1,5 @@
 ﻿#ifndef JNOTIFIER_H
-#define JNOTIFIRE_H
+#define JNOTIFIER_H
 
 #include "factory/jframe_interface.h"
 #include <string>
@@ -24,7 +24,7 @@ public:
     virtual ~JObserver() {}
 
     // 消息响应接口
-    virtual JLRESULT jnotify(const std::string &, JWPARAM, JLPARAM) {}
+    virtual JLRESULT jnotify(const std::string &, JWPARAM, JLPARAM) { return 0; }
 
     // （取消）订阅消息通知
     virtual void jpushed(const std::string &) {}
@@ -49,7 +49,7 @@ public:
     virtual ~INotifier() {}
 
     // 开始、结束添加消息订阅
-    template<typename T> INotifier& begin(T *obs) = 0;
+    template<typename T> INotifier& begin(T *obs);
     virtual INotifier& end() = 0;
 
     // 添加消息订阅
@@ -79,10 +79,12 @@ public:
 protected:
     virtual INotifier& begin(JObserver *obs, int offset) = 0;
     virtual INotifier& push(JObserver* obs, const std::string &id, jobserver_cb cb, int offset) = 0;
-    virtual INotifier& push(const std::string &id, jobserver_cb cb, int offset) = 0;
+    virtual INotifier& push(const std::string &id, jobserver_cb cb) = 0;
 };
 
-// 接口标识
+// 接口描述
+#define VER_INotifier J_INTERFACE_VERSION(1, 0)
+#define IID_INotifier J_IID_INTERFACE(INotifier)
 
 // 端到端（直接发送给指定观察者）发送消息接口定义
 class INotifierImm
@@ -101,7 +103,9 @@ public:
     virtual void post(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam = 0) = 0;
 };
 
-// 接口标识
+// 接口描述
+#define VER_INotifierImm J_INTERFACE_VERSION(1, 0)
+#define IID_INotifierImm J_IID_INTERFACE(INotifierImm)
 
 //
 #if defined(_MSC_VER)
@@ -128,8 +132,7 @@ template<typename T>
 inline INotifier& INotifier::push(const std::string &id,
                                   JLRESULT(T::*cb)(const std::string &, JWPARAM, JLPARAM))
 {
-    return push(id, static_cast<jobserver_cb>(cb)
-                (reinterpret_cast<JObserver *>(obs) - static_cast<JObserver *>(obs)));
+    return push(id, static_cast<jobserver_cb>(cb));
 }
 
 #if defined(_MSC_VER)

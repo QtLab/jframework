@@ -3,17 +3,16 @@
 
 #include "../jframe_kernel.h"
 #include "../jlogmanager.h"
-#include <qglobal.h>
 
-// - class JLogManager -
+// - class JLogManagerPri -
 
 struct JLogManagerData;
 
-class JLogManager : public IJlogManager
+class JLogManagerPri : public IJLogManager
 {
 public:
-    explicit JLogManager();
-    ~JLogManager();
+    explicit JLogManagerPri();
+    ~JLogManagerPri();
 
     // IJlogManager interface
 public:

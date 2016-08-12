@@ -22,7 +22,6 @@ TARGET = $$qtLibraryTarget(jframe_factory)
 
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
-    jframe_interface.h \
     jframe_factory.h \
     private/jframe_factory_p.h
 

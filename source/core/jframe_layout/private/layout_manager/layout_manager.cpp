@@ -24,7 +24,7 @@ LayoutManager::~LayoutManager()
 
 bool LayoutManager::init()
 {
-    /// è®¾ç½®é»˜è®¤é…ç½®
+    /// ÉèÖÃÄ¬ÈÏÅäÖÃ
 
     // splitter
     q_layoutConfig.splitter.width = 8;
@@ -33,12 +33,12 @@ bool LayoutManager::init()
     q_layoutConfig.splitter.color = QColor(64, 64, 64, 255);
     q_layoutConfig.splitter.syncScales = true;
     // switch
-    q_layoutConfig.sw.remember = true;  // é»˜è®¤å…è®¸è®°å¿†æ¨¡å¼åˆ‡æ¢ç»“æœ
+    q_layoutConfig.sw.remember = true;  // Ä¬ÈÏÔÊĞí¼ÇÒäÄ£Ê½ÇĞ»»½á¹û
 
     //
     bool result = true;
 
-    // åŠ è½½å¸ƒå±€é…ç½®ä¿¡æ¯
+    // ¼ÓÔØ²¼¾ÖÅäÖÃĞÅÏ¢
     result = result && loadLayoutConfig();
 
     return result;
@@ -51,45 +51,45 @@ JLayoutConfig LayoutManager::layoutConfig() const
 
 bool LayoutManager::updateLayout(const QString &section)
 {
-    // å°†æ‰€æœ‰ç»„ä»¶è®¾ç½®ä¸ºæœªæ¿€æ´»çŠ¶æ€
+    // ½«ËùÓĞ×é¼şÉèÖÃÎªÎ´¼¤»î×´Ì¬
     q_frameLayout->moduleManager()->inactivateAllComponent();
 
-    // æ‰“å¼€æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶
+    // ´ò¿ª¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş
     QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
     if (!file.open(QFile::ReadOnly)) {
-        return false;   // æ‰“å¼€å¤±è´¥
+        return false;   // ´ò¿ªÊ§°Ü
     }
 
-    // è§£ææ–‡ä»¶
+    // ½âÎöÎÄ¼ş
     QString errorMsg;
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶\"%1\"è§£æå¤±è´¥ï¼\n"
-                                            "é”™è¯¯æè¿°ï¼š%2\n"
-                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å¥½ï¼š%4ï¼‰")
+        const QString text = QStringLiteral("¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş\"%1\"½âÎöÊ§°Ü£¡\n"
+                                            "´íÎóÃèÊö£º%2\n"
+                                            "´íÎóÎ»ÖÃ£º£¨ĞĞºÅ£º%3£¬ÁĞºÃ£º%4£©")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), text);
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), text);
         return false;
     }
 
-    // å…³é—­æ–‡ä»¶
+    // ¹Ø±ÕÎÄ¼ş
     file.close();
 
-    // è·å–æ ¹èŠ‚ç‚¹
+    // »ñÈ¡¸ù½Úµã
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
-        return false;   // è·å–å¤±è´¥
+        return false;   // »ñÈ¡Ê§°Ü
     }
 
-    // è§£æç³»ç»ŸçŠ¶æ€
+    // ½âÎöÏµÍ³×´Ì¬
     QDomElement emSystem, emModule;
     if (!parseSystemStatus(emRoot, section, emSystem, emModule)) {
         return false;
     }
 
-    // åŠ è½½æ¨¡å¼èŠ‚ç‚¹
+    // ¼ÓÔØÄ£Ê½½Úµã
     if (!loadModuleNode(emModule)) {
         return false;
     }
@@ -105,14 +105,14 @@ bool LayoutManager::updateLayout(const QString &section)
         }
     }
 
-    // ä¿å­˜ä¿®æ”¹
+    // ±£´æĞŞ¸Ä
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        return false;   // æ‰“å¼€å¤±è´¥
+        return false;   // ´ò¿ªÊ§°Ü
     }
     QTextStream textStream(&file);
     document.save(textStream, 2);
 
-    // å°†æ‰€æœ‰å¤„äºæœªæ¿€æ´»çŠ¶æ€çš„ç»„ä»¶åˆ†ç¦»
+    // ½«ËùÓĞ´¦ÓÚÎ´¼¤»î×´Ì¬µÄ×é¼ş·ÖÀë
     q_frameLayout->moduleManager()->detachAllInactivateComponent();
 
     return true;
@@ -120,39 +120,39 @@ bool LayoutManager::updateLayout(const QString &section)
 
 bool LayoutManager::loadLayoutConfig()
 {
-    // è§£ææ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶
+    // ½âÎö¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş
     QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
     if (!file.open(QFile::ReadOnly)) {
-        return false;   // æ‰“å¼€å¤±è´¥
+        return false;   // ´ò¿ªÊ§°Ü
     }
 
-    // è§£ææ–‡ä»¶
+    // ½âÎöÎÄ¼ş
     QString errorMsg;
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶\"%1\"è§£æå¤±è´¥ï¼"
-                                            "é”™è¯¯æè¿°ï¼š%2\n"
-                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å¥½ï¼š%4ï¼‰")
+        const QString text = QStringLiteral("¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş\"%1\"½âÎöÊ§°Ü£¡"
+                                            "´íÎóÃèÊö£º%2\n"
+                                            "´íÎóÎ»ÖÃ£º£¨ĞĞºÅ£º%3£¬ÁĞºÃ£º%4£©")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), text);
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), text);
         return false;
     }
 
-    // å…³é—­æ–‡ä»¶
+    // ¹Ø±ÕÎÄ¼ş
     file.close();
 
-    // è·å–æ ¹èŠ‚ç‚¹
+    // »ñÈ¡¸ù½Úµã
     const QDomElement emRoot = document.documentElement();
     if (!emRoot.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
-    // è·å–é…ç½®èŠ‚ç‚¹
+    // »ñÈ¡ÅäÖÃ½Úµã
     const QDomElement emConfig = emRoot.firstChildElement("config");
     if (emConfig.isNull()) {
-        return true;    // æ²¡æœ‰é…ç½®é¡¹ï¼Œå¿½ç•¥
+        return true;    // Ã»ÓĞÅäÖÃÏî£¬ºöÂÔ
     }
 
     // splitter
@@ -160,7 +160,7 @@ bool LayoutManager::loadLayoutConfig()
     if (!emSplitter.isNull()) {
         // width
         if (emSplitter.hasAttribute("width")) {
-            q_layoutConfig.splitter.width = emSplitter.attribute("width", 8).toInt();
+            q_layoutConfig.splitter.width = emSplitter.attribute("width", "8").toInt();
         }
         // checkable
         if (emSplitter.hasAttribute("checkable")) {
@@ -194,7 +194,7 @@ bool LayoutManager::loadLayoutConfig()
         // syncScales
         if (emSplitter.hasAttribute("syncScales")) {
             q_layoutConfig.splitter.syncScales =
-                    QVariant(emSplitter.attribute("syncScales").toBool();
+                    QVariant(emSplitter.attribute("syncScales")).toBool();
         }
     }
 
@@ -203,7 +203,7 @@ bool LayoutManager::loadLayoutConfig()
     if (!emSwitch.isNull()) {
         // remember
         if (emSwitch.hasAttribute("remember")) {
-            q_layoutConfig.sw.remember = QVariant(emSwitch.attribute("remember").toBool();
+            q_layoutConfig.sw.remember = QVariant(emSwitch.attribute("remember")).toBool();
         }
     }
 
@@ -212,33 +212,33 @@ bool LayoutManager::loadLayoutConfig()
 
 bool LayoutManager::resetModuleElement()
 {
-    // æ‰“å¼€æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶
+    // ´ò¿ª¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş
     QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
     if (!file.open(QFile::ReadWrite)) {
-        return false;   // æ‰“å¼€å¤±è´¥
+        return false;   // ´ò¿ªÊ§°Ü
     }
 
-    // è§£ææ–‡ä»¶
+    // ½âÎöÎÄ¼ş
     QString errorMsg;
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
-    if (!document.setContent(&file, &errorMsg, &errorLine, &erorColumn)) {
-        const QString text = QStringLiteral("æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶\"%1\"è§£æå¤±è´¥ï¼\n"
-                                            "é”™è¯¯æè¿°ï¼š%2\n"
-                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å¥½ï¼š%4ï¼‰")
+    if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
+        const QString text = QStringLiteral("¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş\"%1\"½âÎöÊ§°Ü£¡\n"
+                                            "´íÎóÃèÊö£º%2\n"
+                                            "´íÎóÎ»ÖÃ£º£¨ĞĞºÅ£º%3£¬ÁĞºÃ£º%4£©")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), text);
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), text);
         return false;
     }
 
-    // å…³é—­æ–‡ä»¶
+    // ¹Ø±ÕÎÄ¼ş
     file.close();
 
-    // è·å–æ ¹èŠ‚ç‚¹
+    // »ñÈ¡¸ù½Úµã
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
     // system - module
@@ -259,12 +259,12 @@ bool LayoutManager::resetModuleElement()
 
 void LayoutManager::resetModuleElement(QDomElement emModule)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emModule.isNull()) {
-        return false;   // æ— æ•ˆ
+        return;   // ÎŞĞ§
     }
 
-    // å¤ä½çŠ¶æ€
+    // ¸´Î»×´Ì¬
     if (emModule.nodeName() == "module") {
         emModule.setAttribute("submodule", "");
     }
@@ -280,74 +280,78 @@ void LayoutManager::resetModuleElement(QDomElement emModule)
 
 QString LayoutManager::currentConfigModule(const QDomElement &emSystem)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emSystem.isNull()) {
-        return QString::null;   // æ— æ•ˆ
+        return QString::null;   // ÎŞĞ§
     }
 
-    // è·å–å¸­ä½-æ¨¡å¼æ˜ å°„èŠ‚ç‚¹
+    // »ñÈ¡Ï¯Î»-Ä£Ê½Ó³Éä½Úµã
     const QDomElement emSeatModule = emSystem.firstChildElement("seat-module");
     if (emSeatModule.isNull()) {
-        return QString::null;   // æ— æ•ˆ
+        return QString::null;   // ÎŞĞ§
     }
 
     //
     const QString lastModule = emSystem.attribute("module");
 
-    // æŸ¥æ‰¾æŒ‡å®šå†™çš„å¸­ä½-æ¨¡å¼æ˜ å°„èŠ‚ç‚¹
+    // ²éÕÒÖ¸¶¨Ğ´µÄÏ¯Î»-Ä£Ê½Ó³Éä½Úµã
     QDomElement emItem;
     QDomElement emFirstMatch;
     for (emItem = emSeatModule.firstChildElement("item");
          !emItem.isNull();
          emItem = emItem.nextSiblingElement("item")) {
-        // åŒ¹é…å½“å‰å¸­ä½
+        // Æ¥Åäµ±Ç°Ï¯Î»
+#if 0
         if (emItem.attribute("seat").toStdString()
-                == q_frameLayout->powerInfo(.seatElement.sName)) {
-            // åŒ¹é…ç³»ç»Ÿ
+                == q_frameLayout->powerInfo().seatElement.sName) {
+            // Æ¥ÅäÏµÍ³
             if (emFirstMatch.isNull()) {
                 emFirstMatch = emItem;
             }
-            // åŒ¹é…æ¨¡å¼
+            // Æ¥ÅäÄ£Ê½
             if (emItem.attribute("module") == lastModule) {
-                break;  // åŒ¹é…æˆåŠŸ
+                break;  // Æ¥Åä³É¹¦
             }
         }
+#else
+        break;
+#endif
     }
 
     //
     if (emItem.isNull()) {
         if (emFirstMatch.isNull()) {
-            return QString::null;   // æœªæ‰¾åˆ°åŒ¹é…çš„ç³»ç»Ÿ
+            return QString::null;   // Î´ÕÒµ½Æ¥ÅäµÄÏµÍ³
         }
 
         //
-        emItem = emFirstMatch;  // æœªæ‰¾åˆ°åŒ¹é…çš„å¸­ä½ï¼Œé»˜è®¤ä½¿ç”¨è¯¥ç³»ç»Ÿä¸‹çš„ç¬¬ä¸€ä¸ªå¸­ä½
+        emItem = emFirstMatch;  // Î´ÕÒµ½Æ¥ÅäµÄÏ¯Î»£¬Ä¬ÈÏÊ¹ÓÃ¸ÃÏµÍ³ÏÂµÄµÚÒ»¸öÏ¯Î»
     }
 
-    // è·å–å¸­ä½å¯¹åº”çš„æ¨¡å¼é“¾å­—æ®µ
+    // »ñÈ¡Ï¯Î»¶ÔÓ¦µÄÄ£Ê½Á´×Ö¶Î
     return emItem.attribute("module").replace("@", ">>");
 }
 
 bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &section, QDomElement &emSystem, QDomElement &emModule)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emRoot.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
     //
     QString system, module = section;
 
-    // å¦‚æœå½“å‰ç™»å½•ç”¨æˆ·ä¸ºç®¡ç†å‘˜
+    // Èç¹ûµ±Ç°µÇÂ¼ÓÃ»§Îª¹ÜÀíÔ±
     if (jframeLogin()->loginManager()->isAdminUser()) {
-        system = "ç®¡ç†å‘˜ç³»ç»Ÿ";
-        module = "æƒé™ç®¡ç†";
+        system = "¹ÜÀíÔ±ÏµÍ³";
+        module = "È¨ÏŞ¹ÜÀí";
     } else {
         system = emRoot.attribute("system");
         if (system.isEmpty()) {
             QMessageBox::critical(q_frameLayout->mainViewManager(),
-                                  QStringLiteral("é”™è¯¯"),
-                                  QStringLiteral("è¯·åœ¨æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶ä¸­æŒ‡å®šå½“å‰ç³»ç»Ÿï¼"));
+                                  QStringLiteral("´íÎó"),
+                                  QStringLiteral("ÇëÔÚ¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼şÖĞÖ¸¶¨µ±Ç°ÏµÍ³£¡"));
             return false;
         }
     }
@@ -356,39 +360,39 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
     emSystem = findSystemNode(emRoot, system);
     if (emSystem.isNull()) {
         QMessageBox::critical(q_frameLayout->mainViewManager(),
-                              QStringLiteral("é”™è¯¯"),
-                              QStringLiteral("æ²¡æœ‰æ‰¾åˆ°æœ‰æ•ˆçš„ç³»ç»ŸèŠ‚ç‚¹ï¼Œè¯·æ£€æŸ¥æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶ï¼"));
+                              QStringLiteral("´íÎó"),
+                              QStringLiteral("Ã»ÓĞÕÒµ½ÓĞĞ§µÄÏµÍ³½Úµã£¬Çë¼ì²é¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş£¡"));
         return false;
     }
 
-    // æ›´æ–°å½“å‰ç³»ç»Ÿ
+    // ¸üĞÂµ±Ç°ÏµÍ³
     q_frameLayout->notifier()->send("j_previous_system_changed", (JWPARAM)&system.toStdString());
 
     // get current module
     if (module.isEmpty()) {
-        // è·å–é…ç½®æ–‡ä»¶ä¸­æŒ‡å®šç³»ç»Ÿä¸‹çš„å½“å‰æ¨¡å¼
+        // »ñÈ¡ÅäÖÃÎÄ¼şÖĞÖ¸¶¨ÏµÍ³ÏÂµÄµ±Ç°Ä£Ê½
         QString tempModule = currentConfigModule(emSystem);
         if (tempModule.isEmpty()) {
-            // è·å–å½“å‰æ¨¡å¼åç§°å­—æ®µ
+            // »ñÈ¡µ±Ç°Ä£Ê½Ãû³Æ×Ö¶Î
             module = emSystem.attribute("module");
         } else {
             module = tempModule;
         }
     }
 
-    // å¤ä½æ¨¡å¼èŠ‚ç‚¹ä¿¡æ¯
+    // ¸´Î»Ä£Ê½½ÚµãĞÅÏ¢
     resetModuleElement(emSystem);
 
     // find current module
     emModule = findModuleNode(emSystem, module);
     if (emModule.isNull()) {
         QMessageBox::critical(q_frameLayout->mainViewManager(),
-                              QStringLiteral("é”™è¯¯"),
-                              QStringLiteral("æ²¡æœ‰æ‰¾åˆ°æœ‰æ•ˆçš„æ¨¡å¼èŠ‚ç‚¹ï¼Œè¯·æ£€æŸ¥æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶ï¼"));
+                              QStringLiteral("´íÎó"),
+                              QStringLiteral("Ã»ÓĞÕÒµ½ÓĞĞ§µÄÄ£Ê½½Úµã£¬Çë¼ì²é¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş£¡"));
         return false;
     }
 
-    // æ›´æ–°å½“å‰æ¨¡å¼
+    // ¸üĞÂµ±Ç°Ä£Ê½
     q_frameLayout->notifier()->send("j_previous_module_changed", (JWPARAM)&module.toStdString());
 
     // load popup node (global component within current system <befor module loaded>)
@@ -407,23 +411,23 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
 
 JSplitter *LayoutManager::createView(const QDomElement &emSplitter, QWidget *parent)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emSplitter.isNull()) {
-        return 0;   // æ— æ•ˆ
+        return 0;   // ÎŞĞ§
     }
 
-    // åˆ›å»ºsplitter
+    // ´´½¨splitter
     JSplitter *splitter = 0;
     // type
     const QString type = emSplitter.attribute("type");
     if (type.isEmpty() || type == "splitter") {
         splitter = createSplitter(emSplitter, parent);
         if (!splitter) {
-            const QString msg = QStringLiteral("çª—å£åˆ†å‰²å™¨åˆ›å»ºå¤±è´¥ï¼ï¼ˆæ–‡ä»¶ï¼š%1ï¼Œä½ç½®[%2ï¼Œ%3]ï¼‰")
+            const QString msg = QStringLiteral("´°¿Ú·Ö¸îÆ÷´´½¨Ê§°Ü£¡£¨ÎÄ¼ş£º%1£¬Î»ÖÃ[%2£¬%3]£©")
                     .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
                     .arg(emSplitter.lineNumber()).arg(emSplitter.columnNumber());
             jframeLogWarning(msg.toLocal8Bit().data());
-            QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), msg);
+            QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), msg);
             return false;
         }
     } else if (type == "dock") {
@@ -432,7 +436,7 @@ JSplitter *LayoutManager::createView(const QDomElement &emSplitter, QWidget *par
         //
     }
 
-    // æŒ‚è½½ç»„ä»¶
+    // ¹ÒÔØ×é¼ş
     for (QDomElement emChild = emSplitter.firstChildElement();
          !emChild.isNull();
          emChild = emChild.nextSiblingElement()) {
@@ -445,7 +449,7 @@ JSplitter *LayoutManager::createView(const QDomElement &emSplitter, QWidget *par
             if (!childSplitter) {
                 continue;
             }
-            // åŠ å…¥çª—å£åˆ†å‰²å™¨
+            // ¼ÓÈë´°¿Ú·Ö¸îÆ÷
             splitter->addWidget(childSplitter);
             // collapsible
             const QVariant variant = splitter->property(QString("collapsible")
@@ -454,14 +458,14 @@ JSplitter *LayoutManager::createView(const QDomElement &emSplitter, QWidget *par
                 splitter->setCollapsible(splitter->count() - 1, variant.toBool());
             }
         } else if (nodeName == "component") {
-            // æ¿€æ´»ç»„ä»¶
+            // ¼¤»î×é¼ş
             JComponentInfo *componentInfo = activateComponent(emChild, true);
             if (!componentInfo) {
                 continue;
             }
-            // åŠ å…¥çª—å£åˆ†å‰²å™¨
+            // ¼ÓÈë´°¿Ú·Ö¸îÆ÷
             if (componentInfo->widget && !componentInfo->stayOn) {
-                // æ ‡è¯†è§†å›¾çª—å£ç»„ä»¶
+                // ±êÊ¶ÊÓÍ¼´°¿Ú×é¼ş
                 componentInfo->isView = true;
                 //
                 splitter->addWidget(componentInfo->widget);
@@ -480,9 +484,9 @@ JSplitter *LayoutManager::createView(const QDomElement &emSplitter, QWidget *par
 
 bool LayoutManager::loadModuleNode(const QDomElement &emModule)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emModule.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
     // load popup component (before component loaded)
@@ -498,7 +502,7 @@ bool LayoutManager::loadModuleNode(const QDomElement &emModule)
     // get layout node
     const QDomElement emLayout = emModule.firstChildElement("layout");
     if (emLayout.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
     // load popup component (before subview loaded)
@@ -576,9 +580,9 @@ bool LayoutManager::loadModuleNode(const QDomElement &emModule)
 
 bool LayoutManager::loadModuleViewNode(const QDomElement &emView)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emView.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
     //
@@ -588,22 +592,25 @@ bool LayoutManager::loadModuleViewNode(const QDomElement &emView)
         //
         splitter = createView(emSplitter, q_frameLayout->mainViewManager());
         if (!splitter) {
-            const QString msg = QStringLiteral("è§†å›¾åˆ›å»ºå¤±è´¥ï¼ï¼ˆæ–‡ä»¶ï¼š%1ï¼Œä½ç½®[$2ï¼Œ%3]ï¼‰")
+            const QString msg = QStringLiteral("ÊÓÍ¼´´½¨Ê§°Ü£¡£¨ÎÄ¼ş£º%1£¬Î»ÖÃ[$2£¬%3]£©")
                     .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
                     .arg(emView.lineNumber()).arg(emView.columnNumber());
             jframeLogWarning(msg.toLocal8Bit().data());
-            QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), msg);
+            QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), msg);
             return false;
         }
     }
 
-    // é”€æ¯æ—§çš„å¸ƒå±€
+    // ¸´Î»ËùÓĞ´¦ÓÚÎ´¼¤»î×´Ì¬µÄÊÓÍ¼×é¼şµÄ¸¸´°¿Ú
+    q_frameLayout->moduleManager()->resetAllInactivateViewComponent();
+
+    // Ïú»Ù¾ÉµÄ²¼¾Ö
     if (q_mainSplitter) {
         q_mainSplitter->deleteLater();
         q_mainSplitter = 0;
     }
 
-    // åŠ å…¥æ–°çš„å¸ƒå±€
+    // ¼ÓÈëĞÂµÄ²¼¾Ö
     if (splitter) {
         if (splitter->count() == 0) {
             splitter->deleteLater();
@@ -618,16 +625,16 @@ bool LayoutManager::loadModuleViewNode(const QDomElement &emView)
 
 bool LayoutManager::loadModulePopupNode(const QDomElement &emPopup)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emPopup.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
-    // æŒ‚è½½ç»„ä»¶
+    // ¹ÒÔØ×é¼ş
     for (QDomElement emComponent = emPopup.firstChildElement("component");
          !emComponent.isNull();
          emComponent = emComponent.nextSiblingElement("component")) {
-        // æ¿€æ´»ç»„ä»¶
+        // ¼¤»î×é¼ş
         const JComponentInfo *componentInfo = activateComponent(emComponent, false);
         if (!componentInfo) {
             continue;
@@ -641,29 +648,29 @@ bool LayoutManager::loadModulePopupNode(const QDomElement &emPopup)
 bool LayoutManager::loadModuleCenterviewNode(const QDomElement &emCenterView)
 {
     Q_UNUSED(emCenterView);
-    Q_ASSERT(false);    // æš‚ä¸æ”¯æŒ
+    Q_ASSERT(false);    // Ôİ²»Ö§³Ö
     return false;
 }
 
 bool LayoutManager::loadModuleStatusBarNode(const QDomElement &emStatusBar)
 {
-    Q_UNUSED(emCenterView);
-    Q_ASSERT(false);    // æš‚ä¸æ”¯æŒ
+    Q_UNUSED(emStatusBar);
+    Q_ASSERT(false);    // Ôİ²»Ö§³Ö
     return false;
 }
 
 bool LayoutManager::loadModuleDockNode(const QDomElement &emDock)
 {
-    Q_UNUSED(emCenterView);
-    Q_ASSERT(false);    // æš‚ä¸æ”¯æŒ
+    Q_UNUSED(emDock);
+    Q_ASSERT(false);    // Ôİ²»Ö§³Ö
     return false;
 }
 
 QDomElement LayoutManager::findSystemNode(QDomElement &emParent, const QString &system)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emParent.isNull()) {
-        return QDomElement();   // æ— æ•ˆ
+        return QDomElement();   // ÎŞĞ§
     }
 
     // find current system
@@ -672,7 +679,7 @@ QDomElement LayoutManager::findSystemNode(QDomElement &emParent, const QString &
          emSystem = emSystem.nextSiblingElement("system")) {
         //
         if (emSystem.attribute("name") == system) {
-            return emSystem;    // æ‰¾åˆ°
+            return emSystem;    // ÕÒµ½
         }
     }
 
@@ -681,9 +688,9 @@ QDomElement LayoutManager::findSystemNode(QDomElement &emParent, const QString &
 
 QDomElement LayoutManager::findModuleNode(QDomElement &emParent, QString &section)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emParent.isNull()) {
-        return QDomElement();   // æ— æ•ˆ
+        return QDomElement();   // ÎŞĞ§
     }
 
     // system node
@@ -695,11 +702,11 @@ QDomElement LayoutManager::findModuleNode(QDomElement &emParent, QString &sectio
             for (emModule = emParent.firstChildElement("module");
                  !emModule.isNull();
                  emModule = emModule.nextSiblingElement("module")) {
-                // è·å–æ¨¡å¼åç§°
+                // »ñÈ¡Ä£Ê½Ãû³Æ
                 module = emModule.attribute("name");
                 if (module == currentModule) {
                     section = module;
-                    break;  // æ‰¾åˆ°
+                    break;  // ÕÒµ½
                 }
             }
             //
@@ -709,7 +716,7 @@ QDomElement LayoutManager::findModuleNode(QDomElement &emParent, QString &sectio
 
     //
     if (section.isEmpty()) {
-        return QDomElement();   // æ— æ•ˆ
+        return QDomElement();   // ÎŞĞ§
     }
 
     //
@@ -762,10 +769,10 @@ QDomElement LayoutManager::findModuleNode(QDomElement &emParent, QString &sectio
         }
     }
 
-    // æ›´æ–°å½“å‰æ¨¡å¼å±‚
+    // ¸üĞÂµ±Ç°Ä£Ê½²ã
     section = realSection;
 
-    // æ›´æ–°çˆ¶èŠ‚ç‚¹æ¨¡å¼çŠ¶æ€
+    // ¸üĞÂ¸¸½ÚµãÄ£Ê½×´Ì¬
     if (q_layoutConfig.sw.remember) {
         const QString currentModule =
                 realSection.section(">>", 0, 0, QString::SectionSkipEmpty);
@@ -781,32 +788,32 @@ QDomElement LayoutManager::findModuleNode(QDomElement &emParent, QString &sectio
 
 QDomElement LayoutManager::findModuleNode(const QDomElement &emParent, const QString &section)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emParent.isNull()) {
-        return QDomElement();   // æ— æ•ˆ
+        return QDomElement();   // ÎŞĞ§
     }
 
-    // è·å–é¡¶å±‚æ¨¡å¼åç§°
+    // »ñÈ¡¶¥²ãÄ£Ê½Ãû³Æ
     const QString firstSection =
             section.section(">>", 0, 0, QString::SectionSkipEmpty).trimmed();
 
-    // æŸ¥æ‰¾æ¨¡å¼èŠ‚ç‚¹
+    // ²éÕÒÄ£Ê½½Úµã
     QDomElement emModule;
     for (emModule = emParent.firstChildElement("module");
          !emModule.isNull();
          emModule = emModule.nextSiblingElement("module")) {
-        // æ¨¡å¼åç§°åŒ¹é…
+        // Ä£Ê½Ãû³ÆÆ¥Åä
         if (emModule.attribute("name") == firstSection) {
             break;  // found
         } else {
             const QString nextSection =
                     section.section(">>", 1, -1, QString::SectionSkipEmpty).trimmed();
             if (nextSection.isEmpty()) {
-                break;  // æœªæ‰¾åˆ°ï¼Œå¹¶ä¸”ä¸‹ä¸€ä¸ªå­æ¨¡å¼åç§°æ— æ•ˆï¼Œæ­¤æ—¶è¿”å›æœªæ‰¾åˆ°ç»“æœçŠ¶æ€
+                break;  // Î´ÕÒµ½£¬²¢ÇÒÏÂÒ»¸ö×ÓÄ£Ê½Ãû³ÆÎŞĞ§£¬´ËÊ±·µ»ØÎ´ÕÒµ½½á¹û×´Ì¬
             } else {
                 const QDomElement emSubModule = findModuleNode(emModule, nextSection);
                 if (emSubModule.isNull()) {
-                    continue;   // ç»§ç»­æŸ¥æ‰¾
+                    continue;   // ¼ÌĞø²éÕÒ
                 } else {
                     emModule = emSubModule;
                     break;  // found
@@ -820,33 +827,33 @@ QDomElement LayoutManager::findModuleNode(const QDomElement &emParent, const QSt
 
 bool LayoutManager::isComponentAttachEnabled(const JComponentInfo *componentInfo) const
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (!componentInfo) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
-    // åœ¨æœªå¯ç”¨ç™»å½•ç³»ç»Ÿçš„æƒ…å†µä¸‹ï¼Œ ä¸è¿›è¡Œç»„ä»¶æƒé™æ£€æµ‹
+    // ÔÚÎ´ÆôÓÃµÇÂ¼ÏµÍ³µÄÇé¿öÏÂ£¬ ²»½øĞĞ×é¼şÈ¨ÏŞ¼ì²â
     if (!jframeLogin()->loginManager()->isValid()) {
         return true;
     }
 
-    // å¦‚æœæ˜¯ç®¡ç†å‘˜ç”¨æˆ·ç™»å½•ï¼Œåˆ™ä¸è¿›è¡Œç»„ä»¶æƒé™æ£€æµ‹
+    // Èç¹ûÊÇ¹ÜÀíÔ±ÓÃ»§µÇÂ¼£¬Ôò²»½øĞĞ×é¼şÈ¨ÏŞ¼ì²â
     if (jframeLogin()->loginManager()->isAdminUser()) {
         return true;
     }
 
-    // æ¥å£æå‡
-    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->interface);
+    // ½Ó¿ÚÌáÉı
+    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->iface);
     if (!component) {
-        return false;   // æå‡å¤±è´¥
+        return false;   // ÌáÉıÊ§°Ü
     }
 
-    // è·å–ç»„ä»¶æƒé™ç­‰çº§
+    // »ñÈ¡×é¼şÈ¨ÏŞµÈ¼¶
     int componentPowerLevel = q_frameLayout->componentPowerLevel(component->GetComponentID());
 
-    // æƒé™åˆ¤å®š
+    // È¨ÏŞÅĞ¶¨
     if (componentPowerLevel <= JFrameLoginSpace::PowerLevelNo) {
-        return false;   // æ— æƒé™
+        return false;   // ÎŞÈ¨ÏŞ
     }
 
     return true;
@@ -854,70 +861,70 @@ bool LayoutManager::isComponentAttachEnabled(const JComponentInfo *componentInfo
 
 JComponentInfo *LayoutManager::activateComponent(const QDomElement &emComponent, bool show)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emComponent.isNull()) {
-        return 0;   // æ— æ•ˆ
+        return 0;   // ÎŞĞ§
     }
 
-    // é…ç½®æ ‡è¯†ï¼ˆloadï¼‰
+    // ÅäÖÃ±êÊ¶£¨load£©
     if (emComponent.hasAttribute("load")) {
         if (!QVariant(emComponent.attribute("load")).toBool()) {
-            return 0;   // ä¸å…è®¸åŠ è½½
+            return 0;   // ²»ÔÊĞí¼ÓÔØ
         }
     }
 
-    // è·å–ç»„ä»¶æ ‡è¯†
+    // »ñÈ¡×é¼ş±êÊ¶
     const QString componentId = emComponent.attribute("id");
     if (componentId.isEmpty()) {
-        return 0;   // å¿½ç•¥ç»„ä»¶æ ‡è¯†ä¸ºç©ºçš„é¡¹
+        return 0;   // ºöÂÔ×é¼ş±êÊ¶Îª¿ÕµÄÏî
     }
 
-    // è·å–æŒ‚è½½ç»„ä»¶ä¿¡æ¯
+    // »ñÈ¡¹ÒÔØ×é¼şĞÅÏ¢
     JComponentInfo *componentInfo =
             q_frameLayout->moduleManager()->componentById(componentId);
 
-    // æ£€æµ‹ç»„ä»¶æœ‰æ•ˆæ€§ï¼ˆå³æ˜¯å¦ç”±GFæ¡†æ¶åˆæ­¥åŠ è½½ï¼Œå¹¶ä¸”å·²ç»åŠ å…¥æ˜ å°„é˜Ÿåˆ—ï¼‰
+    // ¼ì²â×é¼şÓĞĞ§ĞÔ£¨¼´ÊÇ·ñÓÉGF¿ò¼Ü³õ²½¼ÓÔØ£¬²¢ÇÒÒÑ¾­¼ÓÈëÓ³Éä¶ÓÁĞ£©
     if (!componentInfo) {
-        const QString msg = QStringLiteral("ç»„ä»¶[%1]æœªåŠ è½½ï¼ï¼ˆæ–‡ä»¶ï¼š%2ï¼Œä½ç½®[%3ï¼Œ%4]ï¼‰")
+        const QString msg = QStringLiteral("×é¼ş[%1]Î´¼ÓÔØ£¡£¨ÎÄ¼ş£º%2£¬Î»ÖÃ[%3£¬%4]£©")
                 .arg(componentId)
                 .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
                 .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
         jframeLogWarning(msg.toLocal8Bit().data());
-        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), msg);
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), msg);
         return 0;
     }
-    // ç»„ä»¶æŒ‚è½½æƒé™åˆ¤å®š
+    // ×é¼ş¹ÒÔØÈ¨ÏŞÅĞ¶¨
     if (!isComponentAttachEnabled(componentInfo)) {
-        const QString msg = QStringLiteral("ç»„ä»¶[%1]ä¸èƒ½æŒ‚è½½ï¼ï¼ˆæ–‡ä»¶ï¼š%2ï¼Œä½ç½®[%3ï¼Œ%4]ï¼‰")
+        const QString msg = QStringLiteral("×é¼ş[%1]²»ÄÜ¹ÒÔØ£¡£¨ÎÄ¼ş£º%2£¬Î»ÖÃ[%3£¬%4]£©")
                 .arg(componentId)
                 .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
                 .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
         jframeLogWarning(msg.toLocal8Bit().data());
-        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), msg);
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), msg);
         return 0;
     }
-    // æŒ‚è½½ç»„ä»¶ç•Œé¢
-    if (!q_frameLayout->moduleManager().attachComponentUi(componentInfo)) {
-        const QString msg = QStringLiteral("ç»„ä»¶[%1]ç•Œé¢æŒ‚è½½å¤±è´¥ï¼ï¼ˆæ–‡ä»¶ï¼š%2ï¼Œä½ç½®[%3ï¼Œ%4]ï¼‰")
+    // ¹ÒÔØ×é¼ş½çÃæ
+    if (!q_frameLayout->moduleManager()->attachComponentUi(componentInfo)) {
+        const QString msg = QStringLiteral("×é¼ş[%1]½çÃæ¹ÒÔØÊ§°Ü£¡£¨ÎÄ¼ş£º%2£¬Î»ÖÃ[%3£¬%4]£©")
                 .arg(componentId)
                 .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
                 .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
         jframeLogWarning(msg.toLocal8Bit().data());
-        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), msg);
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), msg);
         return 0;
     }
-    // æŒ‚è½½ç»„ä»¶
-    if (!q_frameLayout->moduleManager().attachComponent(componentInfo, show)) {
-        const QString msg = QStringLiteral("ç»„ä»¶[%1]æŒ‚è½½å¤±è´¥ï¼ï¼ˆæ–‡ä»¶ï¼š%2ï¼Œä½ç½®[%3ï¼Œ%4]ï¼‰")
+    // ¹ÒÔØ×é¼ş
+    if (!q_frameLayout->moduleManager()->attachComponent(componentInfo, show)) {
+        const QString msg = QStringLiteral("×é¼ş[%1]¹ÒÔØÊ§°Ü£¡£¨ÎÄ¼ş£º%2£¬Î»ÖÃ[%3£¬%4]£©")
                 .arg(componentId)
                 .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
                 .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
         jframeLogWarning(msg.toLocal8Bit().data());
-        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), msg);
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), msg);
         return 0;
     }
 
-    // æ ‡è¯†æ¿€æ´»çŠ¶æ€
+    // ±êÊ¶¼¤»î×´Ì¬
     componentInfo->active = true;
 
     return componentInfo;
@@ -925,15 +932,15 @@ JComponentInfo *LayoutManager::activateComponent(const QDomElement &emComponent,
 
 JSplitter *LayoutManager::createSplitter(const QDomElement &emSplitter, QWidget *parent)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emSplitter.isNull()) {
-        return 0;   // æ— æ•ˆ
+        return 0;   // ÎŞĞ§
     }
 
     //
     Qt::Orientation orientation = Qt::Horizontal;
 
-    // è§£æå¸ƒå±€æ–¹å‘
+    // ½âÎö²¼¾Ö·½Ïò
     {
         const QString nodeName = emSplitter.nodeName();
         if (nodeName == "horizontal") {
@@ -941,17 +948,17 @@ JSplitter *LayoutManager::createSplitter(const QDomElement &emSplitter, QWidget 
         } else if (nodeName == "vertical") {
             orientation = Qt::Vertical;
         } else {
-            const QString msg = QStringLiteral("ä¸æ”¯æŒçš„å¸ƒå±€èŠ‚ç‚¹[%1]ï¼ï¼ˆæ–‡ä»¶ï¼š%2ï¼Œä½ç½®[%3ï¼Œ%4]ï¼‰")
+            const QString msg = QStringLiteral("²»Ö§³ÖµÄ²¼¾Ö½Úµã[%1]£¡£¨ÎÄ¼ş£º%2£¬Î»ÖÃ[%3£¬%4]£©")
                     .arg(nodeName)
                     .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
-                    .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
+                    .arg(emSplitter.lineNumber()).arg(emSplitter.columnNumber());
             jframeLogWarning(msg.toLocal8Bit().data());
-            QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("åˆ›å»ºå¸ƒå±€"), msg);
+            QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("´´½¨²¼¾Ö"), msg);
             return 0;
         }
     }
 
-    // åˆ›å»ºçª—å£åˆ†å‰²å™¨å®ä¾‹
+    // ´´½¨´°¿Ú·Ö¸îÆ÷ÊµÀı
     JSplitter *splitter = 0;
     if (q_layoutConfig.splitter.syncScales) {
         splitter = new JSplitterSync(this, orientation, parent);
@@ -1045,74 +1052,74 @@ bool LayoutManager::saveCurrentSplitterScales()
 {
     //
     if (!q_mainSplitter) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
-    // æ‰“å¼€æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶
+    // ´ò¿ª¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş
     QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
     if (!file.open(QFile::ReadWrite)) {
-        return false;   // æ‰“å¼€å¤±è´¥
+        return false;   // ´ò¿ªÊ§°Ü
     }
 
-    // è§£ææ–‡ä»¶
+    // ½âÎöÎÄ¼ş
     QString errorMsg;
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
-    if (!document.setContent(&file, &errorMsg, &errorLine, &erorColumn)) {
-        const QString text = QStringLiteral("æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶\"%1\"è§£æå¤±è´¥ï¼\n"
-                                            "é”™è¯¯æè¿°ï¼š%2\n"
-                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å¥½ï¼š%4ï¼‰")
+    if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
+        const QString text = QStringLiteral("¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼ş\"%1\"½âÎöÊ§°Ü£¡\n"
+                                            "´íÎóÃèÊö£º%2\n"
+                                            "´íÎóÎ»ÖÃ£º£¨ĞĞºÅ£º%3£¬ÁĞºÃ£º%4£©")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("è­¦å‘Š"), text);
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("¾¯¸æ"), text);
         return false;
     }
 
-    // å…³é—­æ–‡ä»¶
+    // ¹Ø±ÕÎÄ¼ş
     file.close();
 
-    // è·å–æ ¹èŠ‚ç‚¹
+    // »ñÈ¡¸ù½Úµã
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
-    // è·å–å½“å‰ç³»ç»Ÿå’Œæ¨¡å¼
+    // »ñÈ¡µ±Ç°ÏµÍ³ºÍÄ£Ê½
     const QString currentSystem = QString::fromStdString(q_frameLayout->currentSystem());
     const QString currentModule = QString::fromStdString(q_frameLayout->currentModule());
 
-    // æŸ¥æ‰¾ç³»ç»ŸèŠ‚ç‚¹
+    // ²éÕÒÏµÍ³½Úµã
     QDomElement emSystem = findSystemNode(emRoot, currentSystem);
     if (emSystem.isNull()) {
-        return false;   // æœªæ‰¾åˆ°
+        return false;   // Î´ÕÒµ½
     }
 
-    // æŸ¥æ‰¾æ¨¡å¼èŠ‚ç‚¹
+    // ²éÕÒÄ£Ê½½Úµã
     QDomElement emModule = findModuleNode(emSystem, currentModule);
     if (emModule.isNull()) {
-        return false;   // æœªæ‰¾åˆ°
+        return false;   // Î´ÕÒµ½
     }
 
-    // è·å–å¸ƒå±€èŠ‚ç‚¹
+    // »ñÈ¡²¼¾Ö½Úµã
     QDomElement emLayout = emModule.firstChildElement("layout");
     if (emLayout.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
-    // è·å–è§†å›¾èŠ‚ç‚¹
+    // »ñÈ¡ÊÓÍ¼½Úµã
     QDomElement emView = emLayout.firstChildElement("view");
     if (emView.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
-    // æ›´æ–°splitterçš„scaleså±æ€§
+    // ¸üĞÂsplitterµÄscalesÊôĞÔ
     if (!updateSpltterScales(emView, q_mainSplitter)) {
-        return false;   // æ›´æ–°å¤±è´¥
+        return false;   // ¸üĞÂÊ§°Ü
     }
 
-    // ä¿å­˜ä¿®æ”¹
+    // ±£´æĞŞ¸Ä
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
-        return false;   // æ‰“å¼€å¤±è´¥
+        return false;   // ´ò¿ªÊ§°Ü
     }
     QTextStream textStream(&file);
     document.save(textStream, 2);
@@ -1120,22 +1127,22 @@ bool LayoutManager::saveCurrentSplitterScales()
     return true;
 }
 
-bool LayoutManager::updateSpltterScales(const QDomElement &emParent, const QWidget *parent)
+bool LayoutManager::updateSpltterScales(const QDomElement &emParent, const QWidget *widget)
 {
-    // å‚æ•°æ£€æµ‹
+    // ²ÎÊı¼ì²â
     if (emParent.isNull()) {
-        return false;   // æ— æ•ˆ
+        return false;   // ÎŞĞ§
     }
 
-    // å¯¹è±¡ç±»å‹æ£€æµ‹
+    // ¶ÔÏóÀàĞÍ¼ì²â
     if (!widget->inherits("JSplitterSync")) {
         return true;    //
     }
 
-    // æå‡ç±»å‹
+    // ÌáÉıÀàĞÍ
     const JSplitter *splitter = qobject_cast<const JSplitter *>(widget);
     if (!splitter) {
-        return false;   // å¤±è´¥
+        return false;   // Ê§°Ü
     }
 
     //
@@ -1149,10 +1156,10 @@ bool LayoutManager::updateSpltterScales(const QDomElement &emParent, const QWidg
         emSplitter = emParent.firstChildElement("vertical");
         break;
     default:
-        return false;   // å¸ƒå±€æ–¹å‘æ— æ•ˆ
+        return false;   // ²¼¾Ö·½ÏòÎŞĞ§
     }
 
-    // ç”Ÿæˆæ¯”ä¾‹å­—ç¬¦ä¸²
+    // Éú³É±ÈÀı×Ö·û´®
     QString sScale;
     QListIterator<double> citerScales(splitter->scales());
     while (citerScales.hasNext()) {
@@ -1161,10 +1168,10 @@ bool LayoutManager::updateSpltterScales(const QDomElement &emParent, const QWidg
     if (!sScale.isEmpty()) {
         sScale.chop(1);
     }
-    // è®¾ç½®scaleså±æ€§
+    // ÉèÖÃscalesÊôĞÔ
     emSplitter.setAttribute("scales", sScale);
 
-    // é€’å½’æ›´æ–°
+    // µİ¹é¸üĞÂ
     const int count = splitter->count();
     for (int i = 0; i < count; ++i) {
         if (!updateSpltterScales(emSplitter, splitter->widget(i))) {
@@ -1186,7 +1193,7 @@ JSplitterSync::JSplitterSync(LayoutManager *layoutManager, QWidget *parent):
 }
 
 JSplitterSync::JSplitterSync(LayoutManager *layoutManager, Qt::Orientation orientation, QWidget *parent):
-    JSplitter(parent),
+    JSplitter(orientation, parent),
     q_layoutManager(layoutManager)
 {
     connect(this, SIGNAL(splitterMoved(int,int)),
@@ -1195,7 +1202,7 @@ JSplitterSync::JSplitterSync(LayoutManager *layoutManager, Qt::Orientation orien
 
 void JSplitterSync::onSplitterMoved(int pos, int index)
 {
-    Q_UNUSE(pos);
+    Q_UNUSED(pos);
     Q_UNUSED(index);
     //
     if (q_layoutManager) {

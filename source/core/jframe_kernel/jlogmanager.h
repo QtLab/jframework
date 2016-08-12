@@ -6,7 +6,7 @@
 
 // 日志管理模块
 
-class JLogManager
+class IJLogManager
 {
 public:
     enum LogType {

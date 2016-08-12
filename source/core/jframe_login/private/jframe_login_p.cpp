@@ -59,7 +59,7 @@ void JFrameLogin::releaseInterface()
 void *JFrameLogin::queryInterface(const char *iid, unsigned int ver)
 {
     J_QUERY_INTERFACE(IJObject, iid, ver);
-    J_QUERY_MEMBER(IJLoginManager, iid, ver, data->loginManager);
+    J_QUERY_MEMBER_OBJECT(IJLoginManager, iid, ver, data->loginManager);
 
     return 0;
 }
@@ -74,7 +74,7 @@ unsigned int JFrameLogin::objectVersion() const
     return VER_IJFrameLogin;
 }
 
-bool JFrameLogin::invoke(const char *method, int argc)
+bool JFrameLogin::invoke(const char *method, int argc, ...)
 {
     bool result = false;
     va_list ap;
@@ -115,7 +115,7 @@ JFrameLogin::JFrameLogin()
 #endif
 }
 
-JFrameLogin::~IJFrameLogin()
+JFrameLogin::~JFrameLogin()
 {
     // ×¢ÏúµÇÂ¼
 #if 0

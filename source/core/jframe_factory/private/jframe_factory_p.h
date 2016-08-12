@@ -1,5 +1,5 @@
-﻿#ifndef JFRAME_FACTORY_H
-#define JFRAME_FACTORY_H
+﻿#ifndef JFRAME_FACTORY_P_H
+#define JFRAME_FACTORY_P_H
 
 #include "../jframe_factory.h"
 #include <QMutex>
@@ -29,7 +29,7 @@ public:
     // IJFrameFactory interface
 public:
     void *factory(const char *iid, unsigned int ver);
-    void releaseFactory(void *interface, const char *iid, unsigned int ver);
+    void releaseFactory(void *iface, const char *, unsigned int );
 
 private:
     JFrameFactory();
@@ -42,4 +42,4 @@ private:
     static JFrameFactory* _instance;    // 单实例指针
 };
 
-#endif // JFRAME_FACTORY_H
+#endif // JFRAME_FACTORY_P_H

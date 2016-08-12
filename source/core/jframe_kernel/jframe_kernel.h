@@ -1,12 +1,19 @@
 #ifndef JFRAME_KERNEL_H
 #define JFRAME_KERNEL_H
 
+#include "factory/jframe_interface.h"
+
 // interface IJFrameKernel
+
+class IJLogManager;
 
 class IJFrameKernel : public IJObject
 {
 public:
     virtual ~IJFrameKernel() {}
+
+    // 获取日志管理实例接口
+    virtual IJLogManager *logManager() = 0;
 };
 
 // 接口描述

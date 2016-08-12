@@ -3,20 +3,20 @@
 #include "jframe_layout.h"
 
 //
-extern "C" __declspec(dllexport) void *func_create_component(void *attempter)
+extern "C" __declspec(dllexport) void *CreateComponent(void *gAttempter)
 {
-    // ç™»å½•æ˜¾ç¤º
+    // µÇÂ¼ÏÔÊ¾
     if (!jframeFacade()->loginFrame()) {
         jframeFacade()->exitFrame();
-        return 0;   // ç™»å½•å¤±è´¥
+        return 0;   // µÇÂ¼Ê§°Ü
     }
 
     return static_cast<IGF_Component *>
-            (new JComLogin(reinterpret_cast<IGF_Attempter *>(attempter)));
+            (new JComLogin(reinterpret_cast<IGF_Attempter *>(gAttempter)));
 }
 
 JComLogin::JComLogin(IGF_Attempter *gAttempter)
-    : q_gAttempter(gAttmpter)
+    : q_gAttempter(gAttempter)
 {
 
 }
@@ -46,14 +46,14 @@ void JComLogin::Shutdown()
 {
 }
 
-const char *JComLogin::GetComponentID()
+const char *JComLogin::GetComponentID() const
 {
     static const char* _componentId = "jcom_login";
     return _componentId;
 }
 
-const char *JComLogin::GetComponentName()
+const char *JComLogin::GetComponentName() const
 {
-    static const char* _componentName = "æ¡†æž¶ç™»å½•ç»„ä»¶";
+    static const char* _componentName = "¿ò¼ÜµÇÂ¼×é¼þ";
     return _componentName;
 }

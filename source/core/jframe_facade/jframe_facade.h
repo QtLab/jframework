@@ -1,20 +1,8 @@
 ﻿#ifndef JFRAME_FACADE_H
 #define JFRAME_FACADE_H
 
-#include "factory/jframe_interface.h"
+#include "jframe_core.h"
 #include <list>
-
-// IGF_Component接口标识
-#define VER_IGF_Component J_INTERFACE_VERSION(1, 0)
-#define IID_IGF_Component J_IID_INTERFACE(IGF_Component)
-
-// IGF_MainWindow接口标识
-#define VER_IGF_MainWindow J_INTERFACE_VERSION(1, 0)
-#define IID_IGF_MainWindow J_IID_INTERFACE(IGF_MainWindow)
-
-// IGF_Attempter接口标识
-#define VER_IGF_Attempter J_INTERFACE_VERSION(1, 0)
-#define IID_IGF_Attempter J_IID_INTERFACE(IGF_Attempter)
 
 // interface IJFrameFacade
 
@@ -33,6 +21,7 @@ public:
     virtual std::string frameGlobalPath() const = 0;
     virtual std::string frameLayoutPath() const = 0;
     virtual std::string frameComponentPath() const = 0;
+    virtual std::string frameFramViewPath() const = 0;
 
     // 获取框架版本
     virtual std::string frameVersion() const = 0;
@@ -53,7 +42,7 @@ public:
     virtual void exitFrame() = 0;
 
     // 重启框架
-    virtual void restartFrame(const std::string<std::string> &arguments) = 0;
+    virtual void restartFrame(const std::list<std::string> &arguments) = 0;
 
     // 执行登陆界面显示
     virtual bool loginFrame() = 0;
@@ -73,7 +62,7 @@ public:
 
 // 接口标识
 #define VER_IJFrameFacade J_INTERFACE_VERSION(1, 0)
-#defien IID_IJFrameFacade J_IID_INTERFACE(IJFrameFacade)
+#define IID_IJFrameFacade J_IID_INTERFACE(IJFrameFacade)
 
 ///
 

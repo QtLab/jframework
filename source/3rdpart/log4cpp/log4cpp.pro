@@ -5,21 +5,40 @@
 jframe_root = $$PWD/../../..
 
 QT -= core gui
+CONFIG -= app_bundle
+CONFIG -= qt
+
 TEMPLATE = lib
+
+TARGET = $$qtLibraryTarget(log4cpp)
 
 DESTDIR = $${jframe_root}/lib/3rdpart
 
+##
 DEFINES += \
-    PRO_3RDPART
+    PRO_3RDPART \
 
-TARGET = $$qtLibraryTarget(log4cpp)
+win32 {
+    DEFINES += \
+        LOG4CPP_HAS_DLL \
+        LOG4CPP_BUILD_DLL \
+        WINDOWS \
+        DLL
+
+    LIBS += -lws2_32 -ladvapi32
+}
+
+win32: {
+    DEFINES -= UNICODE
+}
 
 ##################################################
 # qmake internal options
 ##################################################
 
-CONFIG += staticlib warn_off lib_bundle
-CONFIG += no_kewords slient
+CONFIG += dll warn_off lib_bundle
+#CONFIG += no_kewords slient
+#DEFINES += QT_NO_DEBUG_OUTPUT
 
 ##################################################
 # release/debug mode
@@ -33,6 +52,7 @@ win32 {
     # Enable debug_and_release + build_all if you want to build both.
 
     CONFIG      += debug_and_release
+    CONFIG += build_all
 #    CONFIG      += QT_NO_DEBUG_OUTPUT
 
 } else {
@@ -45,7 +65,6 @@ linux-g++ {
 
 ##
 INCLUDEPATH += $$PWD/include
-DEFINES -= UNICODE
 
 ##
 include($$PWD/src.pri)

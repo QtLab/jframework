@@ -100,8 +100,8 @@ public:
 protected:
     INotifier &begin(JObserver *obs, int offset);
     INotifier &push(JObserver *obs, const std::string &id, jobserver_cb cb, int offset);
-    INotifier &push(const std::string &id, jobserver_cb cb, int offset);
-4
+    INotifier &push(const std::string &id, jobserver_cb cb);
+
 Q_SIGNALS:
     void readyDispense(const JNotifyMsg &msg);
 
@@ -121,7 +121,7 @@ private:
     JLRESULT immSend(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
     JLRESULT immSend(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
     void immPost(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void immPost(JObserver *obs, const std::string &id, JWPARAM wParams, JLPARAM lParam);
+    void immPost(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
     void immPost(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam);
     void immPost(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam);
 

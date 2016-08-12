@@ -2,20 +2,20 @@
 #include "jcom_frame.h"
 
 //
-extern "C" __declspec(dllexport) void *func_create_component(void *attempter)
+extern "C" __declspec(dllexport) void *CreateComponent(void *gAttempter)
 {
-    // åŠ è½½æ¡†æž¶
+    // ¼ÓÔØ¿ò¼Ü
     if (!jframeFacade()->loadFrame()) {
         jframeFacade()->exitFrame();
-        return 0;   // åŠ è½½å¤±è´¥
+        return 0;   // ¼ÓÔØÊ§°Ü
     }
 
     return static_cast<IGF_Component *>
-            (new JComFrame(reinterpret_cast<IGF_Attempter *>(attempter)));
+            (new JComFrame(reinterpret_cast<IGF_Attempter *>(gAttempter)));
 }
 
 JComFrame::JComFrame(IGF_Attempter *gAttempter)
-    : q_gAttempter(gAttmpter)
+    : q_gAttempter(gAttempter)
 {
 
 }
@@ -45,14 +45,14 @@ void JComFrame::Shutdown()
 {
 }
 
-const char *JComFrame::GetComponentID()
+const char *JComFrame::GetComponentID() const
 {
     static const char* _componentId = "jcom_frame";
     return _componentId;
 }
 
-const char *JComFrame::GetComponentName()
+const char *JComFrame::GetComponentName() const
 {
-    static const char* _componentName = "æ¡†æž¶åŠ è½½ç»„ä»¶";
+    static const char* _componentName = "¿ò¼Ü¼ÓÔØ×é¼þ";
     return _componentName;
 }

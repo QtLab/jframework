@@ -10,7 +10,7 @@ IJFrameFactory* jframeFactory()
 }
 
 //
-Q_EXTERN_C JFRAME_FACTORY_EXPORT IJUnknown* _func_jframe_factory()
+extern "C" JFRAME_FACTORY_EXPORT IJUnknown* _func_jframe_factory()
 {
     return jframeFactory();
 }

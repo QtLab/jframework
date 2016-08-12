@@ -11,7 +11,7 @@ class JSplitter;
 class MainViewManager : public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(QRect clientGeomtry READ clientGeomtry)
+    Q_PROPERTY(QRect clientGeometry READ clientGeometry)
 public:
     explicit MainViewManager(QWidget *parent = 0);
 

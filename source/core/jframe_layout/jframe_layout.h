@@ -29,6 +29,7 @@ class IGF_Component;
 
 class IJFrameLayout : public IJObject
 {
+public:
     enum LogType {
         LogConsole,
         LogFile
@@ -46,10 +47,10 @@ class IJFrameLayout : public IJObject
     virtual IGF_Attempter *gAttempter() = 0;
 
     // 设置窗体风格
-    virtual void setFrameTheme(const char *theme);
+    virtual void setFrameTheme(const char *theme) = 0;
 
     // 挂载组件
-    virtual bool attachComponent(IGF_Component *component, bool stayOn = false);
+    virtual bool attachComponent(IGF_Component *component, bool stayOn = false) = 0;
 
     // 分离组件
     virtual bool detachComponent(IGF_Component *component) = 0;

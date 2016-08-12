@@ -3,7 +3,6 @@
 
 #include "../jframe_layout.h"
 #include <QMutex>
-#include <QPointer>
 #include "jframe_login.h"
 #include "IGF_Base.h"
 
@@ -16,8 +15,8 @@ struct JComponentInfo
     bool stayOn;                // 始终未挂载状态标志（主要用于标识框架全局有效组件）
     bool isView;                // 标识组件窗口是否为视图窗口（用于splitter布局）
     bool active;                // 组件激活状态（用户系统、模式切换时的组件激活标志）
-    IUnknownEx *interface;      // 组件接口
-    QWidget widget;             // 组件窗口
+    IUnknownEx *iface;          // 组件接口
+    QWidget *widget;            // 组件窗口
 
     JComponentInfo():
         firstAttach(true),
@@ -25,7 +24,7 @@ struct JComponentInfo
         stayOn(false),
         isView(false),
         active(false),
-        interface(0),
+        iface(0),
         widget(0)
     {
 
@@ -47,7 +46,7 @@ struct JComponentInfo
         stayOn = other.stayOn;
         isView = other.isView;
         active = other.active;
-        interface = other.interface;
+        iface = other.iface;
         widget = other.widget;
 
         return *this;
@@ -67,7 +66,7 @@ class JFrameLayout : public IJFrameLayout
 {
     // single instance
 public:
-    static IJFrameLayout* getInstance();
+    static JFrameLayout* getInstance();
     static void releaseInstance();
 
     // IJUnknown interface
@@ -82,7 +81,7 @@ public:
     bool invoke(const char *method, int argc, ...);
 
     // IJFrameLayout interface
-private:
+public:
     QWidget *mainWindow();
     INotifier *notifier();
     IGF_Attempter *gAttempter();

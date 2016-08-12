@@ -1,4 +1,4 @@
-ï»¿#ifndef JFRAME_FACTORY_H
+#ifndef JFRAME_FACTORY_H
 #define JFRAME_FACTORY_H
 
 #include "jframe_interface.h"
@@ -10,14 +10,14 @@ class IJFrameFactory : public IJObject
 public:
     virtual ~IJFrameFactory() {}
 
-    // åˆ›å»ºæŒ‡å®šå¯¹è±¡å®ä¾‹ï¼ˆiidï¼šå¯¹è±¡æ ‡è¯†ï¼‰ï¼›verï¼šå¯¹è±¡ç‰ˆæœ¬
+    // ´´½¨Ö¸¶¨¶ÔÏóÊµÀı£¨iid£º¶ÔÏó±êÊ¶£©£»ver£º¶ÔÏó°æ±¾
     virtual void* factory(const char *iid, unsigned int ver) = 0;
 
-    // é”€æ¯åˆ›å»ºçš„å¯¹è±¡å®ä¾‹ï¼ˆobjectï¼šå¯¹è±¡å®ä¾‹æŒ‡é’ˆï¼Œiidï¼šå¯¹è±¡æ ‡è¯†ï¼›verï¼šå¯¹è±¡ç‰ˆæœ¬ï¼‰
-    virtual void releaseFactory(void *interface, const char *iid, unsigned int ver) = 0;
+    // Ïú»Ù´´½¨µÄ¶ÔÏóÊµÀı£¨object£º¶ÔÏóÊµÀıÖ¸Õë£¬iid£º¶ÔÏó±êÊ¶£»ver£º¶ÔÏó°æ±¾£©
+    virtual void releaseFactory(void *iface, const char *iid, unsigned int ver) = 0;
 };
 
-// æ¥å£æè¿°
+// ½Ó¿ÚÃèÊö
 #define VER_IJFrameFactory J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameFactory J_IID_INTERFACE(IJFrameFactory)
 

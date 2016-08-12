@@ -68,21 +68,25 @@ contains(DEFINES, PRO_CORE) {
 
 contains(DEFINES, PRO_COMPONENT) {
     ##
+    win32:CONFIG += build_all
+
+    ##
     contains(DEFINES, JFRAME_COMPONENT) {
+        ##
         DESTDIR = $${jframe_root}/component/jframe/$$TARGET
     } else {
+        ##
         DESTDIR = $${jframe_root}/component/$$TARGET
     }
 
     !contains(DEFINES, USE_NO_JFRAME_LIBS) {
-        win32 {
-            DEFINES += \
-                USE_JFAME_KERNEL \
-                USE_JFRAME_FACTORY \
-                USE_JFRAME_LAYOUT \
-                USE_JFRAME_FACADE \
-                USE_JFRAME_LOGIN
-        }
+        DEFINES += \
+            USE_JFRAME_CORE \
+            USE_JFRAME_KERNEL \
+            USE_JFRAME_FACTORY \
+            USE_JFRAME_LAYOUT \
+            USE_JFRAME_FACADE \
+            USE_JFRAME_LOGIN
     }
 }
 
@@ -92,10 +96,12 @@ contains(DEFINES, PRO_COMPONENT) {
 
 INCLUDEPATH += \
     $${jframe_root}/include \
+    $${jframe_root}/include/3rdpart \
     $${jframe_root}/include/jframe
 
 DEPENDPATH += \
     $${jframe_root}/include \
+    $${jframe_root}/include/3rdpart \
     $${jframe_root}/include/jframe
 
 contains(DEFINES, USE_JFRAME_KERNEL) {
@@ -105,8 +111,7 @@ contains(DEFINES, USE_JFRAME_KERNEL) {
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
     INCLUDEPATH += $${jframe_root}/include/jframe/kernel
     DEPENDPATH += $${jframe_root}/include/jframe/kernel
-    DEFINES += \
-        JFRAME_KERNEL_DLL
+    win32:DEFINES += JFRAME_KERNEL_DLL
 }
 
 contains(DEFINES, USE_JFRAME_FACTORY) {
@@ -116,8 +121,7 @@ contains(DEFINES, USE_JFRAME_FACTORY) {
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_factory
     INCLUDEPATH += $${jframe_root}/include/jframe/factory
     DEPENDPATH += $${jframe_root}/include/jframe/factory
-    DEFINES += \
-        JFRAME_ FACTORY_DLL
+    win32:DEFINES += JFRAME_FACTORY_DLL
 }
 
 contains(DEFINES, USE_JFRAME_FACADE) {
@@ -125,8 +129,7 @@ contains(DEFINES, USE_JFRAME_FACADE) {
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facaded
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
-    DEFINES += \
-        JFRAME_FACADE_DLL
+    win32:DEFINES += JFRAME_FACADE_DLL
 }
 
 contains(DEFINES, USE_JFRAME_LAYOUT) {
@@ -134,8 +137,7 @@ contains(DEFINES, USE_JFRAME_LAYOUT) {
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_layout
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_layoutd
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_layout
-    DEFINES += \
-        JFRAME_LAYOUT_DLL
+    win32:DEFINES += JFRAME_LAYOUT_DLL
 }
 
 contains(DEFINES, USE_JFRAME_LOGIN) {
@@ -143,45 +145,60 @@ contains(DEFINES, USE_JFRAME_LOGIN) {
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_login
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_logind
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_login
-    DEFINES += \
-        JFRAME_LOGIN_DLL
+    win32:DEFINES += JFRAME_LOGIN_DLL
 }
 
 contains(DEFINES, USE_TINYXML) {
     ## import tinyxml library
-    win32:CONFIG(release, debug|release):LIBS += -L$${SMARTKITS_HOME}/lib/tinyxml/lib -ltinyxml
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${SMARTKITS_HOME}/lib/tinyxml/lib -ltinyxmld
-    else:unix:LIBS += -L$${SMARTKITS_HOME}/lib/tinyxml/lib -ltinyxml
-    INCLUDEPATH += $${SMARTKITS_HOME}/lib/tinyxml/include
-    DEPENDPATH += $${SMARTKITS_HOME}/lib/tinyxml/include
-    DEFINES += \
-        TINYXML_DLL
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxml
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxmld
+    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxml
+    INCLUDEPATH += $${jframe_root}/include/3rdpart/tinyxml
+    DEPENDPATH += $${jframe_root}/include/3rdpart/tinyxml
+    win32:DEFINES += TINYXML_DLL
 }
 
-contains(DEFINES, USE_QTMFC) {
-    ## import qtmfcmigration library
-    win32:CONFIG(release, debug|release):LIBS += -L$${SMARTKITS_HOME}/lib/QtMFCMigration/lib -lQtMFCMigration
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${SMARTKITS_HOME}/lib/QtMFCMigration/lib -lQtMFCMigrationd
-    else:unix:LIBS += -L$${SMARTKITS_HOME}/lib/QtMFCMigration -QtMFCMigration
-    INCLUDEPATH += $${SMARTKITS_HOME}/lib/QtMFCMigration/include
-    DEPENDPATH += $${SMARTKITS_HOME}/lib/QtMFCMigration/include
+contains(DEFINES, USE_QTWINMIGRATE) {
+    ## import qtwinmigrate library
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrate
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrated
+    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrate
+    INCLUDEPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
+    DEPENDPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
+    win32:DEFINES += _AFXDLL
 }
 
 contains(DEFINES, USE_QTRIBBON) {
-    ## import QtRibbon library
-    win32:CONFIG(release, debug|release):LIBS += -L$${SMARTKITS_HOME}/lib/QtRibbon/lib -lQtRibbon
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${SMARTKITS_HOME}/lib/QtRibbon/lib -lQtRibbond
-    else:unix:LIBS += -L$${SMARTKITS_HOME}/lib/QtRibbon/lib -lQtRibbon
-    INCLUDEPATH += $${SMARTKITS_HOME}/lib/QtRibbon/include
-    DEPENDPATH += $${SMARTKITS_HOME}/lib/QtRibbon/include
+    ## import qtribbon library
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbon
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbond
+    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbon
+    INCLUDEPATH += $${jframe_root}/include/3rdpart/qtribbon
+    DEPENDPATH += $${jframe_root}/include/3rdpart/qtribbon
+    DEFINES +=
 }
-
 
 contains(DEFINES, USE_LOG4CPP) {
     ## import log4cpp library
-    win32:CONFIG(release, debug|release):LIBS += -L$${SMARTKITS_HOME}/lib/log4cpp/lib -llog4cpp
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${SMARTKITS_HOME}/lib/log4cpp/lib -llog4cppd
-    else:unix:LIBS += -L$${SMARTKITS_HOME}/lib/log4cpp/lib -llog4cpp
-    INCLUDEPATH += $${SMARTKITS_HOME}/lib/log4cpp/include
-    DEPENDPATH += $${SMARTKITS_HOME}/lib/log4cpp/include
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -llog4cpp
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -llog4cppd
+    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -llog4cpp
+    INCLUDEPATH += $${jframe_root}/include/3rdpart/log4cpp
+    DEPENDPATH += $${jframe_root}/include/3rdpart/log4cpp
+    win32:DEFINES += LOG4CPP_HAS_DLL
+}
+
+contains(DEFINES, USE_JWT) {
+    ## import jwt library
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ljwt
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ljwtd
+    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -ljwt
+    INCLUDEPATH += $${jframe_root}/include/3rdpart/jwt
+    DEPENDPATH += $${jframe_root}/include/3rdpart/jwt
+    win32:DEFINES += JWT_DLL
+}
+
+contains(DEFINES, USE_BCG) {
+    ## import BCGCBPro library
+    error(not supported!)
 }

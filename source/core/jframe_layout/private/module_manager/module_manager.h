@@ -42,6 +42,9 @@ public:
     // 将所有处于未激活状态的组件分离
     void detachAllInactivateComponent();
 
+    // 复位所有处于未激活状态的视图组件的父窗口
+    void resetAllInactivateViewComponent();
+
     //
     bool attachComponent(IGF_Component *component, bool stayOn);
     JComponentInfo *attachComponent(IGF_Component *component);
@@ -62,7 +65,7 @@ public:
 protected:
     // layout
     JLRESULT onPreviousSystemChanged(const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    JLRESULT onPreciousModuleChanged(const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    JLRESULT onPreviousModuleChanged(const std::string &id, JWPARAM wParam, JLPARAM lParam);
     JLRESULT onLoadDefaultSystem(const std::string &id, JWPARAM wParam, JLPARAM lParam);
     // system
     JLRESULT onSwitchSystem(const std::string &id, JWPARAM wParam, JLPARAM lParam);

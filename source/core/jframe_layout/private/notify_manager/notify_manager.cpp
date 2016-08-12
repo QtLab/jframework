@@ -26,6 +26,8 @@ bool NotifyManager::init()
             .push("j_frame_exit", &NotifyManager::onExitFrame)
             .push("j_frame_restart", &NotifyManager::onRestartFrame)
             .end();
+
+    return true;
 }
 
 std::string NotifyManager::jobserverId() const

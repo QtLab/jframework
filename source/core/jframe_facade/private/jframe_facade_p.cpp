@@ -1,5 +1,6 @@
 ﻿#include "precomp.h"
 #include "jframe_facade_p.h"
+#include <QApplication>
 
 // struct JFrameFacadeData
 
@@ -18,6 +19,7 @@ struct JFrameFacadeData
     std::string frameGlobalPath;    // 框架全局配置文件路径
     std::string frameLayoutPath;    // 框架布局配置文件路径
     std::string frameComponentPath; // 框架组件加载配置文件路径
+    std::string frameFramViewPath; //
 
     //
     std::list<std::string> arguments;   // 重启框架命令行参数临时存放变量
@@ -37,7 +39,7 @@ struct JFrameFacadeData
 
 //
 QMutex JFrameFacade::_instance_mutex;
-JFrameFacade* JFrameFacade::_instance;
+JFrameFacade* JFrameFacade::_instance = 0;
 
 JFrameFacade* JFrameFacade::getInstance()
 {
@@ -100,7 +102,7 @@ void *JFrameFacade::queryInterface(const char *iid, unsigned int ver)
 
 std::string JFrameFacade::objectIdentity() const
 {
-    return IID_IJFrameFacade
+    return IID_IJFrameFacade;
 }
 
 unsigned int JFrameFacade::objectVersion() const
@@ -108,7 +110,7 @@ unsigned int JFrameFacade::objectVersion() const
     return VER_IJFrameFacade;
 }
 
-bool JFrameFacade::invoke(const char *method, int argc)
+bool JFrameFacade::invoke(const char *method, int argc, ...)
 {
     if (!method) {
         return false;
@@ -170,6 +172,11 @@ std::string JFrameFacade::frameComponentPath() const
     return data->frameComponentPath;
 }
 
+std::string JFrameFacade::frameFramViewPath() const
+{
+    return data->frameFramViewPath;
+}
+
 std::string JFrameFacade::frameVersion() const
 {
     return data->frameVersion;
@@ -179,10 +186,12 @@ bool JFrameFacade::frameVersion(int &major, int &minor, int &patch) const
 {
 #if defined(_MSC_VER) && (_MSC_VER >= 140)
     scanf_s
-        #else
+#else
     scanf
-        #endif
-            (data->frameVersion.c_str(), "%d.%d.%d", &major, &minor, &patch);
+#endif
+    (data->frameVersion.c_str(), "%d.%d.%d", &major, &minor, &patch);
+
+    return true;
 }
 
 bool JFrameFacade::loadFrame()
@@ -275,7 +284,7 @@ void JFrameFacade::exitFrame()
     frameLayout->invoke("frame_exit");
 }
 
-void JFrameFacade::restartFrame(const std::string<std::string> &arguments)
+void JFrameFacade::restartFrame(const std::list<std::string> &arguments)
 {
     // 提升对象
     IJObject *frameLayout = dynamic_cast<IJObject *>(data->frameLayout);
@@ -524,13 +533,13 @@ bool JFrameFacade::loadGlobalConfig(int major, int minor, int patch)
 {
     return loadConfig(QString("%1.%2.%3")
                       .arg(major).arg(minor).arg(patch)
-                      .toStdString())
+                      .toStdString());
 }
 
 void JFrameFacade::copyFrameFile()
 {
-    QString srcdir = QString::fromStdString(frameDirPath().append("/bin").toLower());
-    QString dstdir = QString::fromStdString(appDirPath().toLower());
+    QString srcdir = QString::fromStdString(frameDirPath().append("/bin")).toLower();
+    QString dstdir = QString::fromStdString(appDirPath()).toLower();
     if (srcdir == dstdir) {
         return;     // 框架位置与应用实例相同，不需要更新
     }
@@ -555,14 +564,14 @@ std::string JFrameFacade::frameVersionFromConfig() const
     }
 
     // 读取配置文件
-    TixmlDocument document(frameGlobalPath());
+    TiXmlDocument document(frameGlobalPath());
     if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
         Q_ASSERT_X(false, "Warning", "配置文件打开失败，即将退出软件！");
         return false;
     }
 
     // 获取根节点
-    TixmlElement *emRoot = document.RootElement();
+    TiXmlElement *emRoot = document.RootElement();
     if (!emRoot) {
         return false;
     }
@@ -614,26 +623,26 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
     }
 
     // 读取配置文件
-    TixmlDocument document(frameGlobalPath());
+    TiXmlDocument document(frameGlobalPath());
     if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
         Q_ASSERT_X(false, "Warning", "配置文件加载错误，即将推出软件！");
         return false;
     }
 
     // 获取根节点
-    TixmlElement *emRoot = document.RootElement();
+    TiXmlElement *emRoot = document.RootElement();
     if (!emRoot) {
         return false;
     }
 
     // 获取环境变量配置项
-    TixmlElement *emEnvval = emRoot.FistChildElement("envval");
+    TiXmlElement *emEnvval = emRoot->FirstChildElement("envval");
     if (!emEnvval) {
         return false;
     }
 
     // 获取全局环境变量配置节点
-    TixmlElement *emGlobal = emEnvval->FistChildElement("global");
+    TiXmlElement *emGlobal = emEnvval->FirstChildElement("global");
     if (!emGlobal) {
         return false;
     }
@@ -642,8 +651,8 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
     std::string envPath = getEnvValue("Path");
     std::string paths = this->frameDirPath() + "/bin";
 
-    //
-    for (TixmlElement *emPath = emGlobal->FirstChildElement("path");
+    // 寻找全局变量配置->path节点
+    for (TiXmlElement *emPath = emGlobal->FirstChildElement("path");
          emPath != 0;
          emPath = emPath->NextSiblingElement("path")) {
         // 获取base属性值
@@ -652,73 +661,73 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
                 || pathBase.empty()) {
             continue;
         }
-    }
 
-    //
-    std::string pathPrefix;
-    if (pathBase == "jframe") {
-        pathPrefix = this->frameDirPath() + "/bin";
-    } else if (pathBase == "app") {
-        pathPrefix = appDirPath();
-    } else {
-        continue;   // not supported
-    }
+        //
+        std::string pathPrefix;
+        if (pathBase == "jframe") {
+            pathPrefix = this->frameDirPath() + "/bin";
+        } else if (pathBase == "app") {
+            pathPrefix = appDirPath();
+        } else {
+            continue;   // not supported
+        }
 
-     // 获取type属性值
-    std::string pathType;
-    if (emPath->QueryStringAttribute("type", &pathType) != TIXML_SUCCESS
-            || pathType.empty()) {
-        continue;
-    }
-
-    //
-    std::string newPaths;
-    for (TixmlElement *emItem = emPath->FirstChildElement("item");
-         emItem != 0;
-         emItem = emItem->NextSiblingElement("item")) {
-        // 获取path属性值
-        std::string path;
-        if (emItem->QueryStringAttribute("path", &path) != TIXML_SUCCESS
-                || path.empty()) {
+        // 获取type属性值
+        std::string pathType;
+        if (emPath->QueryStringAttribute("type", &pathType) != TIXML_SUCCESS
+                || pathType.empty()) {
             continue;
         }
 
         //
-        path = pathPrefix + '/' + path;
-        if (newPaths.empty()) {
-            newPaths = path;
-        } else {
-            newPaths += ';' + path;
-        }
-    }
+        std::string newPaths;
+        for (TiXmlElement *emItem = emPath->FirstChildElement("item");
+             emItem != 0;
+             emItem = emItem->NextSiblingElement("item")) {
+            // 获取path属性值
+            std::string path;
+            if (emItem->QueryStringAttribute("path", &path) != TIXML_SUCCESS
+                    || path.empty()) {
+                continue;
+            }
 
-    //
-    if (pathType == "append") {
-        paths += ';' + newPaths;
-    } else if (pathType == "prefix") {
-        paths = newPaths + ';' + paths;
-    } else if (pathType == "replace") {
-        paths = newPaths;
-    } else {
+            //
+            path = pathPrefix + '/' + path;
+            if (newPaths.empty()) {
+                newPaths = path;
+            } else {
+                newPaths += ';' + path;
+            }
+        }
+
         //
+        if (pathType == "append") {
+            paths += ';' + newPaths;
+        } else if (pathType == "prefix") {
+            paths = newPaths + ';' + paths;
+        } else if (pathType == "replace") {
+            paths = newPaths;
+        } else {
+            //
+        }
     }
 
     //
     paths += ';' + envPath;
 
     // 设置环境变量
-    qputenv("Path", QByteArray(path.c_str()));
+    qputenv("Path", QByteArray(paths.c_str()));
 
     /// for qt.conf
 
     // 获取qtconf节点
-    TixmlElemet *emQtConf = emEnvval->FirstChildElement("qtconf");
+    TiXmlElement *emQtConf = emEnvval->FirstChildElement("qtconf");
     if (!emQtConf) {
         return false;
     }
 
     // 获取paths节点
-    TixmlElement *emPaths = emQtConf->FirstChildElement("paths");
+    TiXmlElement *emPaths = emQtConf->FirstChildElement("paths");
     if (!emPaths) {
         return false;
     }
@@ -727,7 +736,7 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
     std::map<std::string, std::string> values;
 
     // 获取item节点
-    for (TixmlElement *emItem = emPaths->FirstChildElement("item");
+    for (TiXmlElement *emItem = emPaths->FirstChildElement("item");
          emItem != 0;
          emItem = emItem->NextSiblingElement("item")) {
         // key
@@ -739,7 +748,7 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
 
         // value
         std::string sValue;
-        if (emItem->QueryStringAtrribute("value", &sValue) != TIXML_SUCCESS
+        if (emItem->QueryStringAttribute("value", &sValue) != TIXML_SUCCESS
                 || sValue.empty()) {
             continue;
         }
@@ -780,16 +789,16 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
     return true;
 }
 
-bool JFrameFacade::generateAppQtConf(const std::map<std::string, std::sting> &values)
+bool JFrameFacade::generateAppQtConf(const std::map<std::string, std::string> &values)
 {
     std::string filePath = appDirPath() = "/qt.conf";
     QSettings settings(QString::fromStdString(filePath), QSettings::IniFormat);
     settings.setIniCodec(QTextCodec::codecForLocale());
-    settings.beginGroup(Paths);
+    settings.beginGroup("Paths");
     std::map<std::string, std::string>::const_iterator citer(values.begin());
     for (; citer != values.end(); ++citer) {
         settings.setValue(QString::fromStdString(citer->first),
-                          Qstring::fromStdString(citer->second));
+                          QString::fromStdString(citer->second));
         //
         QApplication::addLibraryPath(QString::fromStdString(citer->second));
     }
@@ -852,7 +861,7 @@ bool JFrameFacade::copyDir(const QString &fromDir, const QString &toDir)
 
     // 递归复制整个文件夹
     sourceDir.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
-    QListIterator<QFileInfo> citerFileInfo(sourceDit.entryInfoList());
+    QListIterator<QFileInfo> citerFileInfo(sourceDir.entryInfoList());
     while (citerFileInfo.hasNext()) {
         const QFileInfo &fileInfo = citerFileInfo.next();
         const QString targetPath = targetDir.filePath(fileInfo.fileName());
@@ -960,22 +969,22 @@ bool JFrameFacade::invokeRestartFrame()
     QStringList args;
     std::list<std::string>::const_iterator citer = data->arguments.begin();
     for (; citer != data->arguments.end(); ++citer) {
-        args.append(QString::fromStdSting(*citer));
+        args.append(QString::fromStdString(*citer));
     }
 
     // 清空参数列表
     data->arguments.clear();
 
     // 重启框架
-    QProcess::startDetached(QApplication::applicationFilePath(), args);
+    QProcess::startDetached(QApplication::applicationDirPath(), args);
 
     // 退出当前框架
-    invokeExitFrame();
+    return invokeExitFrame();
 }
 
 JFrameFacade::JFrameFacade()
 {
-    data = new JFrameFacade();
+    data = new JFrameFacadeData;
 
     // 初始化Qt系统文本编码
 #if QT_VERSION < 0x050000
@@ -994,6 +1003,7 @@ JFrameFacade::JFrameFacade()
     data->frameGlobalPath = configDir + "/jframe_global.xml";
     data->frameLayoutPath = configDir + "/jframe_layout.xml";
     data->frameComponentPath = configDir + "/jframe_component.xml";
+    data->frameFramViewPath = configDir + "/FramView.xml";
 }
 
 JFrameFacade::~JFrameFacade()

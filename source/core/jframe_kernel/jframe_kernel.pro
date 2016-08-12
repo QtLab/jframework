@@ -4,15 +4,19 @@
 
 jframe_root = $$PWD/../../..
 
-QT += gui concurrent
+QT += core gui concurrent
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += \
-    PRO_CORE
+    PRO_CORE \
+    USE_JWT
 
 win32 {
     DEFINES += \
         JFRAME_KERNEL_DLL \
-        JFRAME_KERNEL_MAKEDLL
+        JFRAME_KERNEL_MAKEDLL \
+        USE_QTWINMIGRATE
 }
 
 include($${jframe_root}/source/common/build.pri)

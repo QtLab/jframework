@@ -101,7 +101,7 @@ public:
 
 // interface IJFrameLogin
 
-class IJFrameLogin
+class IJFrameLogin : public IJObject
 {
 public:
     virtual ~IJFrameLogin() {}

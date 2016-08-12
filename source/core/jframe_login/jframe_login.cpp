@@ -8,7 +8,7 @@ IJFrameLogin *jframeLogin()
     return JFrameLogin::getInstance();
 }
 
-Q_EXTERN_C JFRAME_LOGIN_EXPORT IJunknown *_func_jframe_login()
+extern "C" JFRAME_LOGIN_EXPORT IJUnknown *_func_jframe_login()
 {
     return jframeLogin();
 }

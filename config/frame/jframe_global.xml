@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<jframe version="4.0.0">
+<jframe version="1.0.0">
   <envval>
     <global>
       <path base="jframe" type="prefix">
+        <item path="3rdpart" />
         <item path="kernel" />
         <item path="kernel/bcg"/>
-        <item path="kernel/Qt" />
+        <item path="kernel/qt" />
       </path>
       <path base="app" type="append">
       </path>

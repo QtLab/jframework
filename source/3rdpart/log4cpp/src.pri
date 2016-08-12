@@ -14,10 +14,10 @@ HEADERS += \
     $$PWD/include/log4cpp/Category.hh \
     $$PWD/include/log4cpp/CategoryStream.hh \
 #    $$PWD/include/log4cpp/config-MinGW32.h \
-#    $$PWD/include/log4cpp/config-openvms.h \
+    $$PWD/include/log4cpp/config-openvms.h \
     $$PWD/include/log4cpp/Configurator.hh \
     $$PWD/include/log4cpp/config-win32.h \
-#    $$PWD/include/log4cpp/config-win32-stlport-boost.h \
+    $$PWD/include/log4cpp/config-win32-stlport-boost.h \
     $$PWD/include/log4cpp/convenience.h \
     $$PWD/include/log4cpp/Export.hh \
     $$PWD/include/log4cpp/FactoryParams.hh \
@@ -54,7 +54,7 @@ HEADERS += \
     $$PWD/include/log4cpp/threading/Threading.hh \
 #    $$PWD/include/log4cpp/threading/BoostThreads.hh \
 #    $$PWD/include/log4cpp/threading/DummyThreads.hh \
-#    $$PWD/include/log4cpp/threading/MSThreads.hh \
+    $$PWD/include/log4cpp/threading/MSThreads.hh \
 #    $$PWD/include/log4cpp/threading/OmniThreads.hh \
 #    $$PWD/include/log4cpp/threading/PThreads.hh \
     $$PWD/src/Localtime.hh \

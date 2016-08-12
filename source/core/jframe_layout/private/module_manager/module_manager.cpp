@@ -52,13 +52,13 @@ bool ModuleManager::loadSystem()
 
 JComponentInfo *ModuleManager::componentById(const QString &componentId)
 {
-    QMap<QString, JComponentInfo>::const_iterator citer =
+    QMap<QString, JComponentInfo>::iterator iter =
             q_mapComponentInfo.find(componentId);
-    if (citer == q_mapComponentInfo.end()) {
-        return 0;   // 未找到
-    } else {
-        return &citer.value();
+    if (iter != q_mapComponentInfo.end()) {
+        return &iter.value();
     }
+
+    return 0;   // 未找到
 }
 
 bool ModuleManager::isComponentAttached(const JComponentInfo *componentInfo)
@@ -83,7 +83,7 @@ bool ModuleManager::attachComponent(const JComponentInfo *componentInfo, bool sh
     }
 
     //
-    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->interface);
+    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->iface);
     if (!component) {
         return false;   //
     }
@@ -112,7 +112,7 @@ bool ModuleManager::attachComponentUi(const JComponentInfo *componentInfo)
 
     // 首次加载，须创建界面（如果存在界面接口）
     IGF_ComponentUI *componentUi = (IGF_ComponentUI *)
-            (dynamic_cast<IGF_Component *>(componentInfo->interface)
+            (dynamic_cast<IGF_Component *>(componentInfo->iface)
              ->QueryInterface(IID_IGF_ComponentUI, VER_IGF_ComponentUI));
     if (componentUi) {
         componentUi->CreateUI(q_frameLayout->mainViewManager(), "");
@@ -133,7 +133,7 @@ bool ModuleManager::detachComponent(const JComponentInfo *componentInfo)
     }
 
     //
-    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->interface);
+    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->iface);
     if (!component) {
         return false;
     }
@@ -170,6 +170,20 @@ void ModuleManager::detachAllInactivateComponent()
         JComponentInfo &componentInfo = iter.value();
         if (!componentInfo.active) {
             detachComponent(&componentInfo);
+        }
+    }
+}
+
+void ModuleManager::resetAllInactivateViewComponent()
+{
+    QMutableMapIterator<QString, JComponentInfo> iter(q_mapComponentInfo);
+    while (iter.hasNext()) {
+        iter.next();
+        JComponentInfo &componentInfo = iter.value();
+        if (!componentInfo.active
+                && componentInfo.isView
+                && componentInfo.widget) {
+            componentInfo.widget->setParent(q_frameLayout->mainWindow());
         }
     }
 }
@@ -216,7 +230,7 @@ JComponentInfo *ModuleManager::attachComponent(IGF_Component *component)
     if (iterComponentInfo == q_mapComponentInfo.end()) {
         // 如果组件还没有挂载过，则挂载新的组件信息（并且，初次挂载设置active为未激活状态，即false）
         JComponentInfo info;
-        info.interface = component;
+        info.iface = component;
         // 首次加载，须分离组件
         //component->shutdown();
         //
@@ -298,7 +312,7 @@ bool ModuleManager::attachComponentUi(IGF_Component *component, QWidget *widget)
     if (iterComponentInfo == q_mapComponentInfo.end()) {
         // 如果组件还没有挂载过，则挂载新的组件信息（这种情况属于GF框架配置文件出发界面的创建，应该设置为激活状态，并且始终显示）
         JComponentInfo componentInfo;
-        componentInfo.interface = component;
+        componentInfo.iface = component;
         // 存储窗口实例
         componentInfo.widget = widget;
         // 设置为挂载状态
@@ -333,7 +347,7 @@ std::list<IGF_Component *> ModuleManager::attachedComponents() const
     while (citer.hasNext()) {
         citer.next();
         if (citer.value().attached) {
-            attacheds.push_back(dynamic_cast<IGF_Component *>(citer.value().interface));
+            attacheds.push_back(dynamic_cast<IGF_Component *>(citer.value().iface));
         }
     }
 
@@ -372,7 +386,7 @@ JLRESULT ModuleManager::onPreviousSystemChanged(const std::string &id, JWPARAM w
     return 0;
 }
 
-JLRESULT ModuleManager::onPreciousModuleChanged(const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT ModuleManager::onPreviousModuleChanged(const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     Q_UNUSED(id);
     Q_UNUSED(lParam);
@@ -463,6 +477,8 @@ JLRESULT ModuleManager::onCurrentSystem(const std::string &id, JWPARAM wParam, J
 
     //
     *pCurrentSystem = q_currentSystem;
+
+    return 0;
 }
 
 JLRESULT ModuleManager::onCurrentModule(const std::string &id, JWPARAM wParam, JLPARAM lParam)
@@ -478,18 +494,20 @@ JLRESULT ModuleManager::onCurrentModule(const std::string &id, JWPARAM wParam, J
 
     //
     *pCurrentModule = q_currentModule;
+
+    return 0;
 }
 
 bool ModuleManager::switchSystem(const std::string &system, JLPARAM lParam)
 {
     // 参数检测
     if (system.empty()) {
-        jframeLogCritical(QStringLiteral("参数检测：系统名称不能为空值！"));
+        jframeLogCrit(QStringLiteral("参数检测：系统名称不能为空值！"));
         return false;
     }
 
     //
-    if (!q_currentSystem == system) {
+    if (q_currentSystem == system) {
         return true;        // 系统没变，不需要切换
     }
 
@@ -509,7 +527,7 @@ bool ModuleManager::switchModule(const std::string &module, JLPARAM lParam)
 {
     // 参数检测
     if (module.empty()) {
-        jframeLogCritical(QStringLiteral("参数检测：模式名称不能为空值！"));
+        jframeLogCrit(QStringLiteral("参数检测：模式名称不能为空值！"));
         return false;
     }
 

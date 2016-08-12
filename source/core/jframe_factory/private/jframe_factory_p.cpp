@@ -4,10 +4,10 @@
 #include "kernel/jnotifier.h"
 
 // imported from jframe_kernel -> jnotifier
-Q_EXTERN_C extern void* _func_jnotifier_create();
+extern "C" extern void* _func_jnotifier_create();
 
 // imported from jframe_kernel -> jnotifier
-Q_EXTERN_C extern void _func_jnotifier_destroy(void *notifier);
+extern "C" extern void _func_jnotifier_destroy(void *notifier);
 
 // struct JFrameFactoryData
 
@@ -20,7 +20,7 @@ struct JFrameFactoryData
 
 //
 QMutex JFrameFactory::_instance_mutex;
-JFrameFactory* JFrameFactory::_instance;
+JFrameFactory* JFrameFactory::_instance = 0;
 
 JFrameFactory* JFrameFactory::getInstance()
 {
@@ -81,10 +81,10 @@ void *JFrameFactory::factory(const char *iid, unsigned int ver)
     return 0;
 }
 
-void JFrameFactory::releaseFactory(void *interface, const char *iid, unsigned int ver)
+void JFrameFactory::releaseFactory(void *iface, const char *iid, unsigned int ver)
 {
     if (J_IS_INSTANCEOF(INotifier, iid, ver)) {
-        _func_jnotifier_destroy(interface);
+        _func_jnotifier_destroy(iface);
     }
 }
 
@@ -93,7 +93,7 @@ JFrameFactory::JFrameFactory()
     data = new JFrameFactoryData;
 }
 
-JFrameFactory::~IJFrameFactory()
+JFrameFactory::~JFrameFactory()
 {
     delete data;
 }

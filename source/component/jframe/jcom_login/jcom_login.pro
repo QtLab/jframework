@@ -6,13 +6,15 @@ jframe_root = $$PWD/../../../..
 
 QT += gui
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 DEFINES += \
     PRO_COMPONENT \
     JFRAME_COMPONENT
 
 include($${jframe_root}/source/common/build.pri)
 
-TARGET = jcom_login
+TARGET = $$qtLibraryTarget(jcom_login)
 
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
@@ -23,8 +25,10 @@ SOURCES += \
     $$PWD/jcom_login.cpp
 
 #
-OTHER_FILES += \
-    $$PWD/jcom_login.xml
+exists($$PWD/jcom_login.xml) {
+    OTHER_FILES += \
+        $$PWD/jcom_login.xml
+}
 
 #-------------------------------------------------
 # import libraries
@@ -36,15 +40,15 @@ OTHER_FILES += \
 
 win32|unix: {
     copyCommand = @echo off
-    copyCommand += && @echo ---- console - $$TARGET ----
+    copyCommand += && @echo ---- console - jcom_login ----
 
     ## copy files
-    dstdir = $$(jframe_root)/Component/jframe/$$TARGET
+    dstdir = $${jframe_root}/component/jframe/jcom_login
     win32:dstdir = $$replace(dstdir, /, \\)
-    !exists("$${dstdir}"):copyCommand += $$ &(MKDIR) "$${dstdir}"
-    srcfile = $$PWD/$${TARGET}.xml
+    !exists("$$dstdir"):copyCommand += && $(MKDIR) "$$dstdir"
+    srcfile = $$PWD/jcom_login.xml
     win32:srcfile = $$replace(srcfile, /, \\)
-    exists("$${srcfile}"):copyCommand += $$ &(COPY_FILE) "$${srcfile}" "$${dstdir}"
+    exists("$$srcfile"):copyCommand += && $(COPY_FILE) "$$srcfile" "$$dstdir"
 
     deployment.commands = $$copyCommand
     first.depends = $(first) deployment

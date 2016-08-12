@@ -1,5 +1,5 @@
-#ifndef JFRAME_LOGIN_H
-#define JFRAME_LOGIN_H
+#ifndef JFRAME_LOGIN_P_H
+#define JFRAME_LOGIN_P_H
 
 #include "../jframe_login.h"
 #include <QMutex>

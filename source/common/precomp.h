@@ -45,6 +45,10 @@
 
 #endif
 
+#ifdef JFRAME_CORE_DLL
+#include "jframe_core.h"
+#endif
+
 #ifdef JFRAME_KERNEL_DLL
 #include "kernel/jframe_kernel.h"
 #endif
@@ -65,8 +69,24 @@
 #include "jframe_login.h"
 #endif
 
+#ifdef USE_TINYXML
+#include "tinyxml.h"
+#endif
+
+#ifdef USE_QTWINMIGRATE
+#include "qmfcapp.h"
+#endif
+
 #ifdef USE_QTRIBBON
 #include "QtRibbon.h"
+#endif
+
+#ifdef USE_LOG4CPP
+#include "log4cpp/convenience.h"
+#endif
+
+#ifdef USE_JWT
+#include "jwt_inc.h"
 #endif
 
 #ifdef PRO_COMPONENT

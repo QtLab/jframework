@@ -1,5 +1,5 @@
 #ifndef JCOM_FRAME_H
-#deifne JCOM_FRAME_H
+#define JCOM_FRAME_H
 
 #include "IGF_Kernel.h"
 
@@ -18,8 +18,8 @@ public:
 public:
     void Initialization();
     void Shutdown();
-    const char *GetComponentID();
-    const char *GetComponentName();
+    const char *GetComponentID() const;
+    const char *GetComponentName() const;
 
 private:
     IGF_Attempter *q_gAttempter;

@@ -8,6 +8,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
+    jframe_core \
     jframe_kernel \
     jframe_factory \
     jframe_facade \

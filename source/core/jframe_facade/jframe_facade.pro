@@ -6,8 +6,11 @@ jframe_root = $$PWD/../../..
 
 QT += gui
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 DEFINES += \
-    PRO_CORE
+    PRO_CORE \
+    USE_TINYXML
 
 win32 {
     DEFINES += \

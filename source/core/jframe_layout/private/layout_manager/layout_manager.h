@@ -100,7 +100,7 @@ private:
     bool saveCurrentSplitterScales();
 
     // 递归更新splitter的scales值
-    bool updateSpltterScales(const QDomElement &emParent, const QWidget *parent = 0);
+    bool updateSpltterScales(const QDomElement &emParent, const QWidget *widget = 0);
 
 private:
     JFrameLayout *q_frameLayout;
