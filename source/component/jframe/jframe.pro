@@ -8,6 +8,5 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    jcom_frame \
     jcom_login \
     jcom_layout

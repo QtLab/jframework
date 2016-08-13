@@ -8,7 +8,7 @@ IJFrameLayout *jframeLayout()
     return JFrameLayout::getInstance();
 }
 
-extern "C" JFRAME_LAYOUT_EXPORT IJUnknown *_func_jframe_layout()
+extern "C" JFRAME_LAYOUT_EXPORT IJObject *CreateInstance()
 {
-    return jframeLayout();
+    return static_cast<IJObject *>(jframeLayout());
 }

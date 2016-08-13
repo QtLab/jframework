@@ -1,8 +1,7 @@
 ﻿#ifndef JNOTIFIER_H
 #define JNOTIFIER_H
 
-#include "factory/jframe_interface.h"
-#include <string>
+#include "jframe_core.h"
 
 // 消息分发器
 
@@ -17,7 +16,13 @@ typedef long long JLPARAM;
 typedef long long JLRESULT;
 #endif
 
-// 观察者接口定义
+// 接口描述
+#define VER_JObserver J_INTERFACE_VERSION(1, 0)
+#define IID_JObserver J_IID_INTERFACE(JObserver)
+
+/**
+ * @brief The JObserver class : 观察者接口定义
+ */
 class JObserver
 {
 public:
@@ -34,15 +39,18 @@ public:
     virtual std::string jobserverId() const { return std::string(); }
 };
 
-// 接口标识
-
 //
 typedef JLRESULT (JObserver::*jobserver_cb)(const std::string &, JWPARAM, JLPARAM);
 
-// 消息分发器接口定义
+// 接口描述
+#define VER_INotifier J_INTERFACE_VERSION(1, 0)
+#define IID_INotifier J_IID_INTERFACE(INotifier)
 
 class INotifierImm;
 
+/**
+ * @brief The INotifier class : 消息分发器接口定义
+ */
 class INotifier
 {
 public:
@@ -83,10 +91,12 @@ protected:
 };
 
 // 接口描述
-#define VER_INotifier J_INTERFACE_VERSION(1, 0)
-#define IID_INotifier J_IID_INTERFACE(INotifier)
+#define VER_INotifierImm J_INTERFACE_VERSION(1, 0)
+#define IID_INotifierImm J_IID_INTERFACE(INotifierImm)
 
-// 端到端（直接发送给指定观察者）发送消息接口定义
+/**
+ * @brief The INotifierImm class : 端到端（直接发送给指定观察者）发送消息接口定义
+ */
 class INotifierImm
 {
 public:
@@ -102,10 +112,6 @@ public:
     virtual void post(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam = 0) = 0;
     virtual void post(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam = 0) = 0;
 };
-
-// 接口描述
-#define VER_INotifierImm J_INTERFACE_VERSION(1, 0)
-#define IID_INotifierImm J_IID_INTERFACE(INotifierImm)
 
 //
 #if defined(_MSC_VER)

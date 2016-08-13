@@ -1,7 +1,6 @@
 #ifndef MODULE_MANAGER_H
 #define MODULE_MANAGER_H
 
-#include <QWidget>
 #include "kernel/jnotifier.h"
 #include "../jframe_layout_p.h"
 
@@ -46,11 +45,11 @@ public:
     void resetAllInactivateViewComponent();
 
     //
-    bool attachComponent(IGF_Component *component, bool stayOn);
-    JComponentInfo *attachComponent(IGF_Component *component);
-    bool detachComponent(IGF_Component *component);
-    bool attachComponentUi(IGF_Component *component, QWidget *widget);
-    std::list<IGF_Component *> attachedComponents() const;
+    bool attachComponent(IJComponent *component, bool stayOn);
+    JComponentInfo *attachComponent(IJComponent *component);
+    bool detachComponent(IJComponent *component);
+    bool attachComponentUi(IJComponent *component, QWidget *widget);
+    std::list<IJComponent *> attachedComponents() const;
 
     // 获取当前系统名称
     std::string currentSystem() const;

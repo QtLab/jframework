@@ -1,33 +1,18 @@
 #include <QApplication>
 #include <QLibrary>
-#include "IGF_Kernel.h"
+#include "jframe/jframe_facade.h"
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    // 定义导出接口
-    typedef void *(*CreateMainFrame)();
-
-    // 获取导出接口
-    CreateMainFrame fCreateMainFrame = (CreateMainFrame)QLibrary::resolve(
-                QApplication::applicationDirPath().append("/GF_Core"),
-                "CreateMainFram");
-    if (!fCreateMainFrame) {
-        return -1;  // 获取失败
+    // 加载框架
+    if (!jframeFacade()->loadFrame()) {
+        return -1;      // 加载失败
     }
 
-    // 创建主窗口
-    IGF_MainWindow *pMainWindow = (IGF_MainWindow *)fCreateMainFrame();
-    if (!pMainWindow) {
-        return -1;  // 创建失败
-    }
-
-    // 初始化主窗口
-    pMainWindow->Initialization();
-
-    // 最大化显示主窗口
-    pMainWindow->ShowMaximized();
+    // 显示框架主窗口
+    jframeFacade()->showFrame(true, true);
 
     return app.exec();
 }

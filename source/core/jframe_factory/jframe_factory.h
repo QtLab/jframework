@@ -1,10 +1,15 @@
 #ifndef JFRAME_FACTORY_H
 #define JFRAME_FACTORY_H
 
-#include "jframe_interface.h"
+#include "jframe_core.h"
 
-// interface IJFrameFactory
+// 接口描述
+#define VER_IJFrameFactory J_INTERFACE_VERSION(1, 0)
+#define IID_IJFrameFactory J_IID_INTERFACE(IJFrameFactory)
 
+/**
+ * @brief The IJFrameFactory class
+ */
 class IJFrameFactory : public IJObject
 {
 public:
@@ -17,13 +22,10 @@ public:
     virtual void releaseFactory(void *iface, const char *iid, unsigned int ver) = 0;
 };
 
-// 接口描述
-#define VER_IJFrameFactory J_INTERFACE_VERSION(1, 0)
-#define IID_IJFrameFactory J_IID_INTERFACE(IJFrameFactory)
-
 ///
 
 #ifdef JFRAME_FACTORY_DLL
+#ifdef _MSC_VER
 #   ifdef JFRAME_FACTORY_MAKEDLL
 #       define JFRAME_FACTORY_EXPORT __declspec(dllexport)
 #   else
@@ -36,6 +38,9 @@ public:
 #       endif // !_MSC_VER
 
 #   endif // !JFRAME_FACTORY_MAKEDLL
+#else
+#define JFRAME_FACTORY_EXPORT
+#endif // _MSC_VER
 
 //
 JFRAME_FACTORY_EXPORT IJFrameFactory* jframeFactory();

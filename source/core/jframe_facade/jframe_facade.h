@@ -4,8 +4,13 @@
 #include "jframe_core.h"
 #include <list>
 
-// interface IJFrameFacade
+// 接口标识
+#define VER_IJFrameFacade J_INTERFACE_VERSION(1, 0)
+#define IID_IJFrameFacade J_IID_INTERFACE(IJFrameFacade)
 
+/**
+ * @brief The IJFrameFacade class
+ */
 class IJFrameFacade : public IJObject
 {
 public:
@@ -18,9 +23,9 @@ public:
     virtual std::string appDirPath() const = 0;
 
     // 获取框架相关配置文件路径
+    virtual std::string frameConfigPath() const = 0;
     virtual std::string frameGlobalPath() const = 0;
     virtual std::string frameLayoutPath() const = 0;
-    virtual std::string frameComponentPath() const = 0;
     virtual std::string frameFramViewPath() const = 0;
 
     // 获取框架版本
@@ -58,15 +63,15 @@ public:
 
     // 获取CWnd*或QWidget*窗口的窗口句柄（winType：“QWidget”、“CWnd”）
     virtual long windowHandle(void *window, const char *winType) = 0;
-};
 
-// 接口标识
-#define VER_IJFrameFacade J_INTERFACE_VERSION(1, 0)
-#define IID_IJFrameFacade J_IID_INTERFACE(IJFrameFacade)
+    // 获取软件系统语言
+    virtual std::string language() const = 0;
+};
 
 ///
 
 #ifdef JFRAME_FACADE_DLL
+#ifdef _MSC_VER
 #   ifdef JFRAME_FACADE_MAKEDLL
 #       define JFRAME_FACADE_EXPORT __declspec(dllexport)
 #   else
@@ -79,6 +84,9 @@ public:
 #       endif // !_MSC_VER
 
 #   endif // !JFRAME_FACADE_MAKEDLL
+#else
+#define JFRAME_FACADE_EXPORT
+#endif // _MSC_VER
 
 //
 JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();

@@ -3,7 +3,7 @@
 #include "jframe_layout.h"
 
 //
-extern "C" __declspec(dllexport) void *CreateComponent(void *gAttempter)
+extern "C" __declspec(dllexport) void *CreateComponent(void *attempter)
 {
     // µÇÂ¼ÏÔÊ¾
     if (!jframeFacade()->loginFrame()) {
@@ -11,12 +11,12 @@ extern "C" __declspec(dllexport) void *CreateComponent(void *gAttempter)
         return 0;   // µÇÂ¼Ê§°Ü
     }
 
-    return static_cast<IGF_Component *>
-            (new JComLogin(reinterpret_cast<IGF_Attempter *>(gAttempter)));
+    return static_cast<IJComponent *>
+            (new JComLogin(reinterpret_cast<IJAttempter *>(attempter)));
 }
 
-JComLogin::JComLogin(IGF_Attempter *gAttempter)
-    : q_gAttempter(gAttempter)
+JComLogin::JComLogin(IJAttempter *attempter)
+    : q_attempter(attempter)
 {
 
 }
@@ -26,34 +26,49 @@ JComLogin::~JComLogin()
 
 }
 
-void JComLogin::Release()
+void JComLogin::releaseInterface()
 {
+
 }
 
-void *JComLogin::QueryInterface(const char *IID, unsigned int dwQueryVer)
+void *JComLogin::queryInterface(const char *iid, unsigned int ver)
 {
-    (void)(IID);
-    (void)(dwQueryVer);
+    Q_UNUSED(iid);
+    Q_UNUSED(ver);
 
     return 0;
 }
 
-void JComLogin::Initialization()
+std::string JComLogin::componentId() const
 {
+    return "jcom_login";
 }
 
-void JComLogin::Shutdown()
+std::string JComLogin::componentDesc() const
 {
+    return "¿ò¼ÜµÇÂ¼×é¼þ";
 }
 
-const char *JComLogin::GetComponentID() const
+bool JComLogin::initialize()
 {
-    static const char* _componentId = "jcom_login";
-    return _componentId;
+    // ¹ÒÔØ×é¼þ
+    jframeLayout()->attachComponent(this);
+
+    return true;
 }
 
-const char *JComLogin::GetComponentName() const
+void JComLogin::shutdown()
 {
-    static const char* _componentName = "¿ò¼ÜµÇÂ¼×é¼þ";
-    return _componentName;
+    // ·ÖÀë×é¼þ
+    jframeLayout()->detachComponent(this);
+}
+
+void JComLogin::attach()
+{
+
+}
+
+void JComLogin::detach()
+{
+
 }

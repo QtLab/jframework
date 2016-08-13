@@ -1,28 +1,30 @@
 #ifndef JFRAME_KERNEL_H
 #define JFRAME_KERNEL_H
 
-#include "factory/jframe_interface.h"
+#include "jframe_core.h"
+#include "jlogmanager.h"
+#include "jnotifier.h"
 
-// interface IJFrameKernel
+// 接口描述
+#define VER_IJFrameKernel J_INTERFACE_VERSION(1, 0)
+#define IID_IJFrameKernel J_IID_INTERFACE(IJFrameKernel)
 
-class IJLogManager;
-
+/**
+ * @brief The IJFrameKernel class
+ */
 class IJFrameKernel : public IJObject
 {
 public:
     virtual ~IJFrameKernel() {}
 
-    // 鑾峰彇鏃ュ織绠＄悊瀹炰緥鎺ュ彛
+    // 获取日志管理实例接口
     virtual IJLogManager *logManager() = 0;
 };
-
-// 鎺ュ彛鎻忚堪
-#define VER_IJFrameKernel J_INTERFACE_VERSION(1, 0)
-#define IID_IJFrameKernel J_IID_INTERFACE(IJFrameKernel)
 
 ///
 
 #ifdef JFRAME_KERNEL_DLL
+#ifdef _MSC_VER
 #   ifdef JFRAME_KERNEL_MAKEDLL
 #       define JFRAME_KERNEL_EXPORT __declspec(dllexport)
 #   else
@@ -35,6 +37,9 @@ public:
 #       endif // !_MSC_VER
 
 #   endif // !JFRAME_KERNEL_MAKEDLL
+#else
+#define JFRAME_KERNEL_EXPORT
+#endif // _MSC_VER
 
 //
 JFRAME_KERNEL_EXPORT IJFrameKernel* jframeKernel();

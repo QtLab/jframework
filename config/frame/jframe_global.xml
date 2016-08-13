@@ -24,4 +24,10 @@
     <userName>****</userName>
     <password>****</password>
   </database>
+  <workMode id="1" name="Test1" dir="WorkMode_Test1" >
+  </workMode>
+  <system>
+    <language name="zh_CN" path="$(jframe)">
+    </language>
+  </system>
 </jframe>

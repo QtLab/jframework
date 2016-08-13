@@ -4,13 +4,17 @@
 
 jframe_root = $$PWD/../../..
 
-QT += gui
+QT += gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += \
     PRO_CORE \
-#    USE_TINYXML
+    USE_JFRAME_FACADE \
+    USE_QTWINMIGRATE \
+    USE_QTRIBBON \
+    USE_JWT \
+    USE_TINYXML
 
 win32 {
     DEFINES += \
@@ -25,12 +29,20 @@ TARGET = $$qtLibraryTarget(jframe_core)
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
     jframe_core.h \
-    private/jframe_core_p.h
+    private/jframe_core_p.h \
+    private/jmain_window.h \
+    private/jattempter.h \
+    private/jstacked_widget.h \
+    private/jframewnd.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
     jframe_core.cpp \
-    private/jframe_core_p.cpp
+    private/jframe_core_p.cpp \
+    private/jmain_window.cpp \
+    private/jattempter.cpp \
+    private/jstacked_widget.cpp \
+    private/jframewnd.cpp
 
 ###############################################################
 # resource files

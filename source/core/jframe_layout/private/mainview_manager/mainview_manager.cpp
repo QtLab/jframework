@@ -4,7 +4,6 @@
 
 // class MainViewManager
 
-
 MainViewManager::MainViewManager(QWidget *parent):
     QWidget(parent),
     q_clientWidget(0),

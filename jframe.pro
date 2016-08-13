@@ -8,5 +8,6 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    config \
     source
+
+include($$PWD/config/config.pri)

@@ -31,9 +31,9 @@ public:
     std::string frameDirPath() const;
     std::string appDirPath() const;
 
+    std::string frameConfigPath() const;
     std::string frameGlobalPath() const;
     std::string frameLayoutPath() const;
-    std::string frameComponentPath() const;
     std::string frameFramViewPath() const;
 
     std::string frameVersion() const;
@@ -56,16 +56,19 @@ public:
     int runQApp(void *mfcApp);
     long windowHandle(void *window, const char *winType);
 
+    std::string language() const;
+
 private:
      //
     bool loadFramePrivate();
 
      //
-    IJUnknown* loadFrameInterface(const std::string &moduleName);
+    IJObject *loadFrameInterface(const std::string &moduleName);
 
     //
     bool loadFrameKernel();
     bool loadFrameFactory();
+    bool loadFrameCore();
     bool loadFrameLayout();
     bool loadFrameLogin();
 
@@ -104,10 +107,15 @@ private:
     // 删除文件夹
     bool deleteDir(const QString &path);
 
+    //
+    bool testAnotherApp();
+
 private:
     bool invokeLog(const char *method, int argc, va_list ap);
     bool invokeExitFrame();
     bool invokeRestartFrame();
+    bool invokeLibraryQueryExists(int argc, va_list ap);
+    bool invokeLibraryResolve(int argc, va_list ap);
 
 private:
     JFrameFacade();

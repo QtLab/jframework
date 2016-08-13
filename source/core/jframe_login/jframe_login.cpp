@@ -8,7 +8,7 @@ IJFrameLogin *jframeLogin()
     return JFrameLogin::getInstance();
 }
 
-extern "C" JFRAME_LOGIN_EXPORT IJUnknown *_func_jframe_login()
+extern "C" JFRAME_LOGIN_EXPORT IJObject *CreateInstance()
 {
-    return jframeLogin();
+    return static_cast<IJObject *>(jframeLogin());
 }

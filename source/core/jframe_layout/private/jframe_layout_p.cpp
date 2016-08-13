@@ -5,14 +5,13 @@
 #include "layout_manager/layout_manager.h"
 #include "module_manager/module_manager.h"
 #include "notify_manager/notify_manager.h"
-#include "IGF_Kernel.h"
 
 // struct JFrameLayoutData
 
 struct JFrameLayoutData
 {
     QWidget *mainWindow;                // 框架主窗口实例
-    IGF_Attempter *gAttempter;          // GF调度器实例
+    IJAttempter *attempter;             // 调度器实例
     INotifier *notifier;                // 消息分发器实例
     LayoutManager *layoutManager;       // 布局管理器实例
     MainViewManager *mainViewManager;   // 框架主视图实例
@@ -26,7 +25,7 @@ struct JFrameLayoutData
 #endif
     JFrameLayoutData()
         : mainWindow(0)
-        , gAttempter(0)
+        , attempter(0)
         , notifier(0)
         , layoutManager(0)
         , mainViewManager(0)
@@ -79,7 +78,7 @@ void JFrameLayout::releaseInterface()
 void *JFrameLayout::queryInterface(const char *iid, unsigned int ver)
 {
     J_QUERY_INTERFACE(IJObject, iid, ver);
-    J_QUERY_MEMBER_OBJECT(IGF_Attempter, iid, ver, data->gAttempter);
+    J_QUERY_MEMBER_OBJECT(IJAttempter, iid, ver, data->attempter);
 
     return 0;
 }
@@ -122,29 +121,18 @@ bool JFrameLayout::invoke(const char *method, int argc, ...)
             }
         }
     }
+    // 设置attempter实例
+    else if (strcmp(method, "set_attempter") == 0) {
+        if (argc == 1) {
+            data->attempter = va_arg(ap, IJAttempter*);
+            result = true;
+        }
+    }
     // 设置框架主题
     else if (strcmp(method, "set_frame_theme") == 0) {
         if (argc > 0) {
             setFrameTheme(va_arg(ap, char*));
             result = true;
-        }
-    }
-    // 设置GF框架调度器实例
-    else if (strcmp(method, "set_g_attempter") == 0) {
-        if (argc > 0) {
-            data->gAttempter = va_arg(ap, IGF_Attempter*);
-            if (data->gAttempter) {
-                // 获取GF框架主窗口实例接口
-                IGF_MainWindow *pMainWindow =
-                        reinterpret_cast<IGF_MainWindow *>(data->gAttempter->GetMainWindow());
-                if (pMainWindow) {
-                    // 获取GF框架主窗口实例
-                    data->mainWindow = reinterpret_cast<QWidget *>(pMainWindow);
-                    if (data->mainWindow) {
-                        result = true;
-                    }
-                }
-            }
         }
     }
     // 加载默认框架系统
@@ -195,9 +183,9 @@ INotifier *JFrameLayout::notifier()
     return data->notifier;
 }
 
-IGF_Attempter *JFrameLayout::gAttempter()
+IJAttempter *JFrameLayout::attempter()
 {
-    return data->gAttempter;
+    return data->attempter;
 }
 
 void JFrameLayout::setFrameTheme(const char *theme)
@@ -243,32 +231,29 @@ void JFrameLayout::setFrameTheme(const char *theme)
     }
 }
 
-bool JFrameLayout::attachComponent(IGF_Component *component, bool stayOn)
+bool JFrameLayout::attachComponent(IJComponent *component, bool stayOn)
 {
     return data->moduleManager->attachComponent(component, stayOn);
 }
 
-bool JFrameLayout::detachComponent(IGF_Component *component)
+bool JFrameLayout::detachComponent(IJComponent *component)
 {
     return data->moduleManager->detachComponent(component);
 }
 
-bool JFrameLayout::attachComponentUi(IGF_Component *component, QWidget *widget)
+bool JFrameLayout::attachComponentUi(IJComponent *component, QWidget *widget)
 {
     return data->moduleManager->attachComponentUi(component, widget);
 }
 
-std::list<IGF_Component *> JFrameLayout::attachedComponent() const
+std::list<IJComponent *> JFrameLayout::attachedComponent() const
 {
     return data->moduleManager->attachedComponents();
 }
 
-int JFrameLayout::componentPowerLevel(const char *componentId) const
+int JFrameLayout::componentPowerLevel(const std::string &componentId) const
 {
-    // 参数有效性检测
-    if (!componentId) {
-        return JFrameLoginSpace::PowerLevelInvalid;     // 无效权限等级
-    }
+    Q_UNUSED(componentId);
 
     // 查找组件权限信息
 
@@ -413,14 +398,7 @@ bool JFrameLayout::invokeShowFrame(int argc, va_list ap)
     }
 
     //
-    if (!data->gAttempter) {
-        return false;
-    }
-
-    //
-    IGF_MainWindow *pMainWindow =
-            reinterpret_cast<IGF_MainWindow *>(data->gAttempter->GetMainWindow());
-    if (!pMainWindow) {
+    if (!data->attempter || !data->attempter->mainWindow()) {
         return false;
     }
 
@@ -431,12 +409,12 @@ bool JFrameLayout::invokeShowFrame(int argc, va_list ap)
     //
     if (show) {
         if (maximized) {
-            pMainWindow->ShowMaximized();
+            data->attempter->mainWindow()->showMaximized();
         } else {
-            pMainWindow->Show();
+            data->attempter->mainWindow()->setVisible(true);
         }
     } else {
-        pMainWindow->Hide();
+        data->attempter->mainWindow()->setVisible(false);
     }
 
     return true;
@@ -477,17 +455,17 @@ JFrameLayout::JFrameLayout()
 JFrameLayout::~JFrameLayout()
 {
     // 卸载所有组件
-    if (data->gAttempter) {
+    if (data->attempter) {
         // 下电所有组件
-        data->gAttempter->ShutDownAllComponent();
+        data->attempter->shutdownAllComponent();
 
         // 销毁所有组件窗口实例
-        std::list<IGF_Component *> components = data->gAttempter->GetAllComponentPtr();
-        std::list<IGF_Component *>::const_iterator citerComponent = components.begin();
+        std::list<IJComponent *> components = data->attempter->allComponents();
+        std::list<IJComponent *>::const_iterator citerComponent = components.begin();
         for (; citerComponent != components.end(); ++citerComponent) {
-            IGF_Component *component = *citerComponent;
+            IJComponent *component = *citerComponent;
             if (component) {
-                component->Release();
+                component->releaseInterface();
                 delete component;
             }
         }

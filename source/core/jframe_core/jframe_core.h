@@ -103,8 +103,39 @@
 
 ///
 
-// interface IJUnknown
+//
+#ifdef _MSC_VER
+typedef unsigned __int64 JWPARAM;
+typedef __int64 JLPARAM;
+typedef __int64 JLRESULT;
+#else
+typedef unsigned long long JWPARAM;
+typedef long long JLPARAM;
+typedef long long JLRESULT;
+#endif
 
+//
+#ifndef J_TO_STRING
+#define J_TO_STRING(_s_) #_s_
+#endif
+
+// 框架窗体风格
+#define J_FRAME_THEME_OFFICE_2007BLUE       J_TO_STRING(Office2007Blue)
+#define J_FRAME_THEME_OFFICE_2007BLACK      J_TO_STRING(Office2007Black)
+#define J_FRAME_THEME_OFFICE_2007SILVER     J_TO_STRING(Office2007Silver)
+#define J_FRAME_THEME_OFFICE_2007AQUA       J_TO_STRING(Office2007Aqua)
+#define J_FRAME_THEME_WINDOWs7_SCENIC       J_TO_STRING(Windows7Scenic)
+#define J_FRAME_THEME_OFFICE_2010SILVER     J_TO_STRING(Office2010Silver)
+#define J_FRAME_THEME_OFFICE_2010BLUE       J_TO_STRING(Office2010Blue)
+#define J_FRAME_THEME_OFFICE_2010BLACK      J_TO_STRING(Office2010Black)
+
+// 接口描述
+#define VER_IJUnknown J_INTERFACE_VERSION(1, 0)
+#define IID_IJUnknown J_IID_INTERFACE(IJUnknown)
+
+/**
+ * @brief The IJUnknown class
+ */
 class IJUnknown
 {
 public:
@@ -114,15 +145,17 @@ public:
     virtual void releaseInterface() = 0;
 
     // 查询接口
-    virtual void* queryInterface(const char *iid, unsigned int ver) = 0;
+    virtual void* queryInterface(const char *iid, unsigned int ver)
+    { (void)iid; (void)ver; return 0; }
 };
 
 // 接口描述
-#define VER_IJUnknown J_INTERFACE_VERSION(1, 0)
-#define IID_IJUnknown J_IID_INTERFACE(IJUnknown)
+#define VER_IJObject J_INTERFACE_VERSION(1, 0)
+#define IID_IJObject J_IID_INTERFACE(IJObject)
 
-// interface IJObject
-
+/**
+ * @brief The IJObject class
+ */
 class IJObject : public IJUnknown
 {
 public:
@@ -139,109 +172,356 @@ public:
     { (void)method; (void)argc; return false; }
 };
 
-// 接口描述
-#define VER_IJObject J_INTERFACE_VERSION(1, 0)
-#define IID_IJObject J_IID_INTERFACE(IJObject)
-
-// interface IJComponent
-
-class IJComponent : public IJObject
-{
-public:
-    virtual ~IJComponent() {}
-};
-
-// 接口标识
-#define VER_IJComponent J_INTERFACE_VERSION(1, 0)
-#define IID_IJComponent J_IID_INTERFACE(IJComponent)
-
-// interface IJComponentUi
-
-class IJComponentUi : public IJObject
-{
-public:
-    virtual ~IJComponentUi() {}
-};
-
-// 接口标识
-#define VER_IJComponentUi J_INTERFACE_VERSION(1, 0)
-#define IID_IJComponentUi J_IID_INTERFACE(IJComponentUi)
-
-// interface IJCommandSink
-
-class IJCommandSink
-{
-public:
-    virtual ~IJCommandSink() {}
-};
-
 // 接口标识
 #define VER_IJCommandSink J_INTERFACE_VERSION(1, 0)
 #define IID_IJCommandSink J_IID_INTERFACE(IJCommandSink)
 
-// interface IJMessageSink
-
-class IJMessageSink
+/**
+ * @brief The IJCommandSink class
+ */
+class IJCommandSink
 {
 public:
-    virtual ~IJMessageSink() {}
+    /**
+     * @brief ~IJCommandSink
+     */
+    virtual ~IJCommandSink() {}
+
+    /**
+     * @brief commandSink : 执行UI命令
+     * @param sender : 命令发起者
+     * @param senderName : 发起者名称
+     * @return
+     */
+    virtual bool commandSink(void *sender, const char* senderName) = 0;
 };
 
 // 接口标识
 #define VER_IJMessageSink J_INTERFACE_VERSION(1, 0)
 #define IID_IJMessageSink J_IID_INTERFACE(IJMessageSink)
 
-// interface IJMainWindow
-
-class IJMainWindow
+/**
+ * @brief The IJMessageSink class
+ */
+class IJMessageSink
 {
 public:
-    virtual ~IJMainWindow() {}
+    /**
+     * @brief ~IJMessageSink
+     */
+    virtual ~IJMessageSink() {}
+
+    /**
+     * @brief messageSink
+     * @param sender
+     * @param id
+     * @param wParam
+     * @param lParam
+     * @return
+     */
+    virtual bool messageSink(void *sender, unsigned int id, JWPARAM wParam, JLPARAM lParam) = 0;
+};
+
+// 接口标识
+#define VER_IJComponent J_INTERFACE_VERSION(1, 0)
+#define IID_IJComponent J_IID_INTERFACE(IJComponent)
+
+/**
+ * @brief The IJComponent class
+ */
+class IJComponent : public IJUnknown
+{
+public:
+    /**
+     * @brief ~IJComponent
+     */
+    virtual ~IJComponent() {}
+
+    /**
+     * @brief componentId
+     * @return
+     */
+    virtual std::string componentId() const = 0;
+
+    /**
+     * @brief componentDesc
+     * @return
+     */
+    virtual std::string componentDesc() const = 0;
+
+    /**
+     * @brief initialize
+     * @return
+     */
+    virtual bool initialize() = 0;
+
+    /**
+     * @brief shutdown
+     */
+    virtual void shutdown() = 0;
+
+    /**
+     * @brief attach
+     */
+    virtual void attach() {}
+
+    /**
+     * @brief detach
+     */
+    virtual void detach() {}
+};
+
+// 接口标识
+#define VER_IJComponentUi J_INTERFACE_VERSION(1, 0)
+#define IID_IJComponentUi J_IID_INTERFACE(IJComponentUi)
+
+/**
+ * @brief The IJComponentUi class
+ */
+class IJComponentUi
+{
+public:
+    /**
+     * @brief ~IJComponentUi
+     */
+    virtual ~IJComponentUi() {}
+
+    /**
+     * @brief createUi
+     * @param parent
+     * @param windowName
+     * @return
+     */
+    virtual void *createUi(void *parent, const char *windowName) = 0;
 };
 
 // 接口标识
 #define VER_IJMainWindow J_INTERFACE_VERSION(1, 0)
 #define IID_IJMainWindow J_IID_INTERFACE(IJMainWindow)
 
-// interface IJAttempter
-
-class IJAttempter
+/**
+ * @brief The IJMainWindow class
+ */
+class IJMainWindow
 {
 public:
-    virtual ~IJAttempter() {}
+    /**
+     * @brief ~IJMainWindow
+     */
+    virtual ~IJMainWindow() {}
+
+    /**
+     * @brief initialize
+     * @return
+     */
+    virtual bool initialize() = 0;
+
+    /**
+     * @brief showNormal
+     */
+    virtual void showNormal() = 0;
+
+    /**
+     * @brief showMaximized
+     */
+    virtual void showMinimized() = 0;
+
+    /**
+     * @brief showMaximized
+     */
+    virtual void showMaximized() = 0;
+
+    /**
+     * @brief showFullScreen
+     */
+    virtual void showFullScreen() = 0;
+
+    /**
+     * @brief closeWindow
+     */
+    virtual void closeWindow() = 0;
+
+    /**
+     * @brief setVisible
+     * @param visible
+     */
+    virtual void setVisible(bool visible) = 0;
+
+    /**
+     * @brief showTopLevel
+     * @param stayOnTop
+     */
+    virtual void showStaysOnTop(bool stayOnTop) = 0;
+
+    /**
+     * @brief resize
+     * @param width
+     * @param height
+     */
+    virtual void resize(int width, int height) = 0;
+
+    /**
+     * @brief queryObject
+     * @param objectName
+     * @return
+     */
+    virtual void *queryObject(const char *objectName) = 0;
+
+    /**
+     * @brief statusBar
+     * @return
+     */
+    virtual void *statusBar() = 0;
+
+    /**
+     * @brief activeView
+     * @param viewName
+     */
+    virtual void activeView(const char *viewName) = 0;
+
+    /**
+     * @brief updateSplashInfo
+     * @param info
+     */
+    virtual void updateSplashInfo(const char *info) = 0;
+
+    /**
+     * @brief createComponentUi
+     * @param component
+     * @param xmlName
+     */
+    virtual void createComponentUi(IJComponent *component, const char *xmlName) = 0;
+
+    /**
+     * @brief mainWindowHandle
+     * @return
+     */
+    virtual void *mainWindowHandle() = 0;
 };
 
 // 接口标识
 #define VER_IJAttempter J_INTERFACE_VERSION(1, 0)
 #define IID_IJAttempter J_IID_INTERFACE(IJAttempter)
 
-// interface IJUiPlugin
-
-class IJUiPlugin
+/**
+ * @brief The IJAttempter class
+ */
+class IJAttempter
 {
 public:
-    virtual ~IJUiPlugin() {}
-};
+    /**
+     * @brief ~IJAttempter
+     */
+    virtual ~IJAttempter() {}
 
-// 接口标识
-#define VER_IJUiPlugin J_INTERFACE_VERSION(1, 0)
-#define IID_IJUiPlugin J_IID_INTERFACE(IJUiPlugin)
+    /**
+     * @brief loadInitComponent
+     * @return
+     */
+    virtual bool loadInitComponent() = 0;
 
-// interface IJFrameCore
+    /**
+     * @brief loadAllComponent
+     * @return
+     */
+    virtual bool loadAllComponent() = 0;
 
-class IJFrameCore : public IJObject
-{
-public:
-    virtual ~IJFrameCore() {}
+    /**
+     * @brief shutdownAllComponent
+     * @return
+     */
+    virtual bool shutdownAllComponent() = 0;
+
+    /**
+     * @brief queryComponent
+     * @param componentId
+     * @return
+     */
+    virtual IJComponent *queryComponent(const char *componentId) = 0;
+
+    /**
+     * @brief mainWindow
+     * @return
+     */
+    virtual IJMainWindow *mainWindow() = 0;
+
+    /**
+     * @brief queryInterface
+     * @param componentId
+     * @param iid
+     * @param ver
+     * @return
+     */
+    virtual void *queryInterface(const char *componentId, const char *iid, unsigned int ver) = 0;
+
+    /**
+     * @brief allComponents
+     * @return
+     */
+    virtual std::list<IJComponent *> allComponents() const = 0;
+
+    /**
+     * @brief currentWorkModeId
+     * @return
+     */
+    virtual int currentWorkModeId() const = 0;
+
+    /**
+     * @brief currentWorkModeName
+     * @return
+     */
+    virtual const char *currentWorkModeName() const = 0;
+
+    /**
+     * @brief currentWorkModeConfigDirName
+     * @return
+     */
+    virtual const char *currentWorkModeConfigDirName() const = 0;
 };
 
 // 接口标识
 #define VER_IJFrameCore J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameCore J_IID_INTERFACE(IJFrameCore)
 
+/**
+ * @brief The IJFrameCore class
+ */
+class IJFrameCore : public IJObject
+{
+public:
+    /**
+     * @brief ~IJFrameCore
+     */
+    virtual ~IJFrameCore() {}
+
+    /**
+     * @brief initialize
+     * @return
+     */
+    virtual bool initialize() = 0;
+
+    /**
+     * @brief attempter
+     * @return
+     */
+    virtual IJAttempter *attempter() = 0;
+};
+
+///
+
+//
+typedef bool (__cdecl *FuncInitComponent)(void);
+
+//
+typedef void *(__cdecl *FuncCreateAttempter)(void);
+
+//
+typedef void *(__cdecl *FuncCreateComponent)(IJAttempter *attempter);
+
 ///
 
 #ifdef JFRAME_CORE_DLL
+#ifdef _MSC_VER
 #   ifdef JFRAME_CORE_MAKEDLL
 #       define JFRAME_CORE_EXPORT __declspec(dllexport)
 #   else
@@ -254,6 +534,9 @@ public:
 #       endif // !_MSC_VER
 
 #   endif // !JFRAME_CORE_MAKEDLL
+#else
+#define JFRAME_CORE_EXPORT
+#endif // _MSC_VER
 
 //
 JFRAME_CORE_EXPORT IJFrameCore* jframeCore();

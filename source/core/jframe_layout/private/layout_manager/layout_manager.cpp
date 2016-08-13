@@ -1,11 +1,8 @@
 #include "precomp.h"
 #include "layout_manager.h"
-#include "IGF_Kernel.h"
 #include "../jframe_layout_p.h"
 #include "../module_manager/module_manager.h"
 #include "../mainview_manager/mainview_manager.h"
-#include <QtXml>
-#include "jsplitter.h"
 
 // class LayoutManager
 
@@ -843,13 +840,13 @@ bool LayoutManager::isComponentAttachEnabled(const JComponentInfo *componentInfo
     }
 
     // 接口提升
-    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->iface);
+    IJComponent *component = dynamic_cast<IJComponent *>(componentInfo->iface);
     if (!component) {
         return false;   // 提升失败
     }
 
     // 获取组件权限等级
-    int componentPowerLevel = q_frameLayout->componentPowerLevel(component->GetComponentID());
+    int componentPowerLevel = q_frameLayout->componentPowerLevel(component->componentId());
 
     // 权限判定
     if (componentPowerLevel <= JFrameLoginSpace::PowerLevelNo) {

@@ -1,7 +1,6 @@
 #include "precomp.h"
 #include "frame_filter.h"
-#include "IGF_Kernel.h"
-#include "kernel/jnotifier.h"
+#include "jframe_kernel.h"
 
 // struct FrameFilterData
 
@@ -20,7 +19,7 @@ struct FrameFilterData
 
 // class FrameFilter
 
-FrameFilter::FrameFilter(INotifier *notifier, IGF_Attempter *gAttempter, QObject *parent)
+FrameFilter::FrameFilter(INotifier *notifier, IJAttempter *attempter, QObject *parent)
     : QObject(parent)
 {
     data = new FrameFilterData;
@@ -29,7 +28,7 @@ FrameFilter::FrameFilter(INotifier *notifier, IGF_Attempter *gAttempter, QObject
     data->notifier = notifier;
 
     // 解析主窗口
-    data->mainWindow = qobject_cast<QtRibbon::RibbonMainWindow *>(parseMainWindow(gAttempter));
+    data->mainWindow = qobject_cast<QtRibbon::RibbonMainWindow *>(parseMainWindow(attempter));
     if (data->mainWindow) {
         // 安装主窗口事件过滤
         data->mainWindow->installEventFilter(this);
@@ -109,22 +108,15 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
     return false;
 }
 
-QWidget *FrameFilter::parseMainWindow(IGF_Attempter *gAttempter)
+QWidget *FrameFilter::parseMainWindow(IJAttempter *attempter)
 {
     //
-    if (!gAttempter) {
+    if (!attempter || !attempter->mainWindow()) {
         return 0;
     }
 
     //
-    IGF_MainWindow *mainWindowInterface =
-            reinterpret_cast<IGF_MainWindow *>(gAttempter->GetMainWindow());
-    if (!mainWindowInterface) {
-        return 0;
-    }
-
-    //
-    QWidget *widget = reinterpret_cast<QWidget *>(mainWindowInterface->GetMainWndHandle());
+    QWidget *widget = reinterpret_cast<QWidget *>(attempter->mainWindow()->mainWindowHandle());
     if (!widget
             || !widget->inherits("MainWindow")
             || widget->objectName() != "RibbonMainWindow") {

@@ -7,4 +7,4 @@
 OTHER_FILES += \
     $$PWD/frame/jframe_global.xml \
     $$PWD/frame/jframe_layout.xml \
-    $$PWD/frame/jframe_module.xml
+    $$PWD/WorkMode_Test1/*.*

@@ -1,6 +1,5 @@
 #include "precomp.h"
 #include "module_manager.h"
-#include "IGF_Kernel.h"
 #include "../jframe_layout_p.h"
 #include "../mainview_manager/mainview_manager.h"
 #include "../layout_manager/layout_manager.h"
@@ -83,13 +82,13 @@ bool ModuleManager::attachComponent(const JComponentInfo *componentInfo, bool sh
     }
 
     //
-    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->iface);
+    IJComponent *component = dynamic_cast<IJComponent *>(componentInfo->iface);
     if (!component) {
         return false;   //
     }
 
-    // 初始化组件业务
-    component->Initialization();
+    // 挂载组件
+    component->attach();
 
     // 如果窗口有效，则显示窗口
     if (componentInfo->widget && show) {
@@ -111,11 +110,11 @@ bool ModuleManager::attachComponentUi(const JComponentInfo *componentInfo)
     }
 
     // 首次加载，须创建界面（如果存在界面接口）
-    IGF_ComponentUI *componentUi = (IGF_ComponentUI *)
-            (dynamic_cast<IGF_Component *>(componentInfo->iface)
-             ->QueryInterface(IID_IGF_ComponentUI, VER_IGF_ComponentUI));
+    IJComponentUi *componentUi = (IJComponentUi *)
+            (dynamic_cast<IJComponent *>(componentInfo->iface)
+             ->queryInterface(IID_IJComponentUi, VER_IJComponentUi));
     if (componentUi) {
-        componentUi->CreateUI(q_frameLayout->mainViewManager(), "");
+        componentUi->createUi(q_frameLayout->mainViewManager(), "");
     }
 
     return true;
@@ -133,13 +132,13 @@ bool ModuleManager::detachComponent(const JComponentInfo *componentInfo)
     }
 
     //
-    IGF_Component *component = dynamic_cast<IGF_Component *>(componentInfo->iface);
+    IJComponent *component = dynamic_cast<IJComponent *>(componentInfo->iface);
     if (!component) {
         return false;
     }
 
-    // 分离组件业务
-    component->Shutdown();
+    // 分离组件
+    component->detach();
 
     return true;
 }
@@ -188,7 +187,7 @@ void ModuleManager::resetAllInactivateViewComponent()
     }
 }
 
-bool ModuleManager::attachComponent(IGF_Component *component, bool stayOn)
+bool ModuleManager::attachComponent(IJComponent *component, bool stayOn)
 {
     JComponentInfo *componentInfo = attachComponent(component);
     if (!componentInfo) {
@@ -207,16 +206,10 @@ bool ModuleManager::attachComponent(IGF_Component *component, bool stayOn)
     return true;
 }
 
-JComponentInfo *ModuleManager::attachComponent(IGF_Component *component)
+JComponentInfo *ModuleManager::attachComponent(IJComponent *component)
 {
     // 参数检测
     if (!component) {
-        return 0;
-    }
-
-    // 获取组件标识
-    const char *componentId = component->GetComponentID();
-    if (!componentId) {
         return 0;
     }
 
@@ -224,7 +217,7 @@ JComponentInfo *ModuleManager::attachComponent(IGF_Component *component)
     JComponentInfo *componentInfo = 0;
 
     // 设置（或更新）组件挂载信息
-    const QString sComponentId = QString::fromLocal8Bit(componentId);
+    const QString sComponentId = QString::fromStdString(component->componentId());
     QMap<QString, JComponentInfo>::iterator iterComponentInfo =
             q_mapComponentInfo.find(sComponentId);
     if (iterComponentInfo == q_mapComponentInfo.end()) {
@@ -258,22 +251,16 @@ JComponentInfo *ModuleManager::attachComponent(IGF_Component *component)
     return componentInfo;
 }
 
-bool ModuleManager::detachComponent(IGF_Component *component)
+bool ModuleManager::detachComponent(IJComponent *component)
 {
     // 参数检测
     if (!component) {
         return false;
     }
 
-    // 获取组件标识
-    const char *componentId = component->GetComponentID();
-    if (!componentId) {
-        return false;
-    }
-
     // 组件挂载信息有效性检测
     QMap<QString, JComponentInfo>::iterator iterComponentInfo =
-            q_mapComponentInfo.find(QString::fromLocal8Bit(componentId));
+            q_mapComponentInfo.find(QString::fromStdString(component->componentId()));
     if (iterComponentInfo == q_mapComponentInfo.end()) {
         return false;
     }
@@ -292,21 +279,15 @@ bool ModuleManager::detachComponent(IGF_Component *component)
     return true;
 }
 
-bool ModuleManager::attachComponentUi(IGF_Component *component, QWidget *widget)
+bool ModuleManager::attachComponentUi(IJComponent *component, QWidget *widget)
 {
     // 参数检测
     if (!component || !widget) {
         return false;
     }
 
-    // 获取组件标识
-    const char *componentId = component->GetComponentID();
-    if (!componentId) {
-        return false;
-    }
-
     // 组件挂载信息有效性检测
-    const QString sComponentId = QString::fromLocal8Bit(componentId);
+    const QString sComponentId = QString::fromStdString(component->componentId());
     QMap<QString, JComponentInfo>::iterator iterComponentInfo =
             q_mapComponentInfo.find(sComponentId);
     if (iterComponentInfo == q_mapComponentInfo.end()) {
@@ -340,14 +321,14 @@ bool ModuleManager::attachComponentUi(IGF_Component *component, QWidget *widget)
     return true;
 }
 
-std::list<IGF_Component *> ModuleManager::attachedComponents() const
+std::list<IJComponent *> ModuleManager::attachedComponents() const
 {
-    std::list<IGF_Component *> attacheds;
+    std::list<IJComponent *> attacheds;
     QMapIterator<QString, JComponentInfo> citer(q_mapComponentInfo);
     while (citer.hasNext()) {
         citer.next();
         if (citer.value().attached) {
-            attacheds.push_back(dynamic_cast<IGF_Component *>(citer.value().iface));
+            attacheds.push_back(dynamic_cast<IJComponent *>(citer.value().iface));
         }
     }
 

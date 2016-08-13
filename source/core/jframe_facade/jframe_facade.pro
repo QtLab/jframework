@@ -10,7 +10,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += \
     PRO_CORE \
-    USE_TINYXML
+    USE_NO_LOG4CPP \
+#    USE_TINYXML
 
 win32 {
     DEFINES += \
@@ -31,6 +32,11 @@ HEADERS += \
 SOURCES += \
     jframe_facade.cpp \
     private/jframe_facade_p.cpp
+
+## tinyxml
+include($$PWD/../../3rdpart/tinyxml/src.pri)
+INCLUDEPATH += $$PWD/../../3rdpart/tinyxml
+DEPENDPATH += $$PWD/../../3rdpart/tinyxml
 
 ###############################################################
 # resource files

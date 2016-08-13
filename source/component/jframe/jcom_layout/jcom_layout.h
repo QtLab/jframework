@@ -1,43 +1,43 @@
 #ifndef JCOM_LAYOUT_H
 #define JCOM_LAYOUT_H
 
-#include "IGF_Kernel.h"
-#include "jframe_factory.h"
-#include "kernel/jnotifier.h"
+#include "jframe_kernel.h"
 
 class FrameFilter;
 
 class JComLayout :
-        public IGF_Component,
-        public IGF_ComponentUI,
+        public IJComponent,
+        public IJComponentUi,
         public JObserver
 {
 public:
-    explicit JComLayout(IGF_Attempter *gAttempter);
+    explicit JComLayout(IJAttempter *attempter);
     ~JComLayout();
 
-    // IUnknownEx interface
+    // IJUnknown interface
 public:
-    void Release();
-    void *QueryInterface(const char *IID, unsigned int dwQueryVer);
+    void releaseInterface();
+    void *queryInterface(const char *iid, unsigned int ver);
 
-    // IGF_Component interface
+    // IJComponent interface
 public:
-    void Initialization();
-    void Shutdown();
-    const char *GetComponentID() const;
-    const char *GetComponentName() const;
+    std::string componentId() const;
+    std::string componentDesc() const;
+    bool initialize();
+    void shutdown();
+    void attach();
+    void detach();
 
-    // IGF_ComponentUI interface
+    // IJComponentUi interface
 public:
-    void *CreateUI(void *parent, const char *windowName);
+    void *createUi(void *parent, const char *windowName);
 
     // JObserver interface
 public:
     std::string jobserverId() const;
 
 private:
-    IGF_Attempter *q_gAttempter;
+    IJAttempter *q_attempter;
     FrameFilter *q_frameFilter;
     INotifier *q_notifier;
 };

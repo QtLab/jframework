@@ -14,6 +14,10 @@ TEMPLATE = app
 TARGET = $$qtLibraryTarget(application)
 DESTDIR = $${jframe_root}/bin
 
+##
+DEFINES += \
+    USE_JFRAME_FACADE
+
 # The .h file which was generated for your project. Feel free to hck it.
 HEADERS += \
 
@@ -78,6 +82,14 @@ linux-g++ {
 
 INCLUDEPATH += $${jframe_root}/include
 DEPENDPATH += $${jframe_root}/include
+
+contains(DEFINES, USE_JFRAME_FACADE) {
+    ## import jframe_facade library
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facaded
+    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
+    DEFINES += JFRAME_FACADE_DLL
+}
 
 ###############################################################
 # global commands

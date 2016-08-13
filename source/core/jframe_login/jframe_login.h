@@ -1,11 +1,10 @@
 #ifndef JFRAME_LOGIN_H
 #define JFRAME_LOGIN_H
 
-#include <string>
+#include "jframe_core.h"
 #include <vector>
 #include <list>
 #include <map>
-#include "factory/jframe_interface.h"
 
 namespace JFrameLoginSpace
 {
@@ -29,8 +28,13 @@ namespace JFrameLoginSpace
     };
 }
 
-// interface IJLoginDBMgr
+// 接口标识
+#define VER_IJLoginDBMgr J_INTERFACE_VERSION(1, 0)
+#define IID_IJLoginDBMgr J_IID_INTERFACE(IJLoginDBMgr)
 
+/**
+ * @brief The IJLoginDBMgr class
+ */
 class IJLoginDBMgr
 {
 public:
@@ -40,14 +44,15 @@ public:
 
 };
 
-// 接口标识
-#define VER_IJLoginDBMgr J_INTERFACE_VERSION(1, 0)
-#define IID_IJLoginDBMgr J_IID_INTERFACE(IJLoginDBMgr)
-
 //////////////////////////////////////////////////////////////////////
 
-// interface IJLoginManager
+// 接口标识
+#define VER_IJLoginManager J_INTERFACE_VERSION(1, 0)
+#define IID_IJLoginManager J_IID_INTERFACE(IJLoginManager)
 
+/**
+ * @brief The IJLoginManager class
+ */
 class IJLoginManager
 {
 public:
@@ -93,14 +98,15 @@ public:
     virtual std::string currentSystem() const = 0;
 };
 
-// 接口标识
-#define VER_IJLoginManager J_INTERFACE_VERSION(1, 0)
-#define IID_IJLoginManager J_IID_INTERFACE(IJLoginManager)
-
 //////////////////////////////////////////////////////////////////
 
-// interface IJFrameLogin
+// 接口标识
+#define VER_IJFrameLogin J_INTERFACE_VERSION(1, 0)
+#define IID_IJFrameLogin J_IID_INTERFACE(IJFrameLogin)
 
+/**
+ * @brief The IJFrameLogin class
+ */
 class IJFrameLogin : public IJObject
 {
 public:
@@ -110,13 +116,10 @@ public:
     virtual IJLoginManager *loginManager() = 0;
 };
 
-// 接口标识
-#define VER_IJFrameLogin J_INTERFACE_VERSION(1, 0)
-#define IID_IJFrameLogin J_IID_INTERFACE(IJFrameLogin)
-
 ///
 
 #ifdef JFRAME_LOGIN_DLL
+#ifdef _MSC_VER
 #   ifdef JFRAME_LOGIN_MAKEDLL
 #       define JFRAME_LOGIN_EXPORT __declspec(dllexport)
 #   else
@@ -129,6 +132,9 @@ public:
 #       endif // !_MSC_VER
 
 #   endif // !JFRAME_LOGIN_MAKEDLL
+#else
+#define JFRAME_LOGIN_EXPORT
+#endif // _MSC_VER
 
 //
 JFRAME_LOGIN_EXPORT IJFrameLogin *jframeLogin();

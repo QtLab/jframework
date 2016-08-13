@@ -28,6 +28,8 @@ public:
 
     // IJFrameCore interface
 public:
+    bool initialize();
+    IJAttempter *attempter();
 
 private:
     JFrameCore();

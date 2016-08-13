@@ -2,19 +2,19 @@
 #include "com_demo3.h"
 
 //
-extern "C" __declspec(dllexport) void *CreateComponent(void* gAttemper)
+extern "C" __declspec(dllexport) void *CreateComponent(void* attemper)
 {
     // 非管理员用户才能使用此组件
     if (jframeLogin()->loginManager()->isAdminUser()) {
         return 0;
     }
 
-    return static_cast<IGF_Component *>
-            (new ComDemo3(reinterpret_cast<IGF_Attempter *>(gAttemper)));
+    return static_cast<IJComponent *>
+            (new ComDemo3(reinterpret_cast<IJAttempter *>(attemper)));
 }
 
-ComDemo3::ComDemo3(IGF_Attempter* gAttemper)
-    : q_gAttempter(gAttemper)
+ComDemo3::ComDemo3(IJAttempter *attemper)
+    : q_attempter(attemper)
     , q_widget(0)
 {
     q_notifier = jframeLayout()->notifier();
@@ -25,7 +25,7 @@ ComDemo3::~ComDemo3()
 
 }
 
-void ComDemo3::Release()
+void ComDemo3::releaseInterface()
 {
     if (q_widget) {
         q_widget->deleteLater();
@@ -33,45 +33,51 @@ void ComDemo3::Release()
     }
 }
 
-void* ComDemo3::QueryInterface(const char* IID, unsigned int dwQueryVer)
+void* ComDemo3::queryInterface(const char* iid, unsigned int ver)
 {
-    QUERYINTERFACE(IGF_ComponentUI, IID, dwQueryVer);
+    J_QUERY_INTERFACE(IJComponentUi, iid, ver);
 
     return 0;
 }
 
-void ComDemo3::Initialization()
+std::string ComDemo3::componentId() const
 {
-    // 订阅消息
-    q_notifier->begin(this)
-            .end();
-
-    // 挂载组件
-    jframeLayout()->attachComponent(this);
+    return "com_demo3";
 }
 
-void ComDemo3::Shutdown()
+std::string ComDemo3::componentDesc() const
 {
-    // 取消订阅消息
-    q_notifier->pop(this);
+    return "组件示例 #3";
+}
 
+bool ComDemo3::initialize()
+{
+    // 挂载组件
+    jframeLayout()->attachComponent(this);
+
+    return true;
+}
+
+void ComDemo3::shutdown()
+{
     // 分离组件
     jframeLayout()->detachComponent(this);
 }
 
-const char* ComDemo3::GetComponentID() const
+void ComDemo3::attach()
 {
-    static const char* _componentId = "com_demo3";
-    return _componentId;
+    // 订阅消息
+    q_notifier->begin(this)
+            .end();
 }
 
-const char* ComDemo3::GetComponentName() const
+void ComDemo3::detach()
 {
-    static const char* _componentName = "demo3组件";
-    return _componentName;
+    // 取消订阅消息
+    q_notifier->pop(this);
 }
 
-void* ComDemo3::CreateUI(void* parent, const char* windowName)
+void *ComDemo3::createUi(void *parent, const char *windowName)
 {
     Q_UNUSED(parent);
     Q_UNUSED(windowName);
@@ -93,5 +99,5 @@ void* ComDemo3::CreateUI(void* parent, const char* windowName)
 
 std::string ComDemo3::jobserverId() const
 {
-    return GetComponentID();
+    return componentId();
 }

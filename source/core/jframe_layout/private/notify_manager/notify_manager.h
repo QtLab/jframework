@@ -1,7 +1,6 @@
 #ifndef NOTIFY_MANAGER_H
 #define NOTIFY_MANAGER_H
 
-#include <QWidget>
 #include "kernel/jnotifier.h"
 
 // class NotifyManager

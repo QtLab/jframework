@@ -1,9 +1,8 @@
 ﻿#ifndef LAYOUT_MANAGER_H
 #define LAYOUT_MANAGER_H
 
-#include <QWidget>
-#include <QPointer>
 #include "kernel/jnotifier.h"
+#include "jsplitter.h"
 
 // struct JLayoutConfig
 
@@ -26,9 +25,8 @@ struct JLayoutConfig
 // class LayoutManager
 
 class JFrameLayout;
-class QDomElement;
-class JSplitter;
 struct JComponentInfo;
+class QDomElement;
 
 class LayoutManager
 {

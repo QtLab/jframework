@@ -1,36 +1,36 @@
 #ifndef COM_DEMO2_H
 #define COM_DEMO2_H
 
-#include "IGF_Kernel.h"
-#include "jframe_facade.h"
-#include "kernel/jnotifier.h"
+#include "jframe_kernel.h"
 
 class QWidget;
 
 class ComDemo2 :
-        public IGF_Component,
-        public IGF_ComponentUI,
+        public IJComponent,
+        public IJComponentUi,
         public JObserver
 {
 public:
-    explicit ComDemo2(IGF_Attempter* gAttemper);
+    explicit ComDemo2(IJAttempter* attemper);
     virtual ~ComDemo2();
 
-    // IUnknownEx interface
+    // IJUnknown interface
 public:
-    void Release();
-    void* QueryInterface(const char* IID, unsigned int dwQueryVer);
+    void releaseInterface();
+    void *queryInterface(const char *iid, unsigned int ver);
 
-    // IGF_Component interface
+    // IJComponent interface
 public:
-    void Initialization();
-    void Shutdown();
-    const char* GetComponentID() const;
-    const char* GetComponentName() const;
+    std::string componentId() const;
+    std::string componentDesc() const;
+    bool initialize();
+    void shutdown();
+    void attach();
+    void detach();
 
-    // IGF_ComponentUI interface
+    // IJComponentUi interface
 public:
-    void* CreateUI(void* parent, const char* windowName);
+    void *createUi(void *parent, const char *windowName);
 
     // JObserver interface
 public:
@@ -39,7 +39,7 @@ public:
 protected:
 
 private:
-    IGF_Attempter* q_gAttempter;
+    IJAttempter *q_attempter;
     INotifier* q_notifier;
     QWidget *q_widget;
 };

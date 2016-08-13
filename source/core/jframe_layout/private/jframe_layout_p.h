@@ -4,7 +4,6 @@
 #include "../jframe_layout.h"
 #include <QMutex>
 #include "jframe_login.h"
-#include "IGF_Base.h"
 
 // struct JComponentInfo
 
@@ -15,7 +14,7 @@ struct JComponentInfo
     bool stayOn;                // 始终未挂载状态标志（主要用于标识框架全局有效组件）
     bool isView;                // 标识组件窗口是否为视图窗口（用于splitter布局）
     bool active;                // 组件激活状态（用户系统、模式切换时的组件激活标志）
-    IUnknownEx *iface;          // 组件接口
+    IJUnknown *iface;           // 组件接口
     QWidget *widget;            // 组件窗口
 
     JComponentInfo():
@@ -84,15 +83,15 @@ public:
 public:
     QWidget *mainWindow();
     INotifier *notifier();
-    IGF_Attempter *gAttempter();
+    IJAttempter *attempter();
     void setFrameTheme(const char *theme);
 
-    bool attachComponent(IGF_Component *component, bool stayOn);
-    bool detachComponent(IGF_Component *component);
-    bool attachComponentUi(IGF_Component *component, QWidget *widget);
-    std::list<IGF_Component *> attachedComponent() const;
+    bool attachComponent(IJComponent *component, bool stayOn);
+    bool detachComponent(IJComponent *component);
+    bool attachComponentUi(IJComponent *component, QWidget *widget);
+    std::list<IJComponent *> attachedComponent() const;
 
-    int componentPowerLevel(const char *componentId) const;
+    int componentPowerLevel(const std::string &componentId) const;
 
     std::string currentSystem() const;
     std::string currentModule() const;

@@ -1,28 +1,24 @@
 #include "precomp.h"
 #include "jcom_layout.h"
 #include "private/frame_filter.h"
-#include "jframe_layout.h"
 
 //
-extern "C" __declspec(dllexport) void *CreateComponent(void *gAttempter)
+extern "C" __declspec(dllexport) void *CreateComponent(void *attempter)
 {
-    return static_cast<IGF_Component *>
-            (new JComLayout(reinterpret_cast<IGF_Attempter *>(gAttempter)));
+    return static_cast<IJComponent *>
+            (new JComLayout(reinterpret_cast<IJAttempter *>(attempter)));
 }
 
-JComLayout::JComLayout(IGF_Attempter *gAttempter)
-    : q_gAttempter(gAttempter)
+JComLayout::JComLayout(IJAttempter *attempter)
+    : q_attempter(attempter)
 {
     q_notifier = jframeLayout()->notifier();
 
     //
-    q_frameFilter = new FrameFilter(q_notifier, q_gAttempter);
+    q_frameFilter = new FrameFilter(q_notifier, q_attempter);
     if (!q_frameFilter->init()) {
         //
     }
-
-    // 初始化GF框架调度器到框架布局系统
-    jframeLayout()->invoke("set_g_attempter", 1, q_gAttempter);
 }
 
 JComLayout::~JComLayout()
@@ -30,7 +26,7 @@ JComLayout::~JComLayout()
 
 }
 
-void JComLayout::Release()
+void JComLayout::releaseInterface()
 {
     if (q_frameFilter) {
         q_frameFilter->deleteLater();
@@ -38,48 +34,54 @@ void JComLayout::Release()
     }
 }
 
-void *JComLayout::QueryInterface(const char *IID, unsigned int dwQueryVer)
+void *JComLayout::queryInterface(const char *iid, unsigned int ver)
 {
-    QUERYINTERFACE(IGF_ComponentUI, IID, dwQueryVer);
+    J_QUERY_INTERFACE(IJComponentUi, iid, ver);
 
     return 0;
 }
 
-void JComLayout::Initialization()
+std::string JComLayout::componentId() const
 {
-    // 订阅消息
-    q_notifier->begin(this)
-            .end();
+    return "jcom_layout";
+}
 
+std::string JComLayout::componentDesc() const
+{
+    return "框架布局组件";
+}
+
+bool JComLayout::initialize()
+{
     // 挂载组件
     jframeLayout()->attachComponent(this, true);
 
     // 启动默认系统
     q_notifier->post("j_load_default_system");
+
+    return true;
 }
 
-void JComLayout::Shutdown()
+void JComLayout::shutdown()
 {
-    // 取消订阅消息
-    q_notifier->pop(this);
-
     // 分离组件
     jframeLayout()->detachComponent(this);
 }
 
-const char *JComLayout::GetComponentID() const
+void JComLayout::attach()
 {
-    static const char* _componentId = "jcom_layout";
-    return _componentId;
+    // 订阅消息
+    q_notifier->begin(this)
+            .end();
 }
 
-const char *JComLayout::GetComponentName() const
+void JComLayout::detach()
 {
-    static const char* _componentName = "框架布局组件";
-    return _componentName;
+    // 取消订阅消息
+    q_notifier->pop(this);
 }
 
-void *JComLayout::CreateUI(void *parent, const char *windowName)
+void *JComLayout::createUi(void *parent, const char *windowName)
 {
     if (strcmp(windowName, "mainView") == 0) {
         QStackedWidget *stackedWidget = reinterpret_cast<QStackedWidget *>(parent);
@@ -97,5 +99,5 @@ void *JComLayout::CreateUI(void *parent, const char *windowName)
 
 std::string JComLayout::jobserverId() const
 {
-    return GetComponentID();
+    return componentId();
 }

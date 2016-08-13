@@ -59,7 +59,7 @@ contains(DEFINES, PRO_CORE) {
     win32:CONFIG += build_all
 
     win32 {
-        !contains(DEFINES, JFRAME_FACADE_MAKEDLL) {
+        !contains(DEFINES, USE_NO_LOG4CPP) {
             DEFINES += \
                 USE_LOG4CPP
         }
@@ -81,7 +81,6 @@ contains(DEFINES, PRO_COMPONENT) {
 
     !contains(DEFINES, USE_NO_JFRAME_LIBS) {
         DEFINES += \
-            USE_JFRAME_CORE \
             USE_JFRAME_KERNEL \
             USE_JFRAME_FACTORY \
             USE_JFRAME_LAYOUT \
@@ -111,7 +110,7 @@ contains(DEFINES, USE_JFRAME_KERNEL) {
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
     INCLUDEPATH += $${jframe_root}/include/jframe/kernel
     DEPENDPATH += $${jframe_root}/include/jframe/kernel
-    win32:DEFINES += JFRAME_KERNEL_DLL
+    DEFINES += JFRAME_KERNEL_DLL
 }
 
 contains(DEFINES, USE_JFRAME_FACTORY) {
@@ -121,7 +120,7 @@ contains(DEFINES, USE_JFRAME_FACTORY) {
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_factory
     INCLUDEPATH += $${jframe_root}/include/jframe/factory
     DEPENDPATH += $${jframe_root}/include/jframe/factory
-    win32:DEFINES += JFRAME_FACTORY_DLL
+    DEFINES += JFRAME_FACTORY_DLL
 }
 
 contains(DEFINES, USE_JFRAME_FACADE) {
@@ -129,7 +128,7 @@ contains(DEFINES, USE_JFRAME_FACADE) {
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facaded
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
-    win32:DEFINES += JFRAME_FACADE_DLL
+    DEFINES += JFRAME_FACADE_DLL
 }
 
 contains(DEFINES, USE_JFRAME_LAYOUT) {
@@ -137,7 +136,7 @@ contains(DEFINES, USE_JFRAME_LAYOUT) {
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_layout
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_layoutd
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_layout
-    win32:DEFINES += JFRAME_LAYOUT_DLL
+    DEFINES += JFRAME_LAYOUT_DLL
 }
 
 contains(DEFINES, USE_JFRAME_LOGIN) {
@@ -145,7 +144,7 @@ contains(DEFINES, USE_JFRAME_LOGIN) {
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_login
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_logind
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_login
-    win32:DEFINES += JFRAME_LOGIN_DLL
+    DEFINES += JFRAME_LOGIN_DLL
 }
 
 contains(DEFINES, USE_TINYXML) {
@@ -155,7 +154,7 @@ contains(DEFINES, USE_TINYXML) {
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxml
     INCLUDEPATH += $${jframe_root}/include/3rdpart/tinyxml
     DEPENDPATH += $${jframe_root}/include/3rdpart/tinyxml
-    win32:DEFINES += TINYXML_DLL
+    DEFINES += TINYXML_DLL
 }
 
 contains(DEFINES, USE_QTWINMIGRATE) {
@@ -165,7 +164,7 @@ contains(DEFINES, USE_QTWINMIGRATE) {
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrate
     INCLUDEPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
     DEPENDPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
-    win32:DEFINES += _AFXDLL
+    DEFINES += _AFXDLL
 }
 
 contains(DEFINES, USE_QTRIBBON) {
@@ -185,7 +184,7 @@ contains(DEFINES, USE_LOG4CPP) {
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -llog4cpp
     INCLUDEPATH += $${jframe_root}/include/3rdpart/log4cpp
     DEPENDPATH += $${jframe_root}/include/3rdpart/log4cpp
-    win32:DEFINES += LOG4CPP_HAS_DLL
+    DEFINES += LOG4CPP_HAS_DLL
 }
 
 contains(DEFINES, USE_JWT) {
@@ -195,7 +194,7 @@ contains(DEFINES, USE_JWT) {
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -ljwt
     INCLUDEPATH += $${jframe_root}/include/3rdpart/jwt
     DEPENDPATH += $${jframe_root}/include/3rdpart/jwt
-    win32:DEFINES += JWT_DLL
+    DEFINES += JWT_DLL
 }
 
 contains(DEFINES, USE_BCG) {

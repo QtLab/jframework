@@ -1,28 +1,30 @@
 #ifndef JCOM_LOGIN_H
 #define JCOM_LOGIN_H
 
-#include "IGF_Kernel.h"
+#include "jframe_core.h"
 
-class JComLogin : public IGF_Component
+class JComLogin : public IJComponent
 {
 public:
-    explicit JComLogin(IGF_Attempter *gAttempter);
+    explicit JComLogin(IJAttempter *attempter);
     ~JComLogin();
 
-    // IUnknownEx interface
+    // IJUnknown interface
 public:
-    void Release();
-    void *QueryInterface(const char *IID, unsigned int dwQueryVer);
+    void releaseInterface();
+    void *queryInterface(const char *iid, unsigned int ver);
 
-    // IGF_Component interface
+    // IJComponent interface
 public:
-    void Initialization();
-    void Shutdown();
-    const char *GetComponentID() const;
-    const char *GetComponentName() const;
+    std::string componentId() const;
+    std::string componentDesc() const;
+    bool initialize();
+    void shutdown();
+    void attach();
+    void detach();
 
 private:
-    IGF_Attempter *q_gAttempter;
+    IJAttempter *q_attempter;
 };
 
 #endif // JCOM_LOGIN_H

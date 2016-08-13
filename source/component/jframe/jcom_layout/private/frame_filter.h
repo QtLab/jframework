@@ -8,14 +8,14 @@
 
 struct FrameFilterData;
 class INotifier;
-class IGF_Attempter;
+class IJAttempter;
 class QWidget;
 
 class FrameFilter : public QObject
 {
 public:
     explicit FrameFilter(INotifier *nofitier,
-                         IGF_Attempter *gAttempter,
+                         IJAttempter *attempter,
                          QObject *parent = 0);
     ~FrameFilter();
 
@@ -27,7 +27,7 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event);
 
 private:
-    QWidget *parseMainWindow(IGF_Attempter *gAttempter);
+    QWidget *parseMainWindow(IJAttempter *attempter);
     bool loadConfig();
 
 private:

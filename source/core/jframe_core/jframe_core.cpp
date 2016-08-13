@@ -9,7 +9,7 @@ IJFrameCore *jframeCore()
 }
 
 //
-extern "C" JFRAME_CORE_EXPORT IJUnknown* _func_jframe_core()
+extern "C" JFRAME_CORE_EXPORT IJObject* CreateInstance()
 {
-    return jframeCore();
+    return static_cast<IJObject *>(jframeCore());
 }

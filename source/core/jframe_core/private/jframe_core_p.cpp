@@ -1,11 +1,15 @@
 ﻿#include "precomp.h"
 #include "jframe_core_p.h"
+#include "jattempter.h"
 
 // struct JFrameCoreData
 
 struct JFrameCoreData
 {
+    IJAttempter *attempter;
+
     JFrameCoreData()
+        : attempter(0)
     {
 
     }
@@ -82,12 +86,38 @@ bool JFrameCore::invoke(const char *method, int argc, ...)
     return result;
 }
 
+bool JFrameCore::initialize()
+{
+    //
+    data->attempter->mainWindow()->initialize();
+
+    return true;
+}
+
+IJAttempter *JFrameCore::attempter()
+{
+    return data->attempter;
+}
+
 JFrameCore::JFrameCore()
 {
     data = new JFrameCoreData;
+
+    //
+    JAttempter *attempter = new JAttempter();
+    if (!attempter->init()) {
+        //
+    }
+    data->attempter = attempter;
 }
 
 JFrameCore::~JFrameCore()
 {
+    //
+    if (data->attempter) {
+        delete data->attempter;
+        data->attempter = 0;
+    }
+
     delete data;
 }

@@ -1,7 +1,6 @@
 #include "precomp.h"
 #include "notify_manager.h"
 #include "../jframe_layout_p.h"
-#include "IGF_Kernel.h"
 
 // class NotifyManager
 
