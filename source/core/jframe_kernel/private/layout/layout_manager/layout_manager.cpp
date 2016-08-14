@@ -54,6 +54,14 @@ bool LayoutManager::updateLayout(const QString &section)
 
     // 打开框架布局配置文件
     QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架布局配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
     if (!file.open(QFile::ReadOnly)) {
         return false;   // 打开失败
     }
@@ -65,7 +73,7 @@ bool LayoutManager::updateLayout(const QString &section)
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
         const QString text = QStringLiteral("框架布局配置文件\"%1\"解析失败！\n"
                                             "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列好：%4）")
+                                            "错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
@@ -120,6 +128,14 @@ bool LayoutManager::loadLayoutConfig()
 {
     // 解析框架布局配置文件
     QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架布局配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
     if (!file.open(QFile::ReadOnly)) {
         return false;   // 打开失败
     }
@@ -131,7 +147,7 @@ bool LayoutManager::loadLayoutConfig()
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
         const QString text = QStringLiteral("框架布局配置文件\"%1\"解析失败！"
                                             "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列好：%4）")
+                                            "错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
@@ -212,6 +228,14 @@ bool LayoutManager::resetModuleElement()
 {
     // 打开框架布局配置文件
     QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架布局配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
     if (!file.open(QFile::ReadWrite)) {
         return false;   // 打开失败
     }
@@ -223,7 +247,7 @@ bool LayoutManager::resetModuleElement()
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
         const QString text = QStringLiteral("框架布局配置文件\"%1\"解析失败！\n"
                                             "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列好：%4）")
+                                            "错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
@@ -1057,6 +1081,14 @@ bool LayoutManager::saveCurrentSplitterScales()
 
     // 打开框架布局配置文件
     QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架布局配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
     if (!file.open(QFile::ReadWrite)) {
         return false;   // 打开失败
     }
@@ -1068,7 +1100,7 @@ bool LayoutManager::saveCurrentSplitterScales()
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
         const QString text = QStringLiteral("框架布局配置文件\"%1\"解析失败！\n"
                                             "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列好：%4）")
+                                            "错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);

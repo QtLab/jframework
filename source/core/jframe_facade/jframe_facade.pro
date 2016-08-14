@@ -8,6 +8,7 @@ QT -= gui
 
 DEFINES += \
     PRO_CORE \
+    JFRAME_NO_PRECOMPILED \
     USE_NO_LOG4CPP
 
 win32 {

@@ -3,4 +3,7 @@
   <component name="jcom_login" desc="登录管理组件" load="0" dir="$(jframe)/component/jframe" />
   <component name="jcom_layout" desc="框架布局组件" load="1" dir="$(jframe)/component/jframe" />
   <component name="com_demo1" desc="demo1组件" load="1" dir="$(app)/component" />
+  <component name="com_demo2" desc="demo2组件" load="1" dir="$(app)/component" />
+  <component name="com_demo3" desc="demo3组件" load="1" dir="$(app)/component" />
+  <component name="com_demo4" desc="demo4组件" load="1" dir="$(app)/component" />
 </jframe>

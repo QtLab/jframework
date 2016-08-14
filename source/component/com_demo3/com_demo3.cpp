@@ -28,8 +28,8 @@ ComDemo3::~ComDemo3()
 void ComDemo3::releaseInterface()
 {
     if (q_widget) {
-        q_widget->deleteLater();
-        q_widget = 0;
+        //q_widget->deleteLater();
+        //q_widget = 0;
     }
 }
 
@@ -77,10 +77,10 @@ void ComDemo3::detach()
     q_notifier->pop(this);
 }
 
-void *ComDemo3::createUi(void *parent, const char *windowName)
+void *ComDemo3::createUi(void *parent, const char *objectName)
 {
     Q_UNUSED(parent);
-    Q_UNUSED(windowName);
+    Q_UNUSED(objectName);
 
     //
     if (q_widget) {

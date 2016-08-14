@@ -1,6 +1,7 @@
 #include "precomp.h"
 #include "jmain_window.h"
 #include "jframewnd.h"
+#include <QtXml>
 
 // class JMainWindow
 
@@ -134,7 +135,13 @@ void JMainWindow::resize(int width, int height)
 
 void *JMainWindow::queryObject(const char *objectName)
 {
-    return (void *)q_frameWnd->queryObject(QString::fromLatin1(objectName));
+    QHash<QString, QObject*>::const_iterator citer =
+            q_hashObject.find(QString::fromLatin1(objectName));
+    if (citer != q_hashObject.end()) {
+        return (void *)citer.value();
+    } else {
+        return 0;
+    }
 }
 
 void *JMainWindow::statusBar()
@@ -170,10 +177,68 @@ void JMainWindow::updateSplashInfo(const char *info)
     q_frameWnd->updateSplashInfo(QString::fromLatin1(info));
 }
 
-void JMainWindow::createComponentUi(IJComponent *component, const char *xmlName)
+bool JMainWindow::createComponentUi(IJComponent *component, const char *filePath)
 {
-    Q_UNUSED(component);
-    Q_UNUSED(xmlName);
+    // 参数有效性检测
+    if (!component || !filePath) {
+        return false;       // 参数无效
+    }
+
+    // 打开组件配置文件
+    QFile file(filePath);
+    if(!file.exists()) {
+        return false;       // ignore
+    }
+
+    // 打开文件
+    if (!file.open(QFile::ReadWrite)) {
+        const QString text = QStringLiteral("组件配置文件\"%1\"打开失败！")
+                .arg(file.fileName());
+        QMessageBox::warning(q_frameWnd, QStringLiteral("警告"), text);
+        return false;
+        return false;       // 打开失败
+    }
+
+    // 解析文件
+    QString errorMsg;
+    int errorLine = 0, errorColumn = 0;
+    QDomDocument document;
+    if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
+        const QString text = QStringLiteral("组件配置文件\"%1\"解析失败！\n"
+                                            "错误描述：%2\n"
+                                            "错误位置：（行号：%3，列号：%4）")
+                .arg(file.fileName())
+                .arg(errorMsg).arg(errorLine).arg(errorColumn);
+        QMessageBox::warning(q_frameWnd, QStringLiteral("警告"), text);
+        return false;
+    }
+
+    // 关闭文件
+    file.close();
+
+    // 获取根节点
+    QDomElement emRoot = document.documentElement();
+    if (emRoot.isNull()) {
+        return false;   // 无效
+    }
+
+    // 获取ribbonPage节点
+    QDomElement emRibbonPage = emRoot.firstChildElement("ribbonPage");
+    if (!emRibbonPage.isNull()) {
+        if (!createRibbonPage(emRibbonPage)) {
+            // ignore
+        }
+    }
+
+    // 获取window节点
+    QDomElement emWindow = emRoot.firstChildElement("window");
+    if (!emWindow.isNull()) {
+        if (!createComponentUi(component, emWindow)) {
+            // ignore
+        }
+    }
+
+    return true;
 }
 
 void *JMainWindow::mainWidget()
@@ -194,4 +259,78 @@ void JMainWindow::saveWindowState()
 void JMainWindow::restoreWindowState()
 {
 
+}
+
+bool JMainWindow::createRibbonPage(const QDomElement &emRibbonPage)
+{
+    //
+    if (emRibbonPage.isNull()) {
+        return false;   //
+    }
+
+    //
+
+    return true;
+}
+
+bool JMainWindow::createComponentUi(IJComponent *component, const QDomElement &emWindow)
+{
+    //
+    if (!component || emWindow.isNull()) {
+        return false;   //
+    }
+
+    //
+    for (QDomElement emItem = emWindow.firstChildElement();
+         !emItem.isNull();
+         emItem = emItem.nextSiblingElement()) {
+        // objectName
+        if (!emItem.hasAttribute("objectName")) {
+            continue;       // ignore
+        }
+        const QString objectName = emItem.attribute("objectName").trimmed();
+        if (objectName.isEmpty()) {
+            continue;       // ignore
+        }
+        // nodeName
+        const QString nodeName = emItem.nodeName();
+        //
+        if (nodeName == "view") {
+            // windowType
+            if (!emItem.hasAttribute("windowType")) {
+                continue;   // ignore
+            }
+            const QString windowType = emItem.attribute("windowType").trimmed();
+            // query ui interface
+            IJComponentUi *componentUi = (IJComponentUi *)component
+                    ->queryInterface(IID_IJComponentUi, VER_IJComponentUi);
+            if (!componentUi) {
+                continue;   // ignore
+            }
+            // create ui
+            void *window = componentUi->createUi(qobject_cast<QWidget *>(q_frameWnd),
+                                                 objectName.toLocal8Bit().data());
+            if (!window) {
+                continue;   // ignore
+            }
+            //
+            if (windowType == "Qt") {
+                QWidget *widget = (QWidget *)window;
+                //
+                q_hashObject.insert(objectName, qobject_cast<QObject *>(widget));
+                //
+                QStackedWidget *centralWidget = q_frameWnd->stackedWidget();
+                if (centralWidget) {
+                    centralWidget->addWidget(widget);
+                    centralWidget->setCurrentWidget(widget);
+                }
+            } else if (windowType == "MFC") {
+                //
+            }
+        } else {
+            //
+        }
+    }
+
+    return true;
 }

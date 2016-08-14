@@ -32,11 +32,12 @@
   </system>
   <mainWindow
     windowTitle="框架测试程序"
-    windowIcon="$(app)/config/resource/app.ico"
+    windowIcon="@ConfigDir@/resource/app.ico"
     windowTheme="Office2010Blue"
-    imageSplash="$(app)/config/resource/splash.png"
-    imageFinish="$(app)/config/resource/finish.png"
-    closeKilled="true" >
+    imageSplash="@ConfigDir@/resource/splash.png"
+    imageFinish="@ConfigDir@/resource/finish.png"
+    closeKilled="true"
+    systemFont="Microsoft Yahei,9">
       <ribbonBar
         visible="true"
         minimized="false" />

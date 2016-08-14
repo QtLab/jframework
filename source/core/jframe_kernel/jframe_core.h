@@ -120,10 +120,10 @@ public:
     /**
      * @brief createUi
      * @param parent
-     * @param windowName
+     * @param objectName
      * @return
      */
-    virtual void *createUi(void *parent, const char *windowName) = 0;
+    virtual void *createUi(void *parent, const char *objectName) = 0;
 };
 
 // 接口标识
@@ -225,9 +225,10 @@ public:
     /**
      * @brief createComponentUi
      * @param component
-     * @param xmlName
+     * @param filePath
+     * @return
      */
-    virtual void createComponentUi(IJComponent *component, const char *xmlName) = 0;
+    virtual bool createComponentUi(IJComponent *component, const char *filePath) = 0;
 
     /**
      * @brief mainWidget

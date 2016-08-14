@@ -93,20 +93,18 @@ void JComLayout::detach()
     q_notifier->pop(this);
 }
 
-void *JComLayout::createUi(void *parent, const char *windowName)
+void *JComLayout::createUi(void *parent, const char *objectName)
 {
-    if (strcmp(windowName, "mainView") == 0) {
-        QStackedWidget *stackedWidget = reinterpret_cast<QStackedWidget *>(parent);
-        if (stackedWidget) {
-            stackedWidget->addWidget(jframeLayout()->mainWindow());
-            stackedWidget->setCurrentIndex(stackedWidget->count() - 1);
-        }
+    Q_UNUSED(parent);
+    QWidget *widget = 0;
+    if (strcmp(objectName, "mainView") == 0) {
+        widget = jframeLayout()->mainView();
     }
 
     // 挂载组件界面
-    jframeLayout()->attachComponentUi(this, jframeLayout()->mainWindow());
+    jframeLayout()->attachComponentUi(this, widget);
 
-    return 0;
+    return widget;
 }
 
 std::string JComLayout::jobserverId() const

@@ -22,9 +22,9 @@ public:
 
     void setCurrentWidget(QWidget *widget);
 
-    QObject *queryObject(const QString &objectName);
-
     void setTheme(const char* theme);
+
+    QStackedWidget *stackedWidget();
 
 Q_SIGNALS:
 
@@ -47,9 +47,8 @@ private:
 
     // 保存界面元素
     QSplashScreen *q_splashScreen;
-    QStackedWidget *q_centreWidget;
+    QStackedWidget *q_centralWidget;
     QList<QToolBar *> q_toolBars;
-    QHash<QString, QObject*> q_hashObject;
     QPixmap q_pixmapSplash;
     QPixmap q_pixmapFinish;
 };

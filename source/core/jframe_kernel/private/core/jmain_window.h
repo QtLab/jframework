@@ -2,9 +2,11 @@
 #define JMAIN_WINDOW_H
 
 #include "../../jframe_core.h"
+#include <QHash>
 
 class JAttempter;
 class JFrameWnd;
+class QDomElement;
 
 class JMainWindow : public IJMainWindow
 {
@@ -43,7 +45,7 @@ public:
     void *statusBar();
     void activeView(const char *viewName);
     void updateSplashInfo(const char *info);
-    void createComponentUi(IJComponent *component, const char *xmlName);
+    bool createComponentUi(IJComponent *component, const char *filePath);
     void *mainWidget();
     void setTheme(const char *theme);
 
@@ -51,9 +53,16 @@ private:
     void saveWindowState();
     void restoreWindowState();
 
+    //
+    bool createRibbonPage(const QDomElement &emRibbonPage);
+
+    //
+    bool createComponentUi(IJComponent *component, const QDomElement &emWindow);
+
 private:
     JAttempter *q_attempter;
     JFrameWnd *q_frameWnd;
+    QHash<QString, QObject*> q_hashObject;
 };
 
 #endif // JMAIN_WINDOW_H

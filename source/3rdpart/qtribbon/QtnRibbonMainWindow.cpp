@@ -29,7 +29,7 @@ namespace QtRibbon
         bool m_attrOpaquePaintEvent;
         bool m_attrNoSystemBackground;
     };
-};
+}
 
 RibbonMainWindowPrivate::RibbonMainWindowPrivate()
 {

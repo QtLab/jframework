@@ -31,7 +31,7 @@ public:
 
     // IJComponentUi interface
 public:
-    void *createUi(void *parent, const char *windowName);
+    void *createUi(void *parent, const char *objectName);
 
     // JObserver interface
 public:

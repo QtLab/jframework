@@ -2,7 +2,7 @@
 #define JNOTIFIER_P_H
 
 #include "../jnotifier.h"
-#include <qmetatype.h>
+#include <QObject>
 #include <map>
 #include <vector>
 

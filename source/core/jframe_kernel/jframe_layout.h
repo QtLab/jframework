@@ -41,6 +41,9 @@ public:
     // 获取框架主窗口实例
     virtual QWidget *mainWindow() = 0;
 
+    // 获取框架主视图实例
+    virtual QWidget *mainView() = 0;
+
     // 获取框架消息分发器实例
     virtual INotifier *notifier() = 0;
 

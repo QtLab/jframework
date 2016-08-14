@@ -36,11 +36,6 @@ bool JAttempter::init()
     // 初始化主窗口
     result = result && dynamic_cast<JMainWindow *>(q_mainWindow)->init();
 
-    //
-    JwtCore::instance()->init();
-    JwtCore::instance()->loadSystemLang();
-    //qApp->setStyleSheet(JStyleSheet::instance()->styleSheet("default"));
-
     return result;
 }
 
@@ -119,7 +114,7 @@ IJComponent *JAttempter::queryComponent(const char *componentId)
     }
 
     // 查找组件
-    QMap<QString, JComponentInfo>::const_iterator citer =
+    QMap<QString, JComponentConfig>::const_iterator citer =
             q_mapComponent.find(QString::fromLatin1(componentId));
     if (citer == q_mapComponent.end()) {
         return 0;   // 不存在
@@ -148,7 +143,7 @@ void *JAttempter::queryInterface(const char *componentId, const char *iid, unsig
 std::list<IJComponent *> JAttempter::allComponents() const
 {
     std::list<IJComponent *> components;
-    QMapIterator<QString, JComponentInfo> citer(q_mapComponent);
+    QMapIterator<QString, JComponentConfig> citer(q_mapComponent);
     while (citer.hasNext()) {
         citer.next();
         components.push_back(citer.value().component);
@@ -185,10 +180,10 @@ bool JAttempter::loadInitComponent()
     if (!jframeFacade()
             ->invoke("library_resolve", 4, dirPath.c_str(),
                      "InitComponent", "InitComponent", &fInitComponent)) {
-        QMessageBox::critical(0, "Error",
-                              QString("Cannot find symbol \"InitComponent\" in library InitComponent \n"
-                                      "or it's dependent libraries can't be found!\n"
-                                      "Where: %1")
+        QMessageBox::critical(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
+                              "Error", QString("Cannot find symbol \"InitComponent\" in library InitComponent \n"
+                                               "or it's dependent libraries can't be found!\n"
+                                               "Where: %1")
                               .arg(QString::fromStdString(dirPath)));
         return false;
     }
@@ -211,6 +206,15 @@ bool JAttempter::loadAllComponent()
 
     // 打开框架组件配置文件
     QFile file(QString::fromStdString(frameComponentPath));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架组件配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
+                             QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
     if (!file.open(QFile::ReadWrite)) {
         return false;   // 打开失败
     }
@@ -222,10 +226,11 @@ bool JAttempter::loadAllComponent()
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
         const QString text = QStringLiteral("框架组件配置文件\"%1\"解析失败！\n"
                                             "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列好：%4）")
+                                            "错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(0, QStringLiteral("警告"), text);
+        QMessageBox::warning((reinterpret_cast<QWidget *>(q_mainWindow->mainWidget())),
+                             QStringLiteral("警告"), text);
         return false;
     }
 
@@ -287,17 +292,18 @@ bool JAttempter::loadAllComponent()
 bool JAttempter::shutdownAllComponent()
 {
     //
-    QMapIterator<QString, JComponentInfo> citer(q_mapComponent);
+    QMapIterator<QString, JComponentConfig> citer(q_mapComponent);
     citer.toBack();
     while (citer.hasPrevious()) {
         citer.previous();
-        const JComponentInfo &componentInfo = citer.value();
+        const JComponentConfig &componentConfig = citer.value();
         // 卸载信息显示
-        QString msg = QStringLiteral("正在加载#").append(componentInfo.componentDesc).append("#...");
+        QString msg = QStringLiteral("正在卸载#")
+                .append(componentConfig.componentDesc).append("#...");
         q_mainWindow->updateSplashInfo(msg.toLocal8Bit().data());
-        componentInfo.component->shutdown();
-        componentInfo.component->releaseInterface();
-        delete componentInfo.component;
+        componentConfig.component->shutdown();
+        componentConfig.component->releaseInterface();
+        delete componentConfig.component;
     }
 
     //
@@ -324,10 +330,10 @@ bool JAttempter::loadComponent(const QString &componentDir,
                      componentDir.toLocal8Bit().data(),
                      componentName.toLocal8Bit().data(),
                      "CreateComponent", &fCreateComponent)) {
-        QMessageBox::critical(0, "Error",
-                              QString("Cannot find symbol \"CreateComponent\" in library %1 \n"
-                                      "or it's dependent libraries can't be found!\n"
-                                      "Where: %2")
+        QMessageBox::critical(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
+                              "Error", QString("Cannot find symbol \"CreateComponent\" in library %1 \n"
+                                               "or it's dependent libraries can't be found!\n"
+                                               "Where: %2")
                               .arg(componentName)
                               .arg(componentDir));
         return false;
@@ -340,19 +346,19 @@ bool JAttempter::loadComponent(const QString &componentDir,
     }
 
     // 存储组件信息
-    JComponentInfo componentInfo;
-    componentInfo.componentDir = componentDir;
-    componentInfo.componentName = componentName;
-    componentInfo.componentDesc = componentDesc;
-    componentInfo.component = component;
-    q_mapComponent[componentName] = componentInfo;
+    JComponentConfig componentConfig;
+    componentConfig.componentDir = componentDir;
+    componentConfig.componentName = componentName;
+    componentConfig.componentDesc = componentDesc;
+    componentConfig.component = component;
+    q_mapComponent[componentName] = componentConfig;
 
     // 组件初始化
     component->initialize();
 
     // 创建组件界面
-    q_mainWindow->createComponentUi(component, QString(componentName)
-                                    .append(".xml").toLocal8Bit().data());
+    q_mainWindow->createComponentUi(component, (componentDir + "/" + componentName + ".xml")
+                                    .toLocal8Bit().data());
 
     return true;
 }
@@ -361,6 +367,15 @@ bool JAttempter::loadConfig()
 {
     // 打开框架全局配置文件
     QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架全局配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
+                             QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
     if (!file.open(QFile::ReadWrite)) {
         return false;   // 打开失败
     }
@@ -372,10 +387,11 @@ bool JAttempter::loadConfig()
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
         const QString text = QStringLiteral("框架全局配置文件\"%1\"解析失败！\n"
                                             "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列好：%4）")
+                                            "错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(0, QStringLiteral("警告"), text);
+        QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
+                             QStringLiteral("警告"), text);
         return false;
     }
 
@@ -406,11 +422,11 @@ bool JAttempter::loadConfig()
 
 void JAttempter::commandSink(void *sender, const char *senderName)
 {
-    QMapIterator<QString, JComponentInfo> citer(q_mapComponent);
+    QMapIterator<QString, JComponentConfig> citer(q_mapComponent);
     while (citer.hasNext()) {
         citer.next();
-        const JComponentInfo &componentInfo = citer.value();
-        IJCommandSink *cmdSink = (IJCommandSink *)componentInfo.component
+        const JComponentConfig &componentConfig = citer.value();
+        IJCommandSink *cmdSink = (IJCommandSink *)componentConfig.component
                 ->queryInterface(IID_IJCommandSink, VER_IJCommandSink);
         if (!cmdSink) {
             continue;   //

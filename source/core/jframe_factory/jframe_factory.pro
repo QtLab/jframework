@@ -9,7 +9,8 @@ QT += gui concurrent
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += \
-    PRO_CORE
+    PRO_CORE \
+    JFRAME_NO_PRECOMPILED
 
 win32 {
     DEFINES += \

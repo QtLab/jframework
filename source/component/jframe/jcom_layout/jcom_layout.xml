@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component>
-  <ui>
-    <window>
-      <view objectName="mainView" type="Qt" />
-    </window>
-  </ui>
+  <ribbonPage>
+  </ribbonPage>
+  <window>
+    <view objectName="mainView" windowType="Qt" />
+  </window>
 </component>

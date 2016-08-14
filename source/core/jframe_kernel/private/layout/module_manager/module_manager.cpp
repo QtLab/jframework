@@ -269,7 +269,10 @@ bool ModuleManager::detachComponent(IJComponent *component)
     // 设置（更新）组件挂载信息
     JComponentInfo &componentInfo = iterComponentInfo.value();
     // 设置为分离状态
-    componentInfo.attached = false;
+    if (componentInfo.attached) {
+        component->detach();    // 分离
+        componentInfo.attached = false;
+    }
     // 设置激活标识
     componentInfo.active = false;       // 取消激活组件
     // 如果窗口有效，则设置为不可见

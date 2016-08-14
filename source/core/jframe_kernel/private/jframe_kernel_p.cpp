@@ -264,6 +264,11 @@ bool JFrameKernel::startFrame()
 {
     bool result = true;
 
+    //
+    JwtCore::instance()->init();
+    JwtCore::instance()->loadSystemLang();
+    //qApp->setStyleSheet(JStyleSheet::instance()->styleSheet("default"));
+
     // 初始化框架核心系统
     JFrameCore::getInstance();
 

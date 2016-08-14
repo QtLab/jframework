@@ -81,6 +81,7 @@ public:
     // IJFrameLayout interface
 public:
     QWidget *mainWindow();
+    QWidget *mainView();
     INotifier *notifier();
     IJAttempter *attempter();
     void setFrameTheme(const char *theme);

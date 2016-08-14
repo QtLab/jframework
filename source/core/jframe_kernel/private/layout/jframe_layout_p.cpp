@@ -166,6 +166,11 @@ QWidget *JFrameLayout::mainWindow()
     return (QWidget *)jframeCore()->attempter()->mainWindow()->mainWidget();
 }
 
+QWidget *JFrameLayout::mainView()
+{
+    return data->mainViewManager;
+}
+
 INotifier *JFrameLayout::notifier()
 {
     return data->notifier;
@@ -342,7 +347,7 @@ bool JFrameLayout::loadLoginInfo()
     }
 #endif
 
-    return false;
+    return true;
 }
 
 JFrameLayout::JFrameLayout()

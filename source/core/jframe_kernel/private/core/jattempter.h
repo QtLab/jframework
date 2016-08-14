@@ -5,16 +5,16 @@
 #include <QMap>
 
 /**
- * @brief The JComponentInfo struct
+ * @brief The JComponentConfig struct
  */
-struct JComponentInfo
+struct JComponentConfig
 {
     QString componentDir;
     QString componentName;
     QString componentDesc;
     IJComponent *component;
 
-    JComponentInfo()
+    JComponentConfig()
         : componentDir("")
         , componentName("")
         , componentDesc("")
@@ -23,12 +23,12 @@ struct JComponentInfo
 
     }
 
-    JComponentInfo(const JComponentInfo &other)
+    JComponentConfig(const JComponentConfig &other)
     {
         *this = other;
     }
 
-    JComponentInfo &operator =(const JComponentInfo &other)
+    JComponentConfig &operator =(const JComponentConfig &other)
     {
         if (this == &other) {
             return *this;
@@ -94,7 +94,7 @@ private:
     friend class JFrameWnd;
 
     IJMainWindow *q_mainWindow;
-    QMap<QString, JComponentInfo> q_mapComponent;
+    QMap<QString, JComponentConfig> q_mapComponent;
 
     // workMode
     int q_workModeId;

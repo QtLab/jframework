@@ -14,9 +14,14 @@ TEMPLATE = lib
 # Mac OS X - Xcode, Makefile, Unix - gcc 3.3 and up)
 ##################################################
 
-CONFIG += precompile_header
-PRECOMPILED_HEADER = $$PWD/precomp.h
 INCLUDEPATH += $$PWD
+
+win32 {
+    !contains(DEFINES, JFRAME_NO_PRECOMPILED) {
+        CONFIG += precompile_header
+        PRECOMPILED_HEADER = $$PWD/precomp.h
+    }
+}
 
 ##################################################
 # qmake internal options

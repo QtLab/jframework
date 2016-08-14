@@ -7,7 +7,7 @@
 struct FrameFilterData
 {
     INotifier *notifier;
-    QtRibbon::RibbonMainWindow *mainWindow;
+    QWidget *mainWindow;
 
     FrameFilterData()
         : notifier(0)
@@ -28,7 +28,7 @@ FrameFilter::FrameFilter(INotifier *notifier, IJAttempter *attempter, QObject *p
     data->notifier = notifier;
 
     // 解析主窗口
-    data->mainWindow = qobject_cast<QtRibbon::RibbonMainWindow *>(parseMainWindow(attempter));
+    data->mainWindow = parseMainWindow(attempter);
 }
 
 FrameFilter::~FrameFilter()
@@ -44,11 +44,11 @@ bool FrameFilter::init()
     }
 
     // 设置框架主窗口标题
-    if (jframeLogin()->loginManager()->isValid()) {
+    if (jloginManager()->isValid()) {
         const QString windowTitle = QString("%1 —— %1@%2")
-                .arg(QString::fromStdString(jframeLogin()->loginManager()->currentSystem()))
-                .arg(QString::fromStdString(jframeLogin()->loginManager()->userName()))
-                .arg(QString::fromStdString(jframeLogin()->loginManager()->currentSeat()));
+                .arg(QString::fromStdString(jloginManager()->currentSystem()))
+                .arg(QString::fromStdString(jloginManager()->userName()))
+                .arg(QString::fromStdString(jloginManager()->currentSeat()));
         data->mainWindow->setWindowTitle(windowTitle);
     }
 
@@ -91,7 +91,7 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
         case QEvent::Close:
         {
             const int result = QMessageBox::warning(data->mainWindow,
-                                                    QStringLiteral("警告"),
+                                                    QStringLiteral("关闭软件"),
                                                     QStringLiteral("请选择以下按钮，继续……"),
                                                     QStringLiteral("注销（重启）"),
                                                     QStringLiteral("退出"),
@@ -145,6 +145,14 @@ bool FrameFilter::loadConfig()
 
     //
     QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架全局配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(data->mainWindow, QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
     if (!file.open(QFile::ReadOnly)) {
         const QString text = QStringLiteral("框架全局配置文件\"%1\"打开失败！")
                 .arg(file.fileName());
@@ -180,42 +188,6 @@ bool FrameFilter::loadConfig()
     if (emMainWindow.isNull()) {
         return false;
     }
-
-    // 获取框架主体
-    if (emMainWindow.hasAttribute("windowTheme")) {
-        jframeLayout()->setFrameTheme(emMainWindow.attribute("windowTheme").toStdString().c_str());
-    }
-
-    /// for ribbon
-
-    // 获取RibbonBar节点
-    QDomElement emRibbonBar = emMainWindow.firstChildElement("ribbonBar");
-    if (!emRibbonBar.isNull()) {
-        // 获取RibbonBar对象
-        QtRibbon::RibbonBar *ribbonBar = data->mainWindow->ribbonBar();
-        if (ribbonBar) {
-            // font
-            ribbonBar->setFont(QFont("microsoft yahei", 9));
-            // visible
-            if (emRibbonBar.hasAttribute("visible")) {
-                ribbonBar->setVisible(QVariant(emRibbonBar.attribute("visible")).toBool());
-            }
-            // minimized
-            if (emRibbonBar.hasAttribute("minimized")) {
-                ribbonBar->setMinimized(QVariant(emRibbonBar.attribute("minimized")).toBool());
-            }
-        }
-    }
-
-    ///
-
-    // 窗口原始大小调整
-    //data->mainWindow->resize(1024, 600);
-
-    // stylesheet - background
-    data->mainWindow->setStyleSheet(QString("%1#%2{backbground:'#6E7E93';}")
-                                    .arg(data->mainWindow->metaObject()->className())
-                                    .arg(data->mainWindow->objectName()));
 
     return true;
 }
