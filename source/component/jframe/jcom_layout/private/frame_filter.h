@@ -23,6 +23,10 @@ public:
 
     QRect mainWindowRect() const;
 
+    void attachEventFilter();
+
+    void detachEventFilter();
+
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
 

@@ -4,14 +4,11 @@
 
 jframe_root = $$PWD/../../..
 
-QT += gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT -= gui
 
 DEFINES += \
     PRO_CORE \
-    USE_NO_LOG4CPP \
-#    USE_TINYXML
+    USE_NO_LOG4CPP
 
 win32 {
     DEFINES += \

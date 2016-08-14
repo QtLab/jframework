@@ -53,6 +53,12 @@ std::string JComLayout::componentDesc() const
 
 bool JComLayout::initialize()
 {
+    //
+    if (q_frameFilter) {
+        // 安装主窗口事件过滤
+        q_frameFilter->attachEventFilter();
+    }
+
     // 挂载组件
     jframeLayout()->attachComponent(this, true);
 
@@ -64,6 +70,12 @@ bool JComLayout::initialize()
 
 void JComLayout::shutdown()
 {
+    //
+    if (q_frameFilter) {
+        // 去除主窗口事件过滤
+        q_frameFilter->detachEventFilter();
+    }
+
     // 分离组件
     jframeLayout()->detachComponent(this);
 }

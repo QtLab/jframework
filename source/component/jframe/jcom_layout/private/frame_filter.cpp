@@ -29,10 +29,6 @@ FrameFilter::FrameFilter(INotifier *notifier, IJAttempter *attempter, QObject *p
 
     // 解析主窗口
     data->mainWindow = qobject_cast<QtRibbon::RibbonMainWindow *>(parseMainWindow(attempter));
-    if (data->mainWindow) {
-        // 安装主窗口事件过滤
-        data->mainWindow->installEventFilter(this);
-    }
 }
 
 FrameFilter::~FrameFilter()
@@ -68,6 +64,20 @@ QRect FrameFilter::mainWindowRect() const
     return QRect();
 }
 
+void FrameFilter::attachEventFilter()
+{
+    if (data->mainWindow) {
+        data->mainWindow->installEventFilter(this);
+    }
+}
+
+void FrameFilter::detachEventFilter()
+{
+    if (data->mainWindow) {
+        data->mainWindow->removeEventFilter(this);
+    }
+}
+
 bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == data->mainWindow) {
@@ -88,10 +98,10 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
                                                     QStringLiteral("取消"), 1);
             switch (result) {
             case 0:     // 注销（重启）
-                data->notifier->post("jlayout.notify_manager", "j_frame_restart");
+                data->notifier->imm().post("jlayout.notify_manager", "j_frame_restart");
                 break;
             case 1:     // 退出
-                data->notifier->post("jlayout.notify_manager", "j_frame_exit");
+                data->notifier->imm().post("jlayout.notify_manager", "j_frame_exit");
                 break;
             case 2:     // 取消
             default:    // 忽略
@@ -116,10 +126,8 @@ QWidget *FrameFilter::parseMainWindow(IJAttempter *attempter)
     }
 
     //
-    QWidget *widget = reinterpret_cast<QWidget *>(attempter->mainWindow()->mainWindowHandle());
-    if (!widget
-            || !widget->inherits("MainWindow")
-            || widget->objectName() != "RibbonMainWindow") {
+    QWidget *widget = reinterpret_cast<QWidget *>(attempter->mainWindow()->mainWidget());
+    if (!widget || widget->objectName() != "JFrameWnd") {
         return 0;
     }
 
@@ -136,9 +144,9 @@ bool FrameFilter::loadConfig()
     }
 
     //
-    QFile file(QString::fromStdString(jframeFacade()->frameFramViewPath()));
+    QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
     if (!file.open(QFile::ReadOnly)) {
-        const QString text = QStringLiteral("GF框架视图配置文件\"%1\"打开失败！")
+        const QString text = QStringLiteral("框架全局配置文件\"%1\"打开失败！")
                 .arg(file.fileName());
         QMessageBox::warning(data->mainWindow, QStringLiteral("警告"), text);
         return false;
@@ -149,9 +157,9 @@ bool FrameFilter::loadConfig()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("GF框架视图配置文件\"%1\"解析失败！\n"
+        const QString text = QStringLiteral("框架全局配置文件\"%1\"解析失败！\n"
                                             "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列好：%4）")
+                                            "错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(data->mainWindow, QStringLiteral("警告"), text);
@@ -168,20 +176,20 @@ bool FrameFilter::loadConfig()
     }
 
     // 获取MainWindow节点
-    QDomElement emMainWindow = emRoot.firstChildElement("MainWindow");
+    QDomElement emMainWindow = emRoot.firstChildElement("mainWindow");
     if (emMainWindow.isNull()) {
         return false;
     }
 
     // 获取框架主体
-    if (emMainWindow.hasAttribute("Style")) {
-        jframeLayout()->setFrameTheme(emMainWindow.attribute("Style").toStdString().c_str());
+    if (emMainWindow.hasAttribute("windowTheme")) {
+        jframeLayout()->setFrameTheme(emMainWindow.attribute("windowTheme").toStdString().c_str());
     }
 
     /// for ribbon
 
     // 获取RibbonBar节点
-    QDomElement emRibbonBar = emMainWindow.firstChildElement("RibbonBar");
+    QDomElement emRibbonBar = emMainWindow.firstChildElement("ribbonBar");
     if (!emRibbonBar.isNull()) {
         // 获取RibbonBar对象
         QtRibbon::RibbonBar *ribbonBar = data->mainWindow->ribbonBar();
@@ -202,7 +210,7 @@ bool FrameFilter::loadConfig()
     ///
 
     // 窗口原始大小调整
-    data->mainWindow->resize(1024, 600);
+    //data->mainWindow->resize(1024, 600);
 
     // stylesheet - background
     data->mainWindow->setStyleSheet(QString("%1#%2{backbground:'#6E7E93';}")

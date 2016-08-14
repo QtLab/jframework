@@ -1,13 +1,7 @@
 ﻿#include "precomp.h"
 #include "jframe_factory_p.h"
-#include "kernel/jframe_kernel.h"
-#include "kernel/jnotifier.h"
-
-// imported from jframe_kernel -> jnotifier
-extern "C" extern void* _func_jnotifier_create();
-
-// imported from jframe_kernel -> jnotifier
-extern "C" extern void _func_jnotifier_destroy(void *notifier);
+#include "jnotifier_p.h"
+#include "jlogmanager_p.h"
 
 // struct JFrameFactoryData
 
@@ -74,8 +68,13 @@ unsigned int JFrameFactory::objectVersion() const
 
 void *JFrameFactory::factory(const char *iid, unsigned int ver)
 {
+    // 创建消息分发器
     if (J_IS_INSTANCEOF(INotifier, iid, ver)) {
-        return _func_jnotifier_create();
+        return static_cast<INotifier *>(new JNotifier());
+    }
+    // 创建日志管理器
+    else if (J_IS_INSTANCEOF(IJLogManager, iid, ver)) {
+        return static_cast<IJLogManager *>(new JLogManagerPri());
     }
 
     return 0;
@@ -83,8 +82,19 @@ void *JFrameFactory::factory(const char *iid, unsigned int ver)
 
 void JFrameFactory::releaseFactory(void *iface, const char *iid, unsigned int ver)
 {
+    // 销毁消息分发器
     if (J_IS_INSTANCEOF(INotifier, iid, ver)) {
-        _func_jnotifier_destroy(iface);
+        INotifier *notifier = reinterpret_cast<INotifier *>(iface);
+        if (notifier) {
+            delete notifier;
+        }
+    }
+    // 销毁日志管理器
+    else if (J_IS_INSTANCEOF(IJLogManager, iid, ver)) {
+        IJLogManager *logManager = reinterpret_cast<IJLogManager *>(iface);
+        if (logManager) {
+            delete logManager;
+        }
     }
 }
 

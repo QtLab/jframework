@@ -1,7 +1,8 @@
 #ifndef JCOM_LAYOUT_H
 #define JCOM_LAYOUT_H
 
-#include "jframe_kernel.h"
+#include "kernel/jframe_core.h"
+#include "factory/jnotifier.h"
 
 class FrameFilter;
 

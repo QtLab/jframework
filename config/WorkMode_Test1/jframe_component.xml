@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <jframe>
-  <component name="jcom_frame" desc="框架加载组件" load="1" dir="$(jframe)/component/jframe" />
-  <component name="jcom_login" desc="登录管理组件" load="1" dir="$(jframe)/component/jframe" />
+  <component name="jcom_login" desc="登录管理组件" load="0" dir="$(jframe)/component/jframe" />
   <component name="jcom_layout" desc="框架布局组件" load="1" dir="$(jframe)/component/jframe" />
   <component name="com_demo1" desc="demo1组件" load="1" dir="$(app)/component" />
 </jframe>

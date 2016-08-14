@@ -19,8 +19,8 @@ if not exist "%jframe_dir%\bin\3rdpart\" (
 rem -----
 
 copy "%qt_dir%\bin\Qt?Core%debug_suffix%*.dll" "%jframe_dir%\bin\"
-rem copy "%qt_dir%\bin\Qt?Gui%debug_suffix%*.dll" "%jframe_dir%\bin\"
-rem copy "%qt_dir%\bin\Qt?Widgets%debug_suffix%*.dll" "%jframe_dir%\bin\"
+copy "%qt_dir%\bin\Qt?Gui%debug_suffix%*.dll" "%jframe_dir%\bin\"
+copy "%qt_dir%\bin\Qt?Widgets%debug_suffix%*.dll" "%jframe_dir%\bin\"
 
 rem -----
 
@@ -31,12 +31,6 @@ copy "%jframe_dir%\lib\3rdpart\qtwinmigrate%debug_suffix%*.dll" "%jframe_dir%\bi
 copy "%jframe_dir%\lib\3rdpart\tinyxml%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
 
 rem -----
-
-if exist "%jframe_dir%\lib\jframe\jframe_core%debug_suffix%.dll" (
-    echo copy jframe_core
-    copy "%jframe_dir%\lib\jframe\jframe_core%debug_suffix%.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframe_core%debug_suffix%.pdb" "%jframe_dir%\bin\"
-)
 
 if exist "%jframe_dir%\lib\jframe\jframe_factory%debug_suffix%.dll" (
     echo copy jframe_factory
@@ -54,16 +48,4 @@ if exist "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.dll" (
     echo copy jframe_facade
     copy "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.dll" "%jframe_dir%\bin\"
     copy "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.pdb" "%jframe_dir%\bin\"
-)
-
-if exist "%jframe_dir%\lib\jframe\jframe_login%debug_suffix%.dll" (
-    echo copy jframe_login
-    copy "%jframe_dir%\lib\jframe\jframe_login%debug_suffix%.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframe_login%debug_suffix%.pdb" "%jframe_dir%\bin\"
-)
-
-if exist "%jframe_dir%\lib\jframe\jframe_layout%debug_suffix%.dll" (
-    echo copy jframe_layoutd
-    copy "%jframe_dir%\lib\jframe\jframe_layout%debug_suffix%.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframe_layout%debug_suffix%.pdb" "%jframe_dir%\bin\"
 )

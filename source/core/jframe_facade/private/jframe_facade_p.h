@@ -34,7 +34,6 @@ public:
     std::string frameConfigPath() const;
     std::string frameGlobalPath() const;
     std::string frameLayoutPath() const;
-    std::string frameFramViewPath() const;
 
     std::string frameVersion() const;
     bool frameVersion(int &major, int &minor, int &patch) const;
@@ -64,13 +63,11 @@ private:
 
      //
     IJObject *loadFrameInterface(const std::string &moduleName);
+    void releaseFrameInterface(const std::string &moduleName);
 
     //
-    bool loadFrameKernel();
     bool loadFrameFactory();
-    bool loadFrameCore();
-    bool loadFrameLayout();
-    bool loadFrameLogin();
+    bool loadFrameKernel();
 
     // 加载程序配置文件
     bool loadGlobalConfig();

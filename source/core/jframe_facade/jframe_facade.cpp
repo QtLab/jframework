@@ -11,5 +11,11 @@ IJFrameFacade *jframeFacade()
 //
 extern "C" JFRAME_FACADE_EXPORT IJObject* CreateInstance()
 {
-    return static_cast<IJObject *>(jframeFacade());
+    return static_cast<IJObject *>(JFrameFacade::getInstance());
+}
+
+//
+extern "C" JFRAME_FACADE_EXPORT void ReleaseInstance()
+{
+    JFrameFacade::releaseInstance();
 }

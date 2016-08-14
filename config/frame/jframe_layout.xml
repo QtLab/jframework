@@ -6,7 +6,7 @@
     <dock/>
     <busyIndicator duration="2000" image="" model="true" visible="true" />
   </config>
-  <system>
+  <system name="system #1" module="module #1">
     <seat-module>
       <item seat="seat #1" module="module #1" />
     </seat-module>

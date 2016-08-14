@@ -1,7 +1,7 @@
 #ifndef JFRAME_FACTORY_H
 #define JFRAME_FACTORY_H
 
-#include "jframe_core.h"
+#include "jframe_facade.h"
 
 // 接口描述
 #define VER_IJFrameFactory J_INTERFACE_VERSION(1, 0)
@@ -14,6 +14,12 @@ class IJFrameFactory : public IJObject
 {
 public:
     virtual ~IJFrameFactory() {}
+
+    // 获取对象标识
+    virtual std::string objectIdentity() const { return IID_IJFrameFactory; }
+
+    // 获取对象版本
+    virtual unsigned int objectVersion() const { return VER_IJFrameFactory; }
 
     // 创建指定对象实例（iid：对象标识）；ver：对象版本
     virtual void* factory(const char *iid, unsigned int ver) = 0;
@@ -52,7 +58,24 @@ JFRAME_FACTORY_EXPORT IJFrameFactory* jframeFactory();
 
 //
 #define JFRAME_FACTORY_RELEASE(_object_, _interface_) \
-    (jframeFactory()->releaseFactory(_object_, IID_ ## _interface_, VER_ ## _interface_))
+    do { \
+        (jframeFactory()->releaseFactory(_object_, IID_ ## _interface_, VER_ ## _interface_)); \
+        (_object_) = 0; \
+    } while (0)
+
+#else
+
+//
+#define JFRAME_FACTORY_CREATE(_factory_, _interface_) \
+    reinterpret_cast<_interface_ *> \
+    ((_factory_)->factory(IID_ ## _interface_, VER_ ## _interface_))
+
+//
+#define JFRAME_FACTORY_RELEASE(_factory_, _object_, _interface_) \
+    do { \
+        ((_factory_)->releaseFactory(_object_, \IID_ ## _interface_, VER_ ## _interface_)); \
+        (_object_) = 0; \
+    } while (0)
 
 #endif // JFRAME_FACTORY_DLL
 

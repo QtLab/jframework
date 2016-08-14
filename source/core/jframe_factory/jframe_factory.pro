@@ -4,11 +4,12 @@
 
 jframe_root = $$PWD/../../..
 
-QT += gui
+QT += gui concurrent
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += \
-    PRO_CORE \
-    USE_JFRAME_KERNEL
+    PRO_CORE
 
 win32 {
     DEFINES += \
@@ -23,12 +24,18 @@ TARGET = $$qtLibraryTarget(jframe_factory)
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
     jframe_factory.h \
-    private/jframe_factory_p.h
+    private/jframe_factory_p.h \
+    jlogmanager.h \
+    jnotifier.h \
+    private/jlogmanager_p.h \
+    private/jnotifier_p.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
     jframe_factory.cpp \
-    private/jframe_factory_p.cpp
+    private/jframe_factory_p.cpp \
+    private/jlogmanager_p.cpp \
+    private/jnotifier_p.cpp
 
 ###############################################################
 # resource files

@@ -81,11 +81,9 @@ contains(DEFINES, PRO_COMPONENT) {
 
     !contains(DEFINES, USE_NO_JFRAME_LIBS) {
         DEFINES += \
-            USE_JFRAME_KERNEL \
             USE_JFRAME_FACTORY \
-            USE_JFRAME_LAYOUT \
-            USE_JFRAME_FACADE \
-            USE_JFRAME_LOGIN
+            USE_JFRAME_KERNEL \
+            USE_JFRAME_FACADE
     }
 }
 
@@ -103,16 +101,6 @@ DEPENDPATH += \
     $${jframe_root}/include/3rdpart \
     $${jframe_root}/include/jframe
 
-contains(DEFINES, USE_JFRAME_KERNEL) {
-    ## import jframe_layout library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_kerneld
-    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
-    INCLUDEPATH += $${jframe_root}/include/jframe/kernel
-    DEPENDPATH += $${jframe_root}/include/jframe/kernel
-    DEFINES += JFRAME_KERNEL_DLL
-}
-
 contains(DEFINES, USE_JFRAME_FACTORY) {
     ## import jframe_factory library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_factory
@@ -123,28 +111,22 @@ contains(DEFINES, USE_JFRAME_FACTORY) {
     DEFINES += JFRAME_FACTORY_DLL
 }
 
+contains(DEFINES, USE_JFRAME_KERNEL) {
+    ## import jframe_layout library
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_kerneld
+    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
+    INCLUDEPATH += $${jframe_root}/include/jframe/kernel
+    DEPENDPATH += $${jframe_root}/include/jframe/kernel
+    DEFINES += JFRAME_KERNEL_DLL
+}
+
 contains(DEFINES, USE_JFRAME_FACADE) {
     ## import jframe_facade library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facaded
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
     DEFINES += JFRAME_FACADE_DLL
-}
-
-contains(DEFINES, USE_JFRAME_LAYOUT) {
-    ## import jframe_layout library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_layout
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_layoutd
-    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_layout
-    DEFINES += JFRAME_LAYOUT_DLL
-}
-
-contains(DEFINES, USE_JFRAME_LOGIN) {
-    ## import jframe_login library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_login
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_logind
-    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_login
-    DEFINES += JFRAME_LOGIN_DLL
 }
 
 contains(DEFINES, USE_TINYXML) {

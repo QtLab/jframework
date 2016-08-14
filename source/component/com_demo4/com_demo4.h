@@ -1,7 +1,8 @@
 #ifndef COM_DEMO4_H
 #define COM_DEMO4_H
 
-#include "jframe_kernel.h"
+#include "kernel/jframe_core.h"
+#include "factory/jnotifier.h"
 
 class QWidget;
 

@@ -16,7 +16,7 @@ DESTDIR = $${jframe_root}/bin
 
 ##
 DEFINES += \
-    USE_JFRAME_FACADE
+#    USE_JFRAME_FACADE
 
 # The .h file which was generated for your project. Feel free to hck it.
 HEADERS += \

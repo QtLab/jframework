@@ -30,4 +30,15 @@
     <language name="zh_CN" path="$(jframe)">
     </language>
   </system>
+  <mainWindow
+    windowTitle="框架测试程序"
+    windowIcon="$(app)/config/resource/app.ico"
+    windowTheme="Office2010Blue"
+    imageSplash="$(app)/config/resource/splash.png"
+    imageFinish="$(app)/config/resource/finish.png"
+    closeKilled="true" >
+      <ribbonBar
+        visible="true"
+        minimized="false" />
+    </mainWindow>
 </jframe>

@@ -1,6 +1,5 @@
 #include "precomp.h"
 #include "jcom_login.h"
-#include "jframe_layout.h"
 
 //
 extern "C" __declspec(dllexport) void *CreateComponent(void *attempter)

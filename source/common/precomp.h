@@ -45,28 +45,20 @@
 
 #endif
 
-#ifdef JFRAME_CORE_DLL
-#include "jframe_core.h"
+#ifdef JFRAME_FACTORY_DLL
+#include "factory/jframe_factory.h"
+#include "factory/jnotifier.h"
 #endif
 
 #ifdef JFRAME_KERNEL_DLL
 #include "kernel/jframe_kernel.h"
-#endif
-
-#ifdef JFRAME_FACTORY_DLL
-#include "factory/jframe_factory.h"
+#include "kernel/jframe_core.h"
+#include "kernel/jframe_layout.h"
+#include "kernel/jframe_login.h"
 #endif
 
 #ifdef JFRAME_FACADE_DLL
 #include "jframe_facade.h"
-#endif
-
-#ifdef JFRAME_LAYOUT_DLL
-#include "jframe_layout.h"
-#endif
-
-#ifdef JFRAME_LOGIN_DLL
-#include "jframe_login.h"
 #endif
 
 #ifdef USE_TINYXML

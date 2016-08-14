@@ -24,14 +24,20 @@ public:
 public:
     std::string objectIdentity() const;
     unsigned int objectVersion() const;
-    bool invoke(const char *method, int argc);
+    bool invoke(const char *method, int argc, ...);
 
     // IJFrameKernel interface
 public:
     IJLogManager *logManager();
+    IJFrameCore *frameCore();
+    IJFrameLayout *frameLayout();
+    IJFrameLogin *frameLogin();
 
 private:
     bool invokeLog(int argc, va_list ap);
+
+private:
+    bool startFrame();
 
 private:
     JFrameKernel();

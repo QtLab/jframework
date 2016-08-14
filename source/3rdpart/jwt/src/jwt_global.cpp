@@ -37,7 +37,9 @@ void JwtCore::releaseInstance()
     if (JwtCorePrivate::_instance != 0) {
         JwtCorePrivate::_instance_mutex.lock();
         if (JwtCorePrivate::_instance != 0) {
+            JwtCorePrivate::_instance_mutex.unlock();
             delete JwtCorePrivate::_instance;
+            JwtCorePrivate::_instance_mutex.lock();
             JwtCorePrivate::_instance = 0;
         }
         JwtCorePrivate::_instance_mutex.unlock();

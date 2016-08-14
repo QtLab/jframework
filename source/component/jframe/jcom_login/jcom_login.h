@@ -1,7 +1,7 @@
 #ifndef JCOM_LOGIN_H
 #define JCOM_LOGIN_H
 
-#include "jframe_core.h"
+#include "kernel/jframe_core.h"
 
 class JComLogin : public IJComponent
 {

@@ -12,5 +12,11 @@ IJFrameFactory* jframeFactory()
 //
 extern "C" JFRAME_FACTORY_EXPORT IJObject* CreateInstance()
 {
-    return static_cast<IJObject *>(jframeFactory());
+    return static_cast<IJObject *>(JFrameFactory::getInstance());
+}
+
+//
+extern "C" JFRAME_FACTORY_EXPORT void ReleaseInstance()
+{
+    JFrameFactory::releaseInstance();
 }
