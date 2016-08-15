@@ -7,34 +7,42 @@
 
 // class ModuleManager
 
-ModuleManager::ModuleManager(JFrameLayout *frameLayout) :
-    q_frameLayout(frameLayout),
-    q_notifier(frameLayout->notifier())
+ModuleManager::ModuleManager(JFrameLayout *frameLayout)
+    : q_frameLayout(frameLayout)
+    , q_notifier(frameLayout->notifier())
 {
 }
 
 ModuleManager::~ModuleManager()
 {
-    // 取消订阅
-    q_notifier->pop(this);
+
 }
 
-bool ModuleManager::init()
+bool ModuleManager::loadInterface()
 {
     // 订阅消息
-    q_notifier->begin(this)
+    q_notifier->beginGroup(this)
             // layout
-            .push("j_previous_system_changed", &ModuleManager::onPreviousSystemChanged)
-            .push("j_previous_module_changed", &ModuleManager::onPreviousModuleChanged)
-            .push("j_load_default_system", &ModuleManager::onLoadDefaultSystem)
+            .append("j_previous_system_changed", &ModuleManager::onPreviousSystemChanged)
+            .append("j_previous_module_changed", &ModuleManager::onPreviousModuleChanged)
+            .append("j_load_default_system", &ModuleManager::onLoadDefaultSystem)
             // system
-            .push("j_switch_system", &ModuleManager::onSwitchSystem)
-            .push("j_switch_module", &ModuleManager::onSwitchModule)
-            .push("j_current_system", &ModuleManager::onCurrentSystem)
-            .push("j_current_module", &ModuleManager::onCurrentModule)
-            .end();
+            .append("j_switch_system", &ModuleManager::onSwitchSystem)
+            .append("j_switch_module", &ModuleManager::onSwitchModule)
+            .append("j_current_system", &ModuleManager::onCurrentSystem)
+            .append("j_current_module", &ModuleManager::onCurrentModule)
+            .endGroup();
 
     return true;
+}
+
+void ModuleManager::releaseInterface()
+{
+    // 分离所有组件
+    detachAllComponent();
+
+    // 取消订阅
+    q_notifier->remove(this);
 }
 
 bool ModuleManager::loadSystem()
@@ -45,15 +53,15 @@ bool ModuleManager::loadSystem()
     }
 
     // 异步通知模式已经切换
-    q_notifier->post("j_module_changed", q_currentModule);
+    q_notifier->postMessage("j_module_changed", q_currentModule);
 
     return true;
 }
 
-JComponentInfo *ModuleManager::componentById(const QString &componentId)
+JComponentInfo *ModuleManager::componentByName(const QString &componentName)
 {
     QMap<QString, JComponentInfo>::iterator iter =
-            q_mapComponentInfo.find(componentId);
+            q_mapComponentInfo.find(componentName);
     if (iter != q_mapComponentInfo.end()) {
         return &iter.value();
     }
@@ -70,7 +78,7 @@ bool ModuleManager::isComponentAttached(const JComponentInfo *componentInfo)
     return componentInfo->attached;
 }
 
-bool ModuleManager::attachComponent(const JComponentInfo *componentInfo, bool show)
+bool ModuleManager::attachComponent(JComponentInfo *componentInfo, bool show)
 {
     //
     if (!componentInfo) {
@@ -90,6 +98,9 @@ bool ModuleManager::attachComponent(const JComponentInfo *componentInfo, bool sh
 
     // 挂载组件
     component->attach();
+
+    // 标识已挂载状态
+    componentInfo->attached = true;
 
     // 如果窗口有效，则显示窗口
     if (componentInfo->widget && show) {
@@ -115,13 +126,16 @@ bool ModuleManager::attachComponentUi(const JComponentInfo *componentInfo)
             (dynamic_cast<IJComponent *>(componentInfo->iface)
              ->queryInterface(IID_IJComponentUi, VER_IJComponentUi));
     if (componentUi) {
-        componentUi->createUi(q_frameLayout->mainViewManager(), "");
+        QWidget *widget = (QWidget *)componentUi->createWindow(q_frameLayout->mainViewManager(), "");
+        if (widget) {
+            attachComponentUi(dynamic_cast<IJComponent *>(componentInfo->iface), widget);
+        }
     }
 
     return true;
 }
 
-bool ModuleManager::detachComponent(const JComponentInfo *componentInfo)
+bool ModuleManager::detachComponent(JComponentInfo *componentInfo)
 {
     if (!componentInfo) {
         return false;
@@ -140,6 +154,9 @@ bool ModuleManager::detachComponent(const JComponentInfo *componentInfo)
 
     // 分离组件
     component->detach();
+
+    // 标识已分离状态
+    componentInfo->attached = false;
 
     return true;
 }
@@ -180,10 +197,26 @@ void ModuleManager::resetAllInactivateViewComponent()
     while (iter.hasNext()) {
         iter.next();
         JComponentInfo &componentInfo = iter.value();
-        if (!componentInfo.active
+        if (!componentInfo.stayOn
+                && !componentInfo.active
                 && componentInfo.isView
                 && componentInfo.widget) {
             componentInfo.widget->setParent(q_frameLayout->mainWindow());
+        }
+    }
+}
+
+void ModuleManager::showAllActivateViewComponent()
+{
+    QMutableMapIterator<QString, JComponentInfo> iter(q_mapComponentInfo);
+    while (iter.hasNext()) {
+        iter.next();
+        JComponentInfo &componentInfo = iter.value();
+        if (!componentInfo.stayOn
+                && componentInfo.active
+                && componentInfo.isView
+                && componentInfo.widget) {
+            componentInfo.widget->show();
         }
     }
 }
@@ -196,12 +229,16 @@ bool ModuleManager::attachComponent(IJComponent *component, bool stayOn)
     }
 
     //
-    if (!componentInfo->stayOn) {
-        componentInfo->stayOn = stayOn;
-        if (stayOn) {
-            componentInfo->attached = true;     // 设置为挂载状态
-            componentInfo->active = true;       // 激活组件
-        }
+    componentInfo->stayOn = stayOn;
+
+    //
+    if (componentInfo->stayOn
+            && !componentInfo->attached) {
+        // 挂载组件
+        component->attach();
+        // 设置状态
+        componentInfo->attached = true;     // 设置为挂载状态
+        componentInfo->active = true;       // 激活组件
     }
 
     return true;
@@ -218,19 +255,17 @@ JComponentInfo *ModuleManager::attachComponent(IJComponent *component)
     JComponentInfo *componentInfo = 0;
 
     // 设置（或更新）组件挂载信息
-    const QString sComponentId = QString::fromStdString(component->componentId());
+    const QString sComponentName = QString::fromStdString(component->componentName());
     QMap<QString, JComponentInfo>::iterator iterComponentInfo =
-            q_mapComponentInfo.find(sComponentId);
+            q_mapComponentInfo.find(sComponentName);
     if (iterComponentInfo == q_mapComponentInfo.end()) {
         // 如果组件还没有挂载过，则挂载新的组件信息（并且，初次挂载设置active为未激活状态，即false）
         JComponentInfo info;
         info.iface = component;
-        // 首次加载，须分离组件
-        //component->shutdown();
         //
-        q_mapComponentInfo.insert(sComponentId, info);
+        q_mapComponentInfo.insert(sComponentName, info);
         //
-        componentInfo = &q_mapComponentInfo[sComponentId];
+        componentInfo = &q_mapComponentInfo[sComponentName];
     } else {
         // 更新组件挂载信息
         componentInfo = &iterComponentInfo.value();
@@ -261,7 +296,7 @@ bool ModuleManager::detachComponent(IJComponent *component)
 
     // 组件挂载信息有效性检测
     QMap<QString, JComponentInfo>::iterator iterComponentInfo =
-            q_mapComponentInfo.find(QString::fromStdString(component->componentId()));
+            q_mapComponentInfo.find(QString::fromStdString(component->componentName()));
     if (iterComponentInfo == q_mapComponentInfo.end()) {
         return false;
     }
@@ -291,23 +326,20 @@ bool ModuleManager::attachComponentUi(IJComponent *component, QWidget *widget)
     }
 
     // 组件挂载信息有效性检测
-    const QString sComponentId = QString::fromStdString(component->componentId());
+    const QString sComponentName = QString::fromStdString(component->componentName());
     QMap<QString, JComponentInfo>::iterator iterComponentInfo =
-            q_mapComponentInfo.find(sComponentId);
+            q_mapComponentInfo.find(sComponentName);
     if (iterComponentInfo == q_mapComponentInfo.end()) {
-        // 如果组件还没有挂载过，则挂载新的组件信息（这种情况属于GF框架配置文件出发界面的创建，应该设置为激活状态，并且始终显示）
+        // 如果组件还没有挂载过，则挂载新的组件信息（这种情况属于框架调度器创建自动组件，
+        // 应该设置为激活状态，并且始终显示）
         JComponentInfo componentInfo;
         componentInfo.iface = component;
         // 存储窗口实例
         componentInfo.widget = widget;
-        // 设置为挂载状态
-        componentInfo.attached = true;
-        // 设置激活标识
-        componentInfo.active = true;        // 激活组件
         // 设置为始终挂载
         componentInfo.stayOn = true;
         // 增加到映射队列
-        q_mapComponentInfo.insert(sComponentId, componentInfo);
+        q_mapComponentInfo.insert(sComponentName, componentInfo);
     } else {
         JComponentInfo &componentInfo = iterComponentInfo.value();
         if (componentInfo.widget) {
@@ -319,24 +351,10 @@ bool ModuleManager::attachComponentUi(IJComponent *component, QWidget *widget)
         // 初次设置为分离状态
         componentInfo.attached = false;
         // 初次设置为不可见
-        componentInfo.widget->hide();
+        //componentInfo.widget->hide();
     }
 
     return true;
-}
-
-std::list<IJComponent *> ModuleManager::attachedComponents() const
-{
-    std::list<IJComponent *> attacheds;
-    QMapIterator<QString, JComponentInfo> citer(q_mapComponentInfo);
-    while (citer.hasNext()) {
-        citer.next();
-        if (citer.value().attached) {
-            attacheds.push_back(dynamic_cast<IJComponent *>(citer.value().iface));
-        }
-    }
-
-    return attacheds;
 }
 
 std::string ModuleManager::currentSystem() const
@@ -349,7 +367,7 @@ std::string ModuleManager::currentModule() const
     return q_currentModule;
 }
 
-std::string ModuleManager::jobserverId() const
+std::string ModuleManager::observerId() const
 {
     return "jlayout.module_manager";
 }
@@ -503,7 +521,7 @@ bool ModuleManager::switchSystem(const std::string &system, JLPARAM lParam)
     }
 
     // 异步通知系统已经切换
-    q_notifier->post("j_system_changed", system, lParam);
+    q_notifier->postMessage("j_system_changed", system, lParam);
 
     return true;
 }
@@ -531,7 +549,23 @@ bool ModuleManager::switchModule(const std::string &module, JLPARAM lParam)
     }
 
     // 异步通知模式已经切换
-    q_notifier->post("j_module_changed", specModule, lParam);
+    q_notifier->postMessage("j_module_changed", specModule, lParam);
 
     return true;
+}
+
+void ModuleManager::detachAllComponent()
+{
+    QMutableMapIterator<QString, JComponentInfo> iter(q_mapComponentInfo);
+    while (iter.hasNext()) {
+        iter.next();
+        JComponentInfo &componentInfo = iter.value();
+        if (componentInfo.attached) {
+            IJComponent *component = dynamic_cast<IJComponent *>(componentInfo.iface);
+            if (component) {
+                component->detach();
+                componentInfo.attached = false;
+            }
+        }
+    }
 }

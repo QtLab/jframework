@@ -15,9 +15,9 @@ IJFrameKernel* jframeKernel()
  * @brief CreateInstance
  * @return
  */
-extern "C" JFRAME_KERNEL_EXPORT IJObject* CreateInstance()
+extern "C" JFRAME_KERNEL_EXPORT IJUnknown* CreateInstance()
 {
-    return static_cast<IJObject *>(JFrameKernel::getInstance());
+    return static_cast<IJUnknown *>(JFrameKernel::getInstance());
 }
 
 /**

@@ -5,6 +5,7 @@
 #include "factory/jnotifier.h"
 
 class QWidget;
+class TestWidget1;
 
 class ComDemo1 :
         public IJComponent,
@@ -17,32 +18,31 @@ public:
 
     // IJUnknown interface
 public:
+    bool loadInterface();
     void releaseInterface();
-    void *queryInterface(const char *iid, unsigned int ver);
+    void *queryInterface(const std::string &iid, unsigned int ver);
 
     // IJComponent interface
 public:
-    std::string componentId() const;
+    std::string componentName() const;
     std::string componentDesc() const;
-    bool initialize();
-    void shutdown();
     void attach();
     void detach();
 
     // IJComponentUi interface
 public:
-    void *createUi(void *parent, const char *objectName);
+    void *createWindow(void *parent, const std::string &objectName);
 
     // JObserver interface
 public:
-    std::string jobserverId() const;
+    std::string observerId() const;
 
 protected:
 
 private:
     IJAttempter *q_attempter;
     INotifier* q_notifier;
-    QWidget *q_widget;
+    TestWidget1 *q_testWidget1;
 };
 
 #endif // COM_DEMO1_H

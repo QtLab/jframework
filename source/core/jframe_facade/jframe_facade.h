@@ -50,13 +50,13 @@
 
 //
 #define J_IS_INSTANCEOF(_interface_, _iid_, _ver_) \
-    ((strcmp(_iid_, IID_ ## _interface_) == 0) \
+    (((_iid_) == IID_ ## _interface_) \
     && ((_ver_) == VER_ ## _interface_))
 
 //
-#define J_IS_OBJECT(_object_, _iid_, _ver_) \
-    ((strcmp(_iid_, _object_->objectIdentity().c_str()) == 0) \
-    && ((_ver_) == _object_->objectVersion()))
+#define J_IS_INTERFACEOF(_interface_, _iid_, _ver_) \
+    (((_iid_) == (_interface_)->interfaceIdentity()) \
+    && ((_ver_) == (_interface_)->interfaceVersion()))
 
 // 在当前接口子对象中查询
 
@@ -69,16 +69,16 @@
 // 在给定接口子对象中查询
 #define J_QUERY_IJUNKNOWN(_interface_, _iid_, _ver_) \
     do { \
-        if (J_IS_INSTANCE(IJUnknown, _iid_, _ver_)) \
+        if (J_IS_INSTANCEOF(IJUnknown, _iid_, _ver_)) \
         { return static_cast<IJUnknown *>(static_cast<_interface_ *>(this)); } \
     } while(0)
 
 // 查询成员对象实例
-#define J_QUERY_MEMBER_OBJECT(_interface_, _iid_, _ver_, _member_) \
+#define J_QUERY_MEMBER_OBJECT(_interface_, _iid_, _ver_, _object_) \
     do { \
-        if (_member_ != 0) { \
+        if ((_object_) != 0) { \
             if (J_IS_INSTANCEOF(_interface_, _iid_, _ver_)) \
-            { return static_cast<_interface_ *>(_member_); } \
+            { return static_cast<_interface_ *>(_object_); } \
         } \
     } while(0)
 
@@ -140,41 +140,59 @@ typedef long long JLRESULT;
 class IJUnknown
 {
 public:
+    /**
+     * @brief ~IJUnknown : 析构函数
+     */
     virtual ~IJUnknown() {}
 
-    // 释放接口
+    /**
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
+     */
+    virtual std::string interfaceIdentity() const { return IID_IJUnknown; }
+
+    /**
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
+     */
+    virtual unsigned int interfaceVersion() const { return VER_IJUnknown; }
+
+    /**
+     * @brief queryInterface : 查询接口
+     * @param iid : 接口标识
+     * @param ver : 接口版本
+     * @return : 接口实例
+     */
+    virtual void* queryInterface(const std::string &iid, unsigned int ver)
+    { (void)iid; (void)ver; return 0; }
+
+    /**
+     * @brief loadInterface : 加载接口
+     * @return : true，加载成功；false，加载失败
+     */
+    virtual bool loadInterface() { return true; }
+
+    /**
+     * @brief releaseInterface : 释放接口
+     */
     virtual void releaseInterface() {}
 
-    // 查询接口
-    virtual void* queryInterface(const char *iid, unsigned int ver)
-    { (void)iid; (void)ver; return 0; }
-};
-
-// 接口描述
-#define VER_IJObject J_INTERFACE_VERSION(1, 0)
-#define IID_IJObject J_IID_INTERFACE(IJObject)
-
-/**
- * @brief The IJObject class
- */
-class IJObject : public IJUnknown
-{
-public:
-    virtual ~IJObject() {}
-
-    // 获取对象标识
-    virtual std::string objectIdentity() const { return IID_IJObject; }
-
-    // 获取对象版本
-    virtual unsigned int objectVersion() const { return VER_IJObject; }
-
-    // 执行函数调用
-    virtual bool invoke(const char *method, int argc = 0, ...)
-    { (void)method; (void)argc; return false; }
-
-    // 查询invoke函数内部指令信息
-    virtual std::list<std::string> queryInvoking() const
+    /**
+     * @brief queryMethod : 查询invoke函数内部指令信息
+     * @return : 内部指令集
+     */
+    virtual std::list<std::string> queryMethod() const
     { return std::list<std::string>(); }
+
+    /**
+     * @brief invokeMethod : 执行函数调用
+     * @param method : 内部函数名称
+     * @param argc : 可变参数个数
+     * @param ... : 可变参数
+     * @return : 调用结果。true，调用成功；false，调用失败
+     */
+    virtual bool invokeMethod(const std::string &method, int argc = 0, ...)
+    { (void)method; (void)argc; return false; }
 };
 
 // 接口标识
@@ -184,65 +202,154 @@ public:
 /**
  * @brief The IJFrameFacade class
  */
-class IJFrameFacade : public IJObject
+class IJFrameFacade : public IJUnknown
 {
 public:
+    /**
+     * @brief ~IJFrameFacade : 析构函数
+     */
     virtual ~IJFrameFacade() {}
 
-    // 获取对象标识
-    virtual std::string objectIdentity() const { return IID_IJFrameFacade; }
+    /**
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
+     */
+    virtual std::string interfaceIdentity() const { return IID_IJFrameFacade; }
 
-    // 获取对象版本
-    virtual unsigned int objectVersion() const { return VER_IJFrameFacade; }
+    /**
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
+     */
+    virtual unsigned int interfaceVersion() const { return VER_IJFrameFacade; }
 
-    // 获取框架路径
+    /**
+     * @brief frameDirPath : 获取框架路径
+     * @return : 框架路径
+     */
     virtual std::string frameDirPath() const = 0;
 
-    // 获取框架进程路径
+    /**
+     * @brief appDirPath : 获取软件实体路径
+     * @return : 软件实体路径
+     */
     virtual std::string appDirPath() const = 0;
 
-    // 获取框架相关配置文件路径
+    /**
+     * @brief frameConfigPath : 获取框架配置文件夹路径
+     * @return : 框架配置文件夹路径
+     */
     virtual std::string frameConfigPath() const = 0;
+
+    /**
+     * @brief frameGlobalPath : 获取框架全局配置文件路径
+     * @return  : 框架全局配置文件路径
+     */
     virtual std::string frameGlobalPath() const = 0;
+
+    /**
+     * @brief frameLayoutPath : 获取框架布局配置文件路径
+     * @return : 框架布局配置文件路径
+     */
     virtual std::string frameLayoutPath() const = 0;
 
-    // 获取框架版本
+    /**
+     * @brief frameVersion : 获取框架版本
+     * @return : 框架版本。为空时表示获取失败
+     */
     virtual std::string frameVersion() const = 0;
+
+    /**
+     * @brief frameVersion : 获取框架版本
+     * @param major : 主版本号
+     * @param minor : 次版本号
+     * @param patch : 补丁版本号
+     * @return : true，获取成功；false，获取失败
+     */
     virtual bool frameVersion(int &major, int &minor, int &patch) const = 0;
 
-    // 加载框架
+    /**
+     * @brief loadFrame : 加载框架
+     * @return : 执行结果。true，加载成功；false，加载失败
+     */
     virtual bool loadFrame() = 0;
-    virtual bool loadFrame(const char *version) = 0;
+
+    /**
+     * @brief loadFrame : 加载框架
+     * @param version : 框架版本
+     * @return : 执行结果。true，加载成功；false，加载失败
+     */
+    virtual bool loadFrame(const std::string &version) = 0;
+
+    /**
+     * @brief loadFrame : 加载框架
+     * @param major : 主版本好号
+     * @param minor : 次版本号
+     * @param patch : 补丁版本号
+     * @return : 执行结果。true，加载成功；false，加载失败
+     */
     virtual bool loadFrame(int major, int minor, int patch) = 0;
 
-    // 显示/隐藏框架主窗口
-    virtual void showFrame(bool show = true, bool maximumed = true) = 0;
+    /**
+     * @brief showFrame : 显示/隐藏框架主窗口
+     * @param show : 显示标志。true，显示；false，隐藏
+     * @param maximized : 最大化标志。true，最大化；false，正常
+     */
+    virtual void showFrame(bool show = true, bool maximized = true) = 0;
 
-    // 退出框架（带提示）
+    /**
+     * @brief tryExitFrame : 退出框架（带提示）
+     */
     virtual void tryExitFrame() = 0;
 
-    // 推出框架
+    /**
+     * @brief exitFrame : 退出框架
+     */
     virtual void exitFrame() = 0;
 
-    // 重启框架
+    /**
+     * @brief restartFrame : 重启框架
+     * @param arguments : 参数列表
+     */
     virtual void restartFrame(const std::list<std::string> &arguments) = 0;
 
-    // 执行登陆界面显示
+    /**
+     * @brief loginFrame : 执行登陆界面显示
+     * @return : 执行结果。true，登录成功；false，登录失败
+     */
     virtual bool loginFrame() = 0;
 
-    // 注销登录框架
+    /**
+     * @brief logoutFrame : 注销登录框架
+     * @return : 执行结果。true，注销成功；false，注销失败
+     */
     virtual bool logoutFrame() = 0;
 
-    // 获取环境变量值
-    virtual std::string getEnvValue(const char *name) const = 0;
+    /**
+     * @brief getEnvValue : 获取环境变量值
+     * @param name : 环境变量名称
+     * @return : 环境变量值
+     */
+    virtual std::string getEnvValue(const std::string &name) const = 0;
 
-    // 在GF_Application中调用（theApp类的Run函数，实现Qt消息循环调度）
+    /**
+     * @brief runQApp : 在MFC的theApp类中调用（theApp类的Run函数，实现Qt消息循环调度）
+     * @param mfcApp : CWinApp类型实例，即theApp
+     * @return : Qt环境退出码
+     */
     virtual int runQApp(void *mfcApp) = 0;
 
-    // 获取CWnd*或QWidget*窗口的窗口句柄（winType：“QWidget”、“CWnd”）
-    virtual long windowHandle(void *window, const char *winType) = 0;
+    /**
+     * @brief windowHandle : 获取窗口实例的句柄
+     * @param window : 目标窗口实例（CWnd类型、QWidget类型）
+     * @param winType : 目标窗口类型。1）"QWidget"；2）"CWnd"
+     * @return : 目标窗口窗口句柄（HWND）
+     */
+    virtual long windowHandle(void *window, const std::string &winType) = 0;
 
-    // 获取软件系统语言
+    /**
+     * @brief language : 获取软件系统语言
+     * @return : 软件系统语言
+     */
     virtual std::string language() const = 0;
 };
 
@@ -266,7 +373,10 @@ public:
 #define JFRAME_FACADE_EXPORT
 #endif // _MSC_VER
 
-//
+/**
+ * @brief jframeFacade : 获取框架门面系统单实例
+ * @return : 框架门面系统单实例
+ */
 JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 
 #endif // JFRAME_FACADE_DLL
@@ -290,7 +400,7 @@ JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 
 // 引用宏（type: char*, msg, char*）
 #define jframeLog(type, msg) \
-    jframeFacade()->invoke("log", 5, type, msg, __FILENAME__, __LINE__, __FUNCTION__)
+    jframeFacade()->invokeMethod("log", 5, type, msg, __FILENAME__, __LINE__, __FUNCTION__)
 
 // log - emerge - (msg: char*)
 #define jframeLogEmerge(msg) \

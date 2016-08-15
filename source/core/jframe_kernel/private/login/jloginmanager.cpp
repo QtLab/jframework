@@ -18,12 +18,29 @@ JLoginManager::~JLoginManager()
     }
 }
 
-bool JLoginManager::init()
+std::string JLoginManager::interfaceIdentity() const
+{
+    return IID_IJLoginManager;
+}
+
+unsigned int JLoginManager::interfaceVersion() const
+{
+    return VER_IJLoginManager;
+}
+
+void *JLoginManager::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+
+    return 0;
+}
+
+bool JLoginManager::loadInterface()
 {
     bool result = true;
 
-    //
-    result = result && dynamic_cast<JLoginDBMgr *>(q_loginDBMgr)->init();
+    // 加载登录数据库管理器
+    result = result && q_loginDBMgr->loadInterface();
 
     return result;
 }
@@ -35,36 +52,26 @@ void JLoginManager::releaseInterface()
         //
     }
 
-    //
+    // 注销登录数据库管理器
     q_loginDBMgr->releaseInterface();
 }
 
-void *JLoginManager::queryInterface(const char *iid, unsigned int ver)
+std::list<std::string> JLoginManager::queryMethod() const
 {
-    J_QUERY_INTERFACE(IJObject, iid, ver);
+    std::list<std::string> methods;
 
-    return 0;
+    //
+
+    return methods;
 }
 
-std::string JLoginManager::objectIdentity() const
+bool JLoginManager::invokeMethod(const std::string &method, int argc, ...)
 {
-    return IID_IJLoginManager;
-}
-
-unsigned int JLoginManager::objectVersion() const
-{
-    return VER_IJLoginManager;
-}
-
-bool JLoginManager::invoke(const char *method, int argc)
-{
-    if (!method) {
-        return false;
-    }
-
     bool result = false;
     va_list ap;
     va_start(ap, argc);
+
+    Q_UNUSED(method);
 
     va_end(ap);
 
@@ -76,7 +83,7 @@ bool JLoginManager::isValid() const
     return false;
 }
 
-bool JLoginManager::execute()
+bool JLoginManager::login()
 {
     return false;
 }

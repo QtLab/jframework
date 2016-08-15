@@ -10,9 +10,9 @@ IJFrameFactory* jframeFactory()
 }
 
 //
-extern "C" JFRAME_FACTORY_EXPORT IJObject* CreateInstance()
+extern "C" JFRAME_FACTORY_EXPORT IJUnknown* CreateInstance()
 {
-    return static_cast<IJObject *>(JFrameFactory::getInstance());
+    return static_cast<IJUnknown *>(JFrameFactory::getInstance());
 }
 
 //

@@ -85,27 +85,28 @@ public:
     explicit JNotifier(QObject *parent = 0);
     ~JNotifier();
 
-    // IJObject interface
+    // IJUnknown interface
 public:
-    std::string objectIdentity() const;
-    unsigned int objectVersion() const;
+    std::string interfaceIdentity() const;
+    unsigned int interfaceVersion() const;
+    void releaseInterface();
 
     // INotifier interface
 public:
-    INotifier &end();
-    void pop(JObserver *obs);
-    INotifier &pop(JObserver *obs, const std::string &id);
-    INotifier &pop(const std::string &id);
+    INotifier &endGroup();
+    void remove(JObserver *obs);
+    INotifier &remove(JObserver *obs, const std::string &id);
+    INotifier &remove(const std::string &id);
     void clear();
-    JLRESULT send(const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void post(const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void post(const std::string &id, const std::string &info, JLPARAM lParam);
+    JLRESULT sendMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    void postMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    void postMessage(const std::string &id, const std::string &info, JLPARAM lParam);
     INotifierImm &imm();
 
 protected:
-    INotifier &begin(JObserver *obs, int offset);
-    INotifier &push(JObserver *obs, const std::string &id, jobserver_cb cb, int offset);
-    INotifier &push(const std::string &id, jobserver_cb cb);
+    INotifier &beginGroup(JObserver *obs, int offset);
+    INotifier &append(JObserver *obs, const std::string &id, jobserver_cb cb, int offset);
+    INotifier &append(const std::string &id, jobserver_cb cb);
 
 Q_SIGNALS:
     void readyDispense(const JNotifyMsg &msg);
@@ -123,12 +124,12 @@ private:
     static void task(JNotifier *receiver, JNotifyMsg msg);
 
     //
-    JLRESULT immSend(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    JLRESULT immSend(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void immPost(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void immPost(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void immPost(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam);
-    void immPost(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam);
+    JLRESULT immSendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    JLRESULT immSendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    void immPostMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    void immPostMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    void immPostMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam);
+    void immPostMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam);
 
 private:
     JNotifierPrivate* d;
@@ -144,51 +145,51 @@ public:
 
     // INotifierImm interface
 public:
-    inline JLRESULT send(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    inline JLRESULT send(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    inline void post(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    inline void post(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    inline void post(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam);
-    inline void post(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam);
+    inline JLRESULT sendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    inline JLRESULT sendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    inline void postMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    inline void postMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    inline void postMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam);
+    inline void postMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam);
 
 private:
     JNotifier& q_notifier;
 };
 
 inline
-JLRESULT JNotifierImm::send(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JNotifierImm::sendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
-    return q_notifier.immSend(obsid, id, wParam, lParam);
+    return q_notifier.immSendMessage(obsid, id, wParam, lParam);
 }
 
 inline
-JLRESULT JNotifierImm::send(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JNotifierImm::sendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
-    return q_notifier.immSend(obs, id, wParam, lParam);
+    return q_notifier.immSendMessage(obs, id, wParam, lParam);
 }
 
 inline
-void JNotifierImm::post(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+void JNotifierImm::postMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
-    return q_notifier.immPost(obsid, id, wParam, lParam);
+    return q_notifier.immPostMessage(obsid, id, wParam, lParam);
 }
 
 inline
-void JNotifierImm::post(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+void JNotifierImm::postMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
-    return q_notifier.immPost(obs, id, wParam, lParam);
+    return q_notifier.immPostMessage(obs, id, wParam, lParam);
 }
 
 inline
-void JNotifierImm::post(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam)
+void JNotifierImm::postMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam)
 {
-    return q_notifier.immPost(obsid, id, info, lParam);
+    return q_notifier.immPostMessage(obsid, id, info, lParam);
 }
 
 inline
-void JNotifierImm::post(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam)
+void JNotifierImm::postMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam)
 {
-    return q_notifier.immPost(obs, id, info, lParam);
+    return q_notifier.immPostMessage(obs, id, info, lParam);
 }
 
 #endif // JNOTIFIER_P_H

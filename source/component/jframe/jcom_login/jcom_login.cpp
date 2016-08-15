@@ -25,12 +25,17 @@ JComLogin::~JComLogin()
 
 }
 
+bool JComLogin::loadInterface()
+{
+    return true;
+}
+
 void JComLogin::releaseInterface()
 {
 
 }
 
-void *JComLogin::queryInterface(const char *iid, unsigned int ver)
+void *JComLogin::queryInterface(const std::string &iid, unsigned int ver)
 {
     Q_UNUSED(iid);
     Q_UNUSED(ver);
@@ -38,7 +43,7 @@ void *JComLogin::queryInterface(const char *iid, unsigned int ver)
     return 0;
 }
 
-std::string JComLogin::componentId() const
+std::string JComLogin::componentName() const
 {
     return "jcom_login";
 }
@@ -46,20 +51,6 @@ std::string JComLogin::componentId() const
 std::string JComLogin::componentDesc() const
 {
     return "框架登录组件";
-}
-
-bool JComLogin::initialize()
-{
-    // 挂载组件
-    jframeLayout()->attachComponent(this);
-
-    return true;
-}
-
-void JComLogin::shutdown()
-{
-    // 分离组件
-    jframeLayout()->detachComponent(this);
 }
 
 void JComLogin::attach()

@@ -2,8 +2,8 @@
 #define JFRAME_LAYOUT_P_H
 
 #include "../../jframe_layout.h"
-#include <QMutex>
 #include "jframe_login.h"
+#include <QMutex>
 
 // struct JComponentInfo
 
@@ -69,14 +69,13 @@ public:
 
     // IJUnknown interface
 public:
+    std::string interfaceIdentity() const;
+    unsigned int interfaceVersion() const;
+    void *queryInterface(const std::string &iid, unsigned int ver);
+    bool loadInterface();
     void releaseInterface();
-    void *queryInterface(const char *iid, unsigned int ver);
-
-    // IJObject interface
-public:
-    std::string objectIdentity() const;
-    unsigned int objectVersion() const;
-    bool invoke(const char *method, int argc, ...);
+    std::list<std::string> queryMethod() const;
+    bool invokeMethod(const std::string &method, int argc, ...);
 
     // IJFrameLayout interface
 public:
@@ -84,19 +83,16 @@ public:
     QWidget *mainView();
     INotifier *notifier();
     IJAttempter *attempter();
-    void setFrameTheme(const char *theme);
-
-    bool attachComponent(IJComponent *component, bool stayOn);
-    bool detachComponent(IJComponent *component);
-    bool attachComponentUi(IJComponent *component, QWidget *widget);
-    std::list<IJComponent *> attachedComponent() const;
-
-    int componentPowerLevel(const std::string &componentId) const;
-
+    void setFrameTheme(const std::string &theme);
+    int componentPowerLevel(const std::string &componentName) const;
     std::string currentSystem() const;
     std::string currentModule() const;
 
 private:
+    bool attachComponent(IJComponent *component, bool stayOn);
+    bool detachComponent(IJComponent *component);
+    bool attachComponentUi(IJComponent *component, QWidget *widget);
+
     LayoutManager *layoutManager();
     MainViewManager *mainViewManager();
     ModuleManager *moduleManager();
@@ -109,7 +105,7 @@ private:
 
 private:
     int runQApp(void *mfcApp);
-    long windowHandle(void *window, const char* winType);
+    long windowHandle(void *window, const std::string &winType);
 
     //
     bool loadDefaultSystem();

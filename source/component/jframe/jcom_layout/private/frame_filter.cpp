@@ -83,10 +83,10 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
     if (watched == data->mainWindow) {
         switch (event->type()) {
         case QEvent::Resize:
-            data->notifier->post("j_mainwindow_resized");
+            data->notifier->postMessage("j_mainwindow_resized");
             break;
         case QEvent::Move:
-            data->notifier->post("j_mainwindow_moved");
+            data->notifier->postMessage("j_mainwindow_moved");
             break;
         case QEvent::Close:
         {
@@ -98,10 +98,10 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
                                                     QStringLiteral("取消"), 1);
             switch (result) {
             case 0:     // 注销（重启）
-                data->notifier->imm().post("jlayout.notify_manager", "j_frame_restart");
+                data->notifier->imm().postMessage("jlayout.notify_manager", "j_frame_restart");
                 break;
             case 1:     // 退出
-                data->notifier->imm().post("jlayout.notify_manager", "j_frame_exit");
+                data->notifier->imm().postMessage("jlayout.notify_manager", "j_frame_exit");
                 break;
             case 2:     // 取消
             default:    // 忽略

@@ -34,11 +34,24 @@ MainViewManager::MainViewManager(QWidget *parent):
     q_layoutClient = new QVBoxLayout(q_clientWidget);
     q_layoutClient->setContentsMargins(0, 0, 0, 0);
     q_layoutClient->setSpacing(0);
+#if 0
+    //TEST
+    QPushButton *button1 = new QPushButton("test1", this);
+    q_layoutClient->addWidget(button1);
+#endif
 }
 
-bool MainViewManager::init()
+bool MainViewManager::loadInterface()
 {
-    return true;
+    bool result = true;
+
+    //
+
+    return result;
+}
+
+void MainViewManager::releaseInterface()
+{
 }
 
 void MainViewManager::attachSplitter(QWidget *widget)

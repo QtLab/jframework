@@ -51,45 +51,59 @@ void JFrameCore::releaseInstance()
     }
 }
 
+std::string JFrameCore::interfaceIdentity() const
+{
+    return IID_IJFrameCore;
+}
+
+unsigned int JFrameCore::interfaceVersion() const
+{
+    return VER_IJFrameCore;
+}
+
+void *JFrameCore::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+
+    return 0;
+}
+
+bool JFrameCore::loadInterface()
+{
+    bool result = true;
+
+    // 加载框架调度器
+    result = result && data->attempter->loadInterface();
+
+    return result;
+}
+
 void JFrameCore::releaseInterface()
 {
     // 释放框架调度器
     if (data->attempter) {
         data->attempter->releaseInterface();
     }
-
-    JFrameCore::releaseInstance();
 }
 
-void *JFrameCore::queryInterface(const char *iid, unsigned int ver)
+std::list<std::string> JFrameCore::queryMethod() const
 {
-    J_QUERY_INTERFACE(IJObject, iid, ver);
+    std::list<std::string> methods;
 
-    return 0;
+    // frame_show
+    methods.push_back(std::string("frame_show").append("..."));
+
+    return methods;
 }
 
-std::string JFrameCore::objectIdentity() const
+bool JFrameCore::invokeMethod(const std::string &method, int argc, ...)
 {
-    return IID_IJFrameCore;
-}
-
-unsigned int JFrameCore::objectVersion() const
-{
-    return VER_IJFrameCore;
-}
-
-bool JFrameCore::invoke(const char *method, int argc, ...)
-{
-    if (!method) {
-        return false;
-    }
-
     bool result = false;
     va_list ap;
     va_start(ap, argc);
 
     // 显示或隐藏框架主窗口
-    if (strcmp(method, "frame_show") == 0) {
+    if (method == "frame_show") {
         result = invokeShowFrame(argc, ap);
     }
 
@@ -139,17 +153,6 @@ JFrameCore::JFrameCore()
 
     //
     data->attempter = new JAttempter();
-
-    //
-    bool result = true;
-
-    //
-    result = result && dynamic_cast<JAttempter *>(data->attempter)->init();
-
-    // 结果检测
-    if (!result) {
-        //
-    }
 }
 
 JFrameCore::~JFrameCore()

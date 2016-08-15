@@ -11,7 +11,6 @@
 
 struct JFrameLayoutData
 {
-    INotifier *notifier;                // 消息分发器实例
     LayoutManager *layoutManager;       // 布局管理器实例
     MainViewManager *mainViewManager;   // 框架主视图实例
     ModuleManager *moduleManager;       // 模块管理器实例
@@ -23,8 +22,7 @@ struct JFrameLayoutData
     std::map<std::string/*组件标识*/, JFrameLoginSpace::stPowerElement> mapPower;   // 权限信息映射
 #endif
     JFrameLayoutData()
-        : notifier(0)
-        , layoutManager(0)
+        : layoutManager(0)
         , mainViewManager(0)
         , moduleManager(0)
         , notifyManager(0)
@@ -69,36 +67,105 @@ void JFrameLayout::releaseInstance()
     }
 }
 
-void JFrameLayout::releaseInterface()
-{
-    JFrameLayout::releaseInstance();
-}
-
-void *JFrameLayout::queryInterface(const char *iid, unsigned int ver)
-{
-    J_QUERY_INTERFACE(IJObject, iid, ver);
-
-    return 0;
-}
-
-std::string JFrameLayout::objectIdentity() const
+std::string JFrameLayout::interfaceIdentity() const
 {
     return IID_IJFrameLayout;
 }
 
-unsigned int JFrameLayout::objectVersion() const
+unsigned int JFrameLayout::interfaceVersion() const
 {
     return VER_IJFrameLayout;
 }
 
-bool JFrameLayout::invoke(const char *method, int argc, ...)
+void *JFrameLayout::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+
+    return 0;
+}
+
+bool JFrameLayout::loadInterface()
+{
+    bool result = true;
+
+    // 加载布局管理器
+    result = result && data->layoutManager->loadInterface();
+
+    // 加载主视图管理器
+    result = result && data->mainViewManager->loadInterface();
+
+    // 加载模式管理器
+    result = result && data->moduleManager->loadInterface();
+
+    // 加载消息管理器
+    result = result && data->notifyManager->loadInterface();
+
+    return result;
+}
+
+void JFrameLayout::releaseInterface()
+{
+    // 释放布局管理器实例
+    if (data->layoutManager) {
+        data->layoutManager->releaseInterface();
+    }
+
+    // 释放框架主视图实例
+    if (data->mainViewManager) {
+        data->mainViewManager->releaseInterface();
+    }
+
+    // 释放模块管理器实例
+    if (data->moduleManager) {
+        data->moduleManager->releaseInterface();
+    }
+
+    // 释放消息管理器实例
+    if (data->notifyManager) {
+        data->notifyManager->releaseInterface();
+    }
+}
+
+std::list<std::string> JFrameLayout::queryMethod() const
+{
+    std::list<std::string> methods;
+
+    // run_q_app
+    methods.push_back(std::string("run_q_app").append("..."));
+
+    return methods;
+}
+
+bool JFrameLayout::invokeMethod(const std::string &method, int argc, ...)
 {
     bool result = false;
     va_list ap;
     va_start(ap, argc);
 
+    // 挂载组件
+    if (method == "attach_component") {
+        if (argc == 2) {
+            IJComponent *component = va_arg(ap, IJComponent*);
+            bool stayOn = va_arg(ap, bool);
+            result = attachComponent(component, stayOn);
+        }
+    }
+    // 分离组件
+    else if (method == "detach_component") {
+        if (argc == 1) {
+            result = detachComponent((IJComponent *)va_arg(ap, void*));
+        }
+    }
+    // 挂载组件窗口
+    else if (method == "attach_component_ui") {
+        if (argc == 2) {
+            IJComponent *component = va_arg(ap, IJComponent*);
+            QWidget *widget = va_arg(ap, QWidget*);
+            result = attachComponentUi(component, widget);
+        }
+    }
     // 运行Qt消息循环系统
-    if (strcmp(method, "run_q_app") == 0) {
+    else if (method == "run_q_app") {
         if (argc == 2) {
             int ret = runQApp(va_arg(ap, void*));
             int *pRet = va_arg(ap, int*);
@@ -109,9 +176,11 @@ bool JFrameLayout::invoke(const char *method, int argc, ...)
         }
     }
     // 获取窗口实例的窗口句柄
-    else if (strcmp(method, "window_handle") == 0) {
+    else if (method == "window_handle") {
         if (argc == 3) {
-            long handle = windowHandle(va_arg(ap, void*), va_arg(ap, char*));
+            void *window = va_arg(ap, void*);
+            const char* winType = va_arg(ap, char*);
+            long handle = windowHandle(window, winType);
             long *pHandle = va_arg(ap, long*);
             if (pHandle) {
                 *pHandle = handle;
@@ -120,18 +189,18 @@ bool JFrameLayout::invoke(const char *method, int argc, ...)
         }
     }
     // 设置框架主题
-    else if (strcmp(method, "set_frame_theme") == 0) {
+    else if (method == "set_frame_theme") {
         if (argc > 0) {
             setFrameTheme(va_arg(ap, char*));
             result = true;
         }
     }
     // 加载默认框架系统
-    else if (strcmp(method, "load_default_system") == 0) {
+    else if (method == "load_default_system") {
         result = loadDefaultSystem();
     }
     // 尝试退出框架（异步方式，带提示窗口方式）
-    else if (strcmp(method, "frame_try_exit") == 0) {
+    else if (method == "frame_try_exit") {
         QWidget *mainWindow = this->mainWindow();
         if (mainWindow) {
             // 调用转入框架布局组件FrameFilter模块（异步事件）
@@ -140,20 +209,16 @@ bool JFrameLayout::invoke(const char *method, int argc, ...)
         }
     }
     // 退出框架（异步方式）
-    else if (strcmp(method, "frame_exit") == 0) {
-        if (data->notifier) {
-            // 调用转入消息管理模块（异步消息）
-            data->notifier->imm().post("jlayout.notify_manager", "j_frame_exit");
-            result = true;
-        }
+    else if (method == "frame_exit") {
+        // 调用转入消息管理模块（异步消息）
+        notifier()->imm().postMessage("jlayout.notify_manager", "j_frame_exit");
+        result = true;
     }
     // 重启框架（异步方式）
-    else if (strcmp(method, "frame_restart") == 0) {
-        if (data->notifier) {
-            // 调用转入消息管理模块（异步消息）
-            data->notifier->imm().post("jlayout.notify_manager", "j_frame_restart");
-            result = true;
-        }
+    else if (method == "frame_restart") {
+        // 调用转入消息管理模块（异步消息）
+        notifier()->imm().postMessage("jlayout.notify_manager", "j_frame_restart");
+        result = true;
     }
 
     va_end(ap);
@@ -173,7 +238,7 @@ QWidget *JFrameLayout::mainView()
 
 INotifier *JFrameLayout::notifier()
 {
-    return data->notifier;
+    return jframeCore()->attempter()->notifier();
 }
 
 IJAttempter *JFrameLayout::attempter()
@@ -181,39 +246,15 @@ IJAttempter *JFrameLayout::attempter()
     return jframeCore()->attempter();
 }
 
-void JFrameLayout::setFrameTheme(const char *theme)
+void JFrameLayout::setFrameTheme(const std::string &theme)
 {
-    if (!theme) {
-        return; // 参数无效
-    }
-
     // 设置框架主题
     jframeCore()->attempter()->mainWindow()->setTheme(theme);
 }
 
-bool JFrameLayout::attachComponent(IJComponent *component, bool stayOn)
+int JFrameLayout::componentPowerLevel(const std::string &componentName) const
 {
-    return data->moduleManager->attachComponent(component, stayOn);
-}
-
-bool JFrameLayout::detachComponent(IJComponent *component)
-{
-    return data->moduleManager->detachComponent(component);
-}
-
-bool JFrameLayout::attachComponentUi(IJComponent *component, QWidget *widget)
-{
-    return data->moduleManager->attachComponentUi(component, widget);
-}
-
-std::list<IJComponent *> JFrameLayout::attachedComponent() const
-{
-    return data->moduleManager->attachedComponents();
-}
-
-int JFrameLayout::componentPowerLevel(const std::string &componentId) const
-{
-    Q_UNUSED(componentId);
+    Q_UNUSED(componentName);
 
     // 查找组件权限信息
 
@@ -238,6 +279,21 @@ std::string JFrameLayout::currentModule() const
     }
 
     return data->moduleManager->currentModule();
+}
+
+bool JFrameLayout::attachComponent(IJComponent *component, bool stayOn)
+{
+    return data->moduleManager->attachComponent(component, stayOn);
+}
+
+bool JFrameLayout::detachComponent(IJComponent *component)
+{
+    return data->moduleManager->detachComponent(component);
+}
+
+bool JFrameLayout::attachComponentUi(IJComponent *component, QWidget *widget)
+{
+    return data->moduleManager->attachComponentUi(component, widget);
 }
 
 LayoutManager *JFrameLayout::layoutManager()
@@ -270,22 +326,22 @@ int JFrameLayout::runQApp(void *mfcApp)
 #endif
 }
 
-long JFrameLayout::windowHandle(void *window, const char *winType)
+long JFrameLayout::windowHandle(void *window, const std::string &winType)
 {
     // 参数有效性检测
-    if (!window || !winType) {
+    if (!window) {
         return 0;   // 参数无效
     }
 
     // 获取QWidget实例窗口句柄
-    if (strcmp(winType, "QWidget") == 0) {
+    if (winType == "QWidget") {
         QWidget *widget = reinterpret_cast<QWidget *>(window);
         if (widget) {
             return (long)widget->winId();
         }
     }
 #if defined(_AFXDLL)
-    else if (strcmp(winType, "CWnd") == 0) {
+    else if (winType == "CWnd") {
         CWnd *wnd = reinterpret_cast<CWnd *>(window);
         if (wnd) {
             return (long)wnd->GetSafeHwnd();
@@ -304,7 +360,7 @@ bool JFrameLayout::loadDefaultSystem()
     }
 
     // 异步方式启动默认设置系统
-    data->notifier->imm().post("jlayout.module_manager", "j_load_default_system");
+    notifier()->imm().postMessage("jlayout.module_manager", "j_load_default_system");
 
     return true;
 }
@@ -312,24 +368,24 @@ bool JFrameLayout::loadDefaultSystem()
 bool JFrameLayout::loadLoginInfo()
 {
     // 模块有效性检测
-    if (!jframeKernel()->frameLogin()->loginManager()->isValid()) {
+    if (!jloginManager()->isValid()) {
         return true;    // 若登录模块未启用，则忽略
     }
 #if 0
     // 获取用户信息
-    data->userInfo = jframeKernel()->frameLogin()->loginManager()->userInfo();
+    data->userInfo = jloginManager()->userInfo();
     data->userInfo.sPassword.clear();     // 不允许获取密码，防止恶插件或组件盗取
 
     // 获取当前席位权限信息
     data->powerInfo.vecElement.clear();
-    std::string currentSeatId = jframeKernel()->frameLogin()>loginManager()->currentSeatInfo().sSeatID;
+    std::string currentSeatId = jloginManager()->currentSeatInfo().sSeatID;
     if (currentSeatId.empty()) {
         jframeLogCrit(QStringLiteral("当前登录席位无效!"));
         return false;
     }
 
     // 获取当前登录用户、当前席位下的所有权限信息
-    if (!jframeKernel()->frameLogin()->loginManager()->loginDBMgr()->getSeatPower(
+    if (!jloginDBMgr()->getSeatPower(
                 data->userInfo.sUserID, currentSeatId, data->powerInfo)) {
         jframeLogCrit(QStringLiteral("获取席位权限信息失败！"));
         return false;
@@ -355,28 +411,11 @@ JFrameLayout::JFrameLayout()
     //
     data = new JFrameLayoutData;
 
-    // 创建消息分发器实例
-    data->notifier = JFRAME_FACTORY_CREATE(INotifier);
-
     // 创建框架布局模块组成部件
     data->layoutManager = new LayoutManager(this);
     data->mainViewManager = new MainViewManager();
     data->moduleManager = new ModuleManager(this);
     data->notifyManager = new NotifyManager(this);
-
-    //
-    bool result = true;
-
-    // 初始化各模块
-    result = result && data->layoutManager->init();
-    result = result && data->mainViewManager->init();
-    result = result && data->moduleManager->init();
-    result = result && data->notifyManager->init();
-
-    // 结果检测
-    if (!result) {
-        //
-    }
 }
 
 JFrameLayout::~JFrameLayout()
@@ -398,9 +437,6 @@ JFrameLayout::~JFrameLayout()
         delete data->notifyManager;
         data->notifyManager = 0;
     }
-
-    // 销毁消息分发器实例
-    JFRAME_FACTORY_RELEASE(data->notifier, INotifier);
 
     delete data;
 }

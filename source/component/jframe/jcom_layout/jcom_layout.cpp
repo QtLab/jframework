@@ -23,25 +23,43 @@ JComLayout::JComLayout(IJAttempter *attempter)
 
 JComLayout::~JComLayout()
 {
-
-}
-
-void JComLayout::releaseInterface()
-{
     if (q_frameFilter) {
         q_frameFilter->deleteLater();
         q_frameFilter = 0;
     }
 }
 
-void *JComLayout::queryInterface(const char *iid, unsigned int ver)
+bool JComLayout::loadInterface()
+{
+    //
+    if (q_frameFilter) {
+        // 安装主窗口事件过滤
+        q_frameFilter->attachEventFilter();
+    }
+
+    // 启动默认系统
+    q_notifier->postMessage("j_load_default_system");
+
+    return true;
+}
+
+void JComLayout::releaseInterface()
+{
+    //
+    if (q_frameFilter) {
+        // 去除主窗口事件过滤
+        q_frameFilter->detachEventFilter();
+    }
+}
+
+void *JComLayout::queryInterface(const std::string &iid, unsigned int ver)
 {
     J_QUERY_INTERFACE(IJComponentUi, iid, ver);
 
     return 0;
 }
 
-std::string JComLayout::componentId() const
+std::string JComLayout::componentName() const
 {
     return "jcom_layout";
 }
@@ -51,63 +69,31 @@ std::string JComLayout::componentDesc() const
     return "框架布局组件";
 }
 
-bool JComLayout::initialize()
-{
-    //
-    if (q_frameFilter) {
-        // 安装主窗口事件过滤
-        q_frameFilter->attachEventFilter();
-    }
-
-    // 挂载组件
-    jframeLayout()->attachComponent(this, true);
-
-    // 启动默认系统
-    q_notifier->post("j_load_default_system");
-
-    return true;
-}
-
-void JComLayout::shutdown()
-{
-    //
-    if (q_frameFilter) {
-        // 去除主窗口事件过滤
-        q_frameFilter->detachEventFilter();
-    }
-
-    // 分离组件
-    jframeLayout()->detachComponent(this);
-}
-
 void JComLayout::attach()
 {
     // 订阅消息
-    q_notifier->begin(this)
-            .end();
+    q_notifier->beginGroup(this)
+            .endGroup();
 }
 
 void JComLayout::detach()
 {
     // 取消订阅消息
-    q_notifier->pop(this);
+    q_notifier->remove(this);
 }
 
-void *JComLayout::createUi(void *parent, const char *objectName)
+void *JComLayout::createWindow(void *parent, const std::string &objectName)
 {
     Q_UNUSED(parent);
     QWidget *widget = 0;
-    if (strcmp(objectName, "mainView") == 0) {
+    if (objectName == "mainView") {
         widget = jframeLayout()->mainView();
     }
 
-    // 挂载组件界面
-    jframeLayout()->attachComponentUi(this, widget);
-
-    return widget;
+    return qobject_cast<QWidget *>(widget);
 }
 
-std::string JComLayout::jobserverId() const
+std::string JComLayout::observerId() const
 {
-    return componentId();
+    return componentName();
 }

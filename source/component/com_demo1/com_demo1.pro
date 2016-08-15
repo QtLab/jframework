@@ -17,11 +17,13 @@ TARGET = $$qtLibraryTarget(com_demo1)
 
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
-    $$PWD/com_demo1.h
+    $$PWD/com_demo1.h \
+    testwidget1.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
-    $$PWD/com_demo1.cpp
+    $$PWD/com_demo1.cpp \
+    testwidget1.cpp
 
 #
 exists($$PWD/com_demo1.xml) {

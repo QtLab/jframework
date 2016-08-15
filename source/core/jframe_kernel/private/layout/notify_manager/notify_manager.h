@@ -7,17 +7,22 @@
 
 class JFrameLayout;
 
-class NotifyManager : public JObserver
+class NotifyManager :
+        public IJUnknown,
+        public JObserver
 {
 public:
     explicit NotifyManager(JFrameLayout *frameLayout);
     ~NotifyManager();
 
-    bool init();
+    // IJUnknown interface
+public:
+    bool loadInterface();
+    void releaseInterface();
 
     // JObserver interface
 public:
-    std::string jobserverId() const;
+    std::string observerId() const;
 
 protected:
     // jframe

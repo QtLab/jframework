@@ -13,23 +13,27 @@ NotifyManager::NotifyManager(JFrameLayout *frameLayout) :
 
 NotifyManager::~NotifyManager()
 {
-    // 取消订阅
-    q_notifier->pop(this);
 }
 
-bool NotifyManager::init()
+bool NotifyManager::loadInterface()
 {
     // 订阅消息
-    q_notifier->begin(this)
-            .push("j_frame_try_exit", &NotifyManager::onTryExitFrame)
-            .push("j_frame_exit", &NotifyManager::onExitFrame)
-            .push("j_frame_restart", &NotifyManager::onRestartFrame)
-            .end();
+    q_notifier->beginGroup(this)
+            .append("j_frame_try_exit", &NotifyManager::onTryExitFrame)
+            .append("j_frame_exit", &NotifyManager::onExitFrame)
+            .append("j_frame_restart", &NotifyManager::onRestartFrame)
+            .endGroup();
 
     return true;
 }
 
-std::string NotifyManager::jobserverId() const
+void NotifyManager::releaseInterface()
+{
+    // 取消订阅
+    q_notifier->remove(this);
+}
+
+std::string NotifyManager::observerId() const
 {
     return "jlayout.notify_manager";
 }
@@ -41,7 +45,7 @@ JLRESULT NotifyManager::onTryExitFrame(const std::string &id, JWPARAM wParam, JL
     Q_UNUSED(lParam);
 
     // 尝试退出软件（异步方式）
-    jframeFacade()->invoke("frame_try_exit");
+    jframeFacade()->invokeMethod("frame_try_exit");
 
     return 0;
 }
@@ -53,7 +57,7 @@ JLRESULT NotifyManager::onExitFrame(const std::string &id, JWPARAM wParam, JLPAR
     Q_UNUSED(lParam);
 
     // 退出软件（同步方式）
-    jframeFacade()->invoke("frame_exit");
+    jframeFacade()->invokeMethod("frame_exit");
 
     return 0;
 }
@@ -65,7 +69,7 @@ JLRESULT NotifyManager::onRestartFrame(const std::string &id, JWPARAM wParam, JL
     Q_UNUSED(lParam);
 
     // 重启软件（同步方式）
-    jframeFacade()->invoke("frame_restart");
+    jframeFacade()->invokeMethod("frame_restart");
 
     return 0;
 }

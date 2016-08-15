@@ -15,44 +15,44 @@ class IJFrameLogin;
 /**
  * @brief The IJFrameKernel class
  */
-class IJFrameKernel : public IJObject
+class IJFrameKernel : public IJUnknown
 {
 public:
     virtual ~IJFrameKernel() {}
 
     /**
-     * @brief objectIdentity : 获取对象标识
-     * @return
+     * @brief intefcaceIdentity : 获取接口标识
+     * @return : 接口标识
      */
-    virtual std::string objectIdentity() const { return IID_IJFrameKernel; }
+    virtual std::string intefcaceIdentity() const { return IID_IJFrameKernel; }
 
     /**
-     * @brief objectVersion : 获取对象版本
-     * @return
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
      */
-    virtual unsigned int objectVersion() const { return VER_IJFrameKernel; }
+    virtual unsigned int interfaceVersion() const { return VER_IJFrameKernel; }
 
     /**
-     * @brief logManager : 获取日志管理实例接口
-     * @return
+     * @brief logManager : 获取日志管理器
+     * @return : 日志管理器
      */
     virtual IJLogManager *logManager() = 0;
 
     /**
-     * @brief frameCore
-     * @return
+     * @brief frameCore : 获取框架核心系统接口
+     * @return : 框架核心系统接口
      */
     virtual IJFrameCore *frameCore() = 0;
 
     /**
-     * @brief frameLayout
-     * @return
+     * @brief frameLayout : 获取框架布局系统接口
+     * @return : 框架布局系统接口
      */
     virtual IJFrameLayout *frameLayout() = 0;
 
     /**
-     * @brief frameLogin
-     * @return
+     * @brief frameLogin : 获取框架登录系统接口
+     * @return : 框架登录系统接口
      */
     virtual IJFrameLogin *frameLogin() = 0;
 };
@@ -85,7 +85,10 @@ public:
 
 #ifdef JFRAME_KERNEL_DLL
 
-//
+/**
+ * @brief jframeKernel : 获取框架内核系统接口单实例
+ * @return : 框架内核系统接口单实例
+ */
 JFRAME_KERNEL_EXPORT IJFrameKernel* jframeKernel();
 
 //

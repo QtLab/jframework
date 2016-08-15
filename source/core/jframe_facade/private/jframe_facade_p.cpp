@@ -8,8 +8,8 @@
 struct JFrameFacadeData
 {
     bool frameLoaded;           // 框架加载状态
-    IJObject* frameFactory;     // 框架工厂系统部件
-    IJObject* frameKernel;      // 框架内核系统部件
+    IJUnknown* frameFactory;    // 框架工厂系统部件
+    IJUnknown* frameKernel;     // 框架内核系统部件
 
     std::string frameDirPath;   // 框架部署路径
     std::string frameVersion;   // 框架版本
@@ -70,6 +70,30 @@ void JFrameFacade::releaseInstance()
     }
 }
 
+std::string JFrameFacade::interfaceIdentity() const
+{
+    return IID_IJFrameFacade;
+}
+
+unsigned int JFrameFacade::interfaceVersion() const
+{
+    return VER_IJFrameFacade;
+}
+
+void *JFrameFacade::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+    J_QUERY_MEMBER_OBJECT(IJUnknown, iid, ver, data->frameFactory);
+    J_QUERY_MEMBER_OBJECT(IJUnknown, iid, ver, data->frameKernel);
+
+    return 0;
+}
+
+bool JFrameFacade::loadInterface()
+{
+    return true;
+}
+
 void JFrameFacade::releaseInterface()
 {
     // 释放框架内核部件
@@ -83,53 +107,40 @@ void JFrameFacade::releaseInterface()
     }
 }
 
-void *JFrameFacade::queryInterface(const char *iid, unsigned int ver)
+std::list<std::string> JFrameFacade::queryMethod() const
 {
-    J_QUERY_INTERFACE(IJObject, iid, ver);
-    J_QUERY_MEMBER_OBJECT(IJObject, iid, ver, data->frameFactory);
-    J_QUERY_MEMBER_OBJECT(IJObject, iid, ver, data->frameKernel);
+    std::list<std::string> methods;
 
-    return 0;
+    // log
+    methods.push_back(std::string("log").append("..."));
+
+    return methods;
 }
 
-std::string JFrameFacade::objectIdentity() const
+bool JFrameFacade::invokeMethod(const std::string &method, int argc, ...)
 {
-    return IID_IJFrameFacade;
-}
-
-unsigned int JFrameFacade::objectVersion() const
-{
-    return VER_IJFrameFacade;
-}
-
-bool JFrameFacade::invoke(const char *method, int argc, ...)
-{
-    if (!method) {
-        return false;
-    }
-
     bool result = false;
     va_list ap;
     va_start(ap, argc);
 
     // 输出一条日志
-    if (strcmp(method, "log") == 0) {
+    if (method == "log") {
         result = invokeLog(method, argc, ap);
     }
     // 退出框架（同步方式）
-    else if (strcmp(method, "frame_exit") == 0) {
+    else if (method == "frame_exit") {
         result = invokeExitFrame();
     }
     // 重启框架（同步方式）
-    else if (strcmp(method, "frame_restart") == 0) {
+    else if (method == "frame_restart") {
         result = invokeRestartFrame();
     }
     // 查询库文件是否存在
-    else if (strcmp(method, "library_query_exists") == 0) {
+    else if (method == "library_query_exists") {
         result = invokeLibraryQueryExists(argc, ap);
     }
     // 获取动态库导出接口
-    else if (strcmp(method, "library_resolve") == 0) {
+    else if (method == "library_resolve") {
         result = invokeLibraryResolve(argc, ap);
     }
 
@@ -205,13 +216,8 @@ bool JFrameFacade::loadFrame()
     return loadFramePrivate();
 }
 
-bool JFrameFacade::loadFrame(const char *version)
+bool JFrameFacade::loadFrame(const std::string &version)
 {
-    // 检测参数有效性
-    if (!version) {
-        return false;   // 参数无效
-    }
-
     // 检测框架是否已加载
     if (data->frameLoaded) {
         return true;    // 已加载
@@ -242,23 +248,23 @@ bool JFrameFacade::loadFrame(int major, int minor, int patch)
     return loadFramePrivate();
 }
 
-void JFrameFacade::showFrame(bool show, bool maximumed)
+void JFrameFacade::showFrame(bool show, bool maximized)
 {
     // 转到框架内核系统
-    data->frameKernel->invoke("frame_show", 2, show, maximumed);
+    data->frameKernel->invokeMethod("frame_show", 2, show, maximized);
 }
 
 void JFrameFacade::tryExitFrame()
 {
     // 转到框架内核系统
-    data->frameKernel->invoke("frame_try_exit");
+    data->frameKernel->invokeMethod("frame_try_exit");
 }
 
 void JFrameFacade::exitFrame()
 {
     // 转到框架内核系统
     //（通过在内核系统中异步中转回facade，来实现框架的退出，防止部件自身拥有时的释放出错）
-    data->frameKernel->invoke("frame_exit");
+    data->frameKernel->invokeMethod("frame_exit");
 }
 
 void JFrameFacade::restartFrame(const std::list<std::string> &arguments)
@@ -268,7 +274,7 @@ void JFrameFacade::restartFrame(const std::list<std::string> &arguments)
 
     // 转到框架内核系统
     //（通过在内核系统中异步中转回facade，来实现框架的退出，防止部件自身拥有时的释放出错）
-    data->frameKernel->invoke("frame_restart");
+    data->frameKernel->invokeMethod("frame_restart");
 }
 
 bool JFrameFacade::loginFrame()
@@ -279,7 +285,7 @@ bool JFrameFacade::loginFrame()
     }
 
     // 转到框架内核系统
-    return data->frameKernel->invoke("frame_login");
+    return data->frameKernel->invokeMethod("frame_login");
 }
 
 bool JFrameFacade::logoutFrame()
@@ -290,12 +296,12 @@ bool JFrameFacade::logoutFrame()
     }
 
     // 转到框架内核系统
-    return data->frameKernel->invoke("frame_logout");
+    return data->frameKernel->invokeMethod("frame_logout");
 }
 
-std::string JFrameFacade::getEnvValue(const char *name) const
+std::string JFrameFacade::getEnvValue(const std::string &name) const
 {
-    QByteArray env = qgetenv(name);
+    QByteArray env = qgetenv(name.c_str());
     if (env.isNull()) {
         return std::string();
     } else {
@@ -312,14 +318,14 @@ int JFrameFacade::runQApp(void *mfcApp)
 
     // 转到框架内核系统
     int ret = 0;
-    if (!data->frameKernel->invoke("run_q_app", 2, mfcApp, &ret)) {
+    if (!data->frameKernel->invokeMethod("run_q_app", 2, mfcApp, &ret)) {
         return -1;
     }
 
     return ret;
 }
 
-long JFrameFacade::windowHandle(void *window, const char *winType)
+long JFrameFacade::windowHandle(void *window, const std::string &winType)
 {
     // 检测框架是否已加载
     if (!data->frameLoaded) {
@@ -328,7 +334,8 @@ long JFrameFacade::windowHandle(void *window, const char *winType)
 
     // 转到框架内核系统
     long handle = 0;
-    if (!data->frameKernel->invoke("window_handle", 3, window, winType, &handle)) {
+    if (!data->frameKernel->invokeMethod(
+                "window_handle", 3, window, winType, &handle)) {
         return -1;  // 调用失败
     }
 
@@ -342,30 +349,33 @@ std::string JFrameFacade::language() const
 
 bool JFrameFacade::loadFramePrivate()
 {
+    // 加载门面接口
+    loadInterface();
+
     // 复制框架动态库到应用实例响应位置，进行框架动态更新
     copyFrameFile();
 
     bool result = true;
 
-    // 加载工厂系统
+    // 加载框架工厂系统库
     result = result && loadFrameFactory();
 
-    // 加载内核系统
+    // 加载框架内核系统库
     result = result && loadFrameKernel();
 
     //
     data->frameLoaded = result;
 
-    // 加载框架核心
-    result = result && data->frameKernel->invoke("frame_start");
+    // 加载框架内核系统接口
+    result = result && data->frameKernel->loadInterface();
 
     return result;
 }
 
-IJObject *JFrameFacade::loadFrameInterface(const std::string &moduleName)
+IJUnknown *JFrameFacade::loadFrameInterface(const std::string &moduleName)
 {
     // 定义导出接口
-    typedef IJObject* (*FuncCreateInstance)();
+    typedef IJUnknown* (*FuncCreateInstance)();
 
     // 获取导出接口
     const QString filePath = QString::fromStdString(frameDirPath() + "/bin/"
@@ -775,7 +785,7 @@ bool JFrameFacade::terminateProcess()
 bool JFrameFacade::loadDefaultSystem()
 {
     // 转到框架内核系统
-    return data->frameKernel->invoke("load_default_system");
+    return data->frameKernel->invokeMethod("load_default_system");
 }
 
 bool JFrameFacade::copyDir(const QString &fromDir, const QString &toDir)
@@ -861,17 +871,11 @@ bool JFrameFacade::testAnotherApp()
 #endif
 }
 
-bool JFrameFacade::invokeLog(const char *method, int argc, va_list ap)
+bool JFrameFacade::invokeLog(const std::string &method, int argc, va_list ap)
 {
     // 检测框架内核系统部件有效性
     if (!data->frameKernel) {
         return false;       // 框架内核系统部件无效
-    }
-
-    // 提升框架内核系统部件实例接口类型
-    IJObject *frameKernel = dynamic_cast<IJObject *>(data->frameKernel);
-    if (!frameKernel) {
-        return false;
     }
 
     // 参数个数检测
@@ -896,7 +900,8 @@ bool JFrameFacade::invokeLog(const char *method, int argc, va_list ap)
     }
 
     // 转到框架内核系统
-    return frameKernel->invoke(method, argc, type, msg, file, line, func);
+    return data->frameKernel->invokeMethod(
+                method, argc, type, msg, file, line, func);
 }
 
 bool JFrameFacade::invokeExitFrame()

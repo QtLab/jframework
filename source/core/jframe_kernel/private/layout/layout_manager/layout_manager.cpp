@@ -7,10 +7,10 @@
 
 // class LayoutManager
 
-LayoutManager::LayoutManager(JFrameLayout *frameLayout) :
-    q_frameLayout(frameLayout),
-    q_notifier(frameLayout->notifier()),
-    q_mainSplitter(0)
+LayoutManager::LayoutManager(JFrameLayout *frameLayout)
+    : q_frameLayout(frameLayout)
+    , q_notifier(frameLayout->notifier())
+    , q_mainSplitter(0)
 {
 
 }
@@ -20,7 +20,7 @@ LayoutManager::~LayoutManager()
 
 }
 
-bool LayoutManager::init()
+bool LayoutManager::loadInterface()
 {
     /// 设置默认配置
 
@@ -40,6 +40,10 @@ bool LayoutManager::init()
     result = result && loadLayoutConfig();
 
     return result;
+}
+
+void LayoutManager::releaseInterface()
+{
 }
 
 JLayoutConfig LayoutManager::layoutConfig() const
@@ -390,7 +394,7 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
     }
 
     // 更新当前系统
-    q_frameLayout->notifier()->send("j_previous_system_changed", (JWPARAM)&system.toStdString());
+    q_notifier->sendMessage("j_previous_system_changed", (JWPARAM)&system.toStdString());
 
     // get current module
     if (module.isEmpty()) {
@@ -417,7 +421,7 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
     }
 
     // 更新当前模式
-    q_frameLayout->notifier()->send("j_previous_module_changed", (JWPARAM)&module.toStdString());
+    q_notifier->sendMessage("j_previous_module_changed", (JWPARAM)&module.toStdString());
 
     // load popup node (global component within current system <befor module loaded>)
     QDomElement emPopup = emSystem.firstChildElement("module");
@@ -476,14 +480,14 @@ JSplitter *LayoutManager::createView(const QDomElement &emSplitter, QWidget *par
             // 加入窗口分割器
             splitter->addWidget(childSplitter);
             // collapsible
-            const QVariant variant = splitter->property(QString("collapsible")
+            const QVariant variant = splitter->property(QString("collapsible:%1")
                                                         .arg(splitter->count() - 1).toLocal8Bit().data());
             if (variant.isValid()) {
                 splitter->setCollapsible(splitter->count() - 1, variant.toBool());
             }
         } else if (nodeName == "component") {
             // 激活组件
-            JComponentInfo *componentInfo = activateComponent(emChild, true);
+            JComponentInfo *componentInfo = activateComponent(emChild, false);
             if (!componentInfo) {
                 continue;
             }
@@ -494,7 +498,7 @@ JSplitter *LayoutManager::createView(const QDomElement &emSplitter, QWidget *par
                 //
                 splitter->addWidget(componentInfo->widget);
                 // collapsible
-                const QVariant variant = splitter->property(QString("collapsible")
+                const QVariant variant = splitter->property(QString("collapsible:%1")
                                                             .arg(splitter->count() - 1).toLocal8Bit().data());
                 if (variant.isValid()) {
                     splitter->setCollapsible(splitter->count() - 1, variant.toBool());
@@ -643,6 +647,9 @@ bool LayoutManager::loadModuleViewNode(const QDomElement &emView)
             q_mainSplitter = splitter;
         }
     }
+
+    // 复位所有处于未激活状态的视图组件的父窗口
+    q_frameLayout->moduleManager()->showAllActivateViewComponent();
 
     return true;
 }
@@ -873,7 +880,7 @@ bool LayoutManager::isComponentAttachEnabled(const JComponentInfo *componentInfo
     }
 
     // 获取组件权限等级
-    int componentPowerLevel = q_frameLayout->componentPowerLevel(component->componentId());
+    int componentPowerLevel = q_frameLayout->componentPowerLevel(component->componentName());
 
     // 权限判定
     if (componentPowerLevel <= JFrameLoginSpace::PowerLevelNo) {
@@ -905,7 +912,7 @@ JComponentInfo *LayoutManager::activateComponent(const QDomElement &emComponent,
 
     // 获取挂载组件信息
     JComponentInfo *componentInfo =
-            q_frameLayout->moduleManager()->componentById(componentId);
+            q_frameLayout->moduleManager()->componentByName(componentId);
 
     // 检测组件有效性（即是否由GF框架初步加载，并且已经加入映射队列）
     if (!componentInfo) {

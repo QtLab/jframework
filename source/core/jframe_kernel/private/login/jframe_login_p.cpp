@@ -1,8 +1,6 @@
 #include "precomp.h"
 #include "jframe_login_p.h"
 #include "jloginmanager.h"
-//#include "login_database.h"
-//#include "login_dialog.h"
 
 // struct JFrameLoginData
 
@@ -53,48 +51,68 @@ void JFrameLogin::releaseInstance()
     }
 }
 
-void JFrameLogin::releaseInterface()
-{
-    //
-    if (data->loginManager) {
-        data->loginManager->releaseInterface();
-    }
-
-    JFrameLogin::releaseInstance();
-}
-
-void *JFrameLogin::queryInterface(const char *iid, unsigned int ver)
-{
-    J_QUERY_INTERFACE(IJObject, iid, ver);
-    J_QUERY_MEMBER_OBJECT(IJLoginManager, iid, ver, data->loginManager);
-
-    return 0;
-}
-
-std::string JFrameLogin::objectIdentity() const
+std::string JFrameLogin::interfaceIdentity() const
 {
     return IID_IJFrameLogin;
 }
 
-unsigned int JFrameLogin::objectVersion() const
+unsigned int JFrameLogin::interfaceVersion() const
 {
     return VER_IJFrameLogin;
 }
 
-bool JFrameLogin::invoke(const char *method, int argc, ...)
+void *JFrameLogin::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+    J_QUERY_MEMBER_OBJECT(IJUnknown, iid, ver, data->loginManager);
+
+    return 0;
+}
+
+bool JFrameLogin::loadInterface()
+{
+    bool result = true;
+
+    // 加载登录管理器
+    if (data->loginManager) {
+        result = result && data->loginManager->loadInterface();
+    }
+
+    return result;
+}
+
+void JFrameLogin::releaseInterface()
+{
+    // 释放登录管理器
+    if (data->loginManager) {
+        data->loginManager->releaseInterface();
+    }
+}
+
+std::list<std::string> JFrameLogin::queryMethod() const
+{
+    std::list<std::string> methods;
+
+    // frame_login
+    methods.push_back(std::string("frame_login").append("..."));
+
+    return methods;
+}
+
+bool JFrameLogin::invokeMethod(const std::string &method, int argc, ...)
 {
     bool result = false;
     va_list ap;
     va_start(ap, argc);
 
     // 启动登录模块，显示登录界面
-    if (strcmp(method, "frame_login") == 0) {
+    if (method == "frame_login") {
         if (data->loginManager) {
-            result = data->loginManager->execute();
+            result = data->loginManager->login();
         }
     }
     // 注销登录（默认采用重启框架方式）
-    else if (strcmp(method, "frame_logout") == 0) {
+    else if (method == "frame_logout") {
         if (data->loginManager) {
             result = data->loginManager->logout();
         }
@@ -114,12 +132,13 @@ JFrameLogin::JFrameLogin()
 {
     data = new JFrameLoginData;
 
+    // 创建登录管理器
     data->loginManager = new JLoginManager();
 }
 
 JFrameLogin::~JFrameLogin()
 {
-    // 销毁登录管理器实例
+    // 销毁登录管理器
     if (data->loginManager) {
         delete data->loginManager;
         data->loginManager = 0;

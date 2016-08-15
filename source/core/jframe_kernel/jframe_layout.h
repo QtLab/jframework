@@ -16,7 +16,7 @@ class QWidget;
 /**
  * @brief The IJFrameLayout class
  */
-class IJFrameLayout : public IJObject
+class IJFrameLayout : public IJUnknown
 {
 public:
     enum LogType {
@@ -24,54 +24,70 @@ public:
         LogFile
     };
 
+    /**
+     * @brief ~IJFrameLayout : 析构函数
+     */
     virtual ~IJFrameLayout() {}
 
     /**
-     * @brief objectIdentity : 获取对象标识
-     * @return
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
      */
-    virtual std::string objectIdentity() const { return IID_IJFrameLayout; }
+    virtual std::string interfaceIdentity() const { return IID_IJFrameLayout; }
 
     /**
-     * @brief objectVersion : 获取对象版本
-     * @return
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
      */
-    virtual unsigned int objectVersion() const { return VER_IJFrameLayout; }
+    virtual unsigned int interfaceVersion() const { return VER_IJFrameLayout; }
 
-    // 获取框架主窗口实例
+    /**
+     * @brief mainWindow : 获取框架主窗口
+     * @return : 框架主窗口
+     */
     virtual QWidget *mainWindow() = 0;
 
-    // 获取框架主视图实例
+    /**
+     * @brief mainView : 获取框架主视图
+     * @return : 框架主视图
+     */
     virtual QWidget *mainView() = 0;
 
-    // 获取框架消息分发器实例
+    /**
+     * @brief notifier : 获取框架消息分发器
+     * @return : 框架消息分发器
+     */
     virtual INotifier *notifier() = 0;
 
-    // 获取框架调度器实例
+    /**
+     * @brief attempter : 获取框架调度器
+     * @return : 框架调度器
+     */
     virtual IJAttempter *attempter() = 0;
 
-    // 设置窗体风格
-    virtual void setFrameTheme(const char *theme) = 0;
+    /**
+     * @brief setFrameTheme : 设置框架风格主题
+     * @param theme : 主题名称
+     */
+    virtual void setFrameTheme(const std::string &theme) = 0;
 
-    // 挂载组件
-    virtual bool attachComponent(IJComponent *component, bool stayOn = false) = 0;
+    /**
+     * @brief componentPowerLevel : 获取组件的权限等级
+     * @param componentName : 组件名称
+     * @return : 组件权限等级。查看jframe_login.h中的[PowerLevel]枚举定义
+     */
+    virtual int componentPowerLevel(const std::string &componentName) const = 0;
 
-    // 分离组件
-    virtual bool detachComponent(IJComponent *component) = 0;
-
-    // 挂载组件UI
-    virtual bool attachComponentUi(IJComponent *component, QWidget *widget) = 0;
-
-    // 获取所有挂载的组件
-    virtual std::list<IJComponent *> attachedComponent() const = 0;
-
-    // 获取组件的权限等级（说明：查看jframe_login.h中的[PowerLevel]枚举定义）
-    virtual int componentPowerLevel(const std::string &componentId) const = 0;
-
-    // 获取当前系统
+    /**
+     * @brief currentSystem : 获取当前系统名称
+     * @return : 当前系统名称
+     */
     virtual std::string currentSystem() const = 0;
 
-    // 获取当前模式
+    /**
+     * @brief currentModule : 获取当前模式名称
+     * @return : 当前模式名称
+     */
     virtual std::string currentModule() const = 0;
 };
 

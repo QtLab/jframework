@@ -56,10 +56,23 @@ JLogManagerPri::JLogManagerPri()
 
 JLogManagerPri::~JLogManagerPri()
 {
-    // dispose log4cpp - category
-    data->category.shutdown();
-
     delete data;
+}
+
+std::string JLogManagerPri::interfaceIdentity() const
+{
+    return IID_IJLogManager;
+}
+
+unsigned int JLogManagerPri::interfaceVersion() const
+{
+    return VER_IJLogManager;
+}
+
+void JLogManagerPri::releaseInterface()
+{
+    // shutdown log4cpp - category
+    data->category.shutdown();
 }
 
 void JLogManagerPri::logging(MsgType type, const std::string &msg, int argc, ...)

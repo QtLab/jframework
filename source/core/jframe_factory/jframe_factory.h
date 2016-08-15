@@ -10,22 +10,41 @@
 /**
  * @brief The IJFrameFactory class
  */
-class IJFrameFactory : public IJObject
+class IJFrameFactory : public IJUnknown
 {
 public:
+    /**
+     * @brief ~IJFrameFactory : 析构函数
+     */
     virtual ~IJFrameFactory() {}
 
-    // 获取对象标识
-    virtual std::string objectIdentity() const { return IID_IJFrameFactory; }
+    /**
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
+     */
+    virtual std::string interfaceIdentity() const { return IID_IJFrameFactory; }
 
-    // 获取对象版本
-    virtual unsigned int objectVersion() const { return VER_IJFrameFactory; }
+    /**
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
+     */
+    virtual unsigned int interfaceVersion() const { return VER_IJFrameFactory; }
 
-    // 创建指定对象实例（iid：对象标识）；ver：对象版本
-    virtual void* factory(const char *iid, unsigned int ver) = 0;
+    /**
+     * @brief factory : 创建指定对象实例
+     * @param iid : 接口标识
+     * @param ver : 接口版本
+     * @return : 对象实例
+     */
+    virtual void* factory(const std::string &iid, unsigned int ver) = 0;
 
-    // 销毁创建的对象实例（object：对象实例指针，iid：对象标识；ver：对象版本）
-    virtual void releaseFactory(void *iface, const char *iid, unsigned int ver) = 0;
+    /**
+     * @brief releaseFactory : 销毁创建的对象实例
+     * @param iface : 对象实例
+     * @param iid : 接口标识
+     * @param ver : 接口版本
+     */
+    virtual void releaseFactory(void *iface, const std::string &iid, unsigned int ver) = 0;
 };
 
 ///
@@ -48,7 +67,10 @@ public:
 #define JFRAME_FACTORY_EXPORT
 #endif // _MSC_VER
 
-//
+/**
+ * @brief jframeFactory : 获取框架工厂系统单实例
+ * @return : 框架工厂系统单实例
+ */
 JFRAME_FACTORY_EXPORT IJFrameFactory* jframeFactory();
 
 //

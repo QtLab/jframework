@@ -8,23 +8,23 @@
 #define IID_IJCommandSink J_IID_INTERFACE(IJCommandSink)
 
 /**
- * @brief The IJCommandSink class
+ * @brief The IJCommandSink class : 命令接收接口
  */
 class IJCommandSink
 {
 public:
     /**
-     * @brief ~IJCommandSink
+     * @brief ~IJCommandSink : 析构函数
      */
     virtual ~IJCommandSink() {}
 
     /**
-     * @brief commandSink : 执行UI命令
+     * @brief commandSink : 接收命令消息
      * @param sender : 命令发起者
      * @param senderName : 发起者名称
-     * @return
+     * @return : 截断标志，true，停止下传；false，继续下传
      */
-    virtual bool commandSink(void *sender, const char* senderName) = 0;
+    virtual bool commandSink(void *sender, const std::string &senderName) = 0;
 };
 
 // 接口标识
@@ -32,23 +32,23 @@ public:
 #define IID_IJMessageSink J_IID_INTERFACE(IJMessageSink)
 
 /**
- * @brief The IJMessageSink class
+ * @brief The IJMessageSink class :消息接收接口
  */
 class IJMessageSink
 {
 public:
     /**
-     * @brief ~IJMessageSink
+     * @brief ~IJMessageSink : 析构函数
      */
     virtual ~IJMessageSink() {}
 
     /**
-     * @brief messageSink
-     * @param sender
-     * @param id
-     * @param wParam
-     * @param lParam
-     * @return
+     * @brief messageSink : 接收消息
+     * @param sender : 消息发起者
+     * @param id : 消息标识
+     * @param wParam : 参数1
+     * @param lParam : 参数2
+     * @return : 截断标志。true，停止下传；false，继续下传
      */
     virtual bool messageSink(void *sender, unsigned int id, JWPARAM wParam, JLPARAM lParam) = 0;
 };
@@ -58,46 +58,35 @@ public:
 #define IID_IJComponent J_IID_INTERFACE(IJComponent)
 
 /**
- * @brief The IJComponent class
+ * @brief The IJComponent class : 组件接口
  */
 class IJComponent : public IJUnknown
 {
 public:
     /**
-     * @brief ~IJComponent
+     * @brief ~IJComponent : 析构函数
      */
     virtual ~IJComponent() {}
 
     /**
-     * @brief componentId
-     * @return
+     * @brief componentName : 获取组件名称
+     * @return : 组件名称
      */
-    virtual std::string componentId() const = 0;
+    virtual std::string componentName() const = 0;
 
     /**
-     * @brief componentDesc
-     * @return
+     * @brief componentDesc : 获取组件描述
+     * @return : 组件描述
      */
     virtual std::string componentDesc() const = 0;
 
     /**
-     * @brief initialize
-     * @return
-     */
-    virtual bool initialize() = 0;
-
-    /**
-     * @brief shutdown
-     */
-    virtual void shutdown() = 0;
-
-    /**
-     * @brief attach
+     * @brief attach : 挂载组件
      */
     virtual void attach() {}
 
     /**
-     * @brief detach
+     * @brief detach : 分离组件
      */
     virtual void detach() {}
 };
@@ -107,23 +96,23 @@ public:
 #define IID_IJComponentUi J_IID_INTERFACE(IJComponentUi)
 
 /**
- * @brief The IJComponentUi class
+ * @brief The IJComponentUi class : 组件窗口接口
  */
 class IJComponentUi
 {
 public:
     /**
-     * @brief ~IJComponentUi
+     * @brief ~IJComponentUi : 析构函数
      */
     virtual ~IJComponentUi() {}
 
     /**
-     * @brief createUi
-     * @param parent
-     * @param objectName
-     * @return
+     * @brief createWindow : 创建窗口
+     * @param parent : 父窗口
+     * @param objectName : 目标窗口名称
+     * @return : 目标窗口
      */
-    virtual void *createUi(void *parent, const char *objectName) = 0;
+    virtual void *createWindow(void *parent, const std::string &objectName) = 0;
 };
 
 // 接口标识
@@ -131,201 +120,253 @@ public:
 #define IID_IJMainWindow J_IID_INTERFACE(IJMainWindow)
 
 /**
- * @brief The IJMainWindow class
+ * @brief The IJMainWindow class : 框架主窗口接口
  */
-class IJMainWindow : public IJObject
+class IJMainWindow : public IJUnknown
 {
 public:
     /**
-     * @brief ~IJMainWindow
+     * @brief ~IJMainWindow : 析构函数
      */
     virtual ~IJMainWindow() {}
 
     /**
-     * @brief objectIdentity : 获取对象标识
-     * @return
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
      */
-    virtual std::string objectIdentity() const { return IID_IJMainWindow; }
+    virtual std::string interfaceIdentity() const { return IID_IJMainWindow; }
 
     /**
-     * @brief objectVersion : 获取对象版本
-     * @return
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
      */
-    virtual unsigned int objectVersion() const { return VER_IJMainWindow; }
+    virtual unsigned int interfaceVersion() const { return VER_IJMainWindow; }
 
     /**
-     * @brief showNormal
+     * @brief showNormal : 常规化主窗口
      */
     virtual void showNormal() = 0;
 
     /**
-     * @brief showMaximized
+     * @brief showMaximized : 最小化主窗口
      */
     virtual void showMinimized() = 0;
 
     /**
-     * @brief showMaximized
+     * @brief showMaximized : 最大化主窗口
      */
     virtual void showMaximized() = 0;
 
     /**
-     * @brief showFullScreen
+     * @brief showFullScreen : 全屏话主窗口
      */
     virtual void showFullScreen() = 0;
 
     /**
-     * @brief closeWindow
+     * @brief closeWindow : 关闭主窗口
      */
     virtual void closeWindow() = 0;
 
     /**
-     * @brief setVisible
-     * @param visible
+     * @brief setVisible : 设置主窗口可见性
+     * @param visible : 可见性标志。true，显示主窗口；false，隐藏主窗口
      */
     virtual void setVisible(bool visible) = 0;
 
     /**
-     * @brief showTopLevel
-     * @param stayOnTop
+     * @brief showTopLevel : 置顶主窗口
+     * @param stayOnTop : 置顶标志。true，置顶；false，取消置顶
      */
     virtual void showStaysOnTop(bool stayOnTop) = 0;
 
     /**
-     * @brief resize
-     * @param width
-     * @param height
+     * @brief resize : 改变主窗口大小
+     * @param width : 宽度
+     * @param height : 高度
      */
     virtual void resize(int width, int height) = 0;
 
     /**
-     * @brief queryObject
-     * @param objectName
-     * @return
+     * @brief queryObject : 查询组件窗口
+     * @param objectName : 窗口名称
+     * @return : 组件窗口
      */
-    virtual void *queryObject(const char *objectName) = 0;
+    virtual void *queryObject(const std::string &objectName) = 0;
 
     /**
-     * @brief statusBar
-     * @return
+     * @brief statusBar : 获取状态栏
+     * @return : 状态栏
      */
     virtual void *statusBar() = 0;
 
     /**
-     * @brief activeView
-     * @param viewName
+     * @brief activeView : 激活视图
+     * @param viewName : 视图名称
      */
-    virtual void activeView(const char *viewName) = 0;
+    virtual void activeView(const std::string &viewName) = 0;
 
     /**
-     * @brief updateSplashInfo
-     * @param info
+     * @brief updateSplashInfo : 更新开始界面信息
+     * @param info : 信息
      */
-    virtual void updateSplashInfo(const char *info) = 0;
+    virtual void updateSplashInfo(const std::string &info) = 0;
 
     /**
-     * @brief createComponentUi
-     * @param component
-     * @param filePath
-     * @return
+     * @brief createComponentUi : 创建组件窗口
+     * @param component : 组价
+     * @param filePath : 组件配置文件路径
+     * @return : 创建状态。true，创建成功；false，创建失败
      */
-    virtual bool createComponentUi(IJComponent *component, const char *filePath) = 0;
+    virtual bool createComponentUi(IJComponent *component, const std::string &filePath) = 0;
 
     /**
-     * @brief mainWidget
-     * @return
+     * @brief mainWidget : 获取主窗口
+     * @return : 主窗口
      */
     virtual void *mainWidget() = 0;
 
     /**
-     * @brief setTheme
-     * @param theme
+     * @brief setTheme : 设置框架主题
+     * @param theme : 主题名称
      */
-    virtual void setTheme(const char *theme) = 0;
+    virtual void setTheme(const std::string &theme) = 0;
+
+    /**
+     * @brief toolBarType : 获取工具栏类型
+     * @return : 工具栏类型。1) ribbon; 2) menu
+     */
+    virtual std::string toolBarType() const = 0;
+
+    /**
+     * @brief layoutType : 获取视图布局类型
+     * @return : 视图布局类型。1) dynamic; 2) static
+     */
+    virtual std::string layoutType() const = 0;
 };
 
 // 接口标识
 #define VER_IJAttempter J_INTERFACE_VERSION(1, 0)
 #define IID_IJAttempter J_IID_INTERFACE(IJAttempter)
 
+class INotifier;
+
 /**
- * @brief The IJAttempter class
+ * @brief The IJAttempter class : 框架调度器接口
  */
-class IJAttempter : public IJObject
+class IJAttempter : public IJUnknown
 {
 public:
     /**
-     * @brief ~IJAttempter
+     * @brief ~IJAttempter : 析构函数
      */
     virtual ~IJAttempter() {}
 
     /**
-     * @brief objectIdentity : 获取对象标识
-     * @return
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
      */
-    virtual std::string objectIdentity() const { return IID_IJAttempter; }
+    virtual std::string interfaceIdentity() const { return IID_IJAttempter; }
 
     /**
-     * @brief objectVersion : 获取对象版本
-     * @return
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
      */
-    virtual unsigned int objectVersion() const { return VER_IJAttempter; }
+    virtual unsigned int interfaceVersion() const { return VER_IJAttempter; }
 
     /**
-     * @brief loadComponent
-     * @return
+     * @brief loadComponent : 加载组件
+     * @return : 加载状态。true，加载成功；false，加载失败
      */
     virtual bool loadComponent() = 0;
 
     /**
-     * @brief shutdownComponent
+     * @brief releaseComponent : 卸载组件
      */
-    virtual void shutdownComponent() = 0;
+    virtual void releaseComponent() = 0;
 
     /**
-     * @brief queryComponent
-     * @param componentId
-     * @return
+     * @brief queryComponent : 查询组件
+     * @param componentName : 组件名称
+     * @return : 组件
      */
-    virtual IJComponent *queryComponent(const char *componentId) = 0;
+    virtual IJComponent *queryComponent(const std::string &componentName) = 0;
 
     /**
-     * @brief mainWindow
-     * @return
+     * @brief mainWindow : 获取框架主窗口接口
+     * @return : 框架主窗口接口
      */
     virtual IJMainWindow *mainWindow() = 0;
 
     /**
-     * @brief queryInterface
-     * @param componentId
-     * @param iid
-     * @param ver
-     * @return
+     * @brief queryInterface : 查询接口
+     * @param componentId : 组件名称
+     * @param iid : 接口标识
+     * @param ver : 接口版本
+     * @return : 查询接口实例
      */
-    virtual void *queryInterface(const char *componentId, const char *iid, unsigned int ver) = 0;
+    virtual void *queryInterface(const std::string &componentName, const std::string &iid, unsigned int ver) = 0;
 
     /**
-     * @brief allComponents
-     * @return
+     * @brief allComponents : 获取所有组件
+     * @return : 所有组件
      */
     virtual std::list<IJComponent *> allComponents() const = 0;
 
     /**
-     * @brief currentWorkModeId
-     * @return
+     * @brief currentWorkModeId : 获取当前工作模式标识
+     * @return : 当前工作模式标识
      */
     virtual int currentWorkModeId() const = 0;
 
     /**
-     * @brief currentWorkModeName
-     * @return
+     * @brief currentWorkModeName : 获取当前工作模式名称
+     * @return : 当前工作模式名称
      */
     virtual const char *currentWorkModeName() const = 0;
 
     /**
-     * @brief currentWorkModeConfigDirName
-     * @return
+     * @brief currentWorkModeConfigDirName : 获取当前工作模式配置文件夹名称
+     * @return : 当前工作模式配置文件夹名称
      */
     virtual const char *currentWorkModeConfigDirName() const = 0;
+
+    /**
+     * @brief subMessage : 订阅组件消息
+     * @param component : 组件
+     * @param id : 消息标识
+     */
+    virtual void subMessage(IJComponent *component, unsigned int id) = 0;
+
+    /**
+     * @brief unsubMessage : 取消订阅组件消息
+     * @param component : 组件
+     * @param id : 消息标识
+     */
+    virtual void unsubMessage(IJComponent *component, unsigned int id) = 0;
+
+    /**
+     * @brief pubMessage : 发送组件消息（同步）
+     * @param component : 组件
+     * @param id : 消息标识
+     * @param wParam : 参数1
+     * @param lParam : 参数2
+     */
+    virtual void sendMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam) = 0;
+
+    /**
+     * @brief pubMessage : 发送组件消息（异步）
+     * @param component : 组件
+     * @param id : 消息标识
+     * @param wParam : 参数1
+     * @param lParam : 参数2
+     */
+    virtual void postMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam) = 0;
+
+    /**
+     * @brief notifier : 获取消息分发器
+     * @return : 消息分发器
+     */
+    virtual INotifier *notifier() = 0;
 };
 
 // 接口标识
@@ -333,31 +374,31 @@ public:
 #define IID_IJFrameCore J_IID_INTERFACE(IJFrameCore)
 
 /**
- * @brief The IJFrameCore class
+ * @brief The IJFrameCore class : 框架核心系统接口
  */
-class IJFrameCore : public IJObject
+class IJFrameCore : public IJUnknown
 {
 public:
     /**
-     * @brief ~IJFrameCore
+     * @brief ~IJFrameCore : 析构函数
      */
     virtual ~IJFrameCore() {}
 
     /**
-     * @brief objectIdentity : 获取对象标识
-     * @return
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
      */
-    virtual std::string objectIdentity() const { return IID_IJFrameCore; }
+    virtual std::string interfaceIdentity() const { return IID_IJFrameCore; }
 
     /**
-     * @brief objectVersion : 获取对象版本
-     * @return
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
      */
-    virtual unsigned int objectVersion() const { return VER_IJFrameCore; }
+    virtual unsigned int interfaceVersion() const { return VER_IJFrameCore; }
 
     /**
-     * @brief attempter
-     * @return
+     * @brief attempter : 获取框架调度器
+     * @return : 框架调度器
      */
     virtual IJAttempter *attempter() = 0;
 };

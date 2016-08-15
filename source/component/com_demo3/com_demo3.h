@@ -17,25 +17,24 @@ public:
 
     // IJUnknown interface
 public:
+    bool loadInterface();
     void releaseInterface();
-    void *queryInterface(const char *iid, unsigned int ver);
+    void *queryInterface(const std::string &iid, unsigned int ver);
 
     // IJComponent interface
 public:
-    std::string componentId() const;
+    std::string componentName() const;
     std::string componentDesc() const;
-    bool initialize();
-    void shutdown();
     void attach();
     void detach();
 
     // IJComponentUi interface
 public:
-    void *createUi(void *parent, const char *objectName);
+    void *createWindow(void *parent, const std::string &objectName);
 
     // JObserver interface
 public:
-    std::string jobserverId() const;
+    std::string observerId() const;
 
 protected:
 

@@ -28,14 +28,18 @@ class JFrameLayout;
 struct JComponentInfo;
 class QDomElement;
 
-class LayoutManager
+class LayoutManager : public IJUnknown
 {
 public:
     explicit LayoutManager(JFrameLayout *frameLayout);
     ~LayoutManager();
 
-    bool init();
+    // IJUnknown interface
+public:
+    bool loadInterface();
+    void releaseInterface();
 
+public:
     JLayoutConfig layoutConfig() const;
 
     //

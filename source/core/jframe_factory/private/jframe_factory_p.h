@@ -18,18 +18,16 @@ public:
 
     // IJUnknown interface
 public:
+    std::string interfaceIdentity() const;
+    unsigned int interfaceVersion() const;
+    void *queryInterface(const std::string &iid, unsigned int ver);
+    bool loadInterface();
     void releaseInterface();
-    void *queryInterface(const char *iid, unsigned int ver);
-
-    // IJObject interface
-public:
-    std::string objectIdentity() const;
-    unsigned int objectVersion() const;
 
     // IJFrameFactory interface
 public:
-    void *factory(const char *iid, unsigned int ver);
-    void releaseFactory(void *iface, const char *, unsigned int );
+    void *factory(const std::string &iid, unsigned int ver);
+    void releaseFactory(void *iface, const std::string &iid, unsigned int ver);
 
 private:
     JFrameFactory();

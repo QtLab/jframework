@@ -9,15 +9,17 @@
  */
 struct JComponentConfig
 {
-    QString componentDir;
-    QString componentName;
-    QString componentDesc;
+    QString componentDir;       //
+    QString componentName;      //
+    QString componentDesc;      //
+    bool stay;                  //
     IJComponent *component;
 
     JComponentConfig()
         : componentDir("")
         , componentName("")
         , componentDesc("")
+        , stay(false)
         , component(0)
     {
 
@@ -37,6 +39,7 @@ struct JComponentConfig
         componentDir = other.componentDir;
         componentName = other.componentName;
         componentDesc = other.componentDesc;
+        stay = other.stay;
         component = other.component;
 
         return *this;
@@ -52,49 +55,52 @@ public:
     explicit JAttempter();
     ~JAttempter();
 
-    bool init();
-
     // IJUnknown interface
 public:
+    std::string interfaceIdentity() const;
+    unsigned int interfaceVersion() const;
+    void *queryInterface(const std::string &iid, unsigned int ver);
+    bool loadInterface();
     void releaseInterface();
-    void *queryInterface(const char *iid, unsigned int ver);
-
-    // IJObject interface
-public:
-    std::string objectIdentity() const;
-    unsigned int objectVersion() const;
-    bool invoke(const char *method, int argc);
+    std::list<std::string> queryMethod() const;
+    bool invokeMethod(const std::string &method, int argc, ...);
 
     // IJAttempter interface
 public:
     bool loadComponent();
-    void shutdownComponent();
-    IJComponent *queryComponent(const char *componentId);
+    void releaseComponent();
+    IJComponent *queryComponent(const std::string &componentName);
     IJMainWindow *mainWindow();
-    void *queryInterface(const char *componentId, const char *iid, unsigned int ver);
+    void *queryInterface(const std::string &componentName, const std::string &iid, unsigned int ver);
     std::list<IJComponent *> allComponents() const;
     int currentWorkModeId() const;
     const char *currentWorkModeName() const;
     const char *currentWorkModeConfigDirName() const;
 
+    void subMessage(IJComponent *component, unsigned int id);
+    void unsubMessage(IJComponent *component, unsigned int id);
+    void sendMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam);
+    void postMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam);
+
+    INotifier *notifier();
+
 private:
+    bool loadConfig();
     bool loadInitComponent();
     bool loadAllComponent();
-    bool shutdownAllComponent();
-    bool loadComponent(const QString &componentDir,
-                       const QString &componentName,
-                       const QString &componentDesc);
-
-    bool loadConfig();
+    bool loadComponent(JComponentConfig &componentConfig);
+    bool releaseAllComponent();
 
     //
-    void commandSink(void *sender, const char *senderName);
+    void commandSink(void *sender, const std::string &senderName);
 
 private:
     friend class JFrameWnd;
 
+    INotifier *q_notifier;      // 消息分发器实例
+
     IJMainWindow *q_mainWindow;
-    QMap<QString, JComponentConfig> q_mapComponent;
+    QMap<QString/*componentName*/, JComponentConfig> q_mapComponent;
 
     // workMode
     int q_workModeId;

@@ -54,7 +54,7 @@ void JFrameWnd::setCurrentWidget(QWidget *widget)
     q_centralWidget->setCurrentWidget(widget);
 }
 
-void JFrameWnd::setTheme(const char *theme)
+void JFrameWnd::setTheme(const QString &theme)
 {
     //
     QtRibbon::RibbonStyle *ribbonStyle =
@@ -66,21 +66,21 @@ void JFrameWnd::setTheme(const char *theme)
 
     // 解析主题信息
     QtRibbon::RibbonStyle::Theme nTheme;
-    if (strcmp(theme, J_FRAME_THEME_OFFICE_2007BLUE) == 0) {
+    if (theme == J_FRAME_THEME_OFFICE_2007BLUE) {
         nTheme = QtRibbon::RibbonStyle::Office2007Blue;
-    } else if (strcmp(theme, J_FRAME_THEME_OFFICE_2007BLACK) == 0) {
+    } else if (theme == J_FRAME_THEME_OFFICE_2007BLACK) {
         nTheme = QtRibbon::RibbonStyle::Office2007Black;
-    } else if (strcmp(theme, J_FRAME_THEME_OFFICE_2007SILVER) == 0) {
+    } else if (theme == J_FRAME_THEME_OFFICE_2007SILVER) {
         nTheme = QtRibbon::RibbonStyle::Office2007Silver;
-    } else if (strcmp(theme, J_FRAME_THEME_OFFICE_2007AQUA) == 0) {
+    } else if (theme == J_FRAME_THEME_OFFICE_2007AQUA) {
         nTheme = QtRibbon::RibbonStyle::Office2007Aqua;
-    } else if (strcmp(theme, J_FRAME_THEME_WINDOWs7_SCENIC) == 0) {
+    } else if (theme == J_FRAME_THEME_WINDOWs7_SCENIC) {
         nTheme = QtRibbon::RibbonStyle::Windows7Scenic;
-    } else if (strcmp(theme, J_FRAME_THEME_OFFICE_2010SILVER) == 0) {
+    } else if (theme == J_FRAME_THEME_OFFICE_2010SILVER) {
         nTheme = QtRibbon::RibbonStyle::Office2010Silver;
-    } else if (strcmp(theme, J_FRAME_THEME_OFFICE_2010BLUE) == 0) {
+    } else if (theme == J_FRAME_THEME_OFFICE_2010BLUE) {
         nTheme = QtRibbon::RibbonStyle::Office2010Blue;
-    } else if (strcmp(theme, J_FRAME_THEME_OFFICE_2010BLACK) == 0) {
+    } else if (theme == J_FRAME_THEME_OFFICE_2010BLACK) {
         nTheme = QtRibbon::RibbonStyle::Office2010Black;
     } else {
         nTheme = QtRibbon::RibbonStyle::Office2010Blue;
@@ -110,7 +110,7 @@ QStackedWidget *JFrameWnd::stackedWidget()
 
 void JFrameWnd::onStyleChanged(QAction *action)
 {
-    setTheme(action->objectName().toLocal8Bit().data());
+    setTheme(action->objectName());
 }
 
 bool JFrameWnd::loadConfig()

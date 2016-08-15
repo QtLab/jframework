@@ -17,14 +17,13 @@ public:
 
     // IJUnknown interface
 public:
+    std::string interfaceIdentity() const;
+    unsigned int interfaceVersion() const;
+    void *queryInterface(const std::string &iid, unsigned int ver);
+    bool loadInterface();
     void releaseInterface();
-    void *queryInterface(const char *iid, unsigned int ver);
-
-    // IJObject interface
-public:
-    std::string objectIdentity() const;
-    unsigned int objectVersion() const;
-    bool invoke(const char *method, int argc, ...);
+    std::list<std::string> queryMethod() const;
+    bool invokeMethod(const std::string &method, int argc, ...);
 
     // IJFrameFacade interface
 public:
@@ -39,10 +38,10 @@ public:
     bool frameVersion(int &major, int &minor, int &patch) const;
 
     bool loadFrame();
-    bool loadFrame(const char *version);
+    bool loadFrame(const std::string &version);
     bool loadFrame(int major, int minor, int patch);
 
-    void showFrame(bool show = true, bool maximumed = true);
+    void showFrame(bool show = true, bool maximized = true);
 
     void tryExitFrame();
     void exitFrame();
@@ -51,9 +50,9 @@ public:
     bool loginFrame();
     bool logoutFrame();
 
-    std::string getEnvValue(const char *name) const;
+    std::string getEnvValue(const std::string &name) const;
     int runQApp(void *mfcApp);
-    long windowHandle(void *window, const char *winType);
+    long windowHandle(void *window, const std::string &winType);
 
     std::string language() const;
 
@@ -62,7 +61,7 @@ private:
     bool loadFramePrivate();
 
      //
-    IJObject *loadFrameInterface(const std::string &moduleName);
+    IJUnknown *loadFrameInterface(const std::string &moduleName);
     void releaseFrameInterface(const std::string &moduleName);
 
     //
@@ -108,7 +107,7 @@ private:
     bool testAnotherApp();
 
 private:
-    bool invokeLog(const char *method, int argc, va_list ap);
+    bool invokeLog(const std::string &method, int argc, va_list ap);
     bool invokeExitFrame();
     bool invokeRestartFrame();
     bool invokeLibraryQueryExists(int argc, va_list ap);

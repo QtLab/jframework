@@ -3,21 +3,6 @@
 #include "../jframe_factory.h"
 #include <QtConcurrentRun>
 
-// 获取分发器实例
-extern "C" JFRAME_FACTORY_EXPORT void* _func_jnotifier_create()
-{
-    return static_cast<INotifier *>(new JNotifier());
-}
-
-// 销毁分发器实例
-extern "C" JFRAME_FACTORY_EXPORT void _func_jnotifier_destroy(void *notifier)
-{
-    INotifier *_notifier = reinterpret_cast<INotifier *>(notifier);
-    if (_notifier) {
-        delete _notifier;
-    }
-}
-
 // - class JNotifierPrivate -
 
 class JNotifierPrivate
@@ -59,24 +44,29 @@ JNotifier::~JNotifier()
     delete d;
 }
 
-INotifier &JNotifier::end()
+std::string JNotifier::interfaceIdentity() const
+{
+    return IID_INotifier;
+}
+
+unsigned int JNotifier::interfaceVersion() const
+{
+    return VER_INotifier;
+}
+
+void JNotifier::releaseInterface()
+{
+
+}
+
+INotifier &JNotifier::endGroup()
 {
     d->currObs = 0;
     d->currOffset = 0;
     return *this;
 }
 
-std::string JNotifier::objectIdentity() const
-{
-    return IID_INotifier;
-}
-
-unsigned int JNotifier::objectVersion() const
-{
-    return VER_INotifier;
-}
-
-void JNotifier::pop(JObserver *obs)
+void JNotifier::remove(JObserver *obs)
 {
     if (!obs) {
         Q_ASSERT(obs);
@@ -84,10 +74,10 @@ void JNotifier::pop(JObserver *obs)
     }
 
     d->mapObs.erase(obs);
-    obs->jpopped("");   // notify observer
+    obs->notifyRemoved("");   // notify observer
 }
 
-INotifier &JNotifier::pop(JObserver *obs, const std::string &id)
+INotifier &JNotifier::remove(JObserver *obs, const std::string &id)
 {
     map_observer_info::iterator iterMap = d->mapObs.find(obs);
     if (iterMap == d->mapObs.end()) {
@@ -110,14 +100,14 @@ INotifier &JNotifier::pop(JObserver *obs, const std::string &id)
         d->mapObs.erase(obs);
     }
 
-    obs->jpopped(id);   // notify observer
+    obs->notifyRemoved(id);   // notify observer
 
     return *this;
 }
 
-INotifier &JNotifier::pop(const std::string &id)
+INotifier &JNotifier::remove(const std::string &id)
 {
-    return pop(d->currObs, id);
+    return remove(d->currObs, id);
 }
 
 void JNotifier::clear()
@@ -127,24 +117,24 @@ void JNotifier::clear()
         list_pair_id_cb &pids = iterMap->second.pids;
         list_pair_id_cb::iterator iterPids = pids.begin();
         for (; iterPids != pids.end(); ++iterMap) {
-            iterMap->first->jpopped(iterPids->first);
+            iterMap->first->notifyRemoved(iterPids->first);
             iterPids = pids.erase(iterPids);
         }
         iterMap = d->mapObs.erase(iterMap);
     }
 }
 
-JLRESULT JNotifier::send(const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JNotifier::sendMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     return dispense(0, id, wParam, lParam);
 }
 
-void JNotifier::post(const std::string &id, JWPARAM wParam, JLPARAM lParam)
+void JNotifier::postMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     QtConcurrent::run(JNotifier::task, this, JNotifyMsg(0, id, wParam, lParam, ""));
 }
 
-void JNotifier::post(const std::string &id, const std::string &info, JLPARAM lParam)
+void JNotifier::postMessage(const std::string &id, const std::string &info, JLPARAM lParam)
 {
     QtConcurrent::run(JNotifier::task, this, JNotifyMsg(0, id, 0, lParam, info));
 }
@@ -154,7 +144,7 @@ INotifierImm &JNotifier::imm()
     return d->imm;
 }
 
-INotifier &JNotifier::begin(JObserver *obs, int offset)
+INotifier &JNotifier::beginGroup(JObserver *obs, int offset)
 {
     Q_ASSERT(obs);
     d->currObs = obs;
@@ -162,7 +152,7 @@ INotifier &JNotifier::begin(JObserver *obs, int offset)
     return *this;
 }
 
-INotifier &JNotifier::push(JObserver *obs, const std::string &id, jobserver_cb cb, int offset)
+INotifier &JNotifier::append(JObserver *obs, const std::string &id, jobserver_cb cb, int offset)
 {
     if (!obs) {
         Q_ASSERT(obs);
@@ -191,14 +181,14 @@ INotifier &JNotifier::push(JObserver *obs, const std::string &id, jobserver_cb c
         d->mapObs[obs] = observer_info(offset, pids);
     }
 
-    obs->jpushed(id);   // notify observer
+    obs->notifyAppended(id);   // notify observer
 
     return *this;
 }
 
-INotifier &JNotifier::push(const std::string &id, jobserver_cb cb)
+INotifier &JNotifier::append(const std::string &id, jobserver_cb cb)
 {
-    return push(d->currObs, id, cb, d->currOffset);
+    return append(d->currObs, id, cb, d->currOffset);
 }
 
 void JNotifier::dispense(const JNotifyMsg &msg)
@@ -241,7 +231,7 @@ JLRESULT JNotifier::dispense(JObserver *obs, const std::string &id, JWPARAM wPar
             if (pid.second) {
                 result = ((obs + offset)->*(pid.second))(id, wParam, lParam);
             } else {
-                result = obs->jnotify(id, wParam, lParam);
+                result = obs->notifySink(id, wParam, lParam);
             }
             break;
         }
@@ -257,51 +247,51 @@ void JNotifier::task(JNotifier *receiver, JNotifyMsg msg)
     }
 }
 
-JLRESULT JNotifier::immSend(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JNotifier::immSendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     map_observer_info::const_iterator citerMap = d->mapObs.begin();
     for (; citerMap != d->mapObs.end(); ++citerMap) {
-        if (citerMap->first->jobserverId() == obsid) {
-            return immSend(citerMap->first, id, wParam, lParam);
+        if (citerMap->first->observerId() == obsid) {
+            return immSendMessage(citerMap->first, id, wParam, lParam);
         }
     }
 
     return -1;
 }
 
-JLRESULT JNotifier::immSend(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JNotifier::immSendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     return dispense(obs, id, wParam, lParam);
 }
 
-void JNotifier::immPost(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+void JNotifier::immPostMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     map_observer_info::const_iterator citerMap = d->mapObs.begin();
     for (; citerMap != d->mapObs.end(); ++citerMap) {
-        if (citerMap->first->jobserverId() == obsid) {
-            immPost(citerMap->first, id, wParam, lParam);
+        if (citerMap->first->observerId() == obsid) {
+            immPostMessage(citerMap->first, id, wParam, lParam);
             break;
         }
     }
 }
 
-void JNotifier::immPost(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+void JNotifier::immPostMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     QtConcurrent::run(JNotifier::task, this, JNotifyMsg(obs, id, wParam, lParam, ""));
 }
 
-void JNotifier::immPost(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam)
+void JNotifier::immPostMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam)
 {
     map_observer_info::const_iterator citerMap = d->mapObs.begin();
     for (; citerMap != d->mapObs.end(); ++citerMap) {
-        if (citerMap->first->jobserverId() == obsid) {
-            immPost(citerMap->first, id, info, lParam);
+        if (citerMap->first->observerId() == obsid) {
+            immPostMessage(citerMap->first, id, info, lParam);
             break;
         }
     }
 }
 
-void JNotifier::immPost(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam)
+void JNotifier::immPostMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam)
 {
     QtConcurrent::run(JNotifier::task, this, JNotifyMsg(obs, id, 0, lParam, info));
 }

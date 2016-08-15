@@ -9,9 +9,9 @@ IJFrameFacade *jframeFacade()
 }
 
 //
-extern "C" JFRAME_FACADE_EXPORT IJObject* CreateInstance()
+extern "C" JFRAME_FACADE_EXPORT IJUnknown* CreateInstance()
 {
-    return static_cast<IJObject *>(JFrameFacade::getInstance());
+    return static_cast<IJUnknown *>(JFrameFacade::getInstance());
 }
 
 //

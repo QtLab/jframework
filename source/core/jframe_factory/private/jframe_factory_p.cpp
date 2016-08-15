@@ -7,7 +7,10 @@
 
 struct JFrameFactoryData
 {
+    JFrameFactoryData()
+    {
 
+    }
 };
 
 // class JFrameFactory
@@ -44,29 +47,34 @@ void JFrameFactory::releaseInstance()
     }
 }
 
-void JFrameFactory::releaseInterface()
-{
-    JFrameFactory::releaseInstance();
-}
-
-void *JFrameFactory::queryInterface(const char *iid, unsigned int ver)
-{
-    J_QUERY_INTERFACE(IJObject, iid, ver);
-
-    return 0;
-}
-
-std::string JFrameFactory::objectIdentity() const
+std::string JFrameFactory::interfaceIdentity() const
 {
     return IID_IJFrameFactory;
 }
 
-unsigned int JFrameFactory::objectVersion() const
+unsigned int JFrameFactory::interfaceVersion() const
 {
     return VER_IJFrameFactory;
 }
 
-void *JFrameFactory::factory(const char *iid, unsigned int ver)
+void *JFrameFactory::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+
+    return 0;
+}
+
+bool JFrameFactory::loadInterface()
+{
+    return true;
+}
+
+void JFrameFactory::releaseInterface()
+{
+
+}
+
+void *JFrameFactory::factory(const std::string &iid, unsigned int ver)
 {
     // 创建消息分发器
     if (J_IS_INSTANCEOF(INotifier, iid, ver)) {
@@ -80,7 +88,7 @@ void *JFrameFactory::factory(const char *iid, unsigned int ver)
     return 0;
 }
 
-void JFrameFactory::releaseFactory(void *iface, const char *iid, unsigned int ver)
+void JFrameFactory::releaseFactory(void *iface, const std::string &iid, unsigned int ver)
 {
     // 销毁消息分发器
     if (J_IS_INSTANCEOF(INotifier, iid, ver)) {

@@ -14,6 +14,12 @@ public:
     explicit JLogManagerPri();
     ~JLogManagerPri();
 
+    // IJUnknown interface
+public:
+    std::string interfaceIdentity() const;
+    unsigned int interfaceVersion() const;
+    void releaseInterface();
+
     // IJlogManager interface
 public:
     void logging(MsgType type, const std::string &msg, int argc, ...);

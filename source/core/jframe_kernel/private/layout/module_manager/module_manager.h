@@ -8,32 +8,37 @@
 
 class IGF_Component;
 
-class ModuleManager : public JObserver
+class ModuleManager :
+        public IJUnknown,
+        public JObserver
 {
 public:
     explicit ModuleManager(JFrameLayout *frameLayout);
     ~ModuleManager();
 
-    // 初始化模块
-    bool init();
+    // IJUnknown interface
+public:
+    bool loadInterface();
+    void releaseInterface();
 
+public:
     // 加载框架系统
     bool loadSystem();
 
     // 获取组件信息
-    JComponentInfo *componentById(const QString &componentId);
+    JComponentInfo *componentByName(const QString &componentName);
 
     // 检测组件挂载状态
     bool isComponentAttached(const JComponentInfo *componentInfo);
 
     // 挂载组件
-    bool attachComponent(const JComponentInfo *componentInfo, bool show);
+    bool attachComponent(JComponentInfo *componentInfo, bool show);
 
     // 挂载组件界面
     bool attachComponentUi(const JComponentInfo *componentInfo);
 
     // 分离组件
-    bool detachComponent(const JComponentInfo *componentInfo);
+    bool detachComponent(JComponentInfo *componentInfo);
 
     // 将所有视图窗口置为未激活状态
     void inactivateAllComponent();
@@ -44,12 +49,14 @@ public:
     // 复位所有处于未激活状态的视图组件的父窗口
     void resetAllInactivateViewComponent();
 
+    // 显示所有处于激活状态的视图组件的父窗口
+    void showAllActivateViewComponent();
+
     //
     bool attachComponent(IJComponent *component, bool stayOn);
     JComponentInfo *attachComponent(IJComponent *component);
     bool detachComponent(IJComponent *component);
     bool attachComponentUi(IJComponent *component, QWidget *widget);
-    std::list<IJComponent *> attachedComponents() const;
 
     // 获取当前系统名称
     std::string currentSystem() const;
@@ -59,7 +66,7 @@ public:
 
     // JObserver interface
 public:
-    virtual std::string jobserverId() const;
+    virtual std::string observerId() const;
 
 protected:
     // layout
@@ -76,12 +83,15 @@ private:
     bool switchSystem(const std::string &system, JLPARAM lParam = 0);
     bool switchModule(const std::string &module, JLPARAM lParam = 0);
 
+    // 分离所有组件
+    void detachAllComponent();
+
 private:
     JFrameLayout *q_frameLayout;
     INotifier *q_notifier;
     std::string q_currentSystem;
     std::string q_currentModule;
-    QMap<QString/*componentId*/, JComponentInfo> q_mapComponentInfo;
+    QMap<QString/*componentName*/, JComponentInfo> q_mapComponentInfo;
 };
 
 #endif // MODULE_MANAGER_H

@@ -7,7 +7,9 @@
 
 namespace JFrameLoginSpace
 {
-    // 用户权限类型枚举
+    /**
+     * @brief The UserType enum : 用户权限类型枚举
+     */
     enum UserType
     {
         UserTypeInvalid = -1,   // 无效用户
@@ -17,7 +19,9 @@ namespace JFrameLoginSpace
         UserTypeOrdinUser       // 普通用户
     };
 
-    // 模块权限等级类型枚举
+    /**
+     * @brief The PowerLevel enum : 模块权限等级类型枚举
+     */
     enum PowerLevel
     {
         PowerLevelInvalid = -1, // 无效权限（或模块无效）
@@ -32,24 +36,27 @@ namespace JFrameLoginSpace
 #define IID_IJLoginDBMgr J_IID_INTERFACE(IJLoginDBMgr)
 
 /**
- * @brief The IJLoginDBMgr class
+ * @brief The IJLoginDBMgr class : 登录数据库管理器
  */
-class IJLoginDBMgr : public IJObject
+class IJLoginDBMgr : public IJUnknown
 {
 public:
+    /**
+     * @brief ~IJLoginDBMgr : 析构函数
+     */
     virtual ~IJLoginDBMgr() {}
 
     /**
-     * @brief objectIdentity : 获取对象标识
-     * @return
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
      */
-    virtual std::string objectIdentity() const { return IID_IJLoginDBMgr; }
+    virtual std::string interfaceIdentity() const { return IID_IJLoginDBMgr; }
 
     /**
-     * @brief objectVersion : 获取对象版本
-     * @return
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
      */
-    virtual unsigned int objectVersion() const { return VER_IJLoginDBMgr; }
+    virtual unsigned int interfaceVersion() const { return VER_IJLoginDBMgr; }
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -59,35 +66,50 @@ public:
 #define IID_IJLoginManager J_IID_INTERFACE(IJLoginManager)
 
 /**
- * @brief The IJLoginManager class
+ * @brief The IJLoginManager class : 登录管理器
  */
-class IJLoginManager : public IJObject
+class IJLoginManager : public IJUnknown
 {
 public:
+    /**
+     * @brief ~IJLoginManager : 析构函数
+     */
     virtual ~IJLoginManager() {}
 
     /**
-     * @brief objectIdentity : 获取对象标识
-     * @return
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
      */
-    virtual std::string objectIdentity() const { return IID_IJLoginManager; }
+    virtual std::string interfaceIdentity() const { return IID_IJLoginManager; }
 
     /**
-     * @brief objectVersion : 获取对象版本
-     * @return
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
      */
-    virtual unsigned int objectVersion() const { return VER_IJLoginManager; }
+    virtual unsigned int interfaceVersion() const { return VER_IJLoginManager; }
 
-    // 获取登录管理模块有效性
+    /**
+     * @brief isValid : 获取登录管理器状态
+     * @return : 登录管理器状态。true，有效；false，无效
+     */
     virtual bool isValid() const = 0;
 
-    // 显示登录界面
-    virtual bool execute() = 0;
+    /**
+     * @brief login : 登录
+     * @return : 登录状态。true，登录成功；false，登录失败
+     */
+    virtual bool login() = 0;
 
-    // 注销登录
+    /**
+     * @brief logout : 注销
+     * @return : 注销状态。true，注销成功；false，注销失败
+     */
     virtual bool logout() = 0;
 
-    // 获取登录数据库管理接口实例
+    /**
+     * @brief loginDBMgr : 获取登录数据库管理器
+     * @return : 登录数据库管理器
+     */
     virtual IJLoginDBMgr *loginDBMgr() = 0;
 
     // 获取登录界面管理接口实例
@@ -102,19 +124,34 @@ public:
     // 获取当前系统信息
     //virtual JFrameLoginSpace::SystemElement currentSystemInfo() const = 0;
 
-    // 获取当前登录用户是否为管理员
+    /**
+     * @brief isAdminUser : 获取当前登录用户是否为管理员
+     * @return : 查询结果。true，是管理员；false，不是管理员
+     */
     virtual bool isAdminUser() const = 0;
 
-    // 获取用户名称
+    /**
+     * @brief userName : 获取用户名称
+     * @return : 用户名称
+     */
     virtual std::string userName() const = 0;
 
-    // 获取当前登录用户类型
+    /**
+     * @brief userType : 获取当前登录用户类型
+     * @return : 当前登录用户类型。查看jframe_login.h头文件中的UserType定义
+     */
     virtual int userType() const = 0;
 
-    // 获取当前席位
+    /**
+     * @brief currentSeat : 获取当前席位名称
+     * @return : 当前席位名称
+     */
     virtual std::string currentSeat() const = 0;
 
-    // 获取当前系统
+    /**
+     * @brief currentSystem : 获取当前系统名称
+     * @return : 当前系统名称
+     */
     virtual std::string currentSystem() const = 0;
 };
 
@@ -127,24 +164,30 @@ public:
 /**
  * @brief The IJFrameLogin class
  */
-class IJFrameLogin : public IJObject
+class IJFrameLogin : public IJUnknown
 {
 public:
+    /**
+     * @brief ~IJFrameLogin : 析构函数
+     */
     virtual ~IJFrameLogin() {}
 
     /**
-     * @brief objectIdentity : 获取对象标识
-     * @return
+     * @brief interfaceIdentity : 获取接口标识
+     * @return : 接口标识
      */
-    virtual std::string objectIdentity() const { return IID_IJFrameLogin; }
+    virtual std::string interfaceIdentity() const { return IID_IJFrameLogin; }
 
     /**
-     * @brief objectVersion : 获取对象版本
-     * @return
+     * @brief interfaceVersion : 获取接口版本
+     * @return : 接口版本
      */
-    virtual unsigned int objectVersion() const { return VER_IJFrameLogin; }
+    virtual unsigned int interfaceVersion() const { return VER_IJFrameLogin; }
 
-    // 获取登录管理接口实例
+    /**
+     * @brief loginManager : 获取登录管理器
+     * @return : 登录管理器
+     */
     virtual IJLoginManager *loginManager() = 0;
 };
 

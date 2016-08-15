@@ -22,25 +22,30 @@ ComDemo4::ComDemo4(IJAttempter *attemper)
 
 ComDemo4::~ComDemo4()
 {
+    if (q_widget) {
+        q_widget->deleteLater();
+        q_widget = 0;
+    }
+}
 
+bool ComDemo4::loadInterface()
+{
+    return true;
 }
 
 void ComDemo4::releaseInterface()
 {
-    if (q_widget) {
-        //q_widget->deleteLater();
-        //q_widget = 0;
-    }
+
 }
 
-void* ComDemo4::queryInterface(const char* iid, unsigned int ver)
+void* ComDemo4::queryInterface(const std::string &iid, unsigned int ver)
 {
     J_QUERY_INTERFACE(IJComponentUi, iid, ver);
 
     return 0;
 }
 
-std::string ComDemo4::componentId() const
+std::string ComDemo4::componentName() const
 {
     return "com_demo4";
 }
@@ -50,34 +55,20 @@ std::string ComDemo4::componentDesc() const
     return "组件示例 #4";
 }
 
-bool ComDemo4::initialize()
-{
-    // 挂载组件
-    jframeLayout()->attachComponent(this);
-
-    return true;
-}
-
-void ComDemo4::shutdown()
-{
-    // 分离组件
-    jframeLayout()->detachComponent(this);
-}
-
 void ComDemo4::attach()
 {
     // 订阅消息
-    q_notifier->begin(this)
-            .end();
+    q_notifier->beginGroup(this)
+            .endGroup();
 }
 
 void ComDemo4::detach()
 {
     // 取消订阅消息
-    q_notifier->pop(this);
+    q_notifier->remove(this);
 }
 
-void *ComDemo4::createUi(void *parent, const char *objectName)
+void *ComDemo4::createWindow(void *parent, const std::string &objectName)
 {
     Q_UNUSED(parent);
     Q_UNUSED(objectName);
@@ -91,13 +82,10 @@ void *ComDemo4::createUi(void *parent, const char *objectName)
     //
     q_widget = new QPushButton(QStringLiteral("测试组件4"));
 
-    // 挂载组件界面
-    jframeLayout()->attachComponentUi(this, q_widget);
-
-    return 0;
+    return qobject_cast<QWidget *>(q_widget);
 }
 
-std::string ComDemo4::jobserverId() const
+std::string ComDemo4::observerId() const
 {
-    return componentId();
+    return componentName();
 }

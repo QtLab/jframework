@@ -21,7 +21,24 @@ JMainWindow::~JMainWindow()
     }
 }
 
-bool JMainWindow::init()
+std::string JMainWindow::interfaceIdentity() const
+{
+    return IID_IJMainWindow;
+}
+
+unsigned int JMainWindow::interfaceVersion() const
+{
+    return VER_IJMainWindow;
+}
+
+void *JMainWindow::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+
+    return 0;
+}
+
+bool JMainWindow::loadInterface()
 {
     bool result = true;
 
@@ -31,22 +48,6 @@ bool JMainWindow::init()
     return result;
 }
 
-void JMainWindow::startSplash()
-{
-    q_frameWnd->splashScreen()->showFullScreen();
-    updateSplash();
-}
-
-void JMainWindow::finishSplash()
-{
-    q_frameWnd->splashScreen()->finish(q_frameWnd);
-}
-
-void JMainWindow::updateSplash()
-{
-    QApplication::processEvents();
-}
-
 void JMainWindow::releaseInterface()
 {
     if (q_frameWnd) {
@@ -54,32 +55,22 @@ void JMainWindow::releaseInterface()
     }
 }
 
-void *JMainWindow::queryInterface(const char *iid, unsigned int ver)
+std::list<std::string> JMainWindow::queryMethod() const
 {
-    J_QUERY_INTERFACE(IJObject, iid, ver);
+    std::list<std::string> methods;
 
-    return 0;
+    //
+
+    return methods;
 }
 
-std::string JMainWindow::objectIdentity() const
+bool JMainWindow::invokeMethod(const std::string &method, int argc, ...)
 {
-    return IID_IJMainWindow;
-}
-
-unsigned int JMainWindow::objectVersion() const
-{
-    return VER_IJMainWindow;
-}
-
-bool JMainWindow::invoke(const char *method, int argc)
-{
-    if (!method) {
-        return false;
-    }
-
     bool result = false;
     va_list ap;
     va_start(ap, argc);
+
+    Q_UNUSED(method);
 
     va_end(ap);
 
@@ -133,10 +124,10 @@ void JMainWindow::resize(int width, int height)
     q_frameWnd->resize(width, height);
 }
 
-void *JMainWindow::queryObject(const char *objectName)
+void *JMainWindow::queryObject(const std::string &objectName)
 {
     QHash<QString, QObject*>::const_iterator citer =
-            q_hashObject.find(QString::fromLatin1(objectName));
+            q_hashObject.find(QString::fromStdString(objectName));
     if (citer != q_hashObject.end()) {
         return (void *)citer.value();
     } else {
@@ -149,7 +140,7 @@ void *JMainWindow::statusBar()
     return (void *)q_frameWnd->statusBar();
 }
 
-void JMainWindow::activeView(const char *viewName)
+void JMainWindow::activeView(const std::string &viewName)
 {
     //
     QObject *object = reinterpret_cast<QObject *>(queryObject(viewName));
@@ -172,20 +163,20 @@ void JMainWindow::activeView(const char *viewName)
     q_frameWnd->setCurrentWidget(widget);
 }
 
-void JMainWindow::updateSplashInfo(const char *info)
+void JMainWindow::updateSplashInfo(const std::string &info)
 {
-    q_frameWnd->updateSplashInfo(QString::fromLatin1(info));
+    q_frameWnd->updateSplashInfo(QString::fromStdString(info));
 }
 
-bool JMainWindow::createComponentUi(IJComponent *component, const char *filePath)
+bool JMainWindow::createComponentUi(IJComponent *component, const std::string &filePath)
 {
     // 参数有效性检测
-    if (!component || !filePath) {
+    if (!component) {
         return false;       // 参数无效
     }
 
     // 打开组件配置文件
-    QFile file(filePath);
+    QFile file(QString::fromStdString(filePath));
     if(!file.exists()) {
         return false;       // ignore
     }
@@ -236,6 +227,7 @@ bool JMainWindow::createComponentUi(IJComponent *component, const char *filePath
         if (!createComponentUi(component, emWindow)) {
             // ignore
         }
+        //
     }
 
     return true;
@@ -246,9 +238,40 @@ void *JMainWindow::mainWidget()
     return static_cast<QWidget *>(q_frameWnd);
 }
 
-void JMainWindow::setTheme(const char *theme)
+void JMainWindow::setTheme(const std::string &theme)
 {
-    q_frameWnd->setTheme(theme);
+    q_frameWnd->setTheme(QString::fromStdString(theme));
+}
+
+std::string JMainWindow::toolBarType() const
+{
+    return q_mainWindowConfig.toolBarType;
+}
+
+std::string JMainWindow::layoutType() const
+{
+    return q_mainWindowConfig.layoutType;
+}
+
+void JMainWindow::startSplash()
+{
+    q_frameWnd->splashScreen()->showFullScreen();
+    updateSplash();
+}
+
+void JMainWindow::finishSplash()
+{
+    q_frameWnd->splashScreen()->finish(q_frameWnd);
+}
+
+void JMainWindow::updateSplash()
+{
+    QApplication::processEvents();
+}
+
+bool JMainWindow::loadConfig()
+{
+    return true;
 }
 
 void JMainWindow::saveWindowState()
@@ -308,8 +331,8 @@ bool JMainWindow::createComponentUi(IJComponent *component, const QDomElement &e
                 continue;   // ignore
             }
             // create ui
-            void *window = componentUi->createUi(qobject_cast<QWidget *>(q_frameWnd),
-                                                 objectName.toLocal8Bit().data());
+            void *window = componentUi->createWindow(qobject_cast<QWidget *>(q_frameWnd),
+                                                     objectName.toStdString());
             if (!window) {
                 continue;   // ignore
             }
@@ -324,6 +347,8 @@ bool JMainWindow::createComponentUi(IJComponent *component, const QDomElement &e
                     centralWidget->addWidget(widget);
                     centralWidget->setCurrentWidget(widget);
                 }
+                // 挂载组件窗口到框架布局系统
+                jframeLayout()->invokeMethod("attach_component_ui", 2, component, widget);
             } else if (windowType == "MFC") {
                 //
             }

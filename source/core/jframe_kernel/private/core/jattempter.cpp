@@ -6,24 +6,47 @@
 // class JAttempter
 
 JAttempter::JAttempter()
-    : q_mainWindow(0)
+    : q_notifier(0)
+    , q_mainWindow(0)
     , q_workModeId(0)
 {
-    //
-    q_mainWindow = new JMainWindow(this);
+    // 创建消息分发器实例
+    q_notifier = JFRAME_FACTORY_CREATE(INotifier);
 
     //
+    q_mainWindow = new JMainWindow(this);
 }
 
 JAttempter::~JAttempter()
 {
+    // 销毁消息分发器实例
+    JFRAME_FACTORY_RELEASE(q_notifier, INotifier);
+
+    //
     if (q_mainWindow) {
         delete q_mainWindow;
         q_mainWindow = 0;
     }
 }
 
-bool JAttempter::init()
+std::string JAttempter::interfaceIdentity() const
+{
+    return IID_IJAttempter;
+}
+
+unsigned int JAttempter::interfaceVersion() const
+{
+    return VER_IJAttempter;
+}
+
+void *JAttempter::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+
+    return 0;
+}
+
+bool JAttempter::loadInterface()
 {
     bool result = true;
 
@@ -34,7 +57,7 @@ bool JAttempter::init()
     result = result && loadInitComponent();
 
     // 初始化主窗口
-    result = result && dynamic_cast<JMainWindow *>(q_mainWindow)->init();
+    result = result && q_mainWindow->loadInterface();
 
     return result;
 }
@@ -42,7 +65,10 @@ bool JAttempter::init()
 void JAttempter::releaseInterface()
 {
     // 下电所有组件
-    shutdownAllComponent();
+    releaseAllComponent();
+
+    // 释放消息分发器接口
+    q_notifier->releaseInterface();
 
     // 释放框架主窗口
     if (q_mainWindow) {
@@ -50,32 +76,22 @@ void JAttempter::releaseInterface()
     }
 }
 
-void *JAttempter::queryInterface(const char *iid, unsigned int ver)
+std::list<std::string> JAttempter::queryMethod() const
 {
-    J_QUERY_INTERFACE(IJObject, iid, ver);
+    std::list<std::string> methods;
 
-    return 0;
+    //
+
+    return methods;
 }
 
-std::string JAttempter::objectIdentity() const
+bool JAttempter::invokeMethod(const std::string &method, int argc, ...)
 {
-    return IID_IJAttempter;
-}
-
-unsigned int JAttempter::objectVersion() const
-{
-    return VER_IJAttempter;
-}
-
-bool JAttempter::invoke(const char *method, int argc)
-{
-    if (!method) {
-        return false;
-    }
-
     bool result = false;
     va_list ap;
     va_start(ap, argc);
+
+    Q_UNUSED(method);
 
     va_end(ap);
 
@@ -98,24 +114,19 @@ bool JAttempter::loadComponent()
     return result;
 }
 
-void JAttempter::shutdownComponent()
+void JAttempter::releaseComponent()
 {
     //
-    if (!shutdownAllComponent()) {
+    if (!releaseAllComponent()) {
         //
     }
 }
 
-IJComponent *JAttempter::queryComponent(const char *componentId)
+IJComponent *JAttempter::queryComponent(const std::string &componentName)
 {
-    // 参数有效性检测
-    if (!componentId) {
-        return 0;   // 无效
-    }
-
     // 查找组件
     QMap<QString, JComponentConfig>::const_iterator citer =
-            q_mapComponent.find(QString::fromLatin1(componentId));
+            q_mapComponent.find(QString::fromStdString(componentName));
     if (citer == q_mapComponent.end()) {
         return 0;   // 不存在
     }
@@ -128,10 +139,10 @@ IJMainWindow *JAttempter::mainWindow()
     return q_mainWindow;
 }
 
-void *JAttempter::queryInterface(const char *componentId, const char *iid, unsigned int ver)
+void *JAttempter::queryInterface(const std::string &componentName, const std::string &iid, unsigned int ver)
 {
     // 查询组件
-    IJComponent *component = queryComponent(componentId);
+    IJComponent *component = queryComponent(componentName);
     if (!component) {
         return 0;   // 不存在
     }
@@ -167,19 +178,110 @@ const char *JAttempter::currentWorkModeConfigDirName() const
     return q_workModeDir.c_str();
 }
 
+void JAttempter::subMessage(IJComponent *component, unsigned int id)
+{
+    Q_UNUSED(component);
+    Q_UNUSED(id);
+}
+
+void JAttempter::unsubMessage(IJComponent *component, unsigned int id)
+{
+    Q_UNUSED(component);
+    Q_UNUSED(id);
+}
+
+void JAttempter::sendMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam)
+{
+    Q_UNUSED(component);
+    Q_UNUSED(id);
+    Q_UNUSED(wParam);
+    Q_UNUSED(lParam);
+}
+
+void JAttempter::postMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam)
+{
+    Q_UNUSED(component);
+    Q_UNUSED(id);
+    Q_UNUSED(wParam);
+    Q_UNUSED(lParam);
+}
+
+INotifier *JAttempter::notifier()
+{
+    return q_notifier;
+}
+
+bool JAttempter::loadConfig()
+{
+    // 打开框架全局配置文件
+    QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架全局配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
+                             QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
+    if (!file.open(QFile::ReadWrite)) {
+        return false;   // 打开失败
+    }
+
+    // 解析文件
+    QString errorMsg;
+    int errorLine = 0, errorColumn = 0;
+    QDomDocument document;
+    if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
+        const QString text = QStringLiteral("框架全局配置文件\"%1\"解析失败！\n"
+                                            "错误描述：%2\n"
+                                            "错误位置：（行号：%3，列号：%4）")
+                .arg(file.fileName())
+                .arg(errorMsg).arg(errorLine).arg(errorColumn);
+        QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
+                             QStringLiteral("警告"), text);
+        return false;
+    }
+
+    // 关闭文件
+    file.close();
+
+    // 获取根节点
+    QDomElement emRoot = document.documentElement();
+    if (emRoot.isNull()) {
+        return false;   // 无效
+    }
+
+    // 获取工作模式节点
+    QDomElement emWorkMode = emRoot.firstChildElement("workMode");
+    if (emWorkMode.isNull()) {
+        return false;   // 无效
+    }
+
+    // id
+    q_workModeId = emWorkMode.attribute("id", 0).toInt();
+    // name
+    q_workModeName = emWorkMode.attribute("name").toStdString();
+    // dir
+    q_workModeDir = emWorkMode.attribute("dir").toStdString();
+
+    return true;
+}
+
 bool JAttempter::loadInitComponent()
 {
     const std::string dirPath = jframeFacade()->appDirPath()
             .append("/../initcomponent");
-    if (!jframeFacade()->invoke("library_query_exists", 3, dirPath.c_str(), "InitComponent")) {
+    if (!jframeFacade()->invokeMethod(
+                "library_query_exists", 3, dirPath.c_str(), "InitComponent")) {
         return true;    // 如果不存，则忽略加载
     }
 
     //
     FuncInitComponent fInitComponent = 0;
     if (!jframeFacade()
-            ->invoke("library_resolve", 4, dirPath.c_str(),
-                     "InitComponent", "InitComponent", &fInitComponent)) {
+            ->invokeMethod("library_resolve", 4, dirPath.c_str(),
+                           "InitComponent", "InitComponent", &fInitComponent)) {
         QMessageBox::critical(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
                               "Error", QString("Cannot find symbol \"InitComponent\" in library InitComponent \n"
                                                "or it's dependent libraries can't be found!\n"
@@ -251,20 +353,23 @@ bool JAttempter::loadAllComponent()
         if (!QVariant(emComponent.attribute("load", "false")).toBool()) {
             continue;   // 不允许加载
         }
+        JComponentConfig componentConfig;
         // name
-        const QString componentName = emComponent.attribute("name").trimmed();
-        if (componentName.isEmpty()) {
+        componentConfig.componentName = emComponent.attribute("name").trimmed();
+        if (componentConfig.componentName.isEmpty()) {
             continue;   // 无效
         }
         // 检测组件重复性加载问题
-        if (q_mapComponent.contains(componentName)) {
+        if (q_mapComponent.contains(componentConfig.componentName)) {
             continue;   // 已加载
         }
         // desc
-        const QString componentDesc = emComponent.attribute("desc").trimmed();
-        if (componentDesc.isEmpty()) {
+        componentConfig.componentDesc = emComponent.attribute("desc").trimmed();
+        if (componentConfig.componentDesc.isEmpty()) {
             continue;   // 无效
         }
+        // stay
+        componentConfig.stay = QVariant(emComponent.attribute("stay", "false")).toBool();
         // dir
         QString componentDir = emComponent.attribute("dir").trimmed();
         if (componentDir.isEmpty()) {
@@ -276,12 +381,13 @@ bool JAttempter::loadAllComponent()
         } else {
             componentDir.prepend(QString::fromStdString(jframeFacade()->appDirPath()).append("/../"));
         }
-        componentDir.append("/").append(componentName);
+        componentDir.append("/").append(componentConfig.componentName);
+        componentConfig.componentDir = componentDir;
         // 加载信息显示
-        QString msg = QStringLiteral("正在加载#").append(componentDesc).append("#...");
+        QString msg = QStringLiteral("正在加载#").append(componentConfig.componentDesc).append("#...");
         q_mainWindow->updateSplashInfo(msg.toLocal8Bit().data());
         // 加载组件
-        if (!loadComponent(componentDir, componentName, componentDesc)) {
+        if (!loadComponent(componentConfig)) {
             continue;   // 加载失败
         }
     }
@@ -289,7 +395,58 @@ bool JAttempter::loadAllComponent()
     return true;
 }
 
-bool JAttempter::shutdownAllComponent()
+bool JAttempter::loadComponent(JComponentConfig &componentConfig)
+{
+    // 文件有效性检测
+    if (!jframeFacade()->invokeMethod("library_query_exists", 2,
+                                      componentConfig.componentDir.toLocal8Bit().data(),
+                                      componentConfig.componentName.toLocal8Bit().data())) {
+        return true;    // 如果不存，则忽略加载
+    }
+
+    //
+    FuncCreateComponent fCreateComponent = 0;
+    if (!jframeFacade()
+            ->invokeMethod("library_resolve", 4,
+                           componentConfig.componentDir.toLocal8Bit().data(),
+                           componentConfig.componentName.toLocal8Bit().data(),
+                           "CreateComponent", &fCreateComponent)) {
+        QMessageBox::critical(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
+                              "Error", QString("Cannot find symbol \"CreateComponent\" in library %1 \n"
+                                               "or it's dependent libraries can't be found!\n"
+                                               "Where: %2")
+                              .arg(componentConfig.componentName)
+                              .arg(componentConfig.componentDir));
+        return false;
+    }
+
+    // 创建组件
+    IJComponent *component = (IJComponent *)fCreateComponent(static_cast<IJAttempter *>(this));
+    if (!component) {
+        return false;   // 创建失败
+    }
+
+    // 存储组件信息
+    componentConfig.component = component;
+    q_mapComponent[componentConfig.componentName] = componentConfig;
+
+    // 创建组件界面
+    q_mainWindow->createComponentUi(component, (componentConfig.componentDir + "/"
+                                                + componentConfig.componentName + ".xml")
+                                    .toStdString());
+
+    // 加载组件资源
+    if (!component->loadInterface()) {
+        return false;
+    }
+
+    // 挂载组件到框架布局系统
+    jframeLayout()->invokeMethod("attach_component", 2, component, componentConfig.stay);
+
+    return true;
+}
+
+bool JAttempter::releaseAllComponent()
 {
     //
     QMapIterator<QString, JComponentConfig> citer(q_mapComponent);
@@ -301,8 +458,14 @@ bool JAttempter::shutdownAllComponent()
         QString msg = QStringLiteral("正在卸载#")
                 .append(componentConfig.componentDesc).append("#...");
         q_mainWindow->updateSplashInfo(msg.toLocal8Bit().data());
-        componentConfig.component->shutdown();
+
+        // 卸载组件资源
         componentConfig.component->releaseInterface();
+
+        // 从框架布局系统卸载组件
+        jframeLayout()->invokeMethod("detach_component", 1, componentConfig.component);
+
+        // 释放
         delete componentConfig.component;
     }
 
@@ -312,115 +475,7 @@ bool JAttempter::shutdownAllComponent()
     return true;
 }
 
-bool JAttempter::loadComponent(const QString &componentDir,
-                               const QString &componentName,
-                               const QString &componentDesc)
-{
-    // 文件有效性检测
-    if (!jframeFacade()->invoke("library_query_exists", 2,
-                                componentDir.toLocal8Bit().data(),
-                                componentName.toLocal8Bit().data())) {
-        return true;    // 如果不存，则忽略加载
-    }
-
-    //
-    FuncCreateComponent fCreateComponent = 0;
-    if (!jframeFacade()
-            ->invoke("library_resolve", 4,
-                     componentDir.toLocal8Bit().data(),
-                     componentName.toLocal8Bit().data(),
-                     "CreateComponent", &fCreateComponent)) {
-        QMessageBox::critical(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
-                              "Error", QString("Cannot find symbol \"CreateComponent\" in library %1 \n"
-                                               "or it's dependent libraries can't be found!\n"
-                                               "Where: %2")
-                              .arg(componentName)
-                              .arg(componentDir));
-        return false;
-    }
-
-    // 创建组件
-    IJComponent *component = (IJComponent *)fCreateComponent(static_cast<IJAttempter *>(this));
-    if (!component) {
-        return false;   // 创建失败
-    }
-
-    // 存储组件信息
-    JComponentConfig componentConfig;
-    componentConfig.componentDir = componentDir;
-    componentConfig.componentName = componentName;
-    componentConfig.componentDesc = componentDesc;
-    componentConfig.component = component;
-    q_mapComponent[componentName] = componentConfig;
-
-    // 组件初始化
-    component->initialize();
-
-    // 创建组件界面
-    q_mainWindow->createComponentUi(component, (componentDir + "/" + componentName + ".xml")
-                                    .toLocal8Bit().data());
-
-    return true;
-}
-
-bool JAttempter::loadConfig()
-{
-    // 打开框架全局配置文件
-    QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
-    if (!file.exists()) {
-        const QString text = QStringLiteral("框架全局配置文件\"%1\"不存在！")
-                .arg(file.fileName());
-        QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
-                             QStringLiteral("警告"), text);
-        return false;   // 文件不存在
-    }
-
-    // 打开文件
-    if (!file.open(QFile::ReadWrite)) {
-        return false;   // 打开失败
-    }
-
-    // 解析文件
-    QString errorMsg;
-    int errorLine = 0, errorColumn = 0;
-    QDomDocument document;
-    if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("框架全局配置文件\"%1\"解析失败！\n"
-                                            "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列号：%4）")
-                .arg(file.fileName())
-                .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
-                             QStringLiteral("警告"), text);
-        return false;
-    }
-
-    // 关闭文件
-    file.close();
-
-    // 获取根节点
-    QDomElement emRoot = document.documentElement();
-    if (emRoot.isNull()) {
-        return false;   // 无效
-    }
-
-    // 获取工作模式节点
-    QDomElement emWorkMode = emRoot.firstChildElement("workMode");
-    if (emWorkMode.isNull()) {
-        return false;   // 无效
-    }
-
-    // id
-    q_workModeId = emWorkMode.attribute("id", 0).toInt();
-    // name
-    q_workModeName = emWorkMode.attribute("name").toStdString();
-    // dir
-    q_workModeDir = emWorkMode.attribute("dir").toStdString();
-
-    return true;
-}
-
-void JAttempter::commandSink(void *sender, const char *senderName)
+void JAttempter::commandSink(void *sender, const std::string &senderName)
 {
     QMapIterator<QString, JComponentConfig> citer(q_mapComponent);
     while (citer.hasNext()) {

@@ -22,7 +22,7 @@ public:
 
     void setCurrentWidget(QWidget *widget);
 
-    void setTheme(const char* theme);
+    void setTheme(const QString &theme);
 
     QStackedWidget *stackedWidget();
 

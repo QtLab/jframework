@@ -55,118 +55,145 @@ void JFrameKernel::releaseInstance()
     }
 }
 
-void JFrameKernel::releaseInterface()
-{
-    // 释放框架登录部件
-    JFrameLogin::getInstance()->releaseInterface();
-
-    // 释放框架布局部件
-    JFrameLayout::getInstance()->releaseInterface();
-
-    // 释放框架核心部件
-    JFrameCore::getInstance()->releaseInterface();
-
-    // 释放日志管理部件
-    if (data->logManager) {
-        data->logManager->releaseInterface();
-    }
-
-    //
-    JFrameKernel::releaseInstance();
-}
-
-void *JFrameKernel::queryInterface(const char *iid, unsigned int ver)
-{
-    J_QUERY_INTERFACE(IJObject, iid, ver);
-    J_QUERY_MEMBER_OBJECT(IJObject, iid, ver, frameCore());
-    J_QUERY_MEMBER_OBJECT(IJObject, iid, ver, frameLayout());
-    J_QUERY_MEMBER_OBJECT(IJObject, iid, ver, frameLogin());
-
-    return 0;
-}
-
-std::string JFrameKernel::objectIdentity() const
+std::string JFrameKernel::interfaceIdentity() const
 {
     return IID_IJFrameKernel;
 }
 
-unsigned int JFrameKernel::objectVersion() const
+unsigned int JFrameKernel::interfaceVersion() const
 {
     return VER_IJFrameKernel;
 }
 
-bool JFrameKernel::invoke(const char *method, int argc, ...)
+void *JFrameKernel::queryInterface(const std::string &iid, unsigned int ver)
 {
-    if (!method) {
-        return false;
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+    J_QUERY_MEMBER_OBJECT(IJUnknown, iid, ver, frameCore());
+    J_QUERY_MEMBER_OBJECT(IJUnknown, iid, ver, frameLayout());
+    J_QUERY_MEMBER_OBJECT(IJUnknown, iid, ver, frameLogin());
+
+    return 0;
+}
+
+bool JFrameKernel::loadInterface()
+{
+    bool result = true;
+
+    //
+    JwtCore::instance()->init();
+    JwtCore::instance()->loadSystemLang();
+    //qApp->setStyleSheet(JStyleSheet::instance()->styleSheet("default"));
+
+    // 加载日志管理器
+    if (data->logManager) {
+        result = result && data->logManager->loadInterface();
     }
 
+    // 加载框架核心系统
+    result = result && frameCore()->loadInterface();
+
+    // 加载框架布局系统
+    result = result && frameLayout()->loadInterface();
+
+    // 加载框架登录系统
+    result = result && frameLogin()->loadInterface();
+
+    // 加载组件
+    result = result && frameCore()->attempter()->loadComponent();
+
+    return true;
+}
+
+void JFrameKernel::releaseInterface()
+{
+    // 释放框架登录系统
+    frameLogin()->releaseInterface();
+
+    // 释放框架布局系统
+    frameLayout()->releaseInterface();
+
+    // 释放框架核心系统
+    frameCore()->releaseInterface();
+
+    // 释放日志管理器
+    if (data->logManager) {
+        data->logManager->releaseInterface();
+    }
+}
+
+std::list<std::string> JFrameKernel::queryMethod() const
+{
+    std::list<std::string> methods;
+
+    // log
+    methods.push_back(std::string("log").append("..."));
+
+    return methods;
+}
+
+bool JFrameKernel::invokeMethod(const std::string &method, int argc, ...)
+{
     bool result = false;
 
     va_list ap;
     va_start(ap, argc);
 
     // 输出一条日志
-    if (strcmp(method, "log") == 0) {
+    if (method == "log") {
         result = invokeLog(argc, ap);
     }
     // 显示框架
-    else if (strcmp(method, "frame_show") == 0) {
+    else if (method == "frame_show") {
         if (argc == 2) {
             // 转到框架核心系统
-            result = frameCore()->invoke("frame_show", 2, va_arg(ap, bool), va_arg(ap, bool));
+            result = frameCore()->invokeMethod("frame_show", 2, va_arg(ap, bool), va_arg(ap, bool));
         }
     }
     // 尝试退出框架（异步方式）
-    else if (strcmp(method, "frame_try_exit") == 0) {
+    else if (method == "frame_try_exit") {
         // 转到框架布局系统
-        result = frameLayout()->invoke("frame_try_exit");
+        result = frameLayout()->invokeMethod("frame_try_exit");
     }
     // 退出框架（异步方式）
-    else if (strcmp(method, "frame_exit") == 0) {
+    else if (method == "frame_exit") {
         // 转到框架布局系统
-        result = frameLayout()->invoke("frame_exit");
+        result = frameLayout()->invokeMethod("frame_exit");
     }
     // 重启框架（异步方式）
-    else if (strcmp(method, "frame_restart") == 0) {
+    else if (method == "frame_restart") {
         // 转到框架布局系统
-        result = frameLayout()->invoke("frame_restart");
+        result = frameLayout()->invokeMethod("frame_restart");
     }
     // 登录框架
-    else if (strcmp(method, "frame_login") == 0) {
+    else if (method == "frame_login") {
         // 转到框架登录系统
-        result = frameLogin()->invoke("frame_login");
+        result = frameLogin()->invokeMethod("frame_login");
     }
     // 注销框架
-    else if (strcmp(method, "frame_logout") == 0) {
+    else if (method == "frame_logout") {
         // 转到框架登录系统
-        result = frameLogin()->invoke("frame_logout");
+        result = frameLogin()->invokeMethod("frame_logout");
     }
     // 运行Qt消息循环系统
-    else if (strcmp(method, "run_q_app") == 0) {
+    else if (method == "run_q_app") {
         if (argc == 2) {
             // 转到框架布局系统
-            result = frameLayout()->invoke("run_q_app", 2,
+            result = frameLayout()->invokeMethod("run_q_app", 2,
                                            va_arg(ap, void*), va_arg(ap, int*));
         }
     }
     // 运行Qt消息循环系统
-    else if (strcmp(method, "window_handle") == 0) {
+    else if (method == "window_handle") {
         if (argc == 3) {
             // 转到框架布局系统
-            result = frameLayout()->invoke("window_handle", 3, va_arg(ap, void*),
+            result = frameLayout()->invokeMethod("window_handle", 3, va_arg(ap, void*),
                                            va_arg(ap, char*), va_arg(ap, long));
         }
     }
-    // 启动框架
-    else if (strcmp(method, "frame_start") == 0) {
-        //
-        result = startFrame();
-    }
     // 加载默认框架系统
-    else if (strcmp(method, "load_default_system") == 0) {
+    else if (method == "load_default_system") {
         // 转到框架布局系统
-        result = frameLayout()->invoke("load_default_system");
+        result = frameLayout()->invokeMethod("load_default_system");
     }
 
     va_end(ap);
@@ -260,30 +287,6 @@ bool JFrameKernel::invokeLog(int argc, va_list ap)
     return true;
 }
 
-bool JFrameKernel::startFrame()
-{
-    bool result = true;
-
-    //
-    JwtCore::instance()->init();
-    JwtCore::instance()->loadSystemLang();
-    //qApp->setStyleSheet(JStyleSheet::instance()->styleSheet("default"));
-
-    // 初始化框架核心系统
-    JFrameCore::getInstance();
-
-    // 初始化框架布局系统
-    JFrameLayout::getInstance();
-
-    // 初始化框架登录部件
-    JFrameLogin::getInstance();
-
-    // 加载框架核心系统
-    result = result && JFrameCore::getInstance()->attempter()->loadComponent();
-
-    return result;
-}
-
 JFrameKernel::JFrameKernel()
 {
     // 创建私有数据实例
@@ -298,11 +301,6 @@ JFrameKernel::JFrameKernel()
 
 JFrameKernel::~JFrameKernel()
 {
-    // 销毁日志管理器实例
-    if (data->logManager) {
-        JFRAME_FACTORY_RELEASE(data->logManager, IJLogManager);
-    }
-
     // 销毁框架登录部件
     JFrameLogin::releaseInstance();
 
@@ -311,6 +309,11 @@ JFrameKernel::~JFrameKernel()
 
     // 销毁框架核心部件
     JFrameCore::releaseInstance();
+
+    // 销毁日志管理器实例
+    if (data->logManager) {
+        JFRAME_FACTORY_RELEASE(data->logManager, IJLogManager);
+    }
 
     // 销毁私有数据实例
     delete data;

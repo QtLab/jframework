@@ -11,7 +11,24 @@ JLoginDBMgr::~JLoginDBMgr()
 
 }
 
-bool JLoginDBMgr::init()
+std::string JLoginDBMgr::interfaceIdentity() const
+{
+    return IID_IJLoginDBMgr;
+}
+
+unsigned int JLoginDBMgr::interfaceVersion() const
+{
+    return VER_IJLoginDBMgr;
+}
+
+void *JLoginDBMgr::queryInterface(const std::string &iid, unsigned int ver)
+{
+    J_QUERY_INTERFACE(IJUnknown, iid, ver);
+
+    return 0;
+}
+
+bool JLoginDBMgr::loadInterface()
 {
     bool result = true;
 
@@ -24,32 +41,22 @@ void JLoginDBMgr::releaseInterface()
 {
 }
 
-void *JLoginDBMgr::queryInterface(const char *iid, unsigned int ver)
+std::list<std::string> JLoginDBMgr::queryMethod() const
 {
-    J_QUERY_INTERFACE(IJObject, iid, ver);
+    std::list<std::string> methods;
 
-    return 0;
+    //
+
+    return methods;
 }
 
-std::string JLoginDBMgr::objectIdentity() const
+bool JLoginDBMgr::invokeMethod(const std::string &method, int argc, ...)
 {
-    return IID_IJLoginDBMgr;
-}
-
-unsigned int JLoginDBMgr::objectVersion() const
-{
-    return VER_IJLoginDBMgr;
-}
-
-bool JLoginDBMgr::invoke(const char *method, int argc)
-{
-    if (!method) {
-        return false;
-    }
-
     bool result = false;
     va_list ap;
     va_start(ap, argc);
+
+    Q_UNUSED(method);
 
     va_end(ap);
 

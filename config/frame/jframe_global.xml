@@ -38,6 +38,8 @@
     imageFinish="@ConfigDir@/resource/finish.png"
     closeKilled="true"
     systemFont="Microsoft Yahei,9">
+    toolBarType="ribbon"
+    layoutType="splitter"
       <ribbonBar
         visible="true"
         minimized="false" />

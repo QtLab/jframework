@@ -4,6 +4,37 @@
 #include "../../jframe_core.h"
 #include <QHash>
 
+// 主窗口配置信息
+struct JMainWindowConfig
+{
+    std::string toolBarType;    // 1) ribbon; 2) menu
+    std::string layoutType;     // 1) dynamic; 2) static
+
+    JMainWindowConfig()
+    {
+
+    }
+
+    JMainWindowConfig(const JMainWindowConfig &other)
+    {
+        *this = other;
+    }
+
+    JMainWindowConfig &operator =(const JMainWindowConfig &other)
+    {
+        if (this == &other) {
+            return *this;
+        }
+
+        toolBarType = other.toolBarType;
+        layoutType = other.layoutType;
+
+        return *this;
+    }
+};
+
+// class JMainWindow
+
 class JAttempter;
 class JFrameWnd;
 class QDomElement;
@@ -14,22 +45,15 @@ public:
     explicit JMainWindow(JAttempter *attempter);
     ~JMainWindow();
 
-    bool init();
-
-    void startSplash();
-    void finishSplash();
-    void updateSplash();
-
     // IJUnknown interface
 public:
+    std::string interfaceIdentity() const;
+    unsigned int interfaceVersion() const;
+    void *queryInterface(const std::string &iid, unsigned int ver);
+    bool loadInterface();
     void releaseInterface();
-    void *queryInterface(const char *iid, unsigned int ver);
-
-    // IJObject interface
-public:
-    std::string objectIdentity() const;
-    unsigned int objectVersion() const;
-    bool invoke(const char *method, int argc);
+    std::list<std::string> queryMethod() const;
+    bool invokeMethod(const std::string &method, int argc, ...);
 
     // IJMainWindow interface
 public:
@@ -41,15 +65,23 @@ public:
     void setVisible(bool visible);
     void showStaysOnTop(bool stayOnTop);
     void resize(int width, int height);
-    void *queryObject(const char *objectName);
+    void *queryObject(const std::string &objectName);
     void *statusBar();
-    void activeView(const char *viewName);
-    void updateSplashInfo(const char *info);
-    bool createComponentUi(IJComponent *component, const char *filePath);
+    void activeView(const std::string &viewName);
+    void updateSplashInfo(const std::string &info);
+    bool createComponentUi(IJComponent *component, const std::string &filePath);
     void *mainWidget();
-    void setTheme(const char *theme);
+    void setTheme(const std::string &theme);
+    std::string toolBarType() const;
+    std::string layoutType() const;
+
+public:
+    void startSplash();
+    void finishSplash();
+    void updateSplash();
 
 private:
+    bool loadConfig();
     void saveWindowState();
     void restoreWindowState();
 
@@ -63,6 +95,7 @@ private:
     JAttempter *q_attempter;
     JFrameWnd *q_frameWnd;
     QHash<QString, QObject*> q_hashObject;
+    JMainWindowConfig q_mainWindowConfig;
 };
 
 #endif // JMAIN_WINDOW_H

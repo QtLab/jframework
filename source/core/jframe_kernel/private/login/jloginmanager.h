@@ -9,23 +9,20 @@ public:
     explicit JLoginManager();
     ~JLoginManager();
 
-    bool init();
-
     // IJUnknown interface
 public:
+    std::string interfaceIdentity() const;
+    unsigned int interfaceVersion() const;
+    void *queryInterface(const std::string &iid, unsigned int ver);
+    bool loadInterface();
     void releaseInterface();
-    void *queryInterface(const char *iid, unsigned int ver);
-
-    // IJObject interface
-public:
-    std::string objectIdentity() const;
-    unsigned int objectVersion() const;
-    bool invoke(const char *method, int argc);
+    std::list<std::string> queryMethod() const;
+    bool invokeMethod(const std::string &method, int argc, ...);
 
     // IJLoginManager interface
 public:
     bool isValid() const;
-    bool execute();
+    bool login();
     bool logout();
     IJLoginDBMgr *loginDBMgr();
     bool isAdminUser() const;

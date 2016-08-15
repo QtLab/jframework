@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "com_demo1.h"
+#include "testwidget1.h"
 
 //
 extern "C" __declspec(dllexport) void *CreateComponent(void* attemper)
@@ -15,32 +16,37 @@ extern "C" __declspec(dllexport) void *CreateComponent(void* attemper)
 
 ComDemo1::ComDemo1(IJAttempter *attemper)
     : q_attempter(attemper)
-    , q_widget(0)
+    , q_testWidget1(0)
 {
     q_notifier = jframeLayout()->notifier();
 }
 
 ComDemo1::~ComDemo1()
 {
+    if (q_testWidget1) {
+        q_testWidget1->deleteLater();
+        q_testWidget1 = 0;
+    }
+}
 
+bool ComDemo1::loadInterface()
+{
+    return true;
 }
 
 void ComDemo1::releaseInterface()
 {
-    if (q_widget) {
-        //q_widget->deleteLater();
-        //q_widget = 0;
-    }
+
 }
 
-void* ComDemo1::queryInterface(const char* iid, unsigned int ver)
+void* ComDemo1::queryInterface(const std::string &iid, unsigned int ver)
 {
     J_QUERY_INTERFACE(IJComponentUi, iid, ver);
 
     return 0;
 }
 
-std::string ComDemo1::componentId() const
+std::string ComDemo1::componentName() const
 {
     return "com_demo1";
 }
@@ -50,54 +56,37 @@ std::string ComDemo1::componentDesc() const
     return "组件示例 #1";
 }
 
-bool ComDemo1::initialize()
-{
-    // 挂载组件
-    jframeLayout()->attachComponent(this);
-
-    return true;
-}
-
-void ComDemo1::shutdown()
-{
-    // 分离组件
-    jframeLayout()->detachComponent(this);
-}
-
 void ComDemo1::attach()
 {
     // 订阅消息
-    q_notifier->begin(this)
-            .end();
+    q_notifier->beginGroup(this)
+            .endGroup();
 }
 
 void ComDemo1::detach()
 {
     // 取消订阅消息
-    q_notifier->pop(this);
+    q_notifier->remove(this);
 }
 
-void *ComDemo1::createUi(void *parent, const char *objectName)
+void *ComDemo1::createWindow(void *parent, const std::string &objectName)
 {
     Q_UNUSED(parent);
     Q_UNUSED(objectName);
 
     //
-    if (q_widget) {
+    if (q_testWidget1) {
         Q_ASSERT(false);
         return 0;
     }
 
     //
-    q_widget = new QPushButton(QStringLiteral("测试组件1"));
+    q_testWidget1 = new TestWidget1(q_notifier);
 
-    // 挂载组件界面
-    jframeLayout()->attachComponentUi(this, q_widget);
-
-    return 0;
+    return qobject_cast<QWidget *>(q_testWidget1);
 }
 
-std::string ComDemo1::jobserverId() const
+std::string ComDemo1::observerId() const
 {
-    return componentId();
+    return componentName();
 }
