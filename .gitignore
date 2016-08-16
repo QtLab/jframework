@@ -14,7 +14,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -57,13 +56,16 @@ docs/_build/
 target/
 
 #
-bin
+/bin
+/component
+/include
+/lib
+/source/temp
+/.vscode/.BROWSE.VC.DB
 *.pro.user*
 *.user
-.vscode/.BROWSE.VC.DB
-include
-lib
 *.ncb
-
 *.suo
-temp
+*.aps
+*.ilk
+*.exp

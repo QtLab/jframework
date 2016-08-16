@@ -1,21 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
-<jframe systemEditable="true" system="system #1" seatEditable="true" userName="****">
+<jframe system="system #1" seatEditable="true" systemEditable="true" userName="****">
   <config>
     <switch remember="true"/>
-    <splitter opaqueResize="true" opacity="0.5" width="8" color="#444"/>
+    <splitter opacity="0.5" width="8" color="#444" opaqueResize="true"/>
     <dock/>
-    <busyIndicator visible="true" image="" duration="2000" model="true"/>
+    <busyIndicator visible="true" duration="2000" image="" model="true"/>
   </config>
-  <system module="module #2" name="system #1">
+  <system name="system #1" module="module #1">
     <seat-module>
       <item seat="seat #1" module="module #1"/>
     </seat-module>
-    <module submodule="" name="module #1">
+    <module name="module #1" submodule="">
       <layout>
         <view>
-          <horizontal opaqueResize="false" scales="1.1:2.9" collapsibile="0:true;1:true">
+          <horizontal scales="1.1:2.9" collapsibile="0:true;1:true" opaqueResize="false">
             <component id="com_demo1"/>
-            <vertical opaqueResize="false" scales="1.2:2.8" collapsibile="0:true;1:true">
+            <vertical scales="1.2:2.8" collapsibile="0:true;1:true" opaqueResize="false">
               <component id="com_demo2"/>
               <component id="com_demo3"/>
             </vertical>
@@ -26,7 +26,7 @@
         </popup>
       </layout>
     </module>
-    <module submodule="module #3" name="module #2">
+    <module name="module #2" submodule="">
       <layout>
         <view>
           <horizontal collapsible="0:false;1:false" scales="1.2:3.8">
@@ -38,7 +38,7 @@
           <component load="false" id="com_demo4"/>
         </popup>
       </layout>
-      <module submodule="module #4" name="module #3">
+      <module name="module #3" submodule="">
         <layout>
           <view>
             <horizontal collapsible="0:false;1:false" scales="4:1">
@@ -50,12 +50,12 @@
             <component load="false" id="com_demo4"/>
           </popup>
         </layout>
-        <module submodule="" name="module #4">
+        <module name="module #4" submodule="">
           <layout>
             <view>
-              <horizontal collapsible="0:false;1:false" opaqueResize="false" opacity="0.7" width="4" scales="1:4">
+              <horizontal opacity="0.7" width="4" collapsible="0:false;1:false" scales="1:4" opaqueResize="false">
                 <component id="com_demo2"/>
-                <vertical opaqueResize="false" opacity="0.7" width="4" scales="1:2">
+                <vertical opacity="0.7" width="4" scales="1:2" opaqueResize="false">
                   <component id="com_demo3"/>
                   <component id="com_demo4"/>
                 </vertical>
@@ -69,8 +69,8 @@
       </module>
     </module>
   </system>
-  <system defaultSeat="seat #2" module="module #1" name="system #2">
-    <module submodule="" name="module #1">
+  <system name="system #2" module="module #1" defaultSeat="seat #2">
+    <module name="module #1" submodule="">
       <layout>
         <view>
           <horizontal collapsible="0:false;1:false" scales="1:1">
@@ -84,8 +84,8 @@
       </layout>
     </module>
   </system>
-  <system module="module #1" name="system #3">
-    <module submodule="" name="module #1">
+  <system name="system #3" module="module #1">
+    <module name="module #1" submodule="">
       <layout>
         <view>
           <horizontal collapsible="0:false;1:false" scales="1:1">
@@ -100,8 +100,8 @@
   </system>
   <!-- 以下为框架默认配置，请谨慎修改 -->
   <!-- list属性值：为[用户管理]、[系统管理]、[模块管理]、[权限管理]的组合 -->
-  <system module="权限管理" list="用户管理|系统管理|模块管理|权限管理" name="管理员系统">
-    <module submodule="" name="权限管理">
+  <system list="用户管理|系统管理|模块管理|权限管理" name="管理员系统" module="权限管理">
+    <module name="权限管理" submodule="">
       <layout>
         <view>
           <horizontal scales="1:1">
