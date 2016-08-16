@@ -200,7 +200,7 @@ bool JFrameFacade::frameVersion(int &major, int &minor, int &patch) const
     return true;
 }
 
-bool JFrameFacade::loadFrame()
+bool JFrameFacade::loadFrame(int *argc, char** argv, void *app)
 {
     // 检测框架是否已加载
     if (data->frameLoaded) {
@@ -213,39 +213,7 @@ bool JFrameFacade::loadFrame()
     }
 
     // 加载框架
-    return loadFramePrivate();
-}
-
-bool JFrameFacade::loadFrame(const std::string &version)
-{
-    // 检测框架是否已加载
-    if (data->frameLoaded) {
-        return true;    // 已加载
-    }
-
-    // 加载框架配置
-    if (!loadGlobalConfig(version)) {
-        return false;   // 加载框架全局配置失败
-    }
-
-    // 加载框架
-    return loadFramePrivate();
-}
-
-bool JFrameFacade::loadFrame(int major, int minor, int patch)
-{
-    // 检测框架是否已加载
-    if (data->frameLoaded) {
-        return true;    // 已加载
-    }
-
-    // 加载框架配置
-    if (!loadGlobalConfig(major, minor, patch)) {
-        return false;   // 加载框架全局配置失败
-    }
-
-    // 加载框架
-    return loadFramePrivate();
+    return loadFramePrivate(argc, argv, app);
 }
 
 void JFrameFacade::showFrame(bool show, bool maximized)
@@ -347,7 +315,7 @@ std::string JFrameFacade::language() const
     return data->language;
 }
 
-bool JFrameFacade::loadFramePrivate()
+bool JFrameFacade::loadFramePrivate(int *argc, char **argv, void *app)
 {
     // 加载门面接口
     loadInterface();
@@ -365,6 +333,12 @@ bool JFrameFacade::loadFramePrivate()
 
     //
     data->frameLoaded = result;
+
+    // 创建Qt应用实体
+    result = result && data->frameKernel->invokeMethod("create_qapp", 3, argc, argv, app);
+
+    // 加载框架工厂系统接口
+    result = result && data->frameFactory->loadInterface();
 
     // 加载框架内核系统接口
     result = result && data->frameKernel->loadInterface();
@@ -727,7 +701,7 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
     }
 
     //
-    if (values.empty()) {
+    if (!values.empty()) {
         generateAppQtConf(values);
     }
 
@@ -738,8 +712,8 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
 
 bool JFrameFacade::generateAppQtConf(const std::map<std::string, std::string> &values)
 {
-    std::string filePath = appDirPath() = "/qt.conf";
-    QSettings settings(QString::fromStdString(filePath), QSettings::IniFormat);
+    QString filePath = QString::fromStdString(appDirPath()).append("/qt.conf");
+    QSettings settings(filePath, QSettings::IniFormat);
     settings.setIniCodec(QTextCodec::codecForLocale());
     settings.beginGroup("Paths");
     std::map<std::string, std::string>::const_iterator citer(values.begin());
@@ -747,7 +721,6 @@ bool JFrameFacade::generateAppQtConf(const std::map<std::string, std::string> &v
         settings.setValue(QString::fromStdString(citer->first),
                           QString::fromStdString(citer->second));
         //
-
         QCoreApplication::addLibraryPath(QString::fromStdString(citer->second));
     }
     settings.endGroup();
@@ -758,7 +731,7 @@ bool JFrameFacade::generateAppQtConf(const std::map<std::string, std::string> &v
 std::string JFrameFacade::dynamicSuffix() const
 {
 #ifdef _MSC_VER
-#if defined(_DEBUG) || defined(DEBUG)
+#ifdef _DEBUG
     return "d.dll";
 #else
     return ".dll";

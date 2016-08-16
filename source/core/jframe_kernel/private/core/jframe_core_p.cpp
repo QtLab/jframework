@@ -1,6 +1,7 @@
 ﻿#include "precomp.h"
 #include "jframe_core_p.h"
 #include "jattempter.h"
+#include "qmfcapp.h"
 
 // struct JFrameCoreData
 
@@ -106,6 +107,50 @@ bool JFrameCore::invokeMethod(const std::string &method, int argc, ...)
     if (method == "frame_show") {
         result = invokeShowFrame(argc, ap);
     }
+    // 运行Qt消息循环系统
+    else if (method == "run_q_app") {
+        if (argc == 2) {
+            int ret = runQApp(va_arg(ap, void*));
+            int *pRet = va_arg(ap, int*);
+            if (pRet) {
+                *pRet = ret;
+                result = true;
+            }
+        }
+    }
+    // 获取窗口实例的窗口句柄
+    else if (method == "window_handle") {
+        if (argc == 3) {
+            void *window = va_arg(ap, void*);
+            const char* winType = va_arg(ap, char*);
+            long handle = windowHandle(window, winType);
+            long *pHandle = va_arg(ap, long*);
+            if (pHandle) {
+                *pHandle = handle;
+                result = true;
+            }
+        }
+    }
+    // 创建Qt应用实体
+    else if (method == "create_qapp") {
+        if (argc == 3) {
+            int *argc = va_arg(ap, int*);
+            char **argv = va_arg(ap, char**);
+            void *app = va_arg(ap, void*);
+#ifdef _AFXDLL
+            if (app) {
+                QMfcApp::instance((CWinApp *)app);
+            } else
+#endif
+            if (argc) {
+                new QMfcApp(0, *argc, argv);
+            } else {
+                int argc1 = 0;
+                new QMfcApp(0, argc1, argv);
+            }
+            result = true;
+        }
+    }
 
     va_end(ap);
 
@@ -145,6 +190,42 @@ bool JFrameCore::invokeShowFrame(int argc, va_list ap)
     }
 
     return true;
+}
+
+int JFrameCore::runQApp(void *mfcApp)
+{
+#if defined(_AFXDLL)
+    return QMfcApp::run(reinterpret_cast<CWinApp *>(mfcApp));
+#else
+    Q_UNUSED(mfcApp);
+    return 0;
+#endif
+}
+
+long JFrameCore::windowHandle(void *window, const std::string &winType)
+{
+    // 参数有效性检测
+    if (!window) {
+        return 0;   // 参数无效
+    }
+
+    // 获取QWidget实例窗口句柄
+    if (winType == "QWidget") {
+        QWidget *widget = reinterpret_cast<QWidget *>(window);
+        if (widget) {
+            return (long)widget->winId();
+        }
+    }
+#ifdef _AFXDLL
+    else if (winType == "CWnd") {
+        CWnd *wnd = reinterpret_cast<CWnd *>(window);
+        if (wnd) {
+            return (long)wnd->GetSafeHwnd();
+        }
+    }
+#endif
+
+    return 0;
 }
 
 JFrameCore::JFrameCore()

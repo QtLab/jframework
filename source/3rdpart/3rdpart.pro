@@ -8,8 +8,8 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    jwt \
-    log4cpp \
-    qtribbon \
+#    jwt \
+#    log4cpp \
+#    qtribbon \
     qtwinmigrate \
-    tinyxml
+#    tinyxml

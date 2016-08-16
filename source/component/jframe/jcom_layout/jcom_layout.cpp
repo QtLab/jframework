@@ -24,7 +24,7 @@ JComLayout::JComLayout(IJAttempter *attempter)
 JComLayout::~JComLayout()
 {
     if (q_frameFilter) {
-        q_frameFilter->deleteLater();
+        delete q_frameFilter;
         q_frameFilter = 0;
     }
 }

@@ -82,6 +82,9 @@ public:
     static int run(CWinApp *mfcApp);
     static QApplication *instance(CWinApp *mfcApp);
     QMfcApp(CWinApp *mfcApp, int &argc, char **argv);
+#else
+    static int run(void *);
+    QMfcApp(void *mfcApp, int &argc, char **argv);
 #endif
     ~QMfcApp();
 

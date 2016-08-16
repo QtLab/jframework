@@ -59,6 +59,11 @@ target/
 #
 bin
 *.pro.user*
+*.user
 .vscode/.BROWSE.VC.DB
 include
 lib
+*.ncb
+
+*.suo
+temp

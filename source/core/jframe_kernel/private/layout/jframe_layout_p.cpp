@@ -130,8 +130,8 @@ std::list<std::string> JFrameLayout::queryMethod() const
 {
     std::list<std::string> methods;
 
-    // run_q_app
-    methods.push_back(std::string("run_q_app").append("..."));
+    // attach_component
+    methods.push_back(std::string("attach_component").append("..."));
 
     return methods;
 }
@@ -162,30 +162,6 @@ bool JFrameLayout::invokeMethod(const std::string &method, int argc, ...)
             IJComponent *component = va_arg(ap, IJComponent*);
             QWidget *widget = va_arg(ap, QWidget*);
             result = attachComponentUi(component, widget);
-        }
-    }
-    // 运行Qt消息循环系统
-    else if (method == "run_q_app") {
-        if (argc == 2) {
-            int ret = runQApp(va_arg(ap, void*));
-            int *pRet = va_arg(ap, int*);
-            if (pRet) {
-                *pRet = ret;
-                result = true;
-            }
-        }
-    }
-    // 获取窗口实例的窗口句柄
-    else if (method == "window_handle") {
-        if (argc == 3) {
-            void *window = va_arg(ap, void*);
-            const char* winType = va_arg(ap, char*);
-            long handle = windowHandle(window, winType);
-            long *pHandle = va_arg(ap, long*);
-            if (pHandle) {
-                *pHandle = handle;
-                result = true;
-            }
         }
     }
     // 设置框架主题
@@ -314,42 +290,6 @@ ModuleManager *JFrameLayout::moduleManager()
 NotifyManager *JFrameLayout::notifyManager()
 {
     return data->notifyManager;
-}
-
-int JFrameLayout::runQApp(void *mfcApp)
-{
-#if defined(_AFXDLL)
-    return QMfcApp::run(reinterpret_cast<CWinApp *>(mfcApp));
-#else
-    Q_UNUSED(mfcApp);
-    return 0;
-#endif
-}
-
-long JFrameLayout::windowHandle(void *window, const std::string &winType)
-{
-    // 参数有效性检测
-    if (!window) {
-        return 0;   // 参数无效
-    }
-
-    // 获取QWidget实例窗口句柄
-    if (winType == "QWidget") {
-        QWidget *widget = reinterpret_cast<QWidget *>(window);
-        if (widget) {
-            return (long)widget->winId();
-        }
-    }
-#if defined(_AFXDLL)
-    else if (winType == "CWnd") {
-        CWnd *wnd = reinterpret_cast<CWnd *>(window);
-        if (wnd) {
-            return (long)wnd->GetSafeHwnd();
-        }
-    }
-#endif
-
-    return 0;
 }
 
 bool JFrameLayout::loadDefaultSystem()

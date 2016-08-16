@@ -1,39 +1,42 @@
-#include <QApplication>
+#include <QCoreApplication>
 #include <QLibrary>
+#include <QFileInfo>
 #include "jframe/jframe_facade.h"
+
+//
+QString applicationDirPath()
+{
+    extern QString qAppFileName();
+    return QFileInfo(qAppFileName()).absolutePath();
+}
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-
-    typedef IJFrameFacade *(*FunCreateInstance)();
-#if 0
-    frameFacade = jframeFacade();
-#else
-    FunCreateInstance fCreateInstance = (FunCreateInstance)QLibrary::resolve(
-                QCoreApplication::applicationDirPath().append("/jframe_facade")
+    FuncFrameFacadeInst fFrameFacadeInst = (FuncFrameFacadeInst)QLibrary::resolve(
+                applicationDirPath().append("/jframe_facade")
             #ifdef _MSC_VER
-            #if defined(DEBUG) || defined(_DEBUG)
+            #ifdef _DEBUG
                 .append("d.dll")
             #else
                 .append(".dll")
             #endif
-            #else
+            #elif defined(__apple__)
+                .append("")
+            #elif defined(__unix__)
                 .append(".so")
             #endif
                 , "CreateInstance");
-#endif
-    if (!fCreateInstance) {
+    if (!fFrameFacadeInst) {
         return -1;      // 获取导出接口失败
     }
 
-    IJFrameFacade *frameFacade = fCreateInstance();
+    IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>(fFrameFacadeInst());
     if (!frameFacade) {
         return -1;      // 获取实例失败
     }
 
     // 加载框架
-    if (!frameFacade->loadFrame()) {
+    if (!frameFacade->loadFrame(&argc, argv)) {
         frameFacade->exitFrame();
         return -1;      // 加载失败
     }
@@ -41,5 +44,6 @@ int main(int argc, char *argv[])
     // 显示框架主窗口
     frameFacade->showFrame(true, true);
 
-    return app.exec();
+    //
+    return frameFacade->runQApp(0);
 }

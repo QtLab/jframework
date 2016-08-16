@@ -104,9 +104,6 @@ private:
     //const std::map<std::string, JFrameLoginSpace::stPowerElement> &mapPower() const;
 
 private:
-    int runQApp(void *mfcApp);
-    long windowHandle(void *window, const std::string &winType);
-
     //
     bool loadDefaultSystem();
 

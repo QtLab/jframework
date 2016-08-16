@@ -14,6 +14,11 @@ TestWidget1::TestWidget1(INotifier *notifier, QWidget *parent)
     connect(button1, SIGNAL(clicked(bool)), SLOT(onButton1Clicked()));
 }
 
+TestWidget1::~TestWidget1()
+{
+
+}
+
 void TestWidget1::onButton1Clicked()
 {
     const std::string currentModule = jframeLayout()->currentModule();

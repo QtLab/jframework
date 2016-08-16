@@ -146,7 +146,9 @@ bool JFrameKernel::invokeMethod(const std::string &method, int argc, ...)
     else if (method == "frame_show") {
         if (argc == 2) {
             // 转到框架核心系统
-            result = frameCore()->invokeMethod("frame_show", 2, va_arg(ap, bool), va_arg(ap, bool));
+            bool show = va_arg(ap, bool);
+            bool maximized = va_arg(ap, bool);
+            result = frameCore()->invokeMethod("frame_show", 2, show, maximized);
         }
     }
     // 尝试退出框架（异步方式）
@@ -177,17 +179,30 @@ bool JFrameKernel::invokeMethod(const std::string &method, int argc, ...)
     // 运行Qt消息循环系统
     else if (method == "run_q_app") {
         if (argc == 2) {
-            // 转到框架布局系统
-            result = frameLayout()->invokeMethod("run_q_app", 2,
-                                           va_arg(ap, void*), va_arg(ap, int*));
+            // 转到框架核心系统
+            void *mfcApp = va_arg(ap, void*);
+            int *exitCode = va_arg(ap, int*);
+            result = frameCore()->invokeMethod("run_q_app", 2, mfcApp, exitCode);
         }
     }
     // 运行Qt消息循环系统
     else if (method == "window_handle") {
         if (argc == 3) {
-            // 转到框架布局系统
-            result = frameLayout()->invokeMethod("window_handle", 3, va_arg(ap, void*),
-                                           va_arg(ap, char*), va_arg(ap, long));
+            // 转到框架核心系统
+            void *window = va_arg(ap, void*);
+            const char *winType = va_arg(ap, char*);
+            long *handle = va_arg(ap, long*);
+            result = frameCore()->invokeMethod("window_handle", 3, window, winType, handle);
+        }
+    }
+    // 创建Qt应用实体
+    else if (method == "create_qapp") {
+        if (argc == 3) {
+            // 转到框架核心系统
+            int *argc = va_arg(ap, int*);
+            char **argv = va_arg(ap, char**);
+            void *app = va_arg(ap, void*);
+            result = frameCore()->invokeMethod("create_qapp", 3, argc, argv, app);
         }
     }
     // 加载默认框架系统

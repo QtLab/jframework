@@ -219,8 +219,10 @@ bool JFrameWnd::loadConfig()
     }
 
     // stylesheet - background
+#if 0
     setStyleSheet(QString("%1#%2{backbground:'#6E7E93';}")
                   .arg(metaObject()->className()).arg(objectName()));
+#endif
 
     return true;
 }

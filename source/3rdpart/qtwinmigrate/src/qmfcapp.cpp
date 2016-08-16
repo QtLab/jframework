@@ -400,9 +400,31 @@ QMfcApp::QMfcApp(CWinApp *mfcApp, int &argc, char **argv)
     installNativeEventFilter(evtFilter);
 #endif
     setQuitOnLastWindowClosed(false);
-
-
 }
+
+#else
+
+int QMfcApp::run(void *)
+{
+    if (qApp) {
+        return qApp->exec();
+    } else {
+        return -1;
+    }
+}
+
+QMfcApp::QMfcApp(void *mfcApp, int &argc, char **argv)
+    : QApplication(argc, argv), idleCount(0), doIdle(FALSE)
+{
+#if QT_VERSION_MAJOR < 5
+    QAbstractEventDispatcher::instance()->setEventFilter(qmfc_eventFilter);
+#else
+    QMFCNativeEventFilter *evtFilter = new QMFCNativeEventFilter;
+    installNativeEventFilter(evtFilter);
+#endif
+    setQuitOnLastWindowClosed(false);
+}
+
 #endif
 
 /*!

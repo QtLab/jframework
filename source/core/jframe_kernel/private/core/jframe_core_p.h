@@ -32,6 +32,8 @@ public:
 private:
     //
     bool invokeShowFrame(int argc, va_list ap);
+    int runQApp(void *mfcApp);
+    long windowHandle(void *window, const std::string &winType);
 
 private:
     JFrameCore();

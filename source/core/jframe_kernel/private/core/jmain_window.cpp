@@ -9,14 +9,14 @@ JMainWindow::JMainWindow(JAttempter *attempter)
     : q_attempter(attempter)
     , q_frameWnd(0)
 {
-    //
-    q_frameWnd = new JFrameWnd(attempter);
+
 }
 
 JMainWindow::~JMainWindow()
 {
     if (q_frameWnd) {
-        q_frameWnd->deleteLater();
+        //q_frameWnd->deleteLater();
+        delete q_frameWnd;
         q_frameWnd = 0;
     }
 }
@@ -41,6 +41,11 @@ void *JMainWindow::queryInterface(const std::string &iid, unsigned int ver)
 bool JMainWindow::loadInterface()
 {
     bool result = true;
+
+    //
+    if (!q_frameWnd) {
+        q_frameWnd = new JFrameWnd(q_attempter);
+    }
 
     //
     result = result && q_frameWnd->init();

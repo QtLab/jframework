@@ -138,7 +138,7 @@ public:
 
     /**
      * @brief userType : 获取当前登录用户类型
-     * @return : 当前登录用户类型。查看jframe_login.h头文件中的UserType定义
+     * @return : 当前登录用户类型。查看 UserType 定义
      */
     virtual int userType() const = 0;
 

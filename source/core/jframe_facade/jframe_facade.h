@@ -269,25 +269,12 @@ public:
 
     /**
      * @brief loadFrame : 加载框架
+     * @param argc : 参数个数
+     * @param argv : 参数列表
+     * @param app : 外部app实体（如MFC框架的CWinApp*）
      * @return : 执行结果。true，加载成功；false，加载失败
      */
-    virtual bool loadFrame() = 0;
-
-    /**
-     * @brief loadFrame : 加载框架
-     * @param version : 框架版本
-     * @return : 执行结果。true，加载成功；false，加载失败
-     */
-    virtual bool loadFrame(const std::string &version) = 0;
-
-    /**
-     * @brief loadFrame : 加载框架
-     * @param major : 主版本好号
-     * @param minor : 次版本号
-     * @param patch : 补丁版本号
-     * @return : 执行结果。true，加载成功；false，加载失败
-     */
-    virtual bool loadFrame(int major, int minor, int patch) = 0;
+    virtual bool loadFrame(int *argc = 0, char** argv = 0, void *app = 0) = 0;
 
     /**
      * @brief showFrame : 显示/隐藏框架主窗口
@@ -352,6 +339,9 @@ public:
      */
     virtual std::string language() const = 0;
 };
+
+//
+typedef IJUnknown *(__cdecl *FuncFrameFacadeInst)(void);
 
 ///
 
