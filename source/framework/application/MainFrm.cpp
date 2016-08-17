@@ -63,7 +63,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-
+#if 0
 	// create a view to occupy the client area of the frame
 	if (!m_wndView.Create(NULL, NULL, AFX_WS_DEFAULT_VIEW, CRect(0, 0, 0, 0), this, AFX_IDW_PANE_FIRST, NULL))
 	{
@@ -78,6 +78,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 
+#endif
 	// ╪сть©Р╪э
 	if (!LoadFramework())
 	{
@@ -119,14 +120,22 @@ void CMainFrame::Dump(CDumpContext& dc) const
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
 	// forward focus to the view window
-	m_wndView.SetFocus();
+	if (m_wndView.IsWindowVisible())
+	{
+		m_wndView.SetFocus();
+	}
 }
 
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
-	// let the view have first crack at the command
-	if (m_wndView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
-		return TRUE;
+	if (m_wndView.IsWindowVisible())
+	{
+		// let the view have first crack at the command
+		if (m_wndView.OnCmdMsg(nID, nCode, pExtra, pHandlerInfo))
+		{
+			return TRUE;
+		}
+	}
 
 	// otherwise, do default handling
 	return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);

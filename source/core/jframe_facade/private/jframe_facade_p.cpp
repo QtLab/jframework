@@ -332,6 +332,9 @@ bool JFrameFacade::loadFramePrivate(int *argc, char **argv, void *app)
     result = result && loadFrameKernel();
 
     //
+    jframeLogWarning("test");
+
+    //
     data->frameLoaded = result;
 
     // 创建Qt应用实体

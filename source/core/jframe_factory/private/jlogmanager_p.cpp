@@ -69,6 +69,15 @@ unsigned int JLogManagerPri::interfaceVersion() const
     return VER_IJLogManager;
 }
 
+bool JLogManagerPri::loadInterface()
+{
+    bool result = true;
+
+    //
+
+    return result;
+}
+
 void JLogManagerPri::releaseInterface()
 {
     // shutdown log4cpp - category
@@ -82,13 +91,13 @@ void JLogManagerPri::logging(MsgType type, const std::string &msg, int argc, ...
 
     switch (type) {
     case IJLogManager::EmergeMsg: emerge(msg, argc, ap); break;
-    case IJLogManager::FatalMsg: emerge(msg, argc, ap); break;
-    case IJLogManager::AlertMsg: emerge(msg, argc, ap); break;
-    case IJLogManager::CriticalMsg: emerge(msg, argc, ap); break;
-    case IJLogManager::ErrorMsg: emerge(msg, argc, ap); break;
-    case IJLogManager::WarningMsg: emerge(msg, argc, ap); break;
-    case IJLogManager::NoticeMsg: emerge(msg, argc, ap); break;
-    case IJLogManager::DebugMsg: emerge(msg, argc, ap); break;
+    case IJLogManager::FatalMsg: fatal(msg, argc, ap); break;
+    case IJLogManager::AlertMsg: alert(msg, argc, ap); break;
+    case IJLogManager::CriticalMsg: crit(msg, argc, ap); break;
+    case IJLogManager::ErrorMsg: error(msg, argc, ap); break;
+    case IJLogManager::WarningMsg: warn(msg, argc, ap); break;
+    case IJLogManager::NoticeMsg: notice(msg, argc, ap); break;
+    case IJLogManager::DebugMsg: debug(msg, argc, ap); break;
     default:
         break;
     }
@@ -158,10 +167,10 @@ void JLogManagerPri::debug(const std::string &msg, int argc, va_list ap)
     LOG4CPP_DEBUG(data->category, formatMessage(msg, argc, ap));
 }
 
-void JLogManagerPri::init()
+bool JLogManagerPri::init()
 {
     // create folder
-    const QString filePath = QApplication::applicationDirPath().append("/log/");
+    const QString filePath = applicationDirPath().append("/log/");
     QDir dir(filePath);
     if (!dir.exists()) {
         dir.mkpath(filePath);
@@ -171,7 +180,7 @@ void JLogManagerPri::init()
     // appender - win32
     data->appenderWin32 = new log4cpp::Win32DebugAppender("jframe.appender-win32");
     log4cpp::PatternLayout *patternLayoutWin32 = new log4cpp::PatternLayout();
-    patternLayoutWin32->setConversionPattern("%d |%p %c %x | %m%n");
+    patternLayoutWin32->setConversionPattern("%d | %p %c %x | %m%n");
     data->appenderWin32->setLayout(patternLayoutWin32);
 #endif
 
@@ -194,6 +203,14 @@ void JLogManagerPri::init()
     //
 #endif
     data->category.addAppender(data->appenderRollingFile);
+
+    return true;
+}
+
+QString JLogManagerPri::applicationDirPath()
+{
+    extern QString qAppFileName();
+    return QFileInfo(qAppFileName()).absolutePath();
 }
 
 std::string JLogManagerPri::formatMessage(const std::string &msg, int argc, va_list ap)

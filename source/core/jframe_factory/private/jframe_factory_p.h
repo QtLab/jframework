@@ -23,6 +23,8 @@ public:
     void *queryInterface(const std::string &iid, unsigned int ver);
     bool loadInterface();
     void releaseInterface();
+    std::list<std::string> queryMethod() const;
+    bool invokeMethod(const std::string &method, int argc, ...);
 
     // IJFrameFactory interface
 public:

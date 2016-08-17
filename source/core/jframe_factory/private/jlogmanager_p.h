@@ -18,6 +18,7 @@ public:
 public:
     std::string interfaceIdentity() const;
     unsigned int interfaceVersion() const;
+    bool loadInterface();
     void releaseInterface();
 
     // IJlogManager interface
@@ -39,7 +40,8 @@ public:
     void debug(const std::string &msg, int argc, va_list ap);
 
 private:
-    void init();
+    bool init();
+    static QString applicationDirPath();
     static std::string formatMessage(const std::string &msg, int argc, va_list ap);
 
 private:

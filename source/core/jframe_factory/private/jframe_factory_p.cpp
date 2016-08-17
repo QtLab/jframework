@@ -66,12 +66,39 @@ void *JFrameFactory::queryInterface(const std::string &iid, unsigned int ver)
 
 bool JFrameFactory::loadInterface()
 {
-    return true;
+    bool result = true;
+
+    //
+
+    return result;
 }
 
 void JFrameFactory::releaseInterface()
 {
 
+}
+
+std::list<std::string> JFrameFactory::queryMethod() const
+{
+    std::list<std::string> methods;
+
+    //
+
+    return methods;
+}
+
+bool JFrameFactory::invokeMethod(const std::string &method, int argc, ...)
+{
+    bool result = false;
+
+    va_list ap;
+    va_start(ap, argc);
+
+    Q_UNUSED(method);
+
+    va_end(ap);
+
+    return result;
 }
 
 void *JFrameFactory::factory(const std::string &iid, unsigned int ver)
