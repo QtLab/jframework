@@ -5,6 +5,8 @@
 jframe_root = $$PWD/../../..
 
 QT -= core gui
+CONFIG -= qt
+CONFIG -= app_bundle
 TEMPLATE = lib
 
 DESTDIR = $${jframe_root}/lib/3rdpart

@@ -3,6 +3,7 @@
 
 #include "../jnotifier.h"
 #include <QObject>
+#include <qmetatype.h>
 #include <map>
 #include <vector>
 

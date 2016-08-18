@@ -102,6 +102,9 @@ bool ModuleManager::attachComponent(JComponentInfo *componentInfo, bool show)
     // 标识已挂载状态
     componentInfo->attached = true;
 
+    // 更新组件
+    component->updateInterface();
+
     // 如果窗口有效，则显示窗口
     if (componentInfo->widget && show) {
         componentInfo->widget->show();

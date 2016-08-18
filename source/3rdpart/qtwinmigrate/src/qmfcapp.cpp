@@ -83,7 +83,9 @@
 #endif
 
 #include "qmfcapp.h"
+#if QT_VERSION >= 0x050000
 #include <QAbstractNativeEventFilter>
+#endif
 #include <QEventLoop>
 #include <QAbstractEventDispatcher>
 #include <QWidget>

@@ -1,4 +1,4 @@
-#include "precomp.h"
+#include "stdafx.h"
 #include "com_demo4.h"
 
 //
@@ -33,6 +33,15 @@ bool ComDemo4::loadInterface()
     return true;
 }
 
+bool ComDemo4::updateInterface()
+{
+    bool result = true;
+
+    //
+
+    return result;
+}
+
 void ComDemo4::releaseInterface()
 {
 
@@ -53,6 +62,11 @@ std::string ComDemo4::componentName() const
 std::string ComDemo4::componentDesc() const
 {
     return "组件示例 #4";
+}
+
+std::string ComDemo4::componentType() const
+{
+	return "mfc";
 }
 
 void ComDemo4::attach()
@@ -80,7 +94,7 @@ void *ComDemo4::createWindow(void *parent, const std::string &objectName)
     }
 
     //
-    q_widget = new QPushButton(QStringLiteral("测试组件4"));
+    q_widget = new QPushButton("测试组件4");
 
     return qobject_cast<QWidget *>(q_widget);
 }

@@ -11,31 +11,26 @@ extern "C" __declspec(dllexport) void *CreateComponent(void *attempter)
 
 JComLayout::JComLayout(IJAttempter *attempter)
     : q_attempter(attempter)
+    , q_frameFilter(0)
 {
     q_notifier = jframeLayout()->notifier();
-
-    //
-    q_frameFilter = new FrameFilter(q_notifier, q_attempter);
-    if (!q_frameFilter->init()) {
-        //
-    }
 }
 
 JComLayout::~JComLayout()
 {
-    if (q_frameFilter) {
-        delete q_frameFilter;
-        q_frameFilter = 0;
-    }
+
 }
 
 bool JComLayout::loadInterface()
 {
-    //
-    if (q_frameFilter) {
-        // 安装主窗口事件过滤
-        q_frameFilter->attachEventFilter();
+    // 创建框架过滤器
+    q_frameFilter = new FrameFilter(q_notifier, q_attempter);
+    if (!q_frameFilter->init()) {
+        //
     }
+
+    // 安装主窗口事件过滤
+    q_frameFilter->attachEventFilter();
 
     // 启动默认系统
     q_notifier->postMessage("j_load_default_system");
@@ -43,13 +38,24 @@ bool JComLayout::loadInterface()
     return true;
 }
 
+bool JComLayout::updateInterface()
+{
+    bool result = true;
+
+    //
+
+    return result;
+}
+
 void JComLayout::releaseInterface()
 {
     //
-    if (q_frameFilter) {
-        // 去除主窗口事件过滤
-        q_frameFilter->detachEventFilter();
-    }
+    // 去除主窗口事件过滤
+    q_frameFilter->detachEventFilter();
+
+    //
+    delete q_frameFilter;
+    q_frameFilter = 0;
 }
 
 void *JComLayout::queryInterface(const std::string &iid, unsigned int ver)

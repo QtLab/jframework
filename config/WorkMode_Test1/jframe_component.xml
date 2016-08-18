@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <jframe>
-  <component name="jcom_login" desc="登录管理组件" load="0" stay="1" dir="$(jframe)/component/jframe" />
-  <component name="jcom_layout" desc="框架布局组件" load="1" stay="1" dir="$(jframe)/component/jframe" />
-  <component name="com_demo1" desc="demo1组件" load="1" dir="$(app)/component" />
-  <component name="com_demo2" desc="demo2组件" load="1" dir="$(app)/component" />
-  <component name="com_demo3" desc="demo3组件" load="1" dir="$(app)/component" />
-  <component name="com_demo4" desc="demo4组件" load="1" dir="$(app)/component" />
+  <component name="jcom_login" desc="登录管理组件" load="0" stay="1" dir="@FrameDir@/component/jframe" />
+  <component name="jcom_layout" desc="框架布局组件" load="1" stay="1" dir="@FrameDir@/component/jframe" />
+  <component name="com_demo1" desc="demo1组件" load="1" dir="@AppDir@/../component" />
+  <component name="com_demo2" desc="demo2组件" load="1" dir="@AppDir@/../component" />
+  <component name="com_demo3" desc="demo3组件" load="1" dir="@AppDir@/../component" />
+  <component name="com_demo4" desc="demo4组件" load="1" dir="@AppDir@/../component" type="mfc" />
+  <component name="com_demo5" desc="demo5组件" load="1" dir="@AppDir@/../component" type="mfc" />
 </jframe>

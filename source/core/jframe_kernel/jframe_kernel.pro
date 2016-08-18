@@ -13,7 +13,8 @@ DEFINES += \
     USE_JFRAME_FACTORY \
     USE_JFRAME_FACADE \
     USE_QTRIBBON \
-    USE_JWT
+    USE_JWT \
+    USE_TINYXML
 
 win32 {
     DEFINES += \

@@ -30,6 +30,15 @@ bool JComLogin::loadInterface()
     return true;
 }
 
+bool JComLogin::updateInterface()
+{
+    bool result = true;
+
+    //
+
+    return result;
+}
+
 void JComLogin::releaseInterface()
 {
 

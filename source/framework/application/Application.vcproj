@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Application"
+	Name="application"
 	ProjectGUID="{4A64A51D-F4F0-44DB-90F9-53077390D1E7}"
-	RootNamespace="Application"
+	RootNamespace="application"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="196613"
 	>
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\framework\$(ProjectName)"
+			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\framework\$(ProjectName)"
 			ConfigurationType="1"
 			UseOfMFC="2"
 			CharacterSet="1"
@@ -70,6 +70,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(SolutionDir)\bin\$(ProjectName)d.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -94,12 +95,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="if not exist &quot;$(SolutionDir)\bin\&quot; (&#x0D;&#x0A;mkdir &quot;$(SolutionDir)\bin\&quot;&#x0D;&#x0A;)&#x0D;&#x0A;copy &quot;$(SolutionDir)\lib\3rdpart\BCGCBPRO2210*.dll&quot; &quot;$(SolutionDir)\bin\&quot;&#x0D;&#x0A;&#x0D;&#x0A;if not exist &quot;$(SolutionDir)\bin\3rdpart\BCGCBPro\&quot; (&#x0D;&#x0A;mkdir &quot;$(SolutionDir)\bin\3rdpart\BCGCBPro\&quot;&#x0D;&#x0A;)&#x0D;&#x0A;copy &quot;$(SolutionDir)\lib\3rdpart\BCGPStyle*.dll&quot; &quot;$(SolutionDir)\bin\3rdpart\BCGCBPro\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\framework\$(ProjectName)"
+			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\framework\$(ProjectName)"
 			ConfigurationType="1"
 			UseOfMFC="2"
 			CharacterSet="1"
@@ -152,6 +154,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(SolutionDir)\bin\$(ProjectName).exe"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -178,6 +181,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="if not exist &quot;$(SolutionDir)\bin\&quot; (&#x0D;&#x0A;mkdir &quot;$(SolutionDir)\bin\&quot;&#x0D;&#x0A;)&#x0D;&#x0A;copy &quot;$(SolutionDir)\lib\3rdpart\BCGCBPRO2210*.dll&quot; &quot;$(SolutionDir)\bin\&quot;&#x0D;&#x0A;&#x0D;&#x0A;if not exist &quot;$(SolutionDir)\bin\3rdpart\BCGCBPro\&quot; (&#x0D;&#x0A;mkdir &quot;$(SolutionDir)\bin\3rdpart\BCGCBPro\&quot;&#x0D;&#x0A;)&#x0D;&#x0A;copy &quot;$(SolutionDir)\lib\3rdpart\BCGPStyle*.dll&quot; &quot;$(SolutionDir)\bin\3rdpart\BCGCBPro\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

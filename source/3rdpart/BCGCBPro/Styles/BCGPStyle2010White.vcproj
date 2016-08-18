@@ -19,8 +19,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\..\..\bin"
-			IntermediateDirectory=".\intermediate"
+			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -75,14 +75,13 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="..\..\bin/BCGPStyle2010White2210.dll"
+				OutputFile="$(OutDir)\BCGPStyle2010White2210.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ResourceOnlyDLL="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\bin/BCGPStyle2010White2210.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -107,12 +106,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="if not exist &quot;$(SolutionDir)\lib\3rdpart\&quot; (&#x0D;&#x0A;mkdir &quot;$(SolutionDir)\lib\3rdpart\&quot;&#x0D;&#x0A;)&#x0D;&#x0A;copy &quot;$(TargetDir)\$(TargetName).dll&quot; &quot;$(SolutionDir)\lib\3rdpart\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\..\..\bin"
-			IntermediateDirectory=".\intermediate"
+			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -167,14 +167,13 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="..\..\bin/BCGPStyle2010White2210.dll"
+				OutputFile="$(OutDir)\BCGPStyle2010White2210.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="true"
 				ResourceOnlyDLL="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary=".\..\..\bin/BCGPStyle2010White2210.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -199,6 +198,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="if not exist &quot;$(SolutionDir)\lib\3rdpart\&quot; (&#x0D;&#x0A;mkdir &quot;$(SolutionDir)\lib\3rdpart\&quot;&#x0D;&#x0A;)&#x0D;&#x0A;copy &quot;$(TargetDir)\$(TargetName).dll&quot; &quot;$(SolutionDir)\lib\3rdpart\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

@@ -162,7 +162,7 @@ std::string JFrameFacade::appDirPath() const
     static std::string _path("");
     if (_path.empty()) {
         // 获取软件实体绝对路径
-        _path = QFileInfo(qAppFileName()).absolutePath().toLocal8Bit();
+        _path = QFileInfo(qAppFileName()).absolutePath().toStdString();
     }
 
     return _path;
@@ -208,7 +208,7 @@ bool JFrameFacade::loadFrame(int *argc, char** argv, void *app)
     }
 
     // 加载框架配置
-    if (!loadGlobalConfig()) {
+    if (!loadGlobalConfig(frameVersionFromConfig())) {
         return false;   // 加载框架全局配置失败
     }
 
@@ -218,21 +218,31 @@ bool JFrameFacade::loadFrame(int *argc, char** argv, void *app)
 
 void JFrameFacade::showFrame(bool show, bool maximized)
 {
-    // 转到框架内核系统
-    data->frameKernel->invokeMethod("frame_show", 2, show, maximized);
+    if (data->frameKernel) {
+        // 转到框架内核系统
+        data->frameKernel->invokeMethod("frame_show", 2, show, maximized);
+    }
 }
 
 void JFrameFacade::tryExitFrame()
 {
-    // 转到框架内核系统
-    data->frameKernel->invokeMethod("frame_try_exit");
+    if (data->frameKernel) {
+        // 转到框架内核系统
+        data->frameKernel->invokeMethod("frame_try_exit");
+    } else {
+        invokeExitFrame();
+    }
 }
 
 void JFrameFacade::exitFrame()
 {
-    // 转到框架内核系统
-    //（通过在内核系统中异步中转回facade，来实现框架的退出，防止部件自身拥有时的释放出错）
-    data->frameKernel->invokeMethod("frame_exit");
+    if (data->frameKernel) {
+        // 转到框架内核系统
+        //（通过在内核系统中异步中转回facade，来实现框架的退出，防止部件自身拥有时的释放出错）
+        data->frameKernel->invokeMethod("frame_exit");
+    } else {
+        invokeExitFrame();
+    }
 }
 
 void JFrameFacade::restartFrame(const std::list<std::string> &arguments)
@@ -240,9 +250,13 @@ void JFrameFacade::restartFrame(const std::list<std::string> &arguments)
     // 暂存参数
     data->arguments = arguments;
 
-    // 转到框架内核系统
-    //（通过在内核系统中异步中转回facade，来实现框架的退出，防止部件自身拥有时的释放出错）
-    data->frameKernel->invokeMethod("frame_restart");
+    if (data->frameKernel) {
+        // 转到框架内核系统
+        //（通过在内核系统中异步中转回facade，来实现框架的退出，防止部件自身拥有时的释放出错）
+        data->frameKernel->invokeMethod("frame_restart");
+    } else {
+        invokeRestartFrame();
+    }
 }
 
 bool JFrameFacade::loginFrame()
@@ -332,9 +346,6 @@ bool JFrameFacade::loadFramePrivate(int *argc, char **argv, void *app)
     result = result && loadFrameKernel();
 
     //
-    jframeLogWarning("test");
-
-    //
     data->frameLoaded = result;
 
     // 创建Qt应用实体
@@ -355,7 +366,7 @@ IJUnknown *JFrameFacade::loadFrameInterface(const std::string &moduleName)
     typedef IJUnknown* (*FuncCreateInstance)();
 
     // 获取导出接口
-    const QString filePath = QString::fromStdString(frameDirPath() + "/bin/"
+    const QString filePath = QString::fromStdString(frameDirPath() + "/bin/jframe/"
                                                     + moduleName + dynamicSuffix());
     FuncCreateInstance fCreateInstance =
             (FuncCreateInstance)QLibrary::resolve(filePath, "CreateInstance");
@@ -423,11 +434,6 @@ bool JFrameFacade::loadFrameKernel()
     return true;
 }
 
-bool JFrameFacade::loadGlobalConfig()
-{
-    return loadGlobalConfig(frameVersionFromConfig());
-}
-
 bool JFrameFacade::loadGlobalConfig(const std::string &version)
 {
     data->frameVersion = version;
@@ -441,13 +447,6 @@ bool JFrameFacade::loadGlobalConfig(const std::string &version)
     }
 
     return loadConfig(path);
-}
-
-bool JFrameFacade::loadGlobalConfig(int major, int minor, int patch)
-{
-    return loadConfig(QString("%1.%2.%3")
-                      .arg(major).arg(minor).arg(patch)
-                      .toStdString());
 }
 
 void JFrameFacade::copyFrameFile()
@@ -570,6 +569,7 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
     }
 
     //
+    std::string sVal;
     std::string envPath = getEnvValue("Path");
     std::string paths = this->frameDirPath() + "/bin";
 
@@ -578,20 +578,18 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
          emPath != 0;
          emPath = emPath->NextSiblingElement("path")) {
         // 获取base属性值
-        std::string pathBase;
-        if (emPath->QueryStringAttribute("base", &pathBase) != TIXML_SUCCESS
-                || pathBase.empty()) {
+        if (emPath->QueryStringAttribute("base", &sVal) != TIXML_SUCCESS) {
             continue;
         }
 
-        //
-        std::string pathPrefix;
-        if (pathBase == "jframe") {
-            pathPrefix = this->frameDirPath() + "/bin";
-        } else if (pathBase == "app") {
-            pathPrefix = appDirPath();
-        } else {
-            continue;   // not supported
+        // 替换特殊字段
+        QString pathBase = QString::fromStdString(sVal);
+        pathBase.replace("@FrameDir@", QString::fromStdString(data->frameDirPath));
+        pathBase.replace("@AppDir@", QString::fromStdString(appDirPath()));
+
+        // 路径有效性检测
+        if (!QDir(pathBase).exists()) {
+            continue;   // 路径无效
         }
 
         // 获取type属性值
@@ -614,7 +612,7 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
             }
 
             //
-            path = pathPrefix + '/' + path;
+            path = pathBase.toStdString() + '/' + path;
             if (newPaths.empty()) {
                 newPaths = path;
             } else {
@@ -669,37 +667,27 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
         }
 
         // value
-        std::string sValue;
-        if (emItem->QueryStringAttribute("value", &sValue) != TIXML_SUCCESS
-                || sValue.empty()) {
+        if (emItem->QueryStringAttribute("value", &sVal) != TIXML_SUCCESS) {
             continue;
+        }
+
+        // 替换特殊字段
+        QString pathValue = QString::fromStdString(sVal);
+        pathValue.replace("@FrameDir@", QString::fromStdString(data->frameDirPath));
+        pathValue.replace("@AppDir@", QString::fromStdString(appDirPath()));
+
+        // 路径有效性检测
+        if (!QDir(pathValue).exists()) {
+            continue;   // 路径无效
         }
 
         //
         if (sKey == "Plugins") {
-            if (sValue == "$(jframe)") {
-                values[sKey] = this->frameDirPath() + "/bin/kernel/Qt/plugins";
-            } else if (sValue == "$(app)") {
-                values[sKey] = appDirPath() + "/kernel/Qt/plugins";
-            } else {
-                values[sKey] = sValue;
-            }
+            values[sKey] = pathValue.toStdString();
         } else if (sKey == "Imports") {
-            if (sValue == "$(jframe)") {
-                values[sKey] = this->frameDirPath() + "/bin/kernel/Qt/imports";
-            } else if (sValue == "$(app)") {
-                values[sKey] = appDirPath() + "/kernel/Qt/imports";
-            } else {
-                values[sKey] = sValue;
-            }
+            values[sKey] = pathValue.toStdString();
         } else if (sKey == "Qml2Imports") {
-            if (sValue == "$(jframe)") {
-                values[sKey] = this->frameDirPath() + "/bin/kernel/Qt/qml";
-            } else if (sValue == "$(app)") {
-                values[sKey] = appDirPath() + "/kernel/Qt/qml";
-            } else {
-                values[sKey] = sValue;
-            }
+            values[sKey] = pathValue.toStdString();
         }
     }
 

@@ -101,7 +101,7 @@ bool JFrameFactory::invokeMethod(const std::string &method, int argc, ...)
     return result;
 }
 
-void *JFrameFactory::factory(const std::string &iid, unsigned int ver)
+void *JFrameFactory::createFactory(const std::string &iid, unsigned int ver)
 {
     // 创建消息分发器
     if (J_IS_INSTANCEOF(INotifier, iid, ver)) {

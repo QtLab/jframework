@@ -57,20 +57,26 @@
 class CWinApp;
 #endif
 
+#ifdef QTWINMIGRATE_DLL
 #ifdef _MSC_VER
-#  if !defined(QT_QTWINMIGRATE_EXPORT) && !defined(QT_QTWINMIGRATE_IMPORT)
-#    define QT_QTWINMIGRATE_EXPORT
-#  elif defined(QT_QTWINMIGRATE_IMPORT)
-#    if defined(QT_QTWINMIGRATE_EXPORT)
-#      undef QT_QTWINMIGRATE_EXPORT
-#    endif
-#    define QT_QTWINMIGRATE_EXPORT __declspec(dllimport)
-#  elif defined(QT_QTWINMIGRATE_EXPORT)
-#    undef QT_QTWINMIGRATE_EXPORT
-#    define QT_QTWINMIGRATE_EXPORT __declspec(dllexport)
-#  endif
-#else
-#  define QT_QTWINMIGRATE_EXPORT
+#   ifdef QTWINMIGRATE_MAKEDLL
+#       define QT_QTWINMIGRATE_EXPORT __declspec(dllexport)
+#   else
+#       define QT_QTWINMIGRATE_EXPORT __declspec(dllimport)
+
+#       if defined(DEBUG) || defined(_DEBUG)
+#           pragma comment(lib, "qtwinmigrated.lib")
+#       else
+#           pragma comment(lib, "qtwinmigrate.lib")
+#       endif
+
+#   endif // !QTWINMIGRATE_MAKEDLL
+#endif // _MSC_VER
+
+#endif // QTWINMIGRATE_DLL
+
+#ifndef QT_QTWINMIGRATE_EXPORT
+#define QT_QTWINMIGRATE_EXPORT
 #endif
 
 class QT_QTWINMIGRATE_EXPORT QMfcApp : public QApplication

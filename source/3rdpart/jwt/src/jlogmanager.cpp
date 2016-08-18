@@ -1,6 +1,8 @@
 ﻿#include "precomp.h"
 #include "jlogmanager.h"
 
+#if QT_VERSION >= 0x050000
+
 // - class JLogManagerPrivate -
 
 class JLogManagerPrivate
@@ -138,3 +140,17 @@ void JLogManager::setLogType(LogType logType)
 {
     JLogManagerPrivate::logType = logType;
 }
+
+#else
+
+JLogManager::JLogManager()
+{
+
+}
+
+JLogManager::~JLogManager()
+{
+
+}
+
+#endif

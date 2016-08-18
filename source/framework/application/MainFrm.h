@@ -5,7 +5,7 @@
 #pragma once
 #include "ChildView.h"
 
-class CMainFrame : public CFrameWnd
+class CMainFrame : public CBCGPFrameWnd
 {
 	
 public:
@@ -34,8 +34,8 @@ public:
 #endif
 
 protected:  // control bar embedded members
-	CStatusBar        m_wndStatusBar;
-	CChildView    m_wndView;
+	CBCGPStatusBar m_wndStatusBar;
+	CChildView m_wndView;
 
 // Generated message map functions
 protected:

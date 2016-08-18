@@ -151,7 +151,7 @@ contains(DEFINES, USE_QTWINMIGRATE) {
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrate
     INCLUDEPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
     DEPENDPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
-    DEFINES += _AFXDLL
+    DEFINES += _AFXDLL QTWINMIGRATE_DLL
 }
 
 contains(DEFINES, USE_QTRIBBON) {

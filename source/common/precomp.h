@@ -81,7 +81,11 @@
 #include "jwt_inc.h"
 #endif
 
-#ifdef PRO_COMPONENT
+//
+#if QT_VERSION < 0x050000
+#ifndef QStringLiteral
+#define QStringLiteral(_str_) QString(_str_)
+#endif
 #endif
 
 #endif // PRECOMP_H

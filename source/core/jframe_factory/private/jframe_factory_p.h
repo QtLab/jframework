@@ -28,7 +28,7 @@ public:
 
     // IJFrameFactory interface
 public:
-    void *factory(const std::string &iid, unsigned int ver);
+    void *createFactory(const std::string &iid, unsigned int ver);
     void releaseFactory(void *iface, const std::string &iid, unsigned int ver);
 
 private:

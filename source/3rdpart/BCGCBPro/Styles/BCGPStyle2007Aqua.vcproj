@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="Office 2007 (aqua)"
 	ProjectGUID="{1B3FB875-6A3F-47B3-BBE1-FB52391F385E}"
 	TargetFrameworkVersion="131072"
@@ -19,8 +19,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\..\..\bin"
-			IntermediateDirectory=".\intermediate"
+			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -101,12 +101,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="if not exist &quot;$(SolutionDir)\lib\3rdpart\&quot; (&#x0D;&#x0A;mkdir &quot;$(SolutionDir)\lib\3rdpart\&quot;&#x0D;&#x0A;)&#x0D;&#x0A;copy &quot;$(TargetDir)\$(TargetName).dll&quot; &quot;$(SolutionDir)\lib\3rdpart\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\..\..\bin"
-			IntermediateDirectory=".\intermediate"
+			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -187,6 +188,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="if not exist &quot;$(SolutionDir)\lib\3rdpart\&quot; (&#x0D;&#x0A;mkdir &quot;$(SolutionDir)\lib\3rdpart\&quot;&#x0D;&#x0A;)&#x0D;&#x0A;copy &quot;$(TargetDir)\$(TargetName).dll&quot; &quot;$(SolutionDir)\lib\3rdpart\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

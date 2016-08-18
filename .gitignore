@@ -69,3 +69,6 @@ target/
 *.aps
 *.ilk
 *.exp
+*.dsp
+*.dsw
+*.vspscc

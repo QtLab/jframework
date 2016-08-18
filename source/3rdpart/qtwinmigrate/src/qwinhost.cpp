@@ -341,15 +341,9 @@ void QWinHost::resizeEvent(QResizeEvent *e)
 /*!
     \reimp
 */
-
-
-
-//bool QWinHost::winEvent(MSG *msg, long *result)
-
-bool QWinHost::nativeEvent(const QByteArray &eventType, void *message, long *result)
+#if QT_VERSION < 0x050000
+bool QWinHost::winEvent(MSG *msg, long *result)
 {
-    MSG* msg = reinterpret_cast<MSG*>(message);
-
     switch (msg->message)
     {
     case WM_SETFOCUS:
@@ -361,5 +355,24 @@ bool QWinHost::nativeEvent(const QByteArray &eventType, void *message, long *res
         break;
     }
 
-    return QWidget::nativeEvent(eventType,message, result);
+    return QWidget::winEvent(msg, result);
 }
+#else
+bool QWinHost::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+    Q_UNUSED(eventType);
+    MSG* msg = reinterpret_cast<MSG*>(message);
+    switch (msg->message)
+    {
+    case WM_SETFOCUS:
+        if (hwnd) {
+            ::SetFocus(hwnd);
+            return true;
+        }
+    default:
+        break;
+    }
+
+    return nativeEvent(eventType, message, result);
+}
+#endif

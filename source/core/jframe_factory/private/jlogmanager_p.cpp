@@ -24,7 +24,7 @@ struct JLogManagerData
     IJLogManager::LogType logType;
 
 #ifdef _MSC_VER
-    log4cpp::Win32DebugAppender *appenderWin32; // 输出到Output窗口的日志目的实例
+    log4cpp::Win32DebugAppender *appenderWin32;         // 输出到Output窗口的日志目的实例
 #else
     //
 #endif
@@ -33,7 +33,11 @@ struct JLogManagerData
 
     JLogManagerData()
         : logType(IJLogManager::LogFile)
+    #ifdef _MSC_VER
         , appenderWin32(0)
+    #else
+        //
+    #endif
         , appenderRollingFile(0)
         , category(log4cpp::Category::getInstance("jframe"))
     {
@@ -182,8 +186,9 @@ bool JLogManagerPri::init()
     log4cpp::PatternLayout *patternLayoutWin32 = new log4cpp::PatternLayout();
     patternLayoutWin32->setConversionPattern("%d | %p %c %x | %m%n");
     data->appenderWin32->setLayout(patternLayoutWin32);
+#else
+    //
 #endif
-
     // appender - rolling-file
     data->appenderRollingFile = new log4cpp::RollingFileAppender(
                 "jframe.appender-rolling-file",

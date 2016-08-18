@@ -33,6 +33,15 @@ bool ComDemo3::loadInterface()
     return true;
 }
 
+bool ComDemo3::updateInterface()
+{
+    bool result = true;
+
+    //
+
+    return result;
+}
+
 void ComDemo3::releaseInterface()
 {
 

@@ -50,22 +50,34 @@
 #ifndef QWINHOST_H
 #define QWINHOST_H
 
-#include <QtWidgets/QWidget>
+#include <qglobal.h>
 
-#if defined(Q_OS_WIN)
-#  if !defined(QT_QTWINMIGRATE_EXPORT) && !defined(QT_QTWINMIGRATE_IMPORT)
-#    define QT_QTWINMIGRATE_EXPORT
-#  elif defined(QT_QTWINMIGRATE_IMPORT)
-#    if defined(QT_QTWINMIGRATE_EXPORT)
-#      undef QT_QTWINMIGRATE_EXPORT
-#    endif
-#    define QT_QTWINMIGRATE_EXPORT __declspec(dllimport)
-#  elif defined(QT_QTWINMIGRATE_EXPORT)
-#    undef QT_QTWINMIGRATE_EXPORT
-#    define QT_QTWINMIGRATE_EXPORT __declspec(dllexport)
-#  endif
+#if QT_VERSION < 0x050000
+#include <QWidget>
 #else
-#  define QT_QTWINMIGRATE_EXPORT
+#include <QtWidgets/QWidget>
+#endif
+
+#ifdef QTWINMIGRATE_DLL
+#ifdef _MSC_VER
+#   ifdef QTWINMIGRATE_MAKEDLL
+#       define QT_QTWINMIGRATE_EXPORT __declspec(dllexport)
+#   else
+#       define QT_QTWINMIGRATE_EXPORT __declspec(dllimport)
+
+#       if defined(DEBUG) || defined(_DEBUG)
+#           pragma comment(lib, "qtwinmigrated.lib")
+#       else
+#           pragma comment(lib, "qtwinmigrate.lib")
+#       endif
+
+#   endif // !QTWINMIGRATE_MAKEDLL
+#endif // _MSC_VER
+
+#endif // QTWINMIGRATE_DLL
+
+#ifndef QT_QTWINMIGRATE_EXPORT
+#define QT_QTWINMIGRATE_EXPORT
 #endif
 
 class QT_QTWINMIGRATE_EXPORT QWinHost : public QWidget
@@ -86,8 +98,11 @@ protected:
     void focusInEvent(QFocusEvent*);
     void resizeEvent(QResizeEvent*);
 
-//    bool winEvent(MSG *msg, long *result);
+#if QT_VERSION < 0x050000
+    bool winEvent(MSG *msg, long *result);
+#else
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
+#endif
 
 private:
     void fixParent();

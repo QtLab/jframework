@@ -11,8 +11,19 @@ greaterThan(QT_MAJOR_VERSION, 4) : QT += widgets
 jframe_root = $$PWD/../../..
 
 TEMPLATE = app
-TARGET = $$qtLibraryTarget(application)
 DESTDIR = $${jframe_root}/bin
+
+##
+win32:{
+    lessThan(QT_MAJOR_VERSION, 5):{
+        CONFIG(debug, debug|release):TARGET = applicationd
+        else:TARGET = application
+    } else {
+        TARGET = $$qtLibraryTarget(application)
+    }
+} else {
+    TARGET = $$qtLibraryTarget(application)
+}
 
 ##
 DEFINES += \
@@ -83,14 +94,6 @@ linux-g++ {
 INCLUDEPATH += $${jframe_root}/include
 DEPENDPATH += $${jframe_root}/include
 
-contains(DEFINES, USE_JFRAME_FACADE) {
-    ## import jframe_facade library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facaded
-    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
-    DEFINES += JFRAME_FACADE_DLL
-}
-
 ###############################################################
 # global commands
 ###############################################################
@@ -118,5 +121,5 @@ win32|unix: {
     else:win32:debug_suffix=
 
     ##
-    win32:system($${jframe_root}\\syncjframe.cmd $$debug_suffix)
+    win32:system($${jframe_root}\\syncjframe.cmd $$QT_MAJOR_VERSION $$debug_suffix)
 }

@@ -94,9 +94,6 @@
     owned by that QObject. \a f is passed on to the QWidget constructor.
 */
 
-#pragma comment(lib,"Qt5Gui.lib")
-#pragma comment(lib,"Qt5Widgets.lib")
-
 QWinWidget::QWinWidget(HWND hParentWnd, QObject *parent, Qt::WindowFlags f)
 : QWidget(0, f), hParent(hParentWnd), prevFocus(0), reenable_parent(false)
 {

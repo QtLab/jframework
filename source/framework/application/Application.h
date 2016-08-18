@@ -16,7 +16,7 @@
 
 class IJFrameFacade;
 
-class CApplicationApp : public CWinApp
+class CApplicationApp : public CBCGPWinApp
 {
 public:
 	CApplicationApp();

@@ -37,6 +37,8 @@
 
 //
 #include "jframe/jframe_facade.h"
+#include "3rdpart/BCGCBPro/BCGCBProInc.h"
+
 
 
 #ifdef _UNICODE

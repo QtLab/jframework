@@ -2,21 +2,21 @@
 <jframe version="1.0.0">
   <envval>
     <global>
-      <path base="jframe" type="prefix">
+      <path base="@FrameDir@/bin" type="prefix">
         <item path="3rdpart" />
-        <item path="kernel" />
-        <item path="kernel/bcg"/>
-        <item path="kernel/qt" />
+        <item path="3rdpart/BCGCBPro" />
+        <item path="3rdpart/Qt" />
+        <item path="jframe" />
       </path>
-      <path base="app" type="append">
+      <path base="@AppDir@" type="append">
       </path>
     </global>
   </envval>
   <qtconf desc="qt.conf content">
     <paths>
-      <item key="Plugins" value="$(jframe)" />
-      <item key="Imports" value="$(jframe)" />
-      <item key="Qml2Import" value="$(jframe)" />
+      <item key="Plugins" value="@FrameDir@/bin/3rdpart/Qt/plugins" />
+      <item key="Imports" value="@FrameDir@/bin/3rdpart/Qt/imports" />
+      <item key="Qml2Import" value="@FrameDir@/bin/3rdpart/Qt/qml" />
     </paths>
   </qtconf>
   <database>
@@ -27,9 +27,10 @@
   <workMode id="1" name="Test1" dir="WorkMode_Test1" >
   </workMode>
   <system>
-    <language name="zh_CN" path="$(jframe)">
+    <language name="zh_CN" path="@FrameDir@/config/language">
     </language>
   </system>
+  <textCodec encoding="GBK" />
   <mainWindow
     windowTitle="框架测试程序"
     windowIcon="@ConfigDir@/resource/app.ico"

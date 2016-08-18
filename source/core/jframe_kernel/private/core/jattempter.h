@@ -12,6 +12,7 @@ struct JComponentConfig
     QString componentDir;       //
     QString componentName;      //
     QString componentDesc;      //
+    QString componentType;      //
     bool stay;                  //
     IJComponent *component;
 
@@ -19,6 +20,7 @@ struct JComponentConfig
         : componentDir("")
         , componentName("")
         , componentDesc("")
+        , componentType("")
         , stay(false)
         , component(0)
     {
@@ -39,6 +41,7 @@ struct JComponentConfig
         componentDir = other.componentDir;
         componentName = other.componentName;
         componentDesc = other.componentDesc;
+        componentType = other.componentType;
         stay = other.stay;
         component = other.component;
 

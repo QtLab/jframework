@@ -8,7 +8,7 @@
 
 // CChildView window
 
-class CChildView : public CWnd
+class CChildView : public CBCGPWnd
 {
 // Construction
 public:

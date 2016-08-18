@@ -15,7 +15,7 @@
 
 // CApplicationApp
 
-BEGIN_MESSAGE_MAP(CApplicationApp, CWinApp)
+BEGIN_MESSAGE_MAP(CApplicationApp, CBCGPWinApp)
 	ON_COMMAND(ID_APP_ABOUT, &CApplicationApp::OnAppAbout)
 END_MESSAGE_MAP()
 
@@ -106,7 +106,7 @@ BOOL CApplicationApp::InitInstance()
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
 
-	CWinApp::InitInstance();
+	CBCGPWinApp::InitInstance();
 
 	// Initialize OLE libraries
 	if (!AfxOleInit())
@@ -123,6 +123,17 @@ BOOL CApplicationApp::InitInstance()
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+
+	//
+	InitMouseManager();
+	InitKeyboardManager();
+	InitContextMenuManager();
+	InitTooltipManager();
+
+	//
+	CBCGPVisualManager::SetDefaultManager(RUNTIME_CLASS(CBCGPWinXPVisualManager));
+	CBCGPButton::EnableWinXPTheme();
+	globalData.m_bUseVisualManagerInBuiltInDialogs = TRUE;
 
 	// To create the main window, this code creates a new frame window
 	// object and then sets it as the application's main window object
@@ -168,24 +179,23 @@ int CApplicationApp::Run()
 
 #endif
 
-	return CWinApp::Run();
+	return CBCGPWinApp::Run();
 }
 
 int CApplicationApp::ExitInstance()
 {
 	//
+	BCGCBProCleanUp();
 
-	return CWinApp::ExitInstance();
+	return CBCGPWinApp::ExitInstance();
 }
 
 // CApplicationApp message handlers
 
 
-
-
 // CAboutDlg dialog used for App About
 
-class CAboutDlg : public CDialog
+class CAboutDlg : public CBCGPDialog
 {
 public:
 	CAboutDlg();
@@ -201,13 +211,14 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
+CAboutDlg::CAboutDlg() : CBCGPDialog(CAboutDlg::IDD)
 {
+	EnableVisualManagerStyle(TRUE, TRUE);
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CBCGPDialog::DoDataExchange(pDX);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)

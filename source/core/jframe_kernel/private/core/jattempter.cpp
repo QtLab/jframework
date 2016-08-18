@@ -368,19 +368,32 @@ bool JAttempter::loadAllComponent()
         if (componentConfig.componentDesc.isEmpty()) {
             continue;   // 无效
         }
+        // type
+        componentConfig.componentType = emComponent.attribute("type").trimmed();
+        //
+        if (componentConfig.componentType == "mfc") {
+#ifdef _AFXDLL
+            if (!AfxGetApp()) {
+                jframeLogWarning(QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "
+                                                "组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
+                                 .arg(componentConfig.componentDir)
+                                 .arg(componentConfig.componentName)
+                                 .arg(componentConfig.componentDesc).toLocal8Bit().data());
+                continue;       // 未启用MFC框架，忽略加载
+            }
+#endif
+        }
         // stay
         componentConfig.stay = QVariant(emComponent.attribute("stay", "false")).toBool();
         // dir
         QString componentDir = emComponent.attribute("dir").trimmed();
         if (componentDir.isEmpty()) {
             componentDir = QString::fromStdString(jframeFacade()->appDirPath()).append("/../component");
-        } else if (componentDir.startsWith("$(jframe)")) {
-            componentDir.replace("$(jframe)", QString::fromStdString(jframeFacade()->frameDirPath()));
-        } else if (componentDir.startsWith("$(app)")) {
-            componentDir.replace("$(app)", QString::fromStdString(jframeFacade()->appDirPath()).append("/.."));
         } else {
-            componentDir.prepend(QString::fromStdString(jframeFacade()->appDirPath()).append("/../"));
+            componentDir.replace("@FrameDir@", QString::fromStdString(jframeFacade()->frameDirPath()));
+            componentDir.replace("@AppDir@", QString::fromStdString(jframeFacade()->appDirPath()));
         }
+        componentDir = QDir(componentDir).absolutePath();
         componentDir.append("/").append(componentConfig.componentName);
         componentConfig.componentDir = componentDir;
         // 加载信息显示
@@ -425,7 +438,20 @@ bool JAttempter::loadComponent(JComponentConfig &componentConfig)
     if (!component) {
         return false;   // 创建失败
     }
-
+    // 组件类型检测
+    if (component->componentType() == "mfc") {
+#ifdef _AFXDLL
+        if (!AfxGetApp()) {
+            jframeLogWarning(QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "
+                                            "组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
+                             .arg(componentConfig.componentDir)
+                             .arg(componentConfig.componentName)
+                             .arg(componentConfig.componentDesc).toLocal8Bit().data());
+            delete component;
+            return false;       // 未启用MFC框架，忽略加载
+        }
+#endif
+    }
     // 存储组件信息
     componentConfig.component = component;
     q_mapComponent[componentConfig.componentName] = componentConfig;

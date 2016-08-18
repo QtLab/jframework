@@ -30,10 +30,14 @@ public:
     IJAttempter *attempter();
 
 private:
+    bool loadConfig();
+
+private:
     //
     bool invokeShowFrame(int argc, va_list ap);
     int runQApp(void *mfcApp);
-    long windowHandle(void *window, const std::string &winType);
+    long invokeWindowHandle(void *window, const std::string &winType);
+    bool invokeCreateQApp(int argc, va_list ap);
 
 private:
     JFrameCore();

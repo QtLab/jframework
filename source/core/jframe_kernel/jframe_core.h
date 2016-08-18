@@ -81,6 +81,12 @@ public:
     virtual std::string componentDesc() const = 0;
 
     /**
+     * @brief componentType : 获取组件类型
+     * @return : 组件类型
+     */
+    virtual std::string componentType() const { return "<unknown>"; }
+
+    /**
      * @brief attach : 挂载组件
      */
     virtual void attach() {}

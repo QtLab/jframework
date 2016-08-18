@@ -31,12 +31,12 @@ public:
     virtual unsigned int interfaceVersion() const { return VER_IJFrameFactory; }
 
     /**
-     * @brief factory : 创建指定对象实例
+     * @brief createFactory : 创建指定对象实例
      * @param iid : 接口标识
      * @param ver : 接口版本
      * @return : 对象实例
      */
-    virtual void* factory(const std::string &iid, unsigned int ver) = 0;
+    virtual void* createFactory(const std::string &iid, unsigned int ver) = 0;
 
     /**
      * @brief releaseFactory : 销毁创建的对象实例
@@ -56,16 +56,20 @@ public:
 #   else
 #       define JFRAME_FACTORY_EXPORT __declspec(dllimport)
 
-#       ifdef _MSC_VER
+#       if defined(DEBUG) || defined(_DEBUG)
 #           pragma comment(lib, "jframe_factoryd.lib")
 #       else
 #           pragma comment(lib, "jframe_factory.lib")
-#       endif // !_MSC_VER
+#       endif
 
 #   endif // !JFRAME_FACTORY_MAKEDLL
-#else
-#define JFRAME_FACTORY_EXPORT
 #endif // _MSC_VER
+
+#endif // JFRAME_FACTORY_DLL
+
+#ifndef JFRAME_FACTORY_EXPORT
+#define JFRAME_FACTORY_EXPORT
+#endif
 
 /**
  * @brief jframeFactory : 获取框架工厂系统单实例
@@ -73,10 +77,12 @@ public:
  */
 JFRAME_FACTORY_EXPORT IJFrameFactory* jframeFactory();
 
+#ifdef JFRAME_FACTORY_DLL
+
 //
 #define JFRAME_FACTORY_CREATE(_interface_) \
     reinterpret_cast<_interface_ *> \
-    (jframeFactory()->factory(IID_ ## _interface_, VER_ ## _interface_))
+    (jframeFactory()->createFactory(IID_ ## _interface_, VER_ ## _interface_))
 
 //
 #define JFRAME_FACTORY_RELEASE(_object_, _interface_) \
@@ -100,9 +106,5 @@ JFRAME_FACTORY_EXPORT IJFrameFactory* jframeFactory();
     } while (0)
 
 #endif // JFRAME_FACTORY_DLL
-
-#ifndef JFRAME_FACTORY_EXPORT
-#define JFRAME_FACTORY_EXPORT
-#endif
 
 #endif // JFRAME_FACTORY_H

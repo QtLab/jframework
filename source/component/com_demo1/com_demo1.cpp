@@ -34,6 +34,15 @@ bool ComDemo1::loadInterface()
     return true;
 }
 
+bool ComDemo1::updateInterface()
+{
+    bool result = true;
+
+    //
+
+    return result;
+}
+
 void ComDemo1::releaseInterface()
 {
 

@@ -18,6 +18,7 @@ public:
     // IJUnknown interface
 public:
     bool loadInterface();
+    bool updateInterface();
     void releaseInterface();
     void *queryInterface(const std::string &iid, unsigned int ver);
 
@@ -25,6 +26,7 @@ public:
 public:
     std::string componentName() const;
     std::string componentDesc() const;
+	std::string componentType() const;
     void attach();
     void detach();
 

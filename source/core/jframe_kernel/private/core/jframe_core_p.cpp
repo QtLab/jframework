@@ -7,10 +7,12 @@
 
 struct JFrameCoreData
 {
-    IJAttempter *attempter;
+    IJAttempter *attempter;     //
+    QString codeForName;        // 系统编码
 
     JFrameCoreData()
         : attempter(0)
+        , codeForName("GBK")
     {
 
     }
@@ -107,6 +109,20 @@ bool JFrameCore::invokeMethod(const std::string &method, int argc, ...)
     if (method == "frame_show") {
         result = invokeShowFrame(argc, ap);
     }
+#ifdef _AFXDLL
+    // MFC资源保护
+    else if (method == "afx_res_lock") {
+        if (argc == 1) {
+            //
+        }
+    }
+    // MFC资源保护
+    else if (method == "afx_res_unlock") {
+        if (argc == 1) {
+            //
+        }
+    }
+#endif // _AFXDLL
     // 运行Qt消息循环系统
     else if (method == "run_q_app") {
         if (argc == 2) {
@@ -123,7 +139,7 @@ bool JFrameCore::invokeMethod(const std::string &method, int argc, ...)
         if (argc == 3) {
             void *window = va_arg(ap, void*);
             const char* winType = va_arg(ap, char*);
-            long handle = windowHandle(window, winType);
+            long handle = invokeWindowHandle(window, winType);
             long *pHandle = va_arg(ap, long*);
             if (pHandle) {
                 *pHandle = handle;
@@ -133,23 +149,7 @@ bool JFrameCore::invokeMethod(const std::string &method, int argc, ...)
     }
     // 创建Qt应用实体
     else if (method == "create_qapp") {
-        if (argc == 3) {
-            int *argc = va_arg(ap, int*);
-            char **argv = va_arg(ap, char**);
-            void *app = va_arg(ap, void*);
-#ifdef _AFXDLL
-            if (app) {
-                QMfcApp::instance((CWinApp *)app);
-            } else
-#endif
-            if (argc) {
-                new QMfcApp(0, *argc, argv);
-            } else {
-                int argc1 = 0;
-                new QMfcApp(0, argc1, argv);
-            }
-            result = true;
-        }
+        result = invokeCreateQApp(argc, ap);
     }
 
     va_end(ap);
@@ -160,6 +160,53 @@ bool JFrameCore::invokeMethod(const std::string &method, int argc, ...)
 IJAttempter *JFrameCore::attempter()
 {
     return data->attempter;
+}
+
+bool JFrameCore::loadConfig()
+{
+    if (!QFileInfo(QString::fromStdString(jframeFacade()->frameGlobalPath())).isReadable()) {
+        Q_ASSERT_X(false, "Warning", "配置文件不存在，即将退出软件！");
+        return false;
+    }
+
+    // 读取配置文件
+    TiXmlDocument document(jframeFacade()->frameGlobalPath());
+    if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
+        Q_ASSERT_X(false, "Warning",
+                   QStringLiteral("配置文件打\"%1\"开失败，即将退出软件！\n"
+                                  "错误标识：%2\n"
+                                  "错误描述：%3\n"
+                                  "错误位置：[%4, %5]")
+                   .arg(QString::fromStdString(jframeFacade()->frameGlobalPath()))
+                   .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
+                   .arg(document.ErrorRow()).arg(document.ErrorCol())
+                   .toLocal8Bit().data());
+        return false;
+    }
+
+    // 获取根节点
+    TiXmlElement *emRoot = document.RootElement();
+    if (!emRoot) {
+        return false;
+    }
+
+    // 获取框架文本编码节点
+    TiXmlElement *emTextCodec = emRoot->FirstChildElement("textCodec");
+    if (!emTextCodec) {
+        return false;
+    }
+
+    std::string sVal;
+
+    // framework encoding
+    if (emTextCodec->QueryStringAttribute("encoding", &sVal) != TIXML_SUCCESS) {
+        return false;
+    }
+
+    //
+    data->codeForName = QString::fromUtf8(emTextCodec->Attribute("encoding"));
+
+    return true;
 }
 
 bool JFrameCore::invokeShowFrame(int argc, va_list ap)
@@ -202,7 +249,31 @@ int JFrameCore::runQApp(void *mfcApp)
 #endif
 }
 
-long JFrameCore::windowHandle(void *window, const std::string &winType)
+bool JFrameCore::invokeCreateQApp(int argc, va_list ap)
+{
+    if (argc != 3) {
+        return false;   // 参数无效
+    }
+
+    int *argc1 = va_arg(ap, int*);
+    char **argv = va_arg(ap, char**);
+    void *app = va_arg(ap, void*);
+#ifdef _AFXDLL
+    if (app) {
+        QMfcApp::instance((CWinApp *)app);
+    } else
+#endif
+        if (argc1) {
+            (void)new QMfcApp(0, *argc1, argv);
+        } else {
+            int argc1 = 0;
+            (void)new QMfcApp(0, argc1, argv);
+        }
+
+    return true;
+}
+
+long JFrameCore::invokeWindowHandle(void *window, const std::string &winType)
 {
     // 参数有效性检测
     if (!window) {
@@ -234,6 +305,19 @@ JFrameCore::JFrameCore()
 
     //
     data->attempter = new JAttempter();
+
+    // 加载配置信息
+    if (!loadConfig()) {
+        // 加载失败
+    }
+
+    // text codec
+    QTextCodec::setCodecForLocale(
+                QTextCodec::codecForName(data->codeForName.toLocal8Bit().data()));
+#if QT_VERSION < 0x050000
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
+    QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
+#endif
 }
 
 JFrameCore::~JFrameCore()

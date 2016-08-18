@@ -66,15 +66,13 @@ public:
 #   else
 #       define JFRAME_KERNEL_EXPORT __declspec(dllimport)
 
-#       ifdef _MSC_VER
+#       if defined(DEBUG) || defined(_DEBUG)
 #           pragma comment(lib, "jframe_kerneld.lib")
 #       else
 #           pragma comment(lib, "jframe_kernel.lib")
-#       endif // !_MSC_VER
+#       endif
 
 #   endif // !JFRAME_KERNEL_MAKEDLL
-#else
-#define JFRAME_KERNEL_EXPORT
 #endif // _MSC_VER
 
 #endif // JFRAME_KERNEL_DLL
@@ -83,13 +81,13 @@ public:
 #define JFRAME_KERNEL_EXPORT
 #endif
 
-#ifdef JFRAME_KERNEL_DLL
-
 /**
  * @brief jframeKernel : 获取框架内核系统接口单实例
  * @return : 框架内核系统接口单实例
  */
 JFRAME_KERNEL_EXPORT IJFrameKernel* jframeKernel();
+
+#ifdef JFRAME_KERNEL_DLL
 
 //
 #ifndef JFRAME_LOGMANAGER_INSTANCE

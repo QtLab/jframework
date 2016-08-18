@@ -67,9 +67,7 @@ private:
     bool loadFrameKernel();
 
     // 加载程序配置文件
-    bool loadGlobalConfig();
     bool loadGlobalConfig(const std::string &version);
-    bool loadGlobalConfig(int major, int minor, int patch);
 
     //
     void copyFrameFile();

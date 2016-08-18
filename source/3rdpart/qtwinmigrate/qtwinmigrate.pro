@@ -18,7 +18,8 @@ DEFINES += \
 win32: {
     DEFINES += \
         _AFXDLL \
-        QT_QTWINMIGRATE_EXPORT
+        QTWINMIGRATE_DLL \
+        QTWINMIGRATE_MAKEDLL
 
     DEFINES -= UNICODE
 }

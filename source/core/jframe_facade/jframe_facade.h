@@ -173,6 +173,12 @@ public:
     virtual bool loadInterface() { return true; }
 
     /**
+     * @brief updateInterface : 更新接口
+     * @return : true，更新成功；false，更新失败
+     */
+    virtual bool updateInterface() { return true; }
+
+    /**
      * @brief releaseInterface : 释放接口
      */
     virtual void releaseInterface() {}
@@ -352,28 +358,26 @@ typedef IJUnknown *(__cdecl *FuncFrameFacadeInst)(void);
 #   else
 #       define JFRAME_FACADE_EXPORT __declspec(dllimport)
 
-#       ifdef _MSC_VER
+#       if defined(DEBUG) || defined(_DEBUG)
 #           pragma comment(lib, "jframe_facaded.lib")
 #       else
 #           pragma comment(lib, "jframe_facade.lib")
-#       endif // !_MSC_VER
+#       endif
 
 #   endif // !JFRAME_FACADE_MAKEDLL
-#else
-#define JFRAME_FACADE_EXPORT
 #endif // _MSC_VER
-
-/**
- * @brief jframeFacade : 获取框架门面系统单实例
- * @return : 框架门面系统单实例
- */
-JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 
 #endif // JFRAME_FACADE_DLL
 
 #ifndef JFRAME_FACADE_EXPORT
 #define JFRAME_FACADE_EXPORT
 #endif
+
+/**
+ * @brief jframeFacade : 获取框架门面系统单实例
+ * @return : 框架门面系统单实例
+ */
+JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 
 /// 框架::日志
 

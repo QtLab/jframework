@@ -2,11 +2,15 @@
 #define JLOGMANAGER_H
 
 #include "jwt_global.h"
+#if QT_VERSION >= 0x050000
 #if !defined(Q_OS_MAC)
 #include <QLoggingCategory>
 #endif
+#endif
 
 // - class JLogManager -
+
+#if QT_VERSION >= 0x050000
 
 class JLogManagerPrivate;
 
@@ -31,5 +35,17 @@ private:
     J_DECLARE_SINGLE_INSTANCE(JLogManager)
     J_DECLARE_PRIVATE(JLogManager)
 };
+#else
+
+class JWT_EXPORT JLogManager
+{
+public:
+
+private:
+    JLogManager();
+    ~JLogManager();
+};
+
+#endif
 
 #endif // JLOGMANAGER_H

@@ -13,9 +13,9 @@
 
 // CMainFrame
 
-IMPLEMENT_DYNAMIC(CMainFrame, CFrameWnd)
+IMPLEMENT_DYNAMIC(CMainFrame, CBCGPFrameWnd)
 
-BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
+BEGIN_MESSAGE_MAP(CMainFrame, CBCGPFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
@@ -49,6 +49,9 @@ BOOL CMainFrame::LoadFramework()
 		return FALSE;      // ¼ÓÔØÊ§°Ü
 	}
 
+	// BCG Style
+	theApp.SetVisualTheme(CBCGPWinApp::BCGP_VISUAL_THEME_OFFICE_2010_BLUE);
+
 	// ÏÔÊ¾¿ò¼ÜÖ÷´°¿Ú
 	frameFacade->showFrame(true, true);
 
@@ -77,7 +80,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;      // fail to create
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
-
 #endif
 	// ¼ÓÔØ¿ò¼Ü
 	if (!LoadFramework())
@@ -90,7 +92,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
-	if( !CFrameWnd::PreCreateWindow(cs) )
+	if( !CBCGPFrameWnd::PreCreateWindow(cs) )
 		return FALSE;
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
@@ -105,12 +107,12 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const
 {
-	CFrameWnd::AssertValid();
+	CBCGPFrameWnd::AssertValid();
 }
 
 void CMainFrame::Dump(CDumpContext& dc) const
 {
-	CFrameWnd::Dump(dc);
+	CBCGPFrameWnd::Dump(dc);
 }
 #endif //_DEBUG
 
@@ -119,15 +121,18 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 void CMainFrame::OnSetFocus(CWnd* /*pOldWnd*/)
 {
+#if 0
 	// forward focus to the view window
 	if (m_wndView.IsWindowVisible())
 	{
 		m_wndView.SetFocus();
 	}
+#endif
 }
 
 BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
 {
+#if 0
 	if (m_wndView.IsWindowVisible())
 	{
 		// let the view have first crack at the command
@@ -136,7 +141,7 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
 			return TRUE;
 		}
 	}
-
+#endif
 	// otherwise, do default handling
-	return CFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+	return CBCGPFrameWnd::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }

@@ -19,6 +19,7 @@ public:
     // IJUnknown interface
 public:
     bool loadInterface();
+    bool updateInterface();
     void releaseInterface();
     void *queryInterface(const std::string &iid, unsigned int ver);
 
