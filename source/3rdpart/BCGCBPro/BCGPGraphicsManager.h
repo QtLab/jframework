@@ -1046,9 +1046,9 @@ public:
 		return radiusX <= 0. || radiusY <= 0.;
 	}
 
-	void Scale(const CBCGPSize& szRatio, CBCGPRect::BCGP_RECT_POINT point = CBCGPRect::BCGP_RECT_POINT_NULL)
+	void Scale(const CBCGPSize& szRatio, CBCGPRect::BCGP_RECT_POINT p = CBCGPRect::BCGP_RECT_POINT_NULL)
 	{
-		Scale(szRatio.cx, szRatio.cy, ((CBCGPRect)*this).RectPoint(point));
+		Scale(szRatio.cx, szRatio.cy, ((CBCGPRect)*this).RectPoint(p));
 	}
 
 	void Scale(const CBCGPSize& szRatio, const CBCGPPoint& ptOffset)

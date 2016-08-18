@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "application", "source\framework\application\Application.vcproj", "{4A64A51D-F4F0-44DB-90F9-53077390D1E7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "framework", "framework", "{20911BDB-1AE3-42D4-91BB-EBD92FCE815D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "component", "component", "{DF296A22-65F1-4AE7-8168-D4B97B8B5533}"
@@ -37,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{3F1236
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frame", "frame", "{045224D7-C10E-430F-88BB-DDD528782339}"
 	ProjectSection(SolutionItems) = preProject
+		config\frame\jframe_global.xml = config\frame\jframe_global.xml
 		config\frame\jframe_layout.xml = config\frame\jframe_layout.xml
 	EndProjectSection
 EndProject
@@ -44,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkMode_Test1", "WorkMode_
 	ProjectSection(SolutionItems) = preProject
 		config\WorkMode_Test1\jframe_component.xml = config\WorkMode_Test1\jframe_component.xml
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "application", "source\framework\application\Application90.vcproj", "{4A64A51D-F4F0-44DB-90F9-53077390D1E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,14 +54,6 @@ Global
 		Unicode Release|Win32 = Unicode Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Debug|Win32.Build.0 = Debug|Win32
-		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Release|Win32.ActiveCfg = Release|Win32
-		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Release|Win32.Build.0 = Release|Win32
-		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
-		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Unicode Debug|Win32.Build.0 = Debug|Win32
-		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Unicode Release|Win32.ActiveCfg = Release|Win32
-		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Unicode Release|Win32.Build.0 = Release|Win32
 		{9DF443FB-9EC0-4511-9262-D9AE2C74F5DD}.Debug|Win32.ActiveCfg = Debug|Win32
 		{9DF443FB-9EC0-4511-9262-D9AE2C74F5DD}.Debug|Win32.Build.0 = Debug|Win32
 		{9DF443FB-9EC0-4511-9262-D9AE2C74F5DD}.Release|Win32.ActiveCfg = Release|Win32
@@ -133,6 +126,14 @@ Global
 		{09FF3D20-4C8B-4C3F-A144-5BD86BDFE33C}.Unicode Debug|Win32.Build.0 = Debug|Win32
 		{09FF3D20-4C8B-4C3F-A144-5BD86BDFE33C}.Unicode Release|Win32.ActiveCfg = Release|Win32
 		{09FF3D20-4C8B-4C3F-A144-5BD86BDFE33C}.Unicode Release|Win32.Build.0 = Release|Win32
+		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Debug|Win32.Build.0 = Debug|Win32
+		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Release|Win32.ActiveCfg = Release|Win32
+		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Release|Win32.Build.0 = Release|Win32
+		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Unicode Debug|Win32.ActiveCfg = Debug|Win32
+		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Unicode Debug|Win32.Build.0 = Debug|Win32
+		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Unicode Release|Win32.ActiveCfg = Release|Win32
+		{4A64A51D-F4F0-44DB-90F9-53077390D1E7}.Unicode Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

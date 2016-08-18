@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "com_demo3.h"
+#include "testwidget1.h"
 
 //
 extern "C" __declspec(dllexport) void *CreateComponent(void* attemper)
@@ -15,16 +16,16 @@ extern "C" __declspec(dllexport) void *CreateComponent(void* attemper)
 
 ComDemo3::ComDemo3(IJAttempter *attemper)
     : q_attempter(attemper)
-    , q_widget(0)
+    , q_testWidget1(0)
 {
     q_notifier = jframeLayout()->notifier();
 }
 
 ComDemo3::~ComDemo3()
 {
-    if (q_widget) {
-        q_widget->deleteLater();
-        q_widget = 0;
+    if (q_testWidget1) {
+        q_testWidget1->deleteLater();
+        q_testWidget1 = 0;
     }
 }
 
@@ -81,17 +82,16 @@ void *ComDemo3::createWindow(void *parent, const std::string &objectName)
 {
     Q_UNUSED(parent);
     Q_UNUSED(objectName);
-
     //
-    if (q_widget) {
+    if (q_testWidget1) {
         Q_ASSERT(false);
         return 0;
     }
 
     //
-    q_widget = new QPushButton(QStringLiteral("²âÊÔ×é¼þ3"));
+    q_testWidget1 = new TestWidget1(q_notifier);
 
-    return qobject_cast<QWidget *>(q_widget);
+    return qobject_cast<QWidget *>(q_testWidget1);
 }
 
 std::string ComDemo3::observerId() const

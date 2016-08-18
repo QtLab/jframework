@@ -19,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\component\$(ProjectName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\component\$(ProjectName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="2"
 			UseOfMFC="2"
 			CharacterSet="1"
@@ -103,7 +103,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\component\$(ProjectName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\component\$(ProjectName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="2"
 			UseOfMFC="2"
 			CharacterSet="1"

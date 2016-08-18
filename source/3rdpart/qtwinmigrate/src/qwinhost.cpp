@@ -373,6 +373,6 @@ bool QWinHost::nativeEvent(const QByteArray &eventType, void *message, long *res
         break;
     }
 
-    return nativeEvent(eventType, message, result);
+    return QWidget::nativeEvent(eventType, message, result);
 }
 #endif

@@ -73,6 +73,8 @@ BCGCBPRODLLEXPORT void BCGCBProDllInitialize ();
 	#define _BCGCB_LIBNAME_	_BCGCB_LIBNAME5_##"110.lib"
 #elif _MSC_VER == 1800
 	#define _BCGCB_LIBNAME_	_BCGCB_LIBNAME5_##"120.lib"
+#elif _MSC_VER == 1900
+	#define _BCGCB_LIBNAME_ _BCGCB_LIBNAME5_##"140.lib"
 #else
 	#error "Unsupported VC++ version"
 #endif

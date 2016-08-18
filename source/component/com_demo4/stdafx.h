@@ -36,6 +36,8 @@
 #include <afxcmn.h>                     // MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+#include "Resource.h"
+
 #include "jframe_facade.h"
 #include "factory/jnotifier.h"
 #include "kernel/jframe_kernel.h"
@@ -43,9 +45,15 @@
 #include "kernel/jframe_layout.h"
 #include "kernel/jframe_login.h"
 
+// qtwinmigrate
+#include "3rdpart/qtwinmigrate/qmfcapp.h"
+
 // Qt
 #include <QtCore>
 #include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif
 
 // BCG
 #include "BCGCBPro/BCGCBProInc.h"

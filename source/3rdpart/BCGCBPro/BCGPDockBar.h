@@ -25,7 +25,7 @@
 class CBCGPDockBarRow;
 class CBCGPDockManager;
 
-typedef enum BCG_DS_TYPE
+enum BCG_DS_TYPE
 {
 	DS_TYPE_UNDEFINED = 0x0,
 	DS_STATIC = 0x1,

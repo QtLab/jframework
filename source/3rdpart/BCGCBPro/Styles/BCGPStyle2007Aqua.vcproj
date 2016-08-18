@@ -20,7 +20,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -107,7 +107,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"

@@ -1,107 +1,107 @@
 <?xml version='1.0' encoding='utf-8'?>
-<jframe seatEditable="true" userName="****" systemEditable="true" system="system #1">
+<jframe seatEditable="true" systemEditable="true" system="system #1" userName="****">
   <config>
     <switch remember="true"/>
-    <splitter width="8" opacity="0.5" opaqueResize="true" color="#444"/>
+    <splitter opaqueResize="true" width="8" opacity="0.5" color="#444"/>
     <dock/>
-    <busyIndicator duration="2000" model="true" image="" visible="true"/>
+    <busyIndicator model="true" image="" duration="2000" visible="true"/>
   </config>
-  <system module="module #2" name="system #1">
+  <system module="module #1" name="system #1">
     <seat-module>
-      <item seat="seat #1" module="module #1"/>
+      <item module="module #1" seat="seat #1"/>
     </seat-module>
-    <module submodule="" name="module #1">
+    <module name="module #1" submodule="">
       <layout>
         <view>
-          <horizontal collapsibile="0:true;1:true" opaqueResize="false" scales="1.1:2.9">
+          <horizontal opaqueResize="false" scales="1.5:3.3" collapsibile="0:true;1:true">
             <component id="com_demo1"/>
-            <vertical collapsibile="0:true;1:true" opaqueResize="false" scales="1.2:2.8">
+            <vertical opaqueResize="false" scales="1.5:2.4" collapsibile="0:true;1:true">
               <component id="com_demo2"/>
               <component id="com_demo3"/>
             </vertical>
           </horizontal>
         </view>
         <popup>
-          <component load="false" id="com_demo4"/>
+          <component id="com_demo4" load="false"/>
         </popup>
       </layout>
     </module>
-    <module submodule="module #3" name="module #2">
+    <module name="module #2" submodule="">
       <layout>
         <view>
-          <horizontal collapsible="0:false;1:false" scales="1.3:3.7">
-            <component id="com_demo2"/>
+          <horizontal scales="1:4" collapsible="0:false;1:false">
             <component id="com_demo1"/>
+            <component id="com_demo3"/>
           </horizontal>
         </view>
         <popup>
-          <component load="false" id="com_demo4"/>
+          <component id="com_demo4" load="false"/>
         </popup>
       </layout>
-      <module submodule="module #4" name="module #3">
+      <module name="module #3" submodule="">
         <layout>
           <view>
-            <horizontal collapsible="0:false;1:false" scales="4:1">
+            <horizontal scales="4:1" collapsible="0:false;1:false">
               <component id="com_demo1"/>
               <component id="com_demo2"/>
             </horizontal>
           </view>
           <popup>
-            <component load="false" id="com_demo4"/>
+            <component id="com_demo4" load="false"/>
           </popup>
         </layout>
-        <module submodule="" name="module #4">
+        <module name="module #4" submodule="">
           <layout>
             <view>
-              <horizontal width="4" opacity="0.7" collapsible="0:false;1:false" opaqueResize="false" scales="1:4">
-                <component id="com_demo4"/>
-                <vertical width="4" opacity="0.7" opaqueResize="false" scales="1:2">
+              <horizontal opaqueResize="false" scales="1:4" width="4" opacity="0.7" collapsible="0:false;1:false">
+                <component id="com_demo2"/>
+                <vertical opaqueResize="false" scales="1:2" width="4" opacity="0.7">
                   <component id="com_demo3"/>
-                  <component id="com_demo5"/>
+                  <component id="com_demo1"/>
                 </vertical>
               </horizontal>
             </view>
             <popup>
-              <component load="false" id="com_demo4"/>
+              <component id="com_demo4" load="false"/>
             </popup>
           </layout>
         </module>
       </module>
     </module>
   </system>
-  <system defaultSeat="seat #2" module="module #1" name="system #2">
-    <module submodule="" name="module #1">
+  <system module="module #1" name="system #2" defaultSeat="seat #2">
+    <module name="module #1" submodule="">
       <layout>
         <view>
-          <horizontal collapsible="0:false;1:false" scales="1:1">
+          <horizontal scales="1:1" collapsible="0:false;1:false">
             <component id="com_demo2"/>
             <component id="com_demo1"/>
           </horizontal>
         </view>
         <popup>
-          <component load="false" id="com_demo4"/>
+          <component id="com_demo4" load="false"/>
         </popup>
       </layout>
     </module>
   </system>
   <system module="module #1" name="system #3">
-    <module submodule="" name="module #1">
+    <module name="module #1" submodule="">
       <layout>
         <view>
-          <horizontal collapsible="0:false;1:false" scales="1:1">
+          <horizontal scales="1:1" collapsible="0:false;1:false">
             <component id="com_demo2"/>
           </horizontal>
         </view>
         <popup>
-          <component load="false" id="com_demo4"/>
+          <component id="com_demo4" load="false"/>
         </popup>
       </layout>
     </module>
   </system>
   <!-- 以下为框架默认配置，请谨慎修改 -->
   <!-- list属性值：为[用户管理]、[系统管理]、[模块管理]、[权限管理]的组合 -->
-  <system module="权限管理" name="管理员系统" list="用户管理|系统管理|模块管理|权限管理">
-    <module submodule="" name="权限管理">
+  <system module="权限管理" list="用户管理|系统管理|模块管理|权限管理" name="管理员系统">
+    <module name="权限管理" submodule="">
       <layout>
         <view>
           <horizontal scales="1:1">

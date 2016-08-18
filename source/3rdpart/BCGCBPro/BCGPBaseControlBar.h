@@ -42,7 +42,7 @@ class CBCGPBaseTabWnd;
 class CBCGPBaseTabbedBar;
 
 // DM - dock method
-typedef enum BCGP_DOCK_METHOD
+enum BCGP_DOCK_METHOD
 {
 	BCGP_DM_UNKNOWN,
 	BCGP_DM_MOUSE,
@@ -53,7 +53,7 @@ typedef enum BCGP_DOCK_METHOD
 };
 
 // DT - dock type
-typedef enum BCGP_DOCK_TYPES
+enum BCGP_DOCK_TYPES
 {
 	BCGP_DT_DOCK_FIRST,
 	BCGP_DT_DOCK_LAST,

@@ -22,7 +22,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Auxiliary System/Screen metrics
 
-typedef enum BCGP_DOCK_TYPE
+enum BCGP_DOCK_TYPE
 {
 	BCGP_DT_UNDEFINED = 0,		// inherit from application
 	BCGP_DT_IMMEDIATE = 1,		// control bar torn off immediately and follows the mouse

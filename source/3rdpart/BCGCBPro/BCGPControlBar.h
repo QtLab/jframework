@@ -37,7 +37,7 @@ class CBCGPMiniFrameWnd;
 class CBCGPDockManager;
 
 // CS - change state status
-typedef enum BCGP_CS_STATUS
+enum BCGP_CS_STATUS
 {
 	BCGP_CS_NOTHING,
 	BCGP_CS_DOCK_IMMEDIATELY,

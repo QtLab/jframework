@@ -61,6 +61,9 @@ target/
 /include
 /lib
 /source/temp
+/GeneratedFiles
+/ipch
+/.vs
 /.vscode/.BROWSE.VC.DB
 *.pro.user*
 *.user
@@ -72,3 +75,5 @@ target/
 *.dsp
 *.dsw
 *.vspscc
+*.VC.db
+*.VC.opendb

@@ -5,6 +5,7 @@
 #include "factory/jnotifier.h"
 
 class QWidget;
+class TestWidget1;
 
 class ComDemo3 :
         public IJComponent,
@@ -42,7 +43,7 @@ protected:
 private:
     IJAttempter *q_attempter;
     INotifier* q_notifier;
-    QWidget *q_widget;
+    TestWidget1 *q_testWidget1;
 };
 
 #endif // COM_DEMO3_H

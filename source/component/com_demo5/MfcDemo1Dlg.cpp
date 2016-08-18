@@ -27,6 +27,13 @@ void CMfcDemo1Dlg::DoDataExchange(CDataExchange* pDX)
 	CBCGPDialog::DoDataExchange(pDX);
 }
 
+BOOL CMfcDemo1Dlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: Add your specialized code here and/or call the base class
+
+	return CBCGPDialog::PreTranslateMessage(pMsg);
+}
+
 
 BEGIN_MESSAGE_MAP(CMfcDemo1Dlg, CBCGPDialog)
 	ON_BN_CLICKED(IDC_BUTTON_APPLY, &CMfcDemo1Dlg::OnBnClickedButtonApply)
@@ -39,6 +46,6 @@ void CMfcDemo1Dlg::OnBnClickedButtonApply()
 {
 	if (q_notifier != NULL)
 	{
-
+		q_notifier->postMessage("j_switch_module", "module #1");
 	}
 }

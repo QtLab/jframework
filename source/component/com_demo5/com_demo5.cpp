@@ -97,7 +97,7 @@ void *ComDemo5::createWindow(void *parent, const std::string &objectName)
     }
 
     //
-    q_widget = new CMfcDemo1Container();
+    q_widget = new CMfcDemo1Container(q_notifier);
 
     return qobject_cast<QWidget *>(q_widget);
 }

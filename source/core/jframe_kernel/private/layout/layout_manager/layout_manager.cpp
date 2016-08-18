@@ -1169,7 +1169,7 @@ bool LayoutManager::saveCurrentSplitterScales()
 bool LayoutManager::updateSpltterScales(const QDomElement &emParent, const QWidget *widget)
 {
     // 参数检测
-    if (emParent.isNull()) {
+    if (emParent.isNull() || !widget) {
         return false;   // 无效
     }
 
@@ -1209,6 +1209,11 @@ bool LayoutManager::updateSpltterScales(const QDomElement &emParent, const QWidg
     }
     // 设置scales属性
     emSplitter.setAttribute("scales", sScale);
+
+    //
+    jframeLogNotice(QStringLiteral("row: %1, column: %2")
+                   .arg(emSplitter.lineNumber())
+                   .arg(emSplitter.columnNumber()));
 
     // 递归更新
     const int count = splitter->count();

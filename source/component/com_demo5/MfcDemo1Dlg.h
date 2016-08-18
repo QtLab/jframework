@@ -23,4 +23,6 @@ public:
 
 private:
 	INotifier *q_notifier;
+public:
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

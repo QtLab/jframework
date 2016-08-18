@@ -247,7 +247,7 @@ protected:
 
 // Smart docking theme:
 
-typedef enum BCGP_SMARTDOCK_THEME
+enum BCGP_SMARTDOCK_THEME
 {
 	BCGP_SDT_DEFAULT = 0,		// Visual Manager-specific theme
 	BCGP_SDT_VS2005 = 1,		// VS 2005-style
@@ -256,7 +256,7 @@ typedef enum BCGP_SMARTDOCK_THEME
 	BCGP_SDT_VS2012 = 4,		// VS 2012-style
 };
 
-typedef enum BCGP_INPUT_MODE
+enum BCGP_INPUT_MODE
 {
 	BCGP_MOUSE_INPUT = 0,
 	BCGP_TOUCH_INPUT,

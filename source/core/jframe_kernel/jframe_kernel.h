@@ -127,4 +127,9 @@ JFRAME_KERNEL_EXPORT IJFrameKernel* jframeKernel();
 
 #endif // JFRAME_KERNEL_DLL
 
+//
+#ifndef QStringLiteral
+#define QStringLiteral(str) QString(str)
+#endif  // QStringLiteral
+
 #endif // JFRAME_KERNEL_H

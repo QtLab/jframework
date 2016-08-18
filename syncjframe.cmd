@@ -29,7 +29,7 @@ rem -----
 
 copy "%qt_dir%\bin\Qt*Core%debug_suffix%*.dll" "%jframe_dir%\bin\"
 copy "%qt_dir%\bin\Qt*Gui%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
-copy "%qt_dir%\bin\Qt*Widgets%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
+copy "%qt_dir%\bin\Qt?Widgets%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
 copy "%qt_dir%\bin\Qt*Xml%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
 xcopy "%qt_dir%\plugins\iconengines\*.dll" "%jframe_dir%\bin\3rdpart\Qt\plugins\iconengines\" /s /q /y
 xcopy "%qt_dir%\plugins\imageformats\*.dll" "%jframe_dir%\bin\3rdpart\Qt\plugins\imageformats\" /s /q /y

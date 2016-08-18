@@ -22,7 +22,7 @@
 		<Configuration
 			Name="Unicode Debug|Win32"
 			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="2"
 			UseOfMFC="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -110,7 +110,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="2"
 			UseOfMFC="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -198,7 +198,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="2"
 			UseOfMFC="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -284,7 +284,7 @@
 		<Configuration
 			Name="Unicode Release|Win32"
 			OutputDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
-			IntermediateDirectory="$(SolutionDir)\source\temp\$(ConfigurationName)\3rdpart\$(ProjectName)"
+			IntermediateDirectory="$(OutDir)"
 			ConfigurationType="2"
 			UseOfMFC="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"

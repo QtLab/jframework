@@ -51,7 +51,9 @@
 // Qt
 #include <QtCore>
 #include <QtGui>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#endif
 
 // BCG
 #include "BCGCBPro/BCGCBProInc.h"
-#include <afxdhtml.h>
