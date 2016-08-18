@@ -36,7 +36,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frame", "frame", "{045224D7-C10E-430F-88BB-DDD528782339}"
 	ProjectSection(SolutionItems) = preProject
 		config\frame\jframe_global.xml = config\frame\jframe_global.xml
-		config\frame\jframe_layout.xml = config\frame\jframe_layout.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkMode_Test1", "WorkMode_Test1", "{73735959-FCC9-44C3-93AC-4E373BB7E113}"

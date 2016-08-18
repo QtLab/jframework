@@ -819,42 +819,38 @@ QDomElement LayoutManager::findModuleNode(QDomElement &emParent, QString &sectio
 
 QDomElement LayoutManager::findModuleNodeConst(const QDomElement &emParent, const QString &section) const
 {
-    // 参数检测
+    // check parameters
     if (emParent.isNull()) {
-        return QDomElement();   // 无效
+        return QDomElement();   // invalid
     }
 
-    // 获取顶层模式名称
-    const QString firstSection =
-            section.section(">>", 0, 0, QString::SectionSkipEmpty).trimmed();
+    // get first (top) module
+    const QString topModule = section.section(">>", 0, 0, QString::SectionSkipEmpty).trimmed();
 
-    // 查找模式节点
+    // find module node
     QDomElement emModule;
     for (emModule = emParent.firstChildElement("module");
          !emModule.isNull();
          emModule = emModule.nextSiblingElement("module")) {
-        // 获取下一个迭代模式
-        const QString nextSection =
-                section.section(">>", 1, -1, QString::SectionSkipEmpty).trimmed();
-        // 模式名称匹配
-        if (emModule.attribute("name") == firstSection) {
-            if (nextSection.isEmpty()) {
-                break;  // found
+        // get submodule-sections
+        const QString subModule = section.section(">>", 1, -1, QString::SectionSkipEmpty).trimmed();
+        // check
+        if (subModule.isEmpty()) {
+            // match the module
+            if (emModule.attribute("name") == topModule) {
+                break;      // found, break
+            } else {
+                continue;   // not found and has no any submodule, continue to find
             }
-        }
-
-        //
-        if (nextSection.isEmpty()) {
-            continue;   // 下一个子模式名称无效，继续查找
-        }
-
-        //
-        const QDomElement emSubModule = findModuleNodeConst(emModule, nextSection);
-        if (emSubModule.isNull()) {
-            continue;   // 继续查找
         } else {
-            emModule = emSubModule;
-            break;  // found
+            //
+            const QDomElement emSubModule = findModuleNodeConst(emModule, subModule);
+            if (emSubModule.isNull()) {
+                continue;   // not found, continue to find
+            } else {
+                emModule = emSubModule;
+                break;      // found, break
+            }
         }
     }
 

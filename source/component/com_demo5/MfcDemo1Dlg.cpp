@@ -29,7 +29,12 @@ void CMfcDemo1Dlg::DoDataExchange(CDataExchange* pDX)
 
 BOOL CMfcDemo1Dlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: Add your specialized code here and/or call the base class
+	// ignore some keys
+	switch (pMsg->message)
+	{
+	default:
+		break;
+	}
 
 	return CBCGPDialog::PreTranslateMessage(pMsg);
 }
