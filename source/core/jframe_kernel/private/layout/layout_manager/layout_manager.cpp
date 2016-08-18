@@ -383,7 +383,7 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
     }
 
     // find current system
-    emSystem = findSystemNode(emRoot, system);
+    emSystem = findSystemNodeConst(emRoot, system);
     if (emSystem.isNull()) {
         QMessageBox::critical(q_frameLayout->mainViewManager(),
                               QStringLiteral("错误"),
@@ -697,7 +697,7 @@ bool LayoutManager::loadModuleDockNode(const QDomElement &emDock)
     return false;
 }
 
-QDomElement LayoutManager::findSystemNode(QDomElement &emParent, const QString &system)
+QDomElement LayoutManager::findSystemNodeConst(const QDomElement &emParent, const QString &system) const
 {
     // 参数检测
     if (emParent.isNull()) {
@@ -817,7 +817,7 @@ QDomElement LayoutManager::findModuleNode(QDomElement &emParent, QString &sectio
     return emModule;
 }
 
-QDomElement LayoutManager::findModuleNode(const QDomElement &emParent, const QString &section)
+QDomElement LayoutManager::findModuleNodeConst(const QDomElement &emParent, const QString &section) const
 {
     // 参数检测
     if (emParent.isNull()) {
@@ -833,23 +833,28 @@ QDomElement LayoutManager::findModuleNode(const QDomElement &emParent, const QSt
     for (emModule = emParent.firstChildElement("module");
          !emModule.isNull();
          emModule = emModule.nextSiblingElement("module")) {
+        // 获取下一个迭代模式
+        const QString nextSection =
+                section.section(">>", 1, -1, QString::SectionSkipEmpty).trimmed();
         // 模式名称匹配
         if (emModule.attribute("name") == firstSection) {
-            break;  // found
-        } else {
-            const QString nextSection =
-                    section.section(">>", 1, -1, QString::SectionSkipEmpty).trimmed();
             if (nextSection.isEmpty()) {
-                break;  // 未找到，并且下一个子模式名称无效，此时返回未找到结果状态
-            } else {
-                const QDomElement emSubModule = findModuleNode(emModule, nextSection);
-                if (emSubModule.isNull()) {
-                    continue;   // 继续查找
-                } else {
-                    emModule = emSubModule;
-                    break;  // found
-                }
+                break;  // found
             }
+        }
+
+        //
+        if (nextSection.isEmpty()) {
+            continue;   // 下一个子模式名称无效，继续查找
+        }
+
+        //
+        const QDomElement emSubModule = findModuleNodeConst(emModule, nextSection);
+        if (emSubModule.isNull()) {
+            continue;   // 继续查找
+        } else {
+            emModule = emSubModule;
+            break;  // found
         }
     }
 
@@ -1128,13 +1133,13 @@ bool LayoutManager::saveCurrentSplitterScales()
     const QString currentModule = QString::fromStdString(q_frameLayout->currentModule());
 
     // 查找系统节点
-    QDomElement emSystem = findSystemNode(emRoot, currentSystem);
+    QDomElement emSystem = findSystemNodeConst(emRoot, currentSystem);
     if (emSystem.isNull()) {
         return false;   // 未找到
     }
 
     // 查找模式节点
-    QDomElement emModule = findModuleNode(emSystem, currentModule);
+    QDomElement emModule = findModuleNodeConst(emSystem, currentModule);
     if (emModule.isNull()) {
         return false;   // 未找到
     }
@@ -1198,6 +1203,11 @@ bool LayoutManager::updateSpltterScales(const QDomElement &emParent, const QWidg
         return false;   // 布局方向无效
     }
 
+    // 有效性检测
+    if (emSplitter.isNull()) {
+        return false;   // 无效
+    }
+
     // 生成比例字符串
     QString sScale;
     QListIterator<double> citerScales(splitter->scales());
@@ -1209,11 +1219,6 @@ bool LayoutManager::updateSpltterScales(const QDomElement &emParent, const QWidg
     }
     // 设置scales属性
     emSplitter.setAttribute("scales", sScale);
-
-    //
-    jframeLogNotice(QStringLiteral("row: %1, column: %2")
-                   .arg(emSplitter.lineNumber())
-                   .arg(emSplitter.columnNumber()));
 
     // 递归更新
     const int count = splitter->count();
