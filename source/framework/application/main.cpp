@@ -32,24 +32,24 @@ QString applicationDirPath()
 int main(int argc, char *argv[])
 {
     //
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("GBK"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
 #if QT_VERSION < 0x050000
     QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
     QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
 #endif
     //
     FuncFrameFacadeInst fFrameFacadeInst = (FuncFrameFacadeInst)QLibrary::resolve(
-                applicationDirPath().append("/jframe_facade")
+                applicationDirPath().append("/jframe/")
             #ifdef _MSC_VER
             #if defined(_DEBUG) || defined(DEBUG)
-                .append("d.dll")
+                .append("jframe_facaded.dll")
             #else
-                .append(".dll")
+                .append("jframe_facade.dll")
             #endif
             #elif defined(__apple__)
                #pragma message("Not supported!")
             #elif defined(__unix__)
-                .append(".so")
+                .append("libjframe_facade.so")
             #endif
                 , "CreateInstance");
     if (!fFrameFacadeInst) {

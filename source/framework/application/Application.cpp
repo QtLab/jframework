@@ -57,10 +57,11 @@ IJFrameFacade * CApplicationApp::LoadFrameFacade()
 {
 	//
 	CString filePath = ApplicationDirPath();
+	filePath.Append(_T("\\jframe\\jframe_facade"));
 #if defined(_DEBUG)
-	filePath.Append(_T("\\jframe_facaded.dll"));
+	filePath.Append(_T("d.dll"));
 #else
-	filePath.Append(_T("\\jframe_facade.dll"));
+	filePath.Append(_T(".dll"));
 #endif
 
 	HMODULE hFrameFacade = ::LoadLibrary(filePath.GetBuffer());

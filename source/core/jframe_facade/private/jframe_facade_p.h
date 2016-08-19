@@ -82,6 +82,11 @@ private:
     bool loadConfig(const std::string &frameDirPath);
 
     //
+#if defined(__unix__)
+    bool generatorLdConfig(const std::list<std::string> &paths);
+#endif
+
+    //
     bool generateAppQtConf(const std::map<std::string, std::string> &values);
 
     // 获取模块前缀

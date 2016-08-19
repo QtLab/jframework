@@ -14,13 +14,6 @@ class IJLogManager : public IJUnknown
 {
 public:
     /**
-     * @brief The LogType enum : 日志类型
-     */
-    enum LogType {
-        LogConsole, LogFile
-    };
-
-    /**
      * @brief The MsgType enum : 消息类型
      */
     enum MsgType {
@@ -53,25 +46,26 @@ public:
     virtual unsigned int interfaceVersion() const { return VER_IJLogManager; }
 
     /**
-     * @brief logType : 获取日志类型
-     * @return : 日志类型
+     * @brief logType : 获取日志配置文件路径
+     * @return : 日志配置文件路径
      */
-    virtual LogType logType() const = 0;
+    virtual std::string config() const = 0;
 
     /**
-     * @brief setLogType : 设置日志类型
-     * @param type : 日志类型
+     * @brief setLogType : 设置日志配置文件
+     * @param filePath : 日志配置文件路径
      */
-    virtual void setLogType(LogType type) = 0;
+    virtual void setConfig(const std::string &filePath) = 0;
 
     /**
      * @brief logging : 输出一条日志
-     * @param msgType : 消息类型
+     * @param type : 消息类型
      * @param msg : 消息
+     * @param where : 输出地（"all"、"file"、"console"）
      * @param argc : 可变参数个数
      * @param ... : 可变参数列表
      */
-    virtual void logging(MsgType msgType, const std::string &msg, int argc, ...) = 0;
+    virtual void logging(MsgType type, const std::string &msg, const std::string &where, int argc, ...) = 0;
 };
 
 #endif // JLOG_MANAGER_H

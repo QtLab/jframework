@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Category.cpp
  *
  * Copyright 2000, LifeLine Networks BV (www.lifeline.nl). All rights reserved.
@@ -48,6 +48,12 @@ namespace log4cpp {
     void Category::shutdown() {
         HierarchyMaintainer::getDefaultMaintainer().shutdown();
     }
+
+    void Category::shutdownForced() {
+        HierarchyMaintainer::getDefaultMaintainer().shutdown();
+		Appender::_deleteAllAppenders();
+    }
+
 
     Category::Category(const std::string& name, Category* parent, Priority::Value priority) : 
         _name(name),
@@ -223,7 +229,7 @@ namespace log4cpp {
             if (!_appender.empty()) {
                 for(AppenderSet::const_iterator i = _appender.begin();
                     i != _appender.end(); i++) {
-                    (*i)->doAppend(event);
+                    if (*i) (*i)->doAppend(event);
                 }
             }
         }

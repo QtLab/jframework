@@ -417,45 +417,45 @@ JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 #endif
 #endif
 
-// 引用宏（type: char*, msg, char*）
-#define jframeLog(type, msg) \
-    jframeFacade()->invokeMethod("log", 5, type, msg, __FILENAME__, __LINE__, __FUNCTION__)
+// 引用宏（type: char*; msg, char*; where, char*）
+#define jframeLog(type, msg, where) \
+    jframeFacade()->invokeMethod("log", 6, type, msg, where, __FILENAME__, __LINE__, __FUNCTION__)
 
 // log - emerge - (msg: char*)
 #define jframeLogEmerge(msg) \
-    jframeLog("emerge", msg)
+    jframeLog("emerge", msg, "all")
 
 // log - fatal - (msg: char*)
 #define jframeLogFatal(msg) \
-    jframeLog("fatal", msg)
+    jframeLog("fatal", msg, "all")
 
 // log - alert - (msg: char*)
 #define jframeLogAlert(msg) \
-    jframeLog("alert", msg)
+    jframeLog("alert", msg, "all")
 
 // log - crit - (msg: char*)
 #define jframeLogCrit(msg) \
-    jframeLog("crit", msg)
+    jframeLog("crit", msg, "all")
 
 // log - error - (msg: char*)
 #define jframeLogError(msg) \
-    jframeLog("error", msg)
+    jframeLog("error", msg, "all")
 
 // log - warn - (msg: char*)
 #define jframeLogWarning(msg) \
-    jframeLog("warn", msg)
+    jframeLog("warn", msg, "all")
 
 // log - notice - (msg: char*)
 #define jframeLogNotice(msg) \
-    jframeLog("notice", msg)
+    jframeLog("notice", msg, "all")
 
 // log - info - (msg: char*)
 #define jframeLogInfo(msg) \
-    jframeLog("info", msg)
+    jframeLog("info", msg, "all")
 
 // log - debug - (msg: char*)
 #define jframeLogDebug(msg) \
-    jframeLog("debug", msg)
+    jframeLog("debug", msg, "all")
 
 #endif
 

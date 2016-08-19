@@ -31,19 +31,23 @@
     </language>
   </system>
   <textCodec encoding="GBK" />
+  <logging filePath="@ConfigDir@/frame/jframe_logging.conf" ></logging>
   <mainWindow
     windowTitle="框架测试程序"
     windowIcon="@ConfigDir@/resource/app.ico"
     windowTheme="Office2010Blue"
-    imageSplash="@ConfigDir@/resource/splash.png"
-    imageFinish="@ConfigDir@/resource/finish.png"
     closeKilled="true"
-    systemFont="Microsoft Yahei,9">
+    systemFont="Microsoft Yahei, 9">
     toolBarType="ribbon"
     layoutType="splitter"
-    <splash />
-      <ribbonBar
-        visible="true"
-        minimized="false" />
-    </mainWindow>
+    <splash>
+      <imageStart>@ConfigDir@/resource/splash.png</imageStart>
+      <imageFinish>@ConfigDir@/resource/finish.png</imageFinish>
+      <font>Microsoft Yahei, 24, blue</font>
+      <msgAlign>AlignCenter</msgAlign>
+    </splash>
+    <ribbonBar
+      visible="true"
+      minimized="false" />
+  </mainWindow>
 </jframe>

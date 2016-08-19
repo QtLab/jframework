@@ -31,6 +31,9 @@ ComDemo5::~ComDemo5()
 
 bool ComDemo5::loadInterface()
 {
+	//TEST - LOG4CPP
+	jframeLogWarning("LOG4CPP - TEST #1");
+
 	return true;
 }
 

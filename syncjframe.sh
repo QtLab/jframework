@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 # --------------------
 jframe_dir="$(dirname $(readlink -f $0))"
@@ -18,8 +18,8 @@ fi
 
 # --------------------
 
-if [ ! -f "${jframe_dir}/bin/3rdpart/" ]; then
-    mkdir -p "${jframe_dir}/bin/3rdpart/";
+if [ ! -f "${jframe_dir}/bin/3rdpart/Qt/plugins/" ]; then
+    mkdir -p "${jframe_dir}/bin/3rdpart/Qt/plugins/";
 fi
 
 if [ ! -f "${jframe_dir}/bin/jframe/" ]; then
@@ -28,14 +28,14 @@ fi
 
 # --------------------
 
-cp -f "${qt_dir}/lib/libicui18n.so.54" "${jframe_dir}/bin/"
-cp -f "${qt_dir}/lib/libicuuc.so.54" "${jframe_dir}/bin/"
-cp -f "${qt_dir}/lib/libicudata.so.54" "${jframe_dir}/bin/"
+cp -f "${qt_dir}/lib/libicui18n.so.54" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libicuuc.so.54" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libicudata.so.54" "${jframe_dir}/bin/3rdpart/Qt/"
 
-cp -f "${qt_dir}/lib/libQt${qt_ver}Core.so" "${jframe_dir}/bin/"
-cp -f "${qt_dir}/lib/libQt${qt_ver}Core.so.${qt_ver}" "${jframe_dir}/bin/"
-cp -f "${qt_dir}/lib/libQt${qt_ver}Core.so.${qt_ver}.5" "${jframe_dir}/bin/"
-cp -f "${qt_dir}/lib/libQt${qt_ver}Core.so.${qt_ver}.5.1" "${jframe_dir}/bin/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}Core.so" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}Core.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}Core.so.${qt_ver}.5" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}Core.so.${qt_ver}.5.1" "${jframe_dir}/bin/3rdpart/Qt/"
 
 cp -f "${qt_dir}/lib/libQt${qt_ver}Gui.so" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/lib/libQt${qt_ver}Gui.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
@@ -56,6 +56,16 @@ cp -f "${qt_dir}/lib/libQt${qt_ver}Xml.so" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/lib/libQt${qt_ver}Xml.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/lib/libQt${qt_ver}Xml.so.${qt_ver}.5" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/lib/libQt${qt_ver}Xml.so.${qt_ver}.5.1" "${jframe_dir}/bin/3rdpart/Qt/"
+
+cp -f "${qt_dir}/lib/libQt${qt_ver}DBus.so" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}DBus.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}DBus.so.${qt_ver}.5" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}DBus.so.${qt_ver}.5.1" "${jframe_dir}/bin/3rdpart/Qt/"
+
+cp -f "${qt_dir}/lib/libQt${qt_ver}XcbQpa.so" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}XcbQpa.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}XcbQpa.so.${qt_ver}.5" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_ver}XcbQpa.so.${qt_ver}.5.1" "${jframe_dir}/bin/3rdpart/Qt/"
 
 cp -f -r "${qt_dir}/plugins/iconengines/" "${jframe_dir}/bin/3rdpart/Qt/plugins/"
 cp -f -r "${qt_dir}/plugins/imageformats/" "${jframe_dir}/bin/3rdpart/Qt/plugins/"
@@ -91,10 +101,10 @@ cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so.1.0.0" "${jframe_dir}/bin/3rdpart
 
 # --------------------
 
-cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so" "${jframe_dir}/bin/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1" "${jframe_dir}/bin/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1.0" "${jframe_dir}/bin/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1.0.0" "${jframe_dir}/bin/"
+cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1.0" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1.0.0" "${jframe_dir}/bin/jframe/"
 
 cp -f "${jframe_dir}/lib/jframe/libjframe_factory.so" "${jframe_dir}/bin/jframe/"
 cp -f "${jframe_dir}/lib/jframe/libjframe_factory.so.1" "${jframe_dir}/bin/jframe/"

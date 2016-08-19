@@ -65,7 +65,7 @@ namespace log4cpp {
         	filename_stream << _fileName << "." << std::setw( _maxBackupIndexWidth ) << std::setfill( '0' ) << _maxBackupIndex << std::ends;
         	// remove the very last (oldest) file
         	std::string last_log_filename = filename_stream.str();
-            std::cout << last_log_filename << std::endl;
+            // std::cout << last_log_filename << std::endl; // removed by request on sf.net #140
             ::remove(last_log_filename.c_str());
             
             // rename each existing file to the consequent one
@@ -99,7 +99,7 @@ namespace log4cpp {
       bool append = true;
       mode_t mode = 664;
       int max_file_size = 0, max_backup_index = 0;
-      params.get_for("rool file appender").required("name", name)("filename", filename)("max_file_size", max_file_size)
+      params.get_for("roll file appender").required("name", name)("filename", filename)("max_file_size", max_file_size)
                                                      ("max_backup_index", max_backup_index)
                                           .optional("append", append)("mode", mode);
 

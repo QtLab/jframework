@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frame", "frame", "{A1B64398
 	ProjectSection(SolutionItems) = preProject
 		config\frame\jframe_global.xml = config\frame\jframe_global.xml
 		config\frame\jframe_layout.xml = config\frame\jframe_layout.xml
+		config\frame\jframe_logging.conf = config\frame\jframe_logging.conf
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkMode_Test1", "WorkMode_Test1", "{DB042588-2570-4B84-A629-D2B2DF19EA54}"

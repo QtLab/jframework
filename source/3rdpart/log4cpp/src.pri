@@ -100,6 +100,8 @@ SOURCES += \
     $$PWD/src/PropertyConfiguratorImpl.cpp \
     $$PWD/src/RemoteSyslogAppender.cpp \
     $$PWD/src/RollingFileAppender.cpp \
+    $$PWD/src/Win32DebugAppender.cpp \
+    $$PWD/src/DailyRollingFileAppender.cpp \
     $$PWD/src/SimpleConfigurator.cpp \
     $$PWD/src/SimpleLayout.cpp \
     $$PWD/src/SmtpAppender.cpp \
@@ -108,7 +110,6 @@ SOURCES += \
     $$PWD/src/SyslogAppender.cpp \
     $$PWD/src/TimeStamp.cpp \
     $$PWD/src/TriggeringEventEvaluatorFactory.cpp \
-    $$PWD/src/Win32DebugAppender.cpp \
     $$PWD/src/snprintf.c
 
 win32:{

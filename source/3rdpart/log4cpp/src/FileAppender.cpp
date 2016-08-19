@@ -1,4 +1,4 @@
-/*
+﻿/*
  * FileAppender.cpp
  *
  * Copyright 2000, LifeLine Networks BV (www.lifeline.nl). All rights reserved.
@@ -21,6 +21,12 @@
 #include <log4cpp/FileAppender.hh>
 #include <log4cpp/Category.hh>
 #include <log4cpp/FactoryParams.hh>
+#if defined(_MSC_VER)
+#include <direct.h>
+#else
+#include <unistd.h>
+#include <sys/stat.h>
+#endif
 
 namespace log4cpp {
 
@@ -34,6 +40,26 @@ namespace log4cpp {
             _mode(mode) {
         if (!append)
             _flags |= O_TRUNC;
+        // get path of filename
+        std::string path = _fileName;
+        int index = path.find_last_of('/');
+        if (index == -1) {
+            index = path.find_last_of('\\');
+        }
+        if (index != -1) {
+            path = path.substr(0, index + 1);
+        }
+#if defined(_MSC_VER)
+        if (_access(path.c_str(), 0) == -1) {
+            mkdir(path.c_str());
+#elif defined(__unix__)
+        if (access(path.c_str(), F_OK) != 0) {
+            mkdir(path.c_str(), S_IRWXU|S_IRWXG|S_IRWXO);
+#else
+#pragma message("Not supported!")
+#endif
+        }
+        //
         _fd = ::open(_fileName.c_str(), _flags, _mode);
     }
     

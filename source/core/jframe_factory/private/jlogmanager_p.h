@@ -23,24 +23,15 @@ public:
 
     // IJlogManager interface
 public:
-    void logging(MsgType type, const std::string &msg, int argc, ...);
+    void logging(MsgType type, const std::string &msg, const std::string &where, int argc, ...);
 
 public:
-    LogType logType() const;
-    void setLogType(LogType type);
+    std::string config() const;
+    void setConfig(const std::string &filePath);
 
-    void emerge(const std::string &msg, int argc, va_list ap);
-    void fatal(const std::string &msg, int argc, va_list ap);
-    void alert(const std::string &msg, int argc, va_list ap);
-    void crit(const std::string &msg, int argc, va_list ap);
-    void error(const std::string &msg, int argc, va_list ap);
-    void warn(const std::string &msg, int argc, va_list ap);
-    void notice(const std::string &msg, int argc, va_list ap);
-    void info(const std::string &msg, int argc, va_list ap);
-    void debug(const std::string &msg, int argc, va_list ap);
+    void loggingWhere(MsgType type, const std::string &where, const std::string &msg);
 
 private:
-    bool init();
     static QString applicationDirPath();
     static std::string formatMessage(const std::string &msg, int argc, va_list ap);
 

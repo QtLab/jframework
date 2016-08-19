@@ -24,7 +24,7 @@ namespace log4cpp {
         /**
          * Destructor for Layout.
          **/
-        virtual ~Layout() { }
+        virtual ~Layout() { };
 
         /**
          * Formats the LoggingEvent data to a string that appenders can log.

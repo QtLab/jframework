@@ -11,9 +11,11 @@
 struct JFrameKernelData
 {
     IJLogManager *logManager;       // 框架日志系统部件
+    std::string loggingFilePath;    // 框架日志配置文件
 
     JFrameKernelData()
         : logManager(0)
+        , loggingFilePath("")
     {
 
     }
@@ -246,6 +248,70 @@ IJFrameLogin *JFrameKernel::frameLogin()
     return JFrameLogin::getInstance();
 }
 
+bool JFrameKernel::loadConfig()
+{
+    if (!QFileInfo(QString::fromStdString(jframeFacade()->frameGlobalPath())).isReadable()) {
+        Q_ASSERT_X(false, "Warning", QStringLiteral("框架全局配置文件不存在！")
+                   .toUtf8().data());
+        return false;
+    }
+
+    // 读取配置文件
+    TiXmlDocument document(jframeFacade()->frameGlobalPath());
+    if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
+        Q_ASSERT_X(false, "Warning",
+                   QStringLiteral("框架全局配置配置文件打\"%1\"开失败！\n"
+                                  "错误标识：%2\n"
+                                  "错误描述：%3\n"
+                                  "错误位置：[%4, %5]")
+                   .arg(QString::fromStdString(jframeFacade()->frameGlobalPath()))
+                   .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
+                   .arg(document.ErrorRow()).arg(document.ErrorCol())
+                   .toUtf8().data());
+        return false;
+    }
+
+    // 获取根节点
+    TiXmlElement *emRoot = document.RootElement();
+    if (!emRoot) {
+        return false;
+    }
+
+    // 获取logging节点
+    TiXmlElement *emLogging = emRoot->FirstChildElement("logging");
+    if (!emLogging) {
+        return false;
+    }
+
+    //
+    std::string sVal;
+
+    // filePath
+    if (emLogging->QueryStringAttribute("filePath", &sVal) != TIXML_SUCCESS) {
+        Q_ASSERT_X(false, "Warning", QStringLiteral("未指定框架日志配置文件！[文件：%1]")
+                   .arg(jframeFacade()->frameGlobalPath().c_str())
+                   .toUtf8().data());
+        return false;
+    }
+
+    // 替换框架内部变量
+    QString filePath = QString::fromUtf8(emLogging->Attribute("filePath"));
+    filePath.replace("@ConfigDir@", QString::fromStdString(jframeFacade()->frameConfigPath()));
+
+    // 读取日志配置文件路径属性
+    data->loggingFilePath = filePath.toStdString();
+
+    // 文件有效性检测
+    if (!QFile::exists(QString::fromStdString(data->loggingFilePath))) {
+        Q_ASSERT_X(false, "Warning", QStringLiteral("框架日志配置文件不存在！[文件：%1]")
+                   .arg(data->loggingFilePath.c_str())
+                   .toUtf8().data());
+        return false;
+    }
+
+    return true;
+}
+
 bool JFrameKernel::invokeLog(int argc, va_list ap)
 {
     // 日志管理器实例的有效性检测
@@ -254,8 +320,8 @@ bool JFrameKernel::invokeLog(int argc, va_list ap)
     }
 
     // 参数有效性检测
-    if (argc < 2) {
-        return false;   // 无效 (type, msg, ...)
+    if (argc < 3) {
+        return false;   // 无效 (type, msg, where, ...)
     }
 
     //
@@ -293,21 +359,24 @@ bool JFrameKernel::invokeLog(int argc, va_list ap)
     }
 
     //
+    const char* where = va_arg(ap, const char *);
+
+    //
     const char* file = 0;
     int line = 0;
     const char* func = 0;
-    if (argc > 2) {
+    if (argc > 3) {
         file = va_arg(ap, char*);
     }
-    if (argc > 3) {
+    if (argc > 4) {
         line = va_arg(ap, int);
     }
-    if (argc > 4) {
+    if (argc > 5) {
         func = va_arg(ap, char*);
     }
 
     // 调用日志管理器输出一条日志信息
-    data->logManager->logging(msgType, msg, (argc - 1), file, line, func);
+    data->logManager->logging(msgType, msg, where, (argc - 3), file, line, func);
 
     return true;
 }
@@ -317,11 +386,16 @@ JFrameKernel::JFrameKernel()
     // 创建私有数据实例
     data = new JFrameKernelData;
 
-    // 加载默认系统样式表
-    //KwtCore::instance().loadDefaultSystemSheet();
-
     // 创建日志管理器实例
     data->logManager = JFRAME_FACTORY_CREATE(IJLogManager);
+
+    // 加载全局配置文件
+    if (!loadConfig()) {
+        // 加载失败
+    }
+
+    // 设置日志配置文件
+    data->logManager->setConfig(data->loggingFilePath);
 }
 
 JFrameKernel::~JFrameKernel()

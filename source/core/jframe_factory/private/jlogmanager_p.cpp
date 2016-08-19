@@ -4,45 +4,35 @@
 #if defined(__unix__)
 #include <unistd.h>
 #endif
-
-// log4cpp
-#include "log4cpp/convenience.h"
-#include "log4cpp/Category.hh"
-#ifdef _MSC_VER
-#include "log4cpp/Win32DebugAppender.hh"
-#else
 //
-#endif
-#include "log4cpp/StringQueueAppender.hh"
-#include "log4cpp/RollingFileAppender.hh"
-#include "log4cpp/BasicLayout.hh"
-#include "log4cpp/Priority.hh"
-#include "log4cpp/PatternLayout.hh"
+#include "log4cpp/Category.hh"
+#include "log4cpp/PropertyConfigurator.hh"
+#include "log4cpp/convenience.h"
 
 // struct JLogManagerData
 
 struct JLogManagerData
 {
-    QString fileName;
-    IJLogManager::LogType logType;
-
-#ifdef _MSC_VER
-    log4cpp::Win32DebugAppender *appenderWin32;         // 输出到Output窗口的日志目的实例
-#else
-    //
-#endif
-    log4cpp::RollingFileAppender *appenderRollingFile;  // 输出到日志文件的日志目的实例
-    log4cpp::Category &category;
+    std::string filePath;                   //
+    log4cpp::Category &categoryRoot;        //
+    log4cpp::Category &categoryAll;         //
+    log4cpp::Category &categoryConsole;     //
+    log4cpp::Category &categoryFile;        //
+    log4cpp::Category &categoryRollingFile; //
 
     JLogManagerData()
-        : logType(IJLogManager::LogFile)
+        : filePath("")
+        , categoryRoot(log4cpp::Category::getRoot())
+        , categoryAll(log4cpp::Category::getInstance("jframe_all"))
     #ifdef _MSC_VER
-        , appenderWin32(0)
+        , categoryConsole(log4cpp::Category::getInstance("jframe_console_win32"))
+    #elif defined(__unix__)
+        , categoryConsole(log4cpp::Category::getInstance("jframe_console_unix"))
     #else
-        //
+    #pragma message("Not supported!")
     #endif
-        , appenderRollingFile(0)
-        , category(log4cpp::Category::getInstance("jframe"))
+        , categoryFile(log4cpp::Category::getInstance("jframe_file"))
+        , categoryRollingFile(log4cpp::Category::getInstance("jframe_rollingFile"))
     {
 
     }
@@ -53,12 +43,6 @@ struct JLogManagerData
 JLogManagerPri::JLogManagerPri()
 {
     data = new JLogManagerData;
-
-    //
-    setLogType(data->logType);
-
-    //
-    init();
 }
 
 JLogManagerPri::~JLogManagerPri()
@@ -88,131 +72,85 @@ bool JLogManagerPri::loadInterface()
 void JLogManagerPri::releaseInterface()
 {
     // shutdown log4cpp - category
-    data->category.shutdown();
+    data->categoryAll.shutdown();
+    data->categoryConsole.shutdown();
+    data->categoryFile.shutdown();
+    data->categoryRollingFile.shutdown();
 }
 
-void JLogManagerPri::logging(MsgType type, const std::string &msg, int argc, ...)
+void JLogManagerPri::logging(MsgType type, const std::string &msg, const std::string &where, int argc, ...)
 {
     va_list ap;
     va_start(ap, argc);
 
-    switch (type) {
-    case IJLogManager::EmergeMsg: emerge(msg, argc, ap); break;
-    case IJLogManager::FatalMsg: fatal(msg, argc, ap); break;
-    case IJLogManager::AlertMsg: alert(msg, argc, ap); break;
-    case IJLogManager::CriticalMsg: crit(msg, argc, ap); break;
-    case IJLogManager::ErrorMsg: error(msg, argc, ap); break;
-    case IJLogManager::WarningMsg: warn(msg, argc, ap); break;
-    case IJLogManager::NoticeMsg: notice(msg, argc, ap); break;
-    case IJLogManager::DebugMsg: debug(msg, argc, ap); break;
-    default:
-        break;
-    }
+    loggingWhere(type, where, formatMessage(msg, argc, ap));
 
     va_end(ap);
 }
 
-IJLogManager::LogType JLogManagerPri::logType() const
+std::string JLogManagerPri::config() const
 {
-    return data->logType;
+    return data->filePath;
 }
 
-void JLogManagerPri::setLogType(LogType type)
+void JLogManagerPri::setConfig(const std::string &filePath)
 {
+    if (filePath == data->filePath) {
+        return;     // the same
+    }
+
+    //
+    data->filePath = filePath;
+
+    // 加载日志配置文件
+    try {
+        log4cpp::PropertyConfigurator::configure(filePath);
+    } catch (log4cpp::ConfigureFailure cf) {
+#if defined(__unix__)
+        if (QString::fromLatin1(cf.what()).startsWith(
+                    "Appender 'console_win32' has unknown type 'Win32DebugAppender'")) {
+            //
+        } else
+#endif
+        {
+            //
+            Q_ASSERT_X(false, "Warning",
+                       QStringLiteral("加载日志配置文件失败！[配置文件：%1] [错误原因：%2]")
+                       .arg(filePath.c_str())
+                       .arg(cf.what())
+                       .toUtf8().data());
+            return;     // 设置失败
+        }
+    }
+}
+
+void JLogManagerPri::loggingWhere(MsgType type, const std::string &where, const std::string &msg)
+{
+    //
+    log4cpp::Category *category = 0;
+    if (where == "all") {
+        category = &data->categoryAll;
+    } else if (where == "console") {
+        category = &data->categoryConsole;
+    } else if (where == "file") {
+        category = &data->categoryFile;
+    } else {
+        category = &data->categoryConsole;
+    }
+
+    //
     switch (type) {
-    case IJLogManager::LogConsole:
-        break;
-    case IJLogManager::LogFile:
-        break;
+    case IJLogManager::EmergeMsg: LOG4CPP_EMERG((*category), msg); break;
+    case IJLogManager::FatalMsg: LOG4CPP_FATAL((*category), msg); break;
+    case IJLogManager::AlertMsg: LOG4CPP_ALERT((*category), msg); break;
+    case IJLogManager::CriticalMsg: LOG4CPP_CRIT((*category), msg); break;
+    case IJLogManager::ErrorMsg: LOG4CPP_ERROR((*category), msg); break;
+    case IJLogManager::WarningMsg: LOG4CPP_WARN((*category), msg); break;
+    case IJLogManager::NoticeMsg: LOG4CPP_NOTICE((*category), msg); break;
+    case IJLogManager::DebugMsg: LOG4CPP_DEBUG((*category), msg); break;
     default:
         break;
     }
-}
-
-void JLogManagerPri::emerge(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_EMERG(data->category, formatMessage(msg, argc, ap));
-}
-
-void JLogManagerPri::fatal(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_FATAL(data->category, formatMessage(msg, argc, ap));
-}
-
-void JLogManagerPri::alert(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_ALERT(data->category, formatMessage(msg, argc, ap));
-}
-
-void JLogManagerPri::crit(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_CRIT(data->category, formatMessage(msg, argc, ap));
-}
-
-void JLogManagerPri::error(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_ERROR(data->category, formatMessage(msg, argc, ap));
-}
-
-void JLogManagerPri::warn(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_WARN(data->category, formatMessage(msg, argc, ap));
-}
-
-void JLogManagerPri::notice(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_NOTICE(data->category, formatMessage(msg, argc, ap));
-}
-
-void JLogManagerPri::info(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_INFO(data->category, formatMessage(msg, argc, ap));
-}
-
-void JLogManagerPri::debug(const std::string &msg, int argc, va_list ap)
-{
-    LOG4CPP_DEBUG(data->category, formatMessage(msg, argc, ap));
-}
-
-bool JLogManagerPri::init()
-{
-    // create folder
-    const QString filePath = applicationDirPath().append("/log/");
-    QDir dir(filePath);
-    if (!dir.exists()) {
-        dir.mkpath(filePath);
-    }
-
-#ifdef _MSC_VER
-    // appender - win32
-    data->appenderWin32 = new log4cpp::Win32DebugAppender("jframe.appender-win32");
-    log4cpp::PatternLayout *patternLayoutWin32 = new log4cpp::PatternLayout();
-    patternLayoutWin32->setConversionPattern("%d | %p %c %x | %m%n");
-    data->appenderWin32->setLayout(patternLayoutWin32);
-#else
-    //
-#endif
-    // appender - rolling-file
-    data->appenderRollingFile = new log4cpp::RollingFileAppender(
-                "jframe.appender-rolling-file",
-                QString("%1/jframe_%2.log")
-                .arg(filePath)
-                .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss-zzz"))
-                .toLocal8Bit().data());
-    log4cpp::PatternLayout *patternLayoutRollingFile = new log4cpp::PatternLayout();
-    patternLayoutRollingFile->setConversionPattern("%d | %p %c %x | %m%n");
-    data->appenderRollingFile->setLayout(patternLayoutRollingFile);
-
-    // category
-    data->category.setPriority(log4cpp::Priority::INFO);
-#ifdef _MSC_VER
-    data->category.addAppender(data->appenderWin32);
-#else
-    //
-#endif
-    data->category.addAppender(data->appenderRollingFile);
-
-    return true;
 }
 
 QString JLogManagerPri::applicationDirPath()

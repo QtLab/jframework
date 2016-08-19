@@ -729,6 +729,15 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
     return true;
 }
 
+#if defined(__unix__)
+bool JFrameFacade::generatorLdConfig(const std::list<std::string> &paths)
+{
+    //
+
+    return true;
+}
+#endif
+
 bool JFrameFacade::generateAppQtConf(const std::map<std::string, std::string> &values)
 {
     QString filePath = QString::fromStdString(appDirPath()).append("/qt.conf");
@@ -931,7 +940,7 @@ bool JFrameFacade::loadTextCodecConfig()
     //
     QString codeForName = QString::fromUtf8(emTextCodec->Attribute("encoding"));
     if (codeForName.isEmpty()) {
-        codeForName = "GBK";    // default
+        codeForName = "utf-8";    // default
     }
 
     // text codec
@@ -953,29 +962,30 @@ bool JFrameFacade::invokeLog(const std::string &method, int argc, va_list ap)
     }
 
     // 参数个数检测
-    if (argc < 2) {
-        return false;       // 参数个数无效
+    if (argc < 3) {
+        return false;   // 无效 (type, msg, where, ...)
     }
 
     // 解析各参数值
     const char *type = va_arg(ap, const char *);
     const char *msg = va_arg(ap, const char *);
+    const char *where = va_arg(ap, const char *);
     const char *file = 0;
     int line = 0;
     const char *func = 0;
-    if (argc > 2) {
+    if (argc > 3) {
         file = va_arg(ap, const char *);
     }
-    if (argc > 3) {
+    if (argc > 4) {
         line = va_arg(ap, int);
     }
-    if (argc > 4) {
+    if (argc > 5) {
         func = va_arg(ap, const char *);
     }
 
     // 转到框架内核系统
     return data->frameKernel->invokeMethod(
-                method, argc, type, msg, file, line, func);
+                method, argc, type, msg, where, file, line, func);
 }
 
 bool JFrameFacade::invokeExitFrame()

@@ -33,6 +33,8 @@ public:
     IJFrameLogin *frameLogin();
 
 private:
+    bool loadConfig();
+
     bool invokeLog(int argc, va_list ap);
 
 private:
