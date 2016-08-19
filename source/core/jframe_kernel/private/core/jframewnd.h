@@ -1,4 +1,4 @@
-#ifndef JFRAMEWND_H
+ï»¿#ifndef JFRAMEWND_H
 #define JFRAMEWND_H
 
 #include "QtnRibbonMainWindow.h"
@@ -45,7 +45,7 @@ private:
     friend class JMainWindow;
     JAttempter *q_attempter;
 
-    // ±£´æ½çÃæÔªËØ
+    // ä¿å­˜ç•Œé¢å…ƒç´ 
     QSplashScreen *q_splashScreen;
     QStackedWidget *q_centralWidget;
     QList<QToolBar *> q_toolBars;

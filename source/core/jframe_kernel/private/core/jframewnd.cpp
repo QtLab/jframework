@@ -1,4 +1,4 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "jframewnd.h"
 #include "jattempter.h"
 
@@ -16,6 +16,7 @@ JFrameWnd::JFrameWnd(JAttempter *attempter, QWidget *parent, Qt::WindowFlags f)
 
     //
     q_splashScreen = new QSplashScreen(this);
+    q_splashScreen->setFont(QFont("microsoft yahei", 24));  //DEMO
     q_centralWidget = new QStackedWidget(this);
     setCentralWidget(q_centralWidget);
 
@@ -46,7 +47,7 @@ bool JFrameWnd::init()
 
 void JFrameWnd::updateSplashInfo(const QString &info)
 {
-    q_splashScreen->showMessage(info, Qt::AlignLeft | Qt::AlignBottom, Qt::blue);
+    q_splashScreen->showMessage(info, Qt::AlignCenter, Qt::blue);
 }
 
 void JFrameWnd::setCurrentWidget(QWidget *widget)
@@ -64,7 +65,7 @@ void JFrameWnd::setTheme(const QString &theme)
         QApplication::setStyle(ribbonStyle);
     }
 
-    // ½âÎöÖ÷ÌâÐÅÏ¢
+    // è§£æžä¸»é¢˜ä¿¡æ¯
     QtRibbon::RibbonStyle::Theme nTheme;
     if (theme == J_FRAME_THEME_OFFICE_2007BLUE) {
         nTheme = QtRibbon::RibbonStyle::Office2007Blue;
@@ -118,17 +119,17 @@ bool JFrameWnd::loadConfig()
     //
     QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
     if (!file.exists()) {
-        const QString text = QStringLiteral("¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼þ\"%1\"²»´æÔÚ£¡")
+        const QString text = QStringLiteral("æ¡†æž¶å…¨å±€é…ç½®æ–‡ä»¶\"%1\"ä¸å­˜åœ¨ï¼")
                 .arg(file.fileName());
-        QMessageBox::warning(this, QStringLiteral("¾¯¸æ"), text);
-        return false;   // ÎÄ¼þ²»´æÔÚ
+        QMessageBox::warning(this, QStringLiteral("è­¦å‘Š"), text);
+        return false;   // æ–‡ä»¶ä¸å­˜åœ¨
     }
 
-    // ´ò¿ªÎÄ¼þ
+    // æ‰“å¼€æ–‡ä»¶
     if (!file.open(QFile::ReadOnly)) {
-        const QString text = QStringLiteral("¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼þ\"%1\"´ò¿ªÊ§°Ü£¡")
+        const QString text = QStringLiteral("æ¡†æž¶å…¨å±€é…ç½®æ–‡ä»¶\"%1\"æ‰“å¼€å¤±è´¥ï¼")
                 .arg(file.fileName());
-        QMessageBox::warning(this, QStringLiteral("¾¯¸æ"), text);
+        QMessageBox::warning(this, QStringLiteral("è­¦å‘Š"), text);
         return false;
     }
 
@@ -137,25 +138,25 @@ bool JFrameWnd::loadConfig()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼þ\"%1\"½âÎöÊ§°Ü£¡\n"
-                                            "´íÎóÃèÊö£º%2\n"
-                                            "´íÎóÎ»ÖÃ£º£¨ÐÐºÅ£º%3£¬ÁÐºÅ£º%4£©")
+        const QString text = QStringLiteral("æ¡†æž¶å…¨å±€é…ç½®æ–‡ä»¶\"%1\"è§£æžå¤±è´¥ï¼\n"
+                                            "é”™è¯¯æè¿°ï¼š%2\n"
+                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å·ï¼š%4ï¼‰")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(this, QStringLiteral("¾¯¸æ"), text);
+        QMessageBox::warning(this, QStringLiteral("è­¦å‘Š"), text);
         return false;
     }
 
-    // ¹Ø±ÕÎÄ¼þ
+    // å…³é—­æ–‡ä»¶
     file.close();
 
-    // »ñÈ¡¸ù½Úµã
+    // èŽ·å–æ ¹èŠ‚ç‚¹
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
         return false;
     }
 
-    // »ñÈ¡MainWindow½Úµã
+    // èŽ·å–MainWindowèŠ‚ç‚¹
     QDomElement emMainWindow = emRoot.firstChildElement("mainWindow");
     if (emMainWindow.isNull()) {
         return false;
@@ -203,7 +204,7 @@ bool JFrameWnd::loadConfig()
     /// for ribbon
     //
     q_splashScreen->setPixmap(q_pixmapSplash);
-    // »ñÈ¡RibbonBar½Úµã
+    // èŽ·å–RibbonBarèŠ‚ç‚¹
     QDomElement emRibbonBar = emMainWindow.firstChildElement("ribbonBar");
     if (!emRibbonBar.isNull()) {
         // font
@@ -242,8 +243,8 @@ int JFrameWnd::ribbonStyleTheme() const
 bool JFrameWnd::createOptionAction()
 {
     //
-    QMenu *menuOption = ribbonBar()->addMenu(QStringLiteral("Ñ¡Ïî"));
-    QAction *actionStyle = menuOption->addAction(QStringLiteral("Æ¤·ô·ç¸ñ"));
+    QMenu *menuOption = ribbonBar()->addMenu(QStringLiteral("é€‰é¡¹"));
+    QAction *actionStyle = menuOption->addAction(QStringLiteral("çš®è‚¤é£Žæ ¼"));
     QMenu *menuStyle = new QMenu(ribbonBar());
     actionStyle->setMenu(menuStyle);
     QActionGroup *actionGroupStyle = new QActionGroup(this);

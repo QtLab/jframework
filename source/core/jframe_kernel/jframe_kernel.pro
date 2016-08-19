@@ -10,18 +10,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += \
     PRO_CORE \
-    USE_JFRAME_FACTORY \
-    USE_JFRAME_FACADE \
-    USE_QTRIBBON \
-    USE_JWT \
-    USE_TINYXML
-
-win32 {
-    DEFINES += \
-        JFRAME_KERNEL_DLL \
-        JFRAME_KERNEL_MAKEDLL \
-        USE_QTWINMIGRATE
-}
+    JFRAME_KERNEL_LIB \
+    JFRAME_KERNEL_BUILD \
+    JFRAME_FACADE_LIB \
+    JFRAME_FACTORY_LIB \
+    QTRIBBON_LIB \
+    QTWINMIGRATE_LIB \
+    TINYXML_LIB \
+    JWT_LIB
 
 include($${jframe_root}/source/common/build.pri)
 
@@ -63,7 +59,8 @@ RESOURCES +=
 ###############################################################
 
 win32|unix: {
-    copyCommand = @echo off
+    win32:copyCommand = @echo off
+    unix:copyCommand = @echo
     copyCommand += && echo --- console - $$TARGET ---
 
     excludefile = $$PWD/copy.ignore
@@ -75,9 +72,11 @@ win32|unix: {
     dstdir = $${jframe_root}/include/jframe/kernel
     win32:dstdir = $$replace(dstdir, /, \\)
     !exists("$$dstdir"):copyCommand += && $(MKDIR) "$$dstdir"
-    srcdir = $$PWD/*.h
+    win32:srcdir = $$PWD/*.h
+    unix:srcdir = $$PWD/
     win32:srcdir = $$replace(srcdir, /, \\)
-    copyCommand += && $(COPY_DIR) "$$srcdir" "$$dstdir" /exclude:"$$excludefile"
+    win32:copyCommand += && $(COPY_DIR) "$$srcdir" "$$dstdir" /exclude:"$$excludefile"
+    unix:copyCommand += && "$${jframe_root}/tools/xcopy.py" "$${srcdir}" "$${dstdir}" "*.h"
 
     deployment.commands = $$copyCommand
     first.depends = $(first) deployment

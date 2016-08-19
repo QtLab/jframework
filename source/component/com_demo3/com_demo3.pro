@@ -40,8 +40,9 @@ exists($$PWD/com_demo3.xml) {
 #-------------------------------------------------
 
 win32|unix: {
-    copyCommand = @echo off
-    copyCommand += && @echo ---- console - com_demo3 ----
+    win32:copyCommand = @echo off
+    unix:copyCommand = @echo
+    copyCommand += && echo --- console - $$TARGET ---
 
     ## copy files
     dstdir = $${jframe_root}/component/com_demo3

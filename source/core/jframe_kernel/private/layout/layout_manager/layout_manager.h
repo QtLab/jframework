@@ -107,7 +107,7 @@ private:
 private:
     JFrameLayout *q_frameLayout;
     INotifier *q_notifier;
-    QPointer<JSplitter> q_mainSplitter;
+    JSplitter *q_mainSplitter;
     JLayoutConfig q_layoutConfig;
 
     friend class JSplitterSync;

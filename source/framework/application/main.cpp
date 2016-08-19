@@ -1,47 +1,73 @@
-#include <QCoreApplication>
+ï»¿#include <QCoreApplication>
 #include <QLibrary>
 #include <QFileInfo>
+#include <QTextCodec>
+#include <QDebug>
 #include "jframe/jframe_facade.h"
+#if defined(__unix__)
+#include <unistd.h>
+#endif
 
 //
 QString applicationDirPath()
 {
+#ifdef _MSC_VER
     extern QString qAppFileName();
-    return QFileInfo(qAppFileName()).absolutePath();
+    return QFileInfo(qAppFileName()).canonicalPath();
+#elif defined(__unix__)
+    // Try looking for a /proc/<pid>/exe symlink first which points to
+    // the absolute path of the executable
+    QFileInfo fileInfo(QString::fromLatin1("/proc/%1/exe").arg(getpid()));
+    //printf("%s\n", fileInfo.canonicalPath().toLatin1().data());
+    if (fileInfo.exists() && fileInfo.isSymLink()) {
+        return fileInfo.canonicalPath();
+    }
+    return QString();
+#else
+#pragma message("Not supported!")
+    return QString();
+#endif
 }
 
 int main(int argc, char *argv[])
 {
+    //
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("GBK"));
+#if QT_VERSION < 0x050000
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
+    QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
+#endif
+    //
     FuncFrameFacadeInst fFrameFacadeInst = (FuncFrameFacadeInst)QLibrary::resolve(
                 applicationDirPath().append("/jframe_facade")
             #ifdef _MSC_VER
-            #ifdef _DEBUG
+            #if defined(_DEBUG) || defined(DEBUG)
                 .append("d.dll")
             #else
                 .append(".dll")
             #endif
             #elif defined(__apple__)
-                .append("")
+               #pragma message("Not supported!")
             #elif defined(__unix__)
                 .append(".so")
             #endif
                 , "CreateInstance");
     if (!fFrameFacadeInst) {
-        return -1;      // »ñÈ¡µ¼³ö½Ó¿ÚÊ§°Ü
+        return -1;      // èŽ·å–å¯¼å‡ºæŽ¥å£å¤±è´¥
     }
 
     IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>(fFrameFacadeInst());
     if (!frameFacade) {
-        return -1;      // »ñÈ¡ÊµÀýÊ§°Ü
+        return -1;      // èŽ·å–å®žä¾‹å¤±è´¥
     }
 
-    // ¼ÓÔØ¿ò¼Ü
+    // åŠ è½½æ¡†æž¶
     if (!frameFacade->loadFrame(&argc, argv)) {
         frameFacade->exitFrame();
-        return -1;      // ¼ÓÔØÊ§°Ü
+        return -1;      // åŠ è½½å¤±è´¥
     }
 
-    // ÏÔÊ¾¿ò¼ÜÖ÷´°¿Ú
+    // æ˜¾ç¤ºæ¡†æž¶ä¸»çª—å£
     frameFacade->showFrame(true, true);
 
     //

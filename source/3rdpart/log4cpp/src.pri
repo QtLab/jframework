@@ -16,8 +16,6 @@ HEADERS += \
 #    $$PWD/include/log4cpp/config-MinGW32.h \
     $$PWD/include/log4cpp/config-openvms.h \
     $$PWD/include/log4cpp/Configurator.hh \
-    $$PWD/include/log4cpp/config-win32.h \
-    $$PWD/include/log4cpp/config-win32-stlport-boost.h \
     $$PWD/include/log4cpp/convenience.h \
     $$PWD/include/log4cpp/Export.hh \
     $$PWD/include/log4cpp/FactoryParams.hh \
@@ -56,7 +54,6 @@ HEADERS += \
 #    $$PWD/include/log4cpp/threading/DummyThreads.hh \
     $$PWD/include/log4cpp/threading/MSThreads.hh \
 #    $$PWD/include/log4cpp/threading/OmniThreads.hh \
-#    $$PWD/include/log4cpp/threading/PThreads.hh \
     $$PWD/src/Localtime.hh \
     $$PWD/src/PortabilityImpl.hh \
     $$PWD/src/Properties.hh \
@@ -101,7 +98,6 @@ SOURCES += \
     $$PWD/src/Properties.cpp \
     $$PWD/src/PropertyConfigurator.cpp \
     $$PWD/src/PropertyConfiguratorImpl.cpp \
-#    $$PWD/src/PThreads.cpp \
     $$PWD/src/RemoteSyslogAppender.cpp \
     $$PWD/src/RollingFileAppender.cpp \
     $$PWD/src/SimpleConfigurator.cpp \
@@ -114,3 +110,17 @@ SOURCES += \
     $$PWD/src/TriggeringEventEvaluatorFactory.cpp \
     $$PWD/src/Win32DebugAppender.cpp \
     $$PWD/src/snprintf.c
+
+win32:{
+    HEADERS += \
+        $$PWD/include/log4cpp/config-win32.h \
+        $$PWD/include/log4cpp/config-win32-stlport-boost.h
+
+}else:unix:{
+    HEADERS += \
+        $$PWD/include/log4cpp/config.h \
+        $$PWD/include/log4cpp/threading/PThreads.hh
+
+    SOURCES += \
+        $$PWD/src/PThreads.cpp
+}

@@ -1,7 +1,8 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "jmain_window.h"
 #include "jframewnd.h"
 #include <QtXml>
+#include "../layout/jframe_layout_p.h"
 
 // class JMainWindow
 
@@ -175,50 +176,50 @@ void JMainWindow::updateSplashInfo(const std::string &info)
 
 bool JMainWindow::createComponentUi(IJComponent *component, const std::string &filePath)
 {
-    // ²ÎÊýÓÐÐ§ÐÔ¼ì²â
+    // å‚æ•°æœ‰æ•ˆæ€§æ£€æµ‹
     if (!component) {
-        return false;       // ²ÎÊýÎÞÐ§
+        return false;       // å‚æ•°æ— æ•ˆ
     }
 
-    // ´ò¿ª×é¼þÅäÖÃÎÄ¼þ
+    // æ‰“å¼€ç»„ä»¶é…ç½®æ–‡ä»¶
     QFile file(QString::fromStdString(filePath));
     if(!file.exists()) {
         return false;       // ignore
     }
 
-    // ´ò¿ªÎÄ¼þ
+    // æ‰“å¼€æ–‡ä»¶
     if (!file.open(QFile::ReadWrite)) {
-        const QString text = QStringLiteral("×é¼þÅäÖÃÎÄ¼þ\"%1\"´ò¿ªÊ§°Ü£¡")
+        const QString text = QStringLiteral("ç»„ä»¶é…ç½®æ–‡ä»¶\"%1\"æ‰“å¼€å¤±è´¥ï¼")
                 .arg(file.fileName());
-        QMessageBox::warning(q_frameWnd, QStringLiteral("¾¯¸æ"), text);
+        QMessageBox::warning(q_frameWnd, QStringLiteral("è­¦å‘Š"), text);
         return false;
-        return false;       // ´ò¿ªÊ§°Ü
+        return false;       // æ‰“å¼€å¤±è´¥
     }
 
-    // ½âÎöÎÄ¼þ
+    // è§£æžæ–‡ä»¶
     QString errorMsg;
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("×é¼þÅäÖÃÎÄ¼þ\"%1\"½âÎöÊ§°Ü£¡\n"
-                                            "´íÎóÃèÊö£º%2\n"
-                                            "´íÎóÎ»ÖÃ£º£¨ÐÐºÅ£º%3£¬ÁÐºÅ£º%4£©")
+        const QString text = QStringLiteral("ç»„ä»¶é…ç½®æ–‡ä»¶\"%1\"è§£æžå¤±è´¥ï¼\n"
+                                            "é”™è¯¯æè¿°ï¼š%2\n"
+                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å·ï¼š%4ï¼‰")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(q_frameWnd, QStringLiteral("¾¯¸æ"), text);
+        QMessageBox::warning(q_frameWnd, QStringLiteral("è­¦å‘Š"), text);
         return false;
     }
 
-    // ¹Ø±ÕÎÄ¼þ
+    // å…³é—­æ–‡ä»¶
     file.close();
 
-    // »ñÈ¡¸ù½Úµã
+    // èŽ·å–æ ¹èŠ‚ç‚¹
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
-        return false;   // ÎÞÐ§
+        return false;   // æ— æ•ˆ
     }
 
-    // »ñÈ¡ribbonPage½Úµã
+    // èŽ·å–ribbonPageèŠ‚ç‚¹
     QDomElement emRibbonPage = emRoot.firstChildElement("ribbonPage");
     if (!emRibbonPage.isNull()) {
         if (!createRibbonPage(emRibbonPage)) {
@@ -226,7 +227,7 @@ bool JMainWindow::createComponentUi(IJComponent *component, const std::string &f
         }
     }
 
-    // »ñÈ¡window½Úµã
+    // èŽ·å–windowèŠ‚ç‚¹
     QDomElement emWindow = emRoot.firstChildElement("window");
     if (!emWindow.isNull()) {
         if (!createComponentUi(component, emWindow)) {
@@ -352,8 +353,9 @@ bool JMainWindow::createComponentUi(IJComponent *component, const QDomElement &e
                     centralWidget->addWidget(widget);
                     centralWidget->setCurrentWidget(widget);
                 }
-                // ¹ÒÔØ×é¼þ´°¿Úµ½¿ò¼Ü²¼¾ÖÏµÍ³
-                jframeLayout()->invokeMethod("attach_component_ui", 2, component, widget);
+                // æŒ‚è½½ç»„ä»¶çª—å£åˆ°æ¡†æž¶å¸ƒå±€ç³»ç»Ÿ
+                JFrameLayout::getInstance()->invokeMethod(
+                            "attach_component_ui", 2, component, widget);
             } else if (windowType == "MFC") {
                 //
             }

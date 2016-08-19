@@ -39,8 +39,9 @@ exists($$PWD/jcom_login.xml) {
 #-------------------------------------------------
 
 win32|unix: {
-    copyCommand = @echo off
-    copyCommand += && @echo ---- console - jcom_login ----
+    win32:copyCommand = @echo off
+    unix:copyCommand = @echo
+    copyCommand += && echo --- console - $$TARGET ---
 
     ## copy files
     dstdir = $${jframe_root}/component/jframe/jcom_login

@@ -120,7 +120,13 @@ void JNotifier::clear()
             iterMap->first->notifyRemoved(iterPids->first);
             iterPids = pids.erase(iterPids);
         }
+#ifdef _MSC_VER
         iterMap = d->mapObs.erase(iterMap);
+#elif defined(__unix__)
+        d->mapObs.erase(iterMap++);
+#else
+#pragma message("not supported platform")
+#endif
     }
 }
 

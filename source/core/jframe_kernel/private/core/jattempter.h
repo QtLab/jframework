@@ -1,4 +1,4 @@
-#ifndef JATTEMPTER_H
+ï»¿#ifndef JATTEMPTER_H
 #define JATTEMPTER_H
 
 #include "../../jframe_core.h"
@@ -100,7 +100,7 @@ private:
 private:
     friend class JFrameWnd;
 
-    INotifier *q_notifier;      // ÏûÏ¢·Ö·¢Æ÷ÊµÀı
+    INotifier *q_notifier;      // æ¶ˆæ¯åˆ†å‘å™¨å®ä¾‹
 
     IJMainWindow *q_mainWindow;
     QMap<QString/*componentName*/, JComponentConfig> q_mapComponent;

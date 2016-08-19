@@ -92,7 +92,7 @@
 
 #ifdef QTWINMIGRATE_WITHMFC
 #include <afxwin.h>
-#else
+#elif defined(_MSC_VER)
 #include <qt_windows.h>
 #endif
 
@@ -121,7 +121,7 @@ int QMfcApp::mfc_argc = 0;
     This is useful for developing Qt based DLLs or plugins, or if the
     MFC application's event handling can not be modified.
 */
-
+#ifdef _MSC_VER
 static int modalLoopCount = 0;
 
 HHOOK hhook;
@@ -168,7 +168,7 @@ void QMfcApp::exitModalLoop()
     --modalLoopCount;
     Q_ASSERT(modalLoopCount >= 0);
 }
-
+#endif
 /*!
     If there is no global QApplication object (i.e. qApp is null) this
     function creates a QApplication instance and returns true;
@@ -212,24 +212,26 @@ void QMfcApp::exitModalLoop()
 bool QMfcApp::pluginInstance(Qt::HANDLE plugin)
 {
     if (qApp)
-        return FALSE;
-
+        return false;
+#ifdef _MSC_VER
     QT_WA({
               hhook = SetWindowsHookExW(WH_GETMESSAGE, QtFilterProc, 0, GetCurrentThreadId());
           }, {
               hhook = SetWindowsHookExA(WH_GETMESSAGE, QtFilterProc, 0, GetCurrentThreadId());
           });
-
+#endif // MSC_VER
     int argc = 0;
     (void)new QApplication(argc, 0);
-
+#ifdef _MSC_VER
     if (plugin) {
         char filename[256];
         if (GetModuleFileNameA((HINSTANCE)plugin, filename, 255))
             LoadLibraryA(filename);
     }
-
-    return TRUE;
+#else
+    Q_UNUSED(plugin);
+#endif
+    return true;
 }
 
 #ifdef QTWINMIGRATE_WITHMFC
@@ -416,8 +418,9 @@ int QMfcApp::run(void *)
 }
 
 QMfcApp::QMfcApp(void *mfcApp, int &argc, char **argv)
-    : QApplication(argc, argv), idleCount(0), doIdle(FALSE)
+    : QApplication(argc, argv), idleCount(0), doIdle(false)
 {
+#ifdef _MSC_VER
 #if QT_VERSION_MAJOR < 5
     QAbstractEventDispatcher::instance()->setEventFilter(qmfc_eventFilter);
 #else
@@ -425,6 +428,9 @@ QMfcApp::QMfcApp(void *mfcApp, int &argc, char **argv)
     installNativeEventFilter(evtFilter);
 #endif
     setQuitOnLastWindowClosed(false);
+#else
+    Q_UNUSED(mfcApp);
+#endif
 }
 
 #endif
@@ -434,10 +440,12 @@ QMfcApp::QMfcApp(void *mfcApp, int &argc, char **argv)
 */
 QMfcApp::~QMfcApp()
 {
+#ifdef _MSC_VER
     if (hhook) {
         UnhookWindowsHookEx(hhook);
         hhook = 0;
     }
+#endif
 
 #ifdef QTWINMIGRATE_WITHMFC
     for (int a = 0; a < mfc_argc; ++a) {
@@ -455,7 +463,7 @@ QMfcApp::~QMfcApp()
 /*!
     \reimp
 */
-
+#ifdef _MSC_VER
 bool QMfcApp::winEventFilter(MSG *msg, long *result)
 {
     static bool recursion = false;
@@ -516,3 +524,4 @@ bool QMfcApp::winEventFilter(MSG *msg, long *result)
     return false;
 #endif
 }
+#endif // _MSC_VER

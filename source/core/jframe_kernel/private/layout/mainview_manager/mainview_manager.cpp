@@ -1,4 +1,4 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "mainview_manager.h"
 #include "../jframe_layout_p.h"
 
@@ -18,7 +18,7 @@ MainViewManager::MainViewManager(QWidget *parent):
     q_splitterMain = new JSplitter(Qt::Vertical, this);
     q_splitterMain->setScales(QList<double>() << 50 << 1);
     q_splitterMain->setHandleWidth(1);
-    // ½ûÖ¹¶¥²ã·Ö¸îÆ÷ÍÏ¶¯
+    // ç¦æ­¢é¡¶å±‚åˆ†å‰²å™¨æ‹–åŠ¨
     QSplitterHandle *handle = q_splitterMain->handle(1);
     if (handle) {
         handle->setDisabled(true);
@@ -96,11 +96,11 @@ void MainViewManager::setCtrlPane(QWidget *widget)
 
 void MainViewManager::removeCtrlPane()
 {
-    // ²ÎÊı¼ì²â
+    // å‚æ•°æ£€æµ‹
     if (!q_ctrlPane) {
         return;     //
     }
 
-    // ´Ó´°¿Ú·Ö¸îÆ÷ÖĞÉ¾³ı¿ØÖÆÃæ°å´°¿Ú
-    q_ctrlPane = 0; // ´°¿ÚÉ¾³ıºó»á×Ô¶¯´ÓsplitterÉ¾³ı
+    // ä»çª—å£åˆ†å‰²å™¨ä¸­åˆ é™¤æ§åˆ¶é¢æ¿çª—å£
+    q_ctrlPane = 0; // çª—å£åˆ é™¤åä¼šè‡ªåŠ¨ä»splitteråˆ é™¤
 }

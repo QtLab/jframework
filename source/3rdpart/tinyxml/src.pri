@@ -4,8 +4,7 @@
 
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
-    $$PWD/tinyxml.h \
-    $$PWD/tinyxml_global.h
+    $$PWD/tinyxml.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \

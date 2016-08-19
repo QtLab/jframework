@@ -2,45 +2,31 @@
 #define JWT_GLOBAL_H
 
 #include <qglobal.h>
+#include <QString>
 
 // JWT_VERSION is (major << 16) + (minor << 8) + patch.
 
 #define JWT_VERSION       0x000001
 #define JWT_VERSION_STR   "0.0.1"
 
-#ifdef _MSC_VER
-
-// MSVC Compiler
-// template-class specialization 'identifier' is already instantiated
-#pragma warning(disable: 4660)
-#pragma warning(disable: 4819)  // warning : 936
-
-#ifdef JWT_DLL
-
-#if defined(JWT_MAKEDLL)
-#define JWT_EXPORT  Q_DECL_EXPORT
-#else
-#define JWT_EXPORT  Q_DECL_IMPORT
-
-#if defined(_DEBUG) || defined(DEBUG)
-#pragma comment(lib, "jwtd.lib")
-#else
-#pragma comment(lib, "jwt.lib")
-#endif
-
-#endif
-
-#endif // JWT_DLL
-
-#endif // _MSC_VER
+#ifdef JWT_LIB
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__MINGW32__)
+#   ifdef JWT_BUILD
+#       define JWT_EXPORT  Q_DECL_EXPORT
+#   else
+#       define JWT_EXPORT  Q_DECL_IMPORT
+#       if defined(_DEBUG) || defined(DEBUG)
+#           pragma comment(lib, "jwtd.lib")
+#       else
+#           pragma comment(lib, "jwt.lib")
+#       endif
+#   endif // !JWT_BUILD
+#endif // _MSC_VER || ...
+#endif // JWT_LIB
 
 #ifndef JWT_EXPORT
 #define JWT_EXPORT
 #endif
-
-QT_BEGIN_HEADER
-
-QT_BEGIN_NAMESPACE
 
 // - namespace JWT -
 #define JWT_NAMESPACE JWT

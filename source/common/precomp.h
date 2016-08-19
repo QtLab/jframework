@@ -45,39 +45,39 @@
 
 #endif
 
-#ifdef JFRAME_FACTORY_DLL
+#if defined(JFRAME_FACADE_LIB) && !defined(JFRAME_FACADE_BUILD)
+#include "jframe_facade.h"
+#endif
+
+#if defined(JFRAME_FACTORY_LIB) && !defined(JFRAME_FACTORY_BUILD)
 #include "factory/jframe_factory.h"
 #include "factory/jnotifier.h"
 #endif
 
-#ifdef JFRAME_KERNEL_DLL
+#if defined(JFRAME_KERNEL_LIB) && !defined(JFRAME_KERNEL_BUILD)
 #include "kernel/jframe_kernel.h"
 #include "kernel/jframe_core.h"
 #include "kernel/jframe_layout.h"
 #include "kernel/jframe_login.h"
 #endif
 
-#ifdef JFRAME_FACADE_DLL
-#include "jframe_facade.h"
-#endif
-
-#ifdef USE_TINYXML
+#if defined(TINYXML_LIB) && !defined(TINYXML_BUILD)
 #include "tinyxml.h"
 #endif
 
-#ifdef USE_QTWINMIGRATE
+#if defined(QTWINMIGRATE_LIB) && !defined(QTWINMIGRATE_BUILD)
 #include "qmfcapp.h"
 #endif
 
-#ifdef USE_QTRIBBON
+#if defined(QTRIBBON_LIB) && !defined(QTRIBBON_BUILD)
 #include "QtRibbon.h"
 #endif
 
-#ifdef USE_LOG4CPP
+#if defined(LOG4CPP_LIB) && !defined(LOG4CPP_BUILD)
 #include "log4cpp/convenience.h"
 #endif
 
-#ifdef USE_JWT
+#if defined(JWT_LIB) && !defined(JWT_BUILD)
 #include "jwt_inc.h"
 #endif
 

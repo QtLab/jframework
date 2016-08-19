@@ -6,8 +6,6 @@
 
 QT -= gui
 
-greaterThan(QT_MAJOR_VERSION, 4) : QT += widgets
-
 jframe_root = $$PWD/../../..
 
 TEMPLATE = app
@@ -80,7 +78,7 @@ win32 {
     CONFIG      += build_all
 
 } else {
-    CONFIG      += release
+#    CONFIG      += release
 }
 
 linux-g++ {
@@ -99,7 +97,8 @@ DEPENDPATH += $${jframe_root}/include
 ###############################################################
 
 win32|unix: {
-    copyCommand = @echo off
+    win32:copyCommand = @echo off
+    unix:copyCommand = @echo
     copyCommand += && echo --- console - $$TARGET ---
 
     ## copy files
@@ -122,4 +121,5 @@ win32|unix: {
 
     ##
     win32:system($${jframe_root}\\syncjframe.cmd $$QT_MAJOR_VERSION $$debug_suffix)
+    unix:system($${jframe_root}/syncjframe.sh $$QT_MAJOR_VERSION $$debug_suffix)
 }

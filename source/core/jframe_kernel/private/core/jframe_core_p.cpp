@@ -8,11 +8,9 @@
 struct JFrameCoreData
 {
     IJAttempter *attempter;     //
-    QString codeForName;        // 系统编码
 
     JFrameCoreData()
         : attempter(0)
-        , codeForName("GBK")
     {
 
     }
@@ -164,49 +162,11 @@ IJAttempter *JFrameCore::attempter()
 
 bool JFrameCore::loadConfig()
 {
-    if (!QFileInfo(QString::fromStdString(jframeFacade()->frameGlobalPath())).isReadable()) {
-        Q_ASSERT_X(false, "Warning", "配置文件不存在，即将退出软件！");
-        return false;
-    }
-
-    // 读取配置文件
-    TiXmlDocument document(jframeFacade()->frameGlobalPath());
-    if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
-        Q_ASSERT_X(false, "Warning",
-                   QStringLiteral("配置文件打\"%1\"开失败，即将退出软件！\n"
-                                  "错误标识：%2\n"
-                                  "错误描述：%3\n"
-                                  "错误位置：[%4, %5]")
-                   .arg(QString::fromStdString(jframeFacade()->frameGlobalPath()))
-                   .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
-                   .arg(document.ErrorRow()).arg(document.ErrorCol())
-                   .toLocal8Bit().data());
-        return false;
-    }
-
-    // 获取根节点
-    TiXmlElement *emRoot = document.RootElement();
-    if (!emRoot) {
-        return false;
-    }
-
-    // 获取框架文本编码节点
-    TiXmlElement *emTextCodec = emRoot->FirstChildElement("textCodec");
-    if (!emTextCodec) {
-        return false;
-    }
-
-    std::string sVal;
-
-    // framework encoding
-    if (emTextCodec->QueryStringAttribute("encoding", &sVal) != TIXML_SUCCESS) {
-        return false;
-    }
+    bool result = true;
 
     //
-    data->codeForName = QString::fromUtf8(emTextCodec->Attribute("encoding"));
 
-    return true;
+    return result;
 }
 
 bool JFrameCore::invokeShowFrame(int argc, va_list ap)
@@ -222,8 +182,13 @@ bool JFrameCore::invokeShowFrame(int argc, va_list ap)
     }
 
     //
+#if defined(__unix__)
+    bool show = va_arg(ap, int);
+    bool maximized = va_arg(ap, int);
+#else
     bool show = va_arg(ap, bool);
     bool maximized = va_arg(ap, bool);
+#endif
 
     //
     if (show) {
@@ -245,7 +210,7 @@ int JFrameCore::runQApp(void *mfcApp)
     return QMfcApp::run(reinterpret_cast<CWinApp *>(mfcApp));
 #else
     Q_UNUSED(mfcApp);
-    return 0;
+    return QMfcApp::run(0);
 #endif
 }
 
@@ -257,8 +222,8 @@ bool JFrameCore::invokeCreateQApp(int argc, va_list ap)
 
     int *argc1 = va_arg(ap, int*);
     char **argv = va_arg(ap, char**);
-    void *app = va_arg(ap, void*);
 #ifdef _AFXDLL
+    void *app = va_arg(ap, void*);
     if (app) {
         QMfcApp::instance((CWinApp *)app);
     } else
@@ -311,13 +276,7 @@ JFrameCore::JFrameCore()
         // 加载失败
     }
 
-    // text codec
-    QTextCodec::setCodecForLocale(
-                QTextCodec::codecForName(data->codeForName.toLocal8Bit().data()));
-#if QT_VERSION < 0x050000
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
-    QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
-#endif
+    //
 }
 
 JFrameCore::~JFrameCore()

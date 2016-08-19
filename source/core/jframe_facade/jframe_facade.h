@@ -105,6 +105,34 @@
 ///
 
 //
+#ifndef J_ATTR_CDECL
+#if defined(_MSC_VER)
+#  ifdef __cplusplus
+#    define J_EXTERN_C extern "C"
+#  else
+#    define J_EXTERN_C extern
+#  endif
+#define J_ATTR_CDECL __cdecl
+#define J_ATTR_STDCALL __stdcall
+#define J_ATTR_EXPORT __declspec(dllexport)
+#elif defined(__apple__)
+#define J_ATTR_CDECL
+#define J_ATTR_STDCALL
+#elif defined(__unix__)
+#  ifdef __cplusplus
+#    define J_EXTERN_C extern "C"
+#  else
+#    define J_EXTERN_C extern
+#  endif
+#define J_ATTR_CDECL __attribute__((__cdecl__))
+#define J_ATTR_STDCALL __attribute__((__stdcall__))
+#define J_ATTR_EXPORT __attribute__((visibility("default")))
+#endif
+#endif  // J_ATTR_CDECL
+
+///
+
+//
 #ifdef _MSC_VER
 typedef unsigned __int64 JWPARAM;
 typedef __int64 JLPARAM;
@@ -347,27 +375,24 @@ public:
 };
 
 //
-typedef IJUnknown *(__cdecl *FuncFrameFacadeInst)(void);
+typedef IJUnknown *(J_ATTR_CDECL *FuncFrameFacadeInst)(void);
 
 ///
 
-#ifdef JFRAME_FACADE_DLL
-#ifdef _MSC_VER
-#   ifdef JFRAME_FACADE_MAKEDLL
+#ifdef JFRAME_FACADE_LIB
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__MINGW32__)
+#   ifdef JFRAME_FACADE_BUILD
 #       define JFRAME_FACADE_EXPORT __declspec(dllexport)
 #   else
 #       define JFRAME_FACADE_EXPORT __declspec(dllimport)
-
 #       if defined(DEBUG) || defined(_DEBUG)
 #           pragma comment(lib, "jframe_facaded.lib")
 #       else
 #           pragma comment(lib, "jframe_facade.lib")
 #       endif
-
-#   endif // !JFRAME_FACADE_MAKEDLL
-#endif // _MSC_VER
-
-#endif // JFRAME_FACADE_DLL
+#   endif // !JFRAME_FACADE_BUILD
+#endif // _MSC_VER || ...
+#endif // JFRAME_FACADE_LIB
 
 #ifndef JFRAME_FACADE_EXPORT
 #define JFRAME_FACADE_EXPORT
@@ -381,7 +406,7 @@ JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 
 /// 框架::日志
 
-#ifdef JFRAME_FACADE_DLL
+#ifdef JFRAME_FACADE_LIB
 
 //
 #ifndef __FILENAME__

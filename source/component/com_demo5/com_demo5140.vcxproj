@@ -76,17 +76,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)source\temp\$(Configuration)\component\$(ProjectName)</OutDir>
+    <OutDir>$(SolutionDir)source\temp\$(Configuration)\component\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IntDir>$(OutDir)</IntDir>
+    <IntDir>$(OutDir)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)source\temp\$(Configuration)\component\$(ProjectName)</OutDir>
-    <IntDir>$(OutDir)</IntDir>
+    <OutDir>$(SolutionDir)source\temp\$(Configuration)\component\$(ProjectName)\</OutDir>
+    <IntDir>$(OutDir)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -96,7 +96,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QTWINMIGRATE_DLL;JWT_DLL;TINYXML_DLL;JFRAME_FACADE_DLL;JFRAME_FACTORY_DLL;JFRAME_KERNEL_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QTWINMIGRATE_LIB;JWT_LIB;TINYXML_LIB;JFRAME_FACADE_LIB;JFRAME_FACTORY_LIB;JFRAME_KERNEL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(JFRAME_DIR)\include;$(JFRAME_DIR)\include\3rdpart;$(JFRAME_DIR)\include\jframe;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -159,7 +159,7 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;QT_DLL;QT_NO_DEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QTWINMIGRATE_DLL;JWT_DLL;TINYXML_DLL;JFRAME_FACADE_DLL;JFRAME_FACTORY_DLL;JFRAME_KERNEL_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;QT_DLL;QT_NO_DEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QTWINMIGRATE_LIB;JWT_LIB;TINYXML_LIB;JFRAME_FACADE_LIB;JFRAME_FACTORY_LIB;JFRAME_KERNEL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(JFRAME_DIR)\include;$(JFRAME_DIR)\include\3rdpart;$(JFRAME_DIR)\include\jframe;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
@@ -263,7 +263,7 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MfcDemo1Container.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fstdafx.h" "-f../../MfcDemo1Container.h"  -DWIN32 -D_WINDOWS -D_DEBUG -D_AFXEXT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DQTWINMIGRATE_DLL -DJWT_DLL -DTINYXML_DLL -DJFRAME_FACADE_DLL -DJFRAME_FACTORY_DLL -DJFRAME_KERNEL_DLL -D_WINDLL -D_UNICODE -DUNICODE -D_AFXDLL "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(JFRAME_DIR)\include" "-I$(JFRAME_DIR)\include\3rdpart" "-I$(JFRAME_DIR)\include\jframe"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_WINDOWS -D_DEBUG -D_AFXEXT -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DQTWINMIGRATE_LIB -DJWT_LIB -DTINYXML_LIB -DJFRAME_FACADE_LIB -DJFRAME_FACTORY_LIB -DJFRAME_KERNEL_LIB -D_WINDLL -D_UNICODE -DUNICODE -D_AFXDLL  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(JFRAME_DIR)\include" "-I$(JFRAME_DIR)\include\3rdpart" "-I$(JFRAME_DIR)\include\jframe" "-fstdafx.h" "-f../../MfcDemo1Container.h"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing MfcDemo1Container.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -271,7 +271,7 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing MfcDemo1Container.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp" "-fstdafx.h" "-f../../MfcDemo1Container.h"  -DWIN32 -D_WINDOWS -DNDEBUG -D_AFXEXT -DQT_DLL -DQT_NO_DEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DQTWINMIGRATE_DLL -DJWT_DLL -DTINYXML_DLL -DJFRAME_FACADE_DLL -DJFRAME_FACTORY_DLL -DJFRAME_KERNEL_DLL -D_WINDLL -D_UNICODE -DUNICODE -D_AFXDLL "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(JFRAME_DIR)\include" "-I$(JFRAME_DIR)\include\3rdpart" "-I$(JFRAME_DIR)\include\jframe"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DWIN32 -D_WINDOWS -DNDEBUG -D_AFXEXT -DQT_DLL -DQT_NO_DEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DQTWINMIGRATE_LIB -DJWT_LIB -DTINYXML_LIB -DJFRAME_FACADE_LIB -DJFRAME_FACTORY_LIB -DJFRAME_KERNEL_LIB -D_WINDLL -D_UNICODE -DUNICODE -D_AFXDLL  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(JFRAME_DIR)\include" "-I$(JFRAME_DIR)\include\3rdpart" "-I$(JFRAME_DIR)\include\jframe" "-fstdafx.h" "-f../../MfcDemo1Container.h"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing MfcDemo1Container.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>

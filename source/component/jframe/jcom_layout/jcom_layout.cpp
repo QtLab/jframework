@@ -1,9 +1,9 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "jcom_layout.h"
 #include "private/frame_filter.h"
 
 //
-extern "C" __declspec(dllexport) void *CreateComponent(void *attempter)
+J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void *attempter)
 {
     return static_cast<IJComponent *>
             (new JComLayout(reinterpret_cast<IJAttempter *>(attempter)));
@@ -23,17 +23,14 @@ JComLayout::~JComLayout()
 
 bool JComLayout::loadInterface()
 {
-    // ´´½¨¿ò¼Ü¹ýÂËÆ÷
+    // åˆ›å»ºæ¡†æž¶è¿‡æ»¤å™¨
     q_frameFilter = new FrameFilter(q_notifier, q_attempter);
     if (!q_frameFilter->init()) {
         //
     }
 
-    // °²×°Ö÷´°¿ÚÊÂ¼þ¹ýÂË
+    // å®‰è£…ä¸»çª—å£äº‹ä»¶è¿‡æ»¤
     q_frameFilter->attachEventFilter();
-
-    // Æô¶¯Ä¬ÈÏÏµÍ³
-    q_notifier->postMessage("j_load_default_system");
 
     return true;
 }
@@ -50,7 +47,7 @@ bool JComLayout::updateInterface()
 void JComLayout::releaseInterface()
 {
     //
-    // È¥³ýÖ÷´°¿ÚÊÂ¼þ¹ýÂË
+    // åŽ»é™¤ä¸»çª—å£äº‹ä»¶è¿‡æ»¤
     q_frameFilter->detachEventFilter();
 
     //
@@ -72,19 +69,19 @@ std::string JComLayout::componentName() const
 
 std::string JComLayout::componentDesc() const
 {
-    return "¿ò¼Ü²¼¾Ö×é¼þ";
+    return QStringLiteral("æ¡†æž¶å¸ƒå±€ç»„ä»¶").toStdString();
 }
 
 void JComLayout::attach()
 {
-    // ¶©ÔÄÏûÏ¢
+    // è®¢é˜…æ¶ˆæ¯
     q_notifier->beginGroup(this)
             .endGroup();
 }
 
 void JComLayout::detach()
 {
-    // È¡Ïû¶©ÔÄÏûÏ¢
+    // å–æ¶ˆè®¢é˜…æ¶ˆæ¯
     q_notifier->remove(this);
 }
 

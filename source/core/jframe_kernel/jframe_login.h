@@ -1,4 +1,4 @@
-#ifndef JFRAME_LOGIN_H
+ï»¿#ifndef JFRAME_LOGIN_H
 #define JFRAME_LOGIN_H
 
 #include "jframe_kernel.h"
@@ -8,156 +8,156 @@
 namespace JFrameLoginSpace
 {
     /**
-     * @brief The UserType enum : ÓÃ»§È¨ÏŞÀàĞÍÃ¶¾Ù
+     * @brief The UserType enum : ç”¨æˆ·æƒé™ç±»å‹æšä¸¾
      */
     enum UserType
     {
-        UserTypeInvalid = -1,   // ÎŞĞ§ÓÃ»§
-        UserTypeSuperAdmin,     // ³¬¼¶¹ÜÀíÔ±
-        UserTypeOrdinAdmin,     // ÆÕÍ¨¹ÜÀíÔ±
-        UserTypeSuperUser,      // ³¬¼¶ÓÃ»§
-        UserTypeOrdinUser       // ÆÕÍ¨ÓÃ»§
+        UserTypeInvalid = -1,   // æ— æ•ˆç”¨æˆ·
+        UserTypeSuperAdmin,     // è¶…çº§ç®¡ç†å‘˜
+        UserTypeOrdinAdmin,     // æ™®é€šç®¡ç†å‘˜
+        UserTypeSuperUser,      // è¶…çº§ç”¨æˆ·
+        UserTypeOrdinUser       // æ™®é€šç”¨æˆ·
     };
 
     /**
-     * @brief The PowerLevel enum : Ä£¿éÈ¨ÏŞµÈ¼¶ÀàĞÍÃ¶¾Ù
+     * @brief The PowerLevel enum : æ¨¡å—æƒé™ç­‰çº§ç±»å‹æšä¸¾
      */
     enum PowerLevel
     {
-        PowerLevelInvalid = -1, // ÎŞĞ§È¨ÏŞ£¨»òÄ£¿éÎŞĞ§£©
-        PowerLevelNo,           // ÎŞÈ¨ÏŞ
-        PowerLevelView,         // ¿É²é¿´
-        PowerLevelNodify        // ¿É²é¿´¡¢ĞŞ¸Ä
+        PowerLevelInvalid = -1, // æ— æ•ˆæƒé™ï¼ˆæˆ–æ¨¡å—æ— æ•ˆï¼‰
+        PowerLevelNo,           // æ— æƒé™
+        PowerLevelView,         // å¯æŸ¥çœ‹
+        PowerLevelNodify        // å¯æŸ¥çœ‹ã€ä¿®æ”¹
     };
 }
 
-// ½Ó¿Ú±êÊ¶
+// æ¥å£æ ‡è¯†
 #define VER_IJLoginDBMgr J_INTERFACE_VERSION(1, 0)
 #define IID_IJLoginDBMgr J_IID_INTERFACE(IJLoginDBMgr)
 
 /**
- * @brief The IJLoginDBMgr class : µÇÂ¼Êı¾İ¿â¹ÜÀíÆ÷
+ * @brief The IJLoginDBMgr class : ç™»å½•æ•°æ®åº“ç®¡ç†å™¨
  */
 class IJLoginDBMgr : public IJUnknown
 {
 public:
     /**
-     * @brief ~IJLoginDBMgr : Îö¹¹º¯Êı
+     * @brief ~IJLoginDBMgr : ææ„å‡½æ•°
      */
     virtual ~IJLoginDBMgr() {}
 
     /**
-     * @brief interfaceIdentity : »ñÈ¡½Ó¿Ú±êÊ¶
-     * @return : ½Ó¿Ú±êÊ¶
+     * @brief interfaceIdentity : è·å–æ¥å£æ ‡è¯†
+     * @return : æ¥å£æ ‡è¯†
      */
     virtual std::string interfaceIdentity() const { return IID_IJLoginDBMgr; }
 
     /**
-     * @brief interfaceVersion : »ñÈ¡½Ó¿Ú°æ±¾
-     * @return : ½Ó¿Ú°æ±¾
+     * @brief interfaceVersion : è·å–æ¥å£ç‰ˆæœ¬
+     * @return : æ¥å£ç‰ˆæœ¬
      */
     virtual unsigned int interfaceVersion() const { return VER_IJLoginDBMgr; }
 };
 
 //////////////////////////////////////////////////////////////////////
 
-// ½Ó¿Ú±êÊ¶
+// æ¥å£æ ‡è¯†
 #define VER_IJLoginManager J_INTERFACE_VERSION(1, 0)
 #define IID_IJLoginManager J_IID_INTERFACE(IJLoginManager)
 
 /**
- * @brief The IJLoginManager class : µÇÂ¼¹ÜÀíÆ÷
+ * @brief The IJLoginManager class : ç™»å½•ç®¡ç†å™¨
  */
 class IJLoginManager : public IJUnknown
 {
 public:
     /**
-     * @brief ~IJLoginManager : Îö¹¹º¯Êı
+     * @brief ~IJLoginManager : ææ„å‡½æ•°
      */
     virtual ~IJLoginManager() {}
 
     /**
-     * @brief interfaceIdentity : »ñÈ¡½Ó¿Ú±êÊ¶
-     * @return : ½Ó¿Ú±êÊ¶
+     * @brief interfaceIdentity : è·å–æ¥å£æ ‡è¯†
+     * @return : æ¥å£æ ‡è¯†
      */
     virtual std::string interfaceIdentity() const { return IID_IJLoginManager; }
 
     /**
-     * @brief interfaceVersion : »ñÈ¡½Ó¿Ú°æ±¾
-     * @return : ½Ó¿Ú°æ±¾
+     * @brief interfaceVersion : è·å–æ¥å£ç‰ˆæœ¬
+     * @return : æ¥å£ç‰ˆæœ¬
      */
     virtual unsigned int interfaceVersion() const { return VER_IJLoginManager; }
 
     /**
-     * @brief isValid : »ñÈ¡µÇÂ¼¹ÜÀíÆ÷×´Ì¬
-     * @return : µÇÂ¼¹ÜÀíÆ÷×´Ì¬¡£true£¬ÓĞĞ§£»false£¬ÎŞĞ§
+     * @brief isValid : è·å–ç™»å½•ç®¡ç†å™¨çŠ¶æ€
+     * @return : ç™»å½•ç®¡ç†å™¨çŠ¶æ€ã€‚trueï¼Œæœ‰æ•ˆï¼›falseï¼Œæ— æ•ˆ
      */
     virtual bool isValid() const = 0;
 
     /**
-     * @brief login : µÇÂ¼
-     * @return : µÇÂ¼×´Ì¬¡£true£¬µÇÂ¼³É¹¦£»false£¬µÇÂ¼Ê§°Ü
+     * @brief login : ç™»å½•
+     * @return : ç™»å½•çŠ¶æ€ã€‚trueï¼Œç™»å½•æˆåŠŸï¼›falseï¼Œç™»å½•å¤±è´¥
      */
     virtual bool login() = 0;
 
     /**
-     * @brief logout : ×¢Ïú
-     * @return : ×¢Ïú×´Ì¬¡£true£¬×¢Ïú³É¹¦£»false£¬×¢ÏúÊ§°Ü
+     * @brief logout : æ³¨é”€
+     * @return : æ³¨é”€çŠ¶æ€ã€‚trueï¼Œæ³¨é”€æˆåŠŸï¼›falseï¼Œæ³¨é”€å¤±è´¥
      */
     virtual bool logout() = 0;
 
     /**
-     * @brief loginDBMgr : »ñÈ¡µÇÂ¼Êı¾İ¿â¹ÜÀíÆ÷
-     * @return : µÇÂ¼Êı¾İ¿â¹ÜÀíÆ÷
+     * @brief loginDBMgr : è·å–ç™»å½•æ•°æ®åº“ç®¡ç†å™¨
+     * @return : ç™»å½•æ•°æ®åº“ç®¡ç†å™¨
      */
     virtual IJLoginDBMgr *loginDBMgr() = 0;
 
-    // »ñÈ¡µÇÂ¼½çÃæ¹ÜÀí½Ó¿ÚÊµÀı
+    // è·å–ç™»å½•ç•Œé¢ç®¡ç†æ¥å£å®ä¾‹
     //virtual ILoginPage *loginPage() = 0;
 
-    // »ñÈ¡ÓÃ»§µÇÂ¼ĞÅÏ¢
+    // è·å–ç”¨æˆ·ç™»å½•ä¿¡æ¯
     //virtual JFrameLoginSpace::UserElement userInfo() const = 0;
 
-    // »ñÈ¡µ±Ç°Ï¯Î»ĞÅÏ¢
+    // è·å–å½“å‰å¸­ä½ä¿¡æ¯
     //virtual JFrameLoginSpace::SeatElement currentSeatInfo() const = 0;
 
-    // »ñÈ¡µ±Ç°ÏµÍ³ĞÅÏ¢
+    // è·å–å½“å‰ç³»ç»Ÿä¿¡æ¯
     //virtual JFrameLoginSpace::SystemElement currentSystemInfo() const = 0;
 
     /**
-     * @brief isAdminUser : »ñÈ¡µ±Ç°µÇÂ¼ÓÃ»§ÊÇ·ñÎª¹ÜÀíÔ±
-     * @return : ²éÑ¯½á¹û¡£true£¬ÊÇ¹ÜÀíÔ±£»false£¬²»ÊÇ¹ÜÀíÔ±
+     * @brief isAdminUser : è·å–å½“å‰ç™»å½•ç”¨æˆ·æ˜¯å¦ä¸ºç®¡ç†å‘˜
+     * @return : æŸ¥è¯¢ç»“æœã€‚trueï¼Œæ˜¯ç®¡ç†å‘˜ï¼›falseï¼Œä¸æ˜¯ç®¡ç†å‘˜
      */
     virtual bool isAdminUser() const = 0;
 
     /**
-     * @brief userName : »ñÈ¡ÓÃ»§Ãû³Æ
-     * @return : ÓÃ»§Ãû³Æ
+     * @brief userName : è·å–ç”¨æˆ·åç§°
+     * @return : ç”¨æˆ·åç§°
      */
     virtual std::string userName() const = 0;
 
     /**
-     * @brief userType : »ñÈ¡µ±Ç°µÇÂ¼ÓÃ»§ÀàĞÍ
-     * @return : µ±Ç°µÇÂ¼ÓÃ»§ÀàĞÍ¡£²é¿´ UserType ¶¨Òå
+     * @brief userType : è·å–å½“å‰ç™»å½•ç”¨æˆ·ç±»å‹
+     * @return : å½“å‰ç™»å½•ç”¨æˆ·ç±»å‹ã€‚æŸ¥çœ‹ UserType å®šä¹‰
      */
     virtual int userType() const = 0;
 
     /**
-     * @brief currentSeat : »ñÈ¡µ±Ç°Ï¯Î»Ãû³Æ
-     * @return : µ±Ç°Ï¯Î»Ãû³Æ
+     * @brief currentSeat : è·å–å½“å‰å¸­ä½åç§°
+     * @return : å½“å‰å¸­ä½åç§°
      */
     virtual std::string currentSeat() const = 0;
 
     /**
-     * @brief currentSystem : »ñÈ¡µ±Ç°ÏµÍ³Ãû³Æ
-     * @return : µ±Ç°ÏµÍ³Ãû³Æ
+     * @brief currentSystem : è·å–å½“å‰ç³»ç»Ÿåç§°
+     * @return : å½“å‰ç³»ç»Ÿåç§°
      */
     virtual std::string currentSystem() const = 0;
 };
 
 //////////////////////////////////////////////////////////////////
 
-// ½Ó¿Ú±êÊ¶
+// æ¥å£æ ‡è¯†
 #define VER_IJFrameLogin J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameLogin J_IID_INTERFACE(IJFrameLogin)
 
@@ -168,25 +168,25 @@ class IJFrameLogin : public IJUnknown
 {
 public:
     /**
-     * @brief ~IJFrameLogin : Îö¹¹º¯Êı
+     * @brief ~IJFrameLogin : ææ„å‡½æ•°
      */
     virtual ~IJFrameLogin() {}
 
     /**
-     * @brief interfaceIdentity : »ñÈ¡½Ó¿Ú±êÊ¶
-     * @return : ½Ó¿Ú±êÊ¶
+     * @brief interfaceIdentity : è·å–æ¥å£æ ‡è¯†
+     * @return : æ¥å£æ ‡è¯†
      */
     virtual std::string interfaceIdentity() const { return IID_IJFrameLogin; }
 
     /**
-     * @brief interfaceVersion : »ñÈ¡½Ó¿Ú°æ±¾
-     * @return : ½Ó¿Ú°æ±¾
+     * @brief interfaceVersion : è·å–æ¥å£ç‰ˆæœ¬
+     * @return : æ¥å£ç‰ˆæœ¬
      */
     virtual unsigned int interfaceVersion() const { return VER_IJFrameLogin; }
 
     /**
-     * @brief loginManager : »ñÈ¡µÇÂ¼¹ÜÀíÆ÷
-     * @return : µÇÂ¼¹ÜÀíÆ÷
+     * @brief loginManager : è·å–ç™»å½•ç®¡ç†å™¨
+     * @return : ç™»å½•ç®¡ç†å™¨
      */
     virtual IJLoginManager *loginManager() = 0;
 };

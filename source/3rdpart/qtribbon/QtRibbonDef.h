@@ -6,33 +6,24 @@
 
 namespace QtRibbon
 {
-    #ifndef QTRIBBON_LIBRARY_STATIC
-    #ifdef QTRIBBON_LIBRARY
-    #define QTRIBBON_EXPORT Q_DECL_EXPORT
-    #else
-    #define QTRIBBON_EXPORT Q_DECL_IMPORT
+#ifdef QTRIBBON_LIB
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__MINGW32__)
+#   ifdef QTRIBBON_BUILD
+#       define QTRIBBON_EXPORT __declspec(dllexport)
+#   else
+#       define QTRIBBON_EXPORT __declspec(dllimport)
+#       if defined(DEBUG) || defined(_DEBUG)
+#           pragma comment(lib, "qtribbond.lib")
+#       else
+#           pragma comment(lib, "qtribbon.lib")
+#       endif
+#   endif // !QTRIBBON_BUILD
+#endif // _MSC_VER || ...
+#endif // QTRIBBON_LIB
 
-#ifndef _QTRIBBON_HIDE_AUTOLINK_OUTPUT_
-	#ifdef _DEBUG
-    #pragma comment(lib, "qtribbond.lib")
-	#else
-    #pragma comment(lib, "qtribbon.lib")
-	#endif
-#endif  // _QTRIBBON_HIDE_AUTOLINK_OUTPUT_
-
-    #endif
-    #else
-    #define QTRIBBON_EXPORT
-
-#ifndef _QTRIBBON_HIDE_AUTOLINK_OUTPUT_
-    #ifdef _DEBUG
-    #pragma comment(lib, "qtribbond.lib")
-	#else
-    #ragma comment(lib, "qtribbon.lib")
-	#endif
-#endif  // _QTRIBBON_HIDE_AUTOLINK_OUTPUT_
-
-    #endif
+#ifndef QTRIBBON_EXPORT
+#define QTRIBBON_EXPORT
+#endif
 
     #define Q_NULL    0
     #define Q_MAXINT INT_MAX

@@ -38,15 +38,7 @@
 
 #include "Resource.h"
 
-#include "jframe_facade.h"
-#include "factory/jnotifier.h"
-#include "kernel/jframe_kernel.h"
-#include "kernel/jframe_core.h"
-#include "kernel/jframe_layout.h"
-#include "kernel/jframe_login.h"
-
-// qtwinmigrate
-#include "3rdpart/qtwinmigrate/qmfcapp.h"
+#pragma  warning(disable : 4005)	// macro redefinition
 
 // Qt
 #include <QtCore>
@@ -54,6 +46,17 @@
 #if QT_VERSION >= 0x050000
 #include <QtWidgets>
 #endif
+
+// jframe
+#include "jframe_facade.h"
+#include "factory/jnotifier.h"
+#include "kernel/jframe_kernel.h"
+#include "kernel/jframe_core.h"
+#include "kernel/jframe_layout.h"
+#include "kernel/jframe_login.h"
+
+// 3rdpart - qtwinmigrate
+#include "3rdpart/qtwinmigrate/qmfcapp.h"
 
 // BCG
 #include "BCGCBPro/BCGCBProInc.h"

@@ -22,16 +22,20 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-#ifdef TINYXML_DLL
-
-#if defined(TINYXML_MAKEDLL)     // create a tinyxml dll library
-#define TINYXML_EXPORT  __declspec(dllexport)
-#define TINYXML_TEMPLATEDLL
-#else                        // use a tinyxml dll library
-#define TINYXML_EXPORT  __declspec(dllimport)
-#endif
-
-#endif // TINYXML_DLL
+#ifdef TINYXML_LIB
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__MINGW32__)
+#   ifdef TINYXML_BUILD
+#       define TINYXML_EXPORT __declspec(dllexport)
+#   else
+#       define TINYXML_EXPORT __declspec(dllimport)
+#       if defined(DEBUG) || defined(_DEBUG)
+#           pragma comment(lib, "tinyxmld.lib")
+#       else
+#           pragma comment(lib, "tinyxml.lib")
+#       endif
+#   endif // !TINYXML_BUILD
+#endif // _MSC_VER || ...
+#endif // TINYXML_LIB
 
 #ifndef TINYXML_EXPORT
 #define TINYXML_EXPORT

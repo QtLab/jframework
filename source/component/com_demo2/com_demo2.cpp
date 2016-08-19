@@ -1,10 +1,10 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "com_demo2.h"
 
 //
-extern "C" __declspec(dllexport) void *CreateComponent(void* attemper)
+J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
 {
-    // ·Ç¹ÜÀíÔ±ÓÃ»§²ÅÄÜÊ¹ÓÃ´Ë×é¼þ
+    // éžç®¡ç†å‘˜ç”¨æˆ·æ‰èƒ½ä½¿ç”¨æ­¤ç»„ä»¶
     if (jframeLogin()->loginManager()->isAdminUser()) {
         return 0;
     }
@@ -61,19 +61,19 @@ std::string ComDemo2::componentName() const
 
 std::string ComDemo2::componentDesc() const
 {
-    return "×é¼þÊ¾Àý #2";
+    return QStringLiteral("ç»„ä»¶ç¤ºä¾‹ #2").toStdString();
 }
 
 void ComDemo2::attach()
 {
-    // ¶©ÔÄÏûÏ¢
+    // è®¢é˜…æ¶ˆæ¯
     q_notifier->beginGroup(this)
             .endGroup();
 }
 
 void ComDemo2::detach()
 {
-    // È¡Ïû¶©ÔÄÏûÏ¢
+    // å–æ¶ˆè®¢é˜…æ¶ˆæ¯
     q_notifier->remove(this);
 }
 
@@ -89,7 +89,7 @@ void *ComDemo2::createWindow(void *parent, const std::string &objectName)
     }
 
     //
-    q_widget = new QPushButton(QStringLiteral("²âÊÔ×é¼þ2"));
+    q_widget = new QPushButton(QStringLiteral("æµ‹è¯•ç»„ä»¶2"));
 
     return qobject_cast<QWidget *>(q_widget);
 }

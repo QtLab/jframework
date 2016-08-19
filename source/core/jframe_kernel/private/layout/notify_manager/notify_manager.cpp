@@ -1,4 +1,4 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "notify_manager.h"
 #include "../jframe_layout_p.h"
 
@@ -17,7 +17,7 @@ NotifyManager::~NotifyManager()
 
 bool NotifyManager::loadInterface()
 {
-    // ¶©ÔÄÏûÏ¢
+    // è®¢é˜…æ¶ˆæ¯
     q_notifier->beginGroup(this)
             .append("j_frame_try_exit", &NotifyManager::onTryExitFrame)
             .append("j_frame_exit", &NotifyManager::onExitFrame)
@@ -29,7 +29,7 @@ bool NotifyManager::loadInterface()
 
 void NotifyManager::releaseInterface()
 {
-    // È¡Ïû¶©ÔÄ
+    // å–æ¶ˆè®¢é˜…
     q_notifier->remove(this);
 }
 
@@ -44,7 +44,7 @@ JLRESULT NotifyManager::onTryExitFrame(const std::string &id, JWPARAM wParam, JL
     Q_UNUSED(wParam);
     Q_UNUSED(lParam);
 
-    // ³¢ÊÔÍË³öÈí¼þ£¨Òì²½·½Ê½£©
+    // å°è¯•é€€å‡ºè½¯ä»¶ï¼ˆå¼‚æ­¥æ–¹å¼ï¼‰
     jframeFacade()->invokeMethod("frame_try_exit");
 
     return 0;
@@ -56,7 +56,7 @@ JLRESULT NotifyManager::onExitFrame(const std::string &id, JWPARAM wParam, JLPAR
     Q_UNUSED(wParam);
     Q_UNUSED(lParam);
 
-    // ÍË³öÈí¼þ£¨Í¬²½·½Ê½£©
+    // é€€å‡ºè½¯ä»¶ï¼ˆåŒæ­¥æ–¹å¼ï¼‰
     jframeFacade()->invokeMethod("frame_exit");
 
     return 0;
@@ -68,7 +68,7 @@ JLRESULT NotifyManager::onRestartFrame(const std::string &id, JWPARAM wParam, JL
     Q_UNUSED(wParam);
     Q_UNUSED(lParam);
 
-    // ÖØÆôÈí¼þ£¨Í¬²½·½Ê½£©
+    // é‡å¯è½¯ä»¶ï¼ˆåŒæ­¥æ–¹å¼ï¼‰
     jframeFacade()->invokeMethod("frame_restart");
 
     return 0;

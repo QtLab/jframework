@@ -17,14 +17,10 @@ DESTDIR = $${jframe_root}/lib/3rdpart
 ##
 DEFINES += \
     PRO_3RDPART \
+    LOG4CPP_LIB \
+    LOG4CPP_BUILD
 
 win32 {
-    DEFINES += \
-        LOG4CPP_HAS_DLL \
-        LOG4CPP_BUILD_DLL \
-        WINDOWS \
-        DLL
-
     LIBS += -lws2_32 -ladvapi32
 }
 
@@ -84,7 +80,8 @@ RESOURCES +=
 ###############################################################
 
 win32|unix: {
-    copyCommand = @echo off
+    win32:copyCommand = @echo off
+    unix:copyCommand = @echo
     copyCommand += && echo --- console - $$TARGET ---
 
     excludefile = $$PWD/copy.ignore
@@ -96,9 +93,11 @@ win32|unix: {
     dstdir = $${jframe_root}/include/3rdpart/log4cpp
     win32:dstdir = $$replace(dstdir, /, \\)
     !exists("$$dstdir"):copyCommand += && $(MKDIR) "$$dstdir"
-    srcdir = $$PWD/include/log4cpp/*.*
+    win32:srcdir = $$PWD/include/log4cpp/*.*
+    unix:srcdir = $$PWD/include/log4cpp/
     win32:srcdir = $$replace(srcdir, /, \\)
-    copyCommand += && $(COPY_DIR) "$$srcdir" "$$dstdir" /exclude:"$$excludefile"
+    win32:copyCommand += && $(COPY_DIR) "$$srcdir" "$$dstdir" /exclude:"$$excludefile"
+    unix:copyCommand += && "$${jframe_root}/tools/xcopy.py" "$${srcdir}" "$${dstdir}" "*.h"
 
     deployment.commands = $$copyCommand
     first.depends = $(first) deployment

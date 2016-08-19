@@ -15,7 +15,7 @@ IJFrameKernel* jframeKernel()
  * @brief CreateInstance
  * @return
  */
-extern "C" JFRAME_KERNEL_EXPORT IJUnknown* CreateInstance()
+J_EXTERN_C JFRAME_KERNEL_EXPORT IJUnknown* CreateInstance()
 {
     return static_cast<IJUnknown *>(JFrameKernel::getInstance());
 }
@@ -23,7 +23,7 @@ extern "C" JFRAME_KERNEL_EXPORT IJUnknown* CreateInstance()
 /**
  * @brief ReleaseInstance
  */
-extern "C" JFRAME_KERNEL_EXPORT void ReleaseInstance()
+J_EXTERN_C JFRAME_KERNEL_EXPORT void ReleaseInstance()
 {
     JFrameKernel::releaseInstance();
 }

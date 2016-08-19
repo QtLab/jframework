@@ -2,6 +2,33 @@
 #include "jframe_facade_p.h"
 #include <QCoreApplication>
 #include "tinyxml.h"
+#if defined(__unix__)
+#include <unistd.h>
+#endif
+
+// get application file name
+JFRAME_FACADE_EXPORT std::string jAppFileName()
+{
+    static std::string _path("");
+    if (_path.empty()) {
+        // 获取软件实体绝对路径
+#ifdef _MSC_VER
+        extern QString qAppFileName();
+        _path = QFileInfo(qAppFileName()).canonicalPath().toStdString();
+#elif defined(__unix__)
+        // Try looking for a /proc/<pid>/exe symlink first which points to
+        // the absolute path of the executable
+        QFileInfo fileInfo(QString::fromLatin1("/proc/%1/exe").arg(getpid()));
+        if (fileInfo.exists() && fileInfo.isSymLink()) {
+            _path = fileInfo.canonicalPath().toStdString();
+        }
+#else
+#pragma message("Not supported!")
+#endif
+    }
+
+    return _path;
+}
 
 // struct JFrameFacadeData
 
@@ -154,18 +181,9 @@ std::string JFrameFacade::frameDirPath() const
     return data->frameDirPath;
 }
 
-//
-Q_CORE_EXPORT QString qAppFileName();   // get application file name
-
 std::string JFrameFacade::appDirPath() const
 {
-    static std::string _path("");
-    if (_path.empty()) {
-        // 获取软件实体绝对路径
-        _path = QFileInfo(qAppFileName()).absolutePath().toStdString();
-    }
-
-    return _path;
+    return jAppFileName();
 }
 
 std::string JFrameFacade::frameConfigPath() const
@@ -317,7 +335,7 @@ long JFrameFacade::windowHandle(void *window, const std::string &winType)
     // 转到框架内核系统
     long handle = 0;
     if (!data->frameKernel->invokeMethod(
-                "window_handle", 3, window, winType, &handle)) {
+                "window_handle", 3, window, winType.c_str(), &handle)) {
         return -1;  // 调用失败
     }
 
@@ -367,13 +385,13 @@ IJUnknown *JFrameFacade::loadFrameInterface(const std::string &moduleName)
 
     // 获取导出接口
     const QString filePath = QString::fromStdString(frameDirPath() + "/bin/jframe/"
-                                                    + moduleName + dynamicSuffix());
+                                                    + dynamicPrefix() + moduleName + dynamicSuffix());
     FuncCreateInstance fCreateInstance =
             (FuncCreateInstance)QLibrary::resolve(filePath, "CreateInstance");
 
     if (!fCreateInstance) {
         jframeLogWarning(QStringLiteral("模块%1无法加载！（找不到CreateInstance接口或缺少依赖项）")
-                         .arg(filePath));
+                         .arg(filePath).toLocal8Bit().data());
         return 0;       // 获取失败
     }
 
@@ -394,7 +412,7 @@ void JFrameFacade::releaseFrameInterface(const std::string &moduleName)
 
     if (!fReleaseInstance) {
         jframeLogWarning(QStringLiteral("模块%1无法加载！（找不到ReleaseInstance接口或缺少依赖项）")
-                         .arg(filePath));
+                         .arg(filePath).toLocal8Bit().data());
         return;         // 获取失败
     }
 
@@ -472,8 +490,9 @@ void JFrameFacade::copyFrameFile()
 std::string JFrameFacade::frameVersionFromConfig() const
 {
     if (!QFileInfo(QString::fromStdString(frameGlobalPath())).isReadable()) {
-        Q_ASSERT_X(false, "Warning", "配置文件不存在，即将退出软件！");
-        return false;
+        Q_ASSERT_X(false, "Warning", QStringLiteral("配置文件不存在，即将退出软件！")
+                   .toUtf8().data());
+        return std::string();
     }
 
     // 读取配置文件
@@ -487,22 +506,24 @@ std::string JFrameFacade::frameVersionFromConfig() const
                    .arg(QString::fromStdString(frameGlobalPath()))
                    .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
                    .arg(document.ErrorRow()).arg(document.ErrorCol())
-                   .toLocal8Bit().data());
-        return false;
+                   .toUtf8().data());
+        return std::string();
     }
 
     // 获取根节点
     TiXmlElement *emRoot = document.RootElement();
     if (!emRoot) {
-        return false;
+        return std::string();
     }
 
+    //
     std::string sVal;
 
     // framework config
     if (emRoot->QueryStringAttribute("version", &sVal) != TIXML_SUCCESS) {
-        Q_ASSERT_X(false, "Warning", "未指定框架版本，即将退出软件");
-        return false;
+        Q_ASSERT_X(false, "Warning", QStringLiteral("未指定框架版本，即将退出软件")
+                   .toUtf8());
+        return std::string();
     }
 
     return sVal;
@@ -527,7 +548,7 @@ std::string JFrameFacade::framePathFromRegistry(const std::string &version)
     return installPath.toStdString();
 #else
     Q_UNUSED(version);
-#pragma message("在非Windows环境下还未实现此功能！");
+    //#pragma message("在非Windows环境下还未实现此功能！");
     return std::string();
 #endif
 }
@@ -539,14 +560,16 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
 
     //
     if (!QFileInfo(QString::fromStdString(frameGlobalPath())).isReadable()) {
-        Q_ASSERT_X(false, "Warning", "配置文件不存在，即将退出软件！");
+        Q_ASSERT_X(false, "Warning", QStringLiteral("配置文件不存在，即将退出软件！")
+                   .toUtf8().data());
         return false;
     }
 
     // 读取配置文件
     TiXmlDocument document(frameGlobalPath());
     if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
-        Q_ASSERT_X(false, "Warning", "配置文件加载错误，即将推出软件！");
+        Q_ASSERT_X(false, "Warning", QStringLiteral("配置文件加载错误，即将推出软件！")
+                   .toUtf8().data());
         return false;
     }
 
@@ -570,7 +593,6 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
 
     //
     std::string sVal;
-    std::string envPath = getEnvValue("Path");
     std::string paths = this->frameDirPath() + "/bin";
 
     // 寻找全局变量配置->path节点
@@ -616,15 +638,15 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
             if (newPaths.empty()) {
                 newPaths = path;
             } else {
-                newPaths += ';' + path;
+                newPaths += envSeparator() + path;
             }
         }
 
         //
         if (pathType == "append") {
-            paths += ';' + newPaths;
+            paths += envSeparator() + newPaths;
         } else if (pathType == "prefix") {
-            paths = newPaths + ';' + paths;
+            paths = newPaths + envSeparator() + paths;
         } else if (pathType == "replace") {
             paths = newPaths;
         } else {
@@ -632,11 +654,17 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
         }
     }
 
-    //
-    paths += ';' + envPath;
-
     // 设置环境变量
+#ifdef _MSC_VER
+    std::string envPath = getEnvValue("PATH");
+    paths = envPath + envSeparator() + paths;
     qputenv("Path", QByteArray(paths.c_str()));
+#elif defined(__unix__)
+    std::string envPath = getEnvValue("LD_LIBRARY_PATH");
+    qputenv("LD_LIBRARY_PATH", QByteArray(envPath.c_str()));
+#else
+#pragma message("Not supported!")
+#endif
 
     /// for qt.conf
 
@@ -719,16 +747,37 @@ bool JFrameFacade::generateAppQtConf(const std::map<std::string, std::string> &v
     return true;
 }
 
+std::string JFrameFacade::dynamicPrefix() const
+{
+#ifdef _MSC_VER
+    return "";
+#elif defined(__unix__)
+    return "lib";
+#endif
+}
+
 std::string JFrameFacade::dynamicSuffix() const
 {
 #ifdef _MSC_VER
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(DEBUG)
     return "d.dll";
 #else
     return ".dll";
 #endif
 #else
     return ".so";
+#endif
+}
+
+std::string JFrameFacade::envSeparator() const
+{
+#ifdef _MSC_VER
+    return ";";
+#elif defined(__unix__)
+    return ":";
+#else
+#pragma message("Not supported!")
+    return ";";
 #endif
 }
 
@@ -743,6 +792,8 @@ bool JFrameFacade::terminateProcess()
 #ifdef _MSC_VER
     // 强制退出当前进程
     return !!::TerminateProcess(::GetCurrentProcess(), 0);
+#else
+    return true;
 #endif
 }
 
@@ -835,6 +886,65 @@ bool JFrameFacade::testAnotherApp()
 #endif
 }
 
+bool JFrameFacade::loadTextCodecConfig()
+{
+    if (!QFileInfo(QString::fromStdString(data->frameGlobalPath)).isReadable()) {
+        Q_ASSERT_X(false, "Warning", QStringLiteral("配置文件不存在，即将退出软件！")
+                   .toUtf8().data());
+        return false;
+    }
+
+    // 读取配置文件
+    TiXmlDocument document(data->frameGlobalPath);
+    if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
+        Q_ASSERT_X(false, "Warning",
+                   QStringLiteral("配置文件打\"%1\"开失败，即将退出软件！\n"
+                                  "错误标识：%2\n"
+                                  "错误描述：%3\n"
+                                  "错误位置：[%4, %5]")
+                   .arg(QString::fromStdString(data->frameGlobalPath))
+                   .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
+                   .arg(document.ErrorRow()).arg(document.ErrorCol())
+                   .toUtf8().data());
+        return false;
+    }
+
+    // 获取根节点
+    TiXmlElement *emRoot = document.RootElement();
+    if (!emRoot) {
+        return false;
+    }
+
+    // 获取框架文本编码节点
+    TiXmlElement *emTextCodec = emRoot->FirstChildElement("textCodec");
+    if (!emTextCodec) {
+        return false;
+    }
+
+    std::string sVal;
+
+    // framework encoding
+    if (emTextCodec->QueryStringAttribute("encoding", &sVal) != TIXML_SUCCESS) {
+        //
+    }
+
+    //
+    QString codeForName = QString::fromUtf8(emTextCodec->Attribute("encoding"));
+    if (codeForName.isEmpty()) {
+        codeForName = "GBK";    // default
+    }
+
+    // text codec
+    QTextCodec::setCodecForLocale(
+                QTextCodec::codecForName(codeForName.toUtf8()));
+#if QT_VERSION < 0x050000
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
+    QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
+#endif
+
+    return true;
+}
+
 bool JFrameFacade::invokeLog(const std::string &method, int argc, va_list ap)
 {
     // 检测框架内核系统部件有效性
@@ -917,9 +1027,18 @@ bool JFrameFacade::invokeLibraryQueryExists(int argc, va_list ap)
         return false;   // 参数无效
     }
 
+    // 生成文件路径
+    const QString filePath = QString("%1/%2%3%4")
+            .arg(dir).arg(dynamicPrefix().c_str()).arg(fileName)
+            .arg(dynamicSuffix().c_str());
+
     // 检测文件是否存在
-    return QFile::exists(QString("%1/%2%3")
-                         .arg(dir).arg(fileName).arg(dynamicSuffix().c_str()));
+    if (!QFile::exists(filePath)) {
+        return false;   // 不存在
+    }
+
+    // 检测文件是否是库文件
+    return QLibrary::isLibrary(filePath);
 }
 
 bool JFrameFacade::invokeLibraryResolve(int argc, va_list ap)
@@ -970,15 +1089,6 @@ JFrameFacade::JFrameFacade()
 {
     data = new JFrameFacadeData;
 
-    // 初始化Qt系统文本编码
-#if QT_VERSION < 0x050000
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("GBK"));
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
-    QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
-#else
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("GBK"));
-#endif
-
     // 获取框架配置文件路径前缀
     data->frameConfigPath = QDir(QString::fromStdString(appDirPath().append("/../config")))
             .absolutePath().toStdString();
@@ -986,6 +1096,11 @@ JFrameFacade::JFrameFacade()
     // 初始化框架各配置文件路径
     data->frameGlobalPath = data->frameConfigPath + "/frame/jframe_global.xml";
     data->frameLayoutPath = data->frameConfigPath + "/frame/jframe_layout.xml";
+
+    // 加载Qt系统文本编码配置信息
+    if (!loadTextCodecConfig()) {
+        // 加载失败
+    }
 }
 
 JFrameFacade::~JFrameFacade()

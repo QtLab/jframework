@@ -1,7 +1,9 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "jattempter.h"
 #include "jmain_window.h"
 #include "jframe_facade.h"
+#include "../../jframe_kernel.h"
+#include "../layout/jframe_layout_p.h"
 
 // class JAttempter
 
@@ -10,7 +12,7 @@ JAttempter::JAttempter()
     , q_mainWindow(0)
     , q_workModeId(0)
 {
-    // ´´½¨ÏûÏ¢·Ö·¢Æ÷ÊµÀı
+    // åˆ›å»ºæ¶ˆæ¯åˆ†å‘å™¨å®ä¾‹
     q_notifier = JFRAME_FACTORY_CREATE(INotifier);
 
     //
@@ -19,7 +21,7 @@ JAttempter::JAttempter()
 
 JAttempter::~JAttempter()
 {
-    // Ïú»ÙÏûÏ¢·Ö·¢Æ÷ÊµÀı
+    // é”€æ¯æ¶ˆæ¯åˆ†å‘å™¨å®ä¾‹
     JFRAME_FACTORY_RELEASE(q_notifier, INotifier);
 
     //
@@ -50,13 +52,13 @@ bool JAttempter::loadInterface()
 {
     bool result = true;
 
-    // ¼ÓÔØÅäÖÃĞÅÏ¢
+    // åŠ è½½é…ç½®ä¿¡æ¯
     result = result && loadConfig();
 
-    // ¼ÓÔØ³õÊ¼»¯×é¼ş
+    // åŠ è½½åˆå§‹åŒ–ç»„ä»¶
     result = result && loadInitComponent();
 
-    // ³õÊ¼»¯Ö÷´°¿Ú
+    // åˆå§‹åŒ–ä¸»çª—å£
     result = result && q_mainWindow->loadInterface();
 
     return result;
@@ -64,13 +66,13 @@ bool JAttempter::loadInterface()
 
 void JAttempter::releaseInterface()
 {
-    // ÏÂµçËùÓĞ×é¼ş
+    // ä¸‹ç”µæ‰€æœ‰ç»„ä»¶
     releaseAllComponent();
 
-    // ÊÍ·ÅÏûÏ¢·Ö·¢Æ÷½Ó¿Ú
+    // é‡Šæ”¾æ¶ˆæ¯åˆ†å‘å™¨æ¥å£
     q_notifier->releaseInterface();
 
-    // ÊÍ·Å¿ò¼ÜÖ÷´°¿Ú
+    // é‡Šæ”¾æ¡†æ¶ä¸»çª—å£
     if (q_mainWindow) {
         q_mainWindow->releaseInterface();
     }
@@ -105,7 +107,7 @@ bool JAttempter::loadComponent()
     //
     dynamic_cast<JMainWindow *>(q_mainWindow)->startSplash();
 
-    // ¼ÓÔØËùÓĞ×é¼ş
+    // åŠ è½½æ‰€æœ‰ç»„ä»¶
     result = result && loadAllComponent();
 
     //
@@ -124,11 +126,11 @@ void JAttempter::releaseComponent()
 
 IJComponent *JAttempter::queryComponent(const std::string &componentName)
 {
-    // ²éÕÒ×é¼ş
+    // æŸ¥æ‰¾ç»„ä»¶
     QMap<QString, JComponentConfig>::const_iterator citer =
             q_mapComponent.find(QString::fromStdString(componentName));
     if (citer == q_mapComponent.end()) {
-        return 0;   // ²»´æÔÚ
+        return 0;   // ä¸å­˜åœ¨
     }
 
     return citer.value().component;
@@ -141,13 +143,13 @@ IJMainWindow *JAttempter::mainWindow()
 
 void *JAttempter::queryInterface(const std::string &componentName, const std::string &iid, unsigned int ver)
 {
-    // ²éÑ¯×é¼ş
+    // æŸ¥è¯¢ç»„ä»¶
     IJComponent *component = queryComponent(componentName);
     if (!component) {
-        return 0;   // ²»´æÔÚ
+        return 0;   // ä¸å­˜åœ¨
     }
 
-    // ²éÑ¯×é¼ş½Ó¿Ú
+    // æŸ¥è¯¢ç»„ä»¶æ¥å£
     return component->queryInterface(iid, ver);
 }
 
@@ -213,49 +215,49 @@ INotifier *JAttempter::notifier()
 
 bool JAttempter::loadConfig()
 {
-    // ´ò¿ª¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼ş
+    // æ‰“å¼€æ¡†æ¶å…¨å±€é…ç½®æ–‡ä»¶
     QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
     if (!file.exists()) {
-        const QString text = QStringLiteral("¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼ş\"%1\"²»´æÔÚ£¡")
+        const QString text = QStringLiteral("æ¡†æ¶å…¨å±€é…ç½®æ–‡ä»¶\"%1\"ä¸å­˜åœ¨ï¼")
                 .arg(file.fileName());
         QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
-                             QStringLiteral("¾¯¸æ"), text);
-        return false;   // ÎÄ¼ş²»´æÔÚ
+                             QStringLiteral("è­¦å‘Š"), text);
+        return false;   // æ–‡ä»¶ä¸å­˜åœ¨
     }
 
-    // ´ò¿ªÎÄ¼ş
+    // æ‰“å¼€æ–‡ä»¶
     if (!file.open(QFile::ReadWrite)) {
-        return false;   // ´ò¿ªÊ§°Ü
+        return false;   // æ‰“å¼€å¤±è´¥
     }
 
-    // ½âÎöÎÄ¼ş
+    // è§£ææ–‡ä»¶
     QString errorMsg;
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼ş\"%1\"½âÎöÊ§°Ü£¡\n"
-                                            "´íÎóÃèÊö£º%2\n"
-                                            "´íÎóÎ»ÖÃ£º£¨ĞĞºÅ£º%3£¬ÁĞºÅ£º%4£©")
+        const QString text = QStringLiteral("æ¡†æ¶å…¨å±€é…ç½®æ–‡ä»¶\"%1\"è§£æå¤±è´¥ï¼\n"
+                                            "é”™è¯¯æè¿°ï¼š%2\n"
+                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å·ï¼š%4ï¼‰")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
-                             QStringLiteral("¾¯¸æ"), text);
+                             QStringLiteral("è­¦å‘Š"), text);
         return false;
     }
 
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.close();
 
-    // »ñÈ¡¸ù½Úµã
+    // è·å–æ ¹èŠ‚ç‚¹
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
-        return false;   // ÎŞĞ§
+        return false;   // æ— æ•ˆ
     }
 
-    // »ñÈ¡¹¤×÷Ä£Ê½½Úµã
+    // è·å–å·¥ä½œæ¨¡å¼èŠ‚ç‚¹
     QDomElement emWorkMode = emRoot.firstChildElement("workMode");
     if (emWorkMode.isNull()) {
-        return false;   // ÎŞĞ§
+        return false;   // æ— æ•ˆ
     }
 
     // id
@@ -270,11 +272,12 @@ bool JAttempter::loadConfig()
 
 bool JAttempter::loadInitComponent()
 {
-    const std::string dirPath = jframeFacade()->appDirPath()
-            .append("/../initcomponent");
+    const std::string dirPath =
+            QDir(QString::fromStdString(jframeFacade()->appDirPath()).append("/../initcomponent"))
+            .absolutePath().toStdString();
     if (!jframeFacade()->invokeMethod(
                 "library_query_exists", 3, dirPath.c_str(), "InitComponent")) {
-        return true;    // Èç¹û²»´æ£¬ÔòºöÂÔ¼ÓÔØ
+        return true;    // å¦‚æœä¸å­˜ï¼Œåˆ™å¿½ç•¥åŠ è½½
     }
 
     //
@@ -306,43 +309,43 @@ bool JAttempter::loadAllComponent()
     }
     frameComponentPath.append("/jframe_component.xml");
 
-    // ´ò¿ª¿ò¼Ü×é¼şÅäÖÃÎÄ¼ş
+    // æ‰“å¼€æ¡†æ¶ç»„ä»¶é…ç½®æ–‡ä»¶
     QFile file(QString::fromStdString(frameComponentPath));
     if (!file.exists()) {
-        const QString text = QStringLiteral("¿ò¼Ü×é¼şÅäÖÃÎÄ¼ş\"%1\"²»´æÔÚ£¡")
+        const QString text = QStringLiteral("æ¡†æ¶ç»„ä»¶é…ç½®æ–‡ä»¶\"%1\"ä¸å­˜åœ¨ï¼")
                 .arg(file.fileName());
         QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
-                             QStringLiteral("¾¯¸æ"), text);
-        return false;   // ÎÄ¼ş²»´æÔÚ
+                             QStringLiteral("è­¦å‘Š"), text);
+        return false;   // æ–‡ä»¶ä¸å­˜åœ¨
     }
 
-    // ´ò¿ªÎÄ¼ş
+    // æ‰“å¼€æ–‡ä»¶
     if (!file.open(QFile::ReadWrite)) {
-        return false;   // ´ò¿ªÊ§°Ü
+        return false;   // æ‰“å¼€å¤±è´¥
     }
 
-    // ½âÎöÎÄ¼ş
+    // è§£ææ–‡ä»¶
     QString errorMsg;
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("¿ò¼Ü×é¼şÅäÖÃÎÄ¼ş\"%1\"½âÎöÊ§°Ü£¡\n"
-                                            "´íÎóÃèÊö£º%2\n"
-                                            "´íÎóÎ»ÖÃ£º£¨ĞĞºÅ£º%3£¬ÁĞºÅ£º%4£©")
+        const QString text = QStringLiteral("æ¡†æ¶ç»„ä»¶é…ç½®æ–‡ä»¶\"%1\"è§£æå¤±è´¥ï¼\n"
+                                            "é”™è¯¯æè¿°ï¼š%2\n"
+                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å·ï¼š%4ï¼‰")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning((reinterpret_cast<QWidget *>(q_mainWindow->mainWidget())),
-                             QStringLiteral("¾¯¸æ"), text);
+                             QStringLiteral("è­¦å‘Š"), text);
         return false;
     }
 
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.close();
 
-    // »ñÈ¡¸ù½Úµã
+    // è·å–æ ¹èŠ‚ç‚¹
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
-        return false;   // ÎŞĞ§
+        return false;   // æ— æ•ˆ
     }
 
     //
@@ -351,40 +354,23 @@ bool JAttempter::loadAllComponent()
          emComponent = emComponent.nextSiblingElement("component")) {
         // load
         if (!QVariant(emComponent.attribute("load", "false")).toBool()) {
-            continue;   // ²»ÔÊĞí¼ÓÔØ
+            continue;   // ä¸å…è®¸åŠ è½½
         }
         JComponentConfig componentConfig;
         // name
         componentConfig.componentName = emComponent.attribute("name").trimmed();
         if (componentConfig.componentName.isEmpty()) {
-            continue;   // ÎŞĞ§
+            continue;   // æ— æ•ˆ
         }
-        // ¼ì²â×é¼şÖØ¸´ĞÔ¼ÓÔØÎÊÌâ
+        // æ£€æµ‹ç»„ä»¶é‡å¤æ€§åŠ è½½é—®é¢˜
         if (q_mapComponent.contains(componentConfig.componentName)) {
-            continue;   // ÒÑ¼ÓÔØ
+            continue;   // å·²åŠ è½½
         }
         // desc
         componentConfig.componentDesc = emComponent.attribute("desc").trimmed();
         if (componentConfig.componentDesc.isEmpty()) {
-            continue;   // ÎŞĞ§
+            continue;   // æ— æ•ˆ
         }
-        // type
-        componentConfig.componentType = emComponent.attribute("type").trimmed();
-        //
-        if (componentConfig.componentType == "mfc") {
-#ifdef _AFXDLL
-            if (!AfxGetApp()) {
-                jframeLogWarning(QStringLiteral("MFCÀàĞÍ×é¼şÎ´¼ÓÔØ£¡(Ô­Òò£º·ÇMFC¿ò¼Ü) "
-                                                "×é¼şĞÅÏ¢£º[Â·¾¶: %1]£»[Ãû³Æ: %2]£»[ÃèÊö: %3]")
-                                 .arg(componentConfig.componentDir)
-                                 .arg(componentConfig.componentName)
-                                 .arg(componentConfig.componentDesc).toLocal8Bit().data());
-                continue;       // Î´ÆôÓÃMFC¿ò¼Ü£¬ºöÂÔ¼ÓÔØ
-            }
-#endif
-        }
-        // stay
-        componentConfig.stay = QVariant(emComponent.attribute("stay", "false")).toBool();
         // dir
         QString componentDir = emComponent.attribute("dir").trimmed();
         if (componentDir.isEmpty()) {
@@ -396,12 +382,29 @@ bool JAttempter::loadAllComponent()
         componentDir = QDir(componentDir).absolutePath();
         componentDir.append("/").append(componentConfig.componentName);
         componentConfig.componentDir = componentDir;
-        // ¼ÓÔØĞÅÏ¢ÏÔÊ¾
-        QString msg = QStringLiteral("ÕıÔÚ¼ÓÔØ#").append(componentConfig.componentDesc).append("#...");
-        q_mainWindow->updateSplashInfo(msg.toLocal8Bit().data());
-        // ¼ÓÔØ×é¼ş
+        // stay
+        componentConfig.stay = QVariant(emComponent.attribute("stay", "false")).toBool();
+        // type
+        componentConfig.componentType = emComponent.attribute("type").trimmed();
+        //
+        if (componentConfig.componentType == "mfc") {
+#ifdef _AFXDLL
+            if (!AfxGetApp()) {
+                jframeLogWarning(QStringLiteral("MFCç±»å‹ç»„ä»¶æœªåŠ è½½ï¼(åŸå› ï¼šéMFCæ¡†æ¶) "
+                                                "ç»„ä»¶ä¿¡æ¯ï¼š[è·¯å¾„: %1]ï¼›[åç§°: %2]ï¼›[æè¿°: %3]")
+                                 .arg(componentConfig.componentDir)
+                                 .arg(componentConfig.componentName)
+                                 .arg(componentConfig.componentDesc).toLocal8Bit().data());
+                continue;       // æœªå¯ç”¨MFCæ¡†æ¶ï¼Œå¿½ç•¥åŠ è½½
+            }
+#endif
+        }
+        // åŠ è½½ä¿¡æ¯æ˜¾ç¤º
+        QString msg = QStringLiteral("æ­£åœ¨åŠ è½½#").append(componentConfig.componentDesc).append("#...");
+        q_mainWindow->updateSplashInfo(msg.toStdString());
+        // åŠ è½½ç»„ä»¶
         if (!loadComponent(componentConfig)) {
-            continue;   // ¼ÓÔØÊ§°Ü
+            continue;   // åŠ è½½å¤±è´¥
         }
     }
 
@@ -410,11 +413,11 @@ bool JAttempter::loadAllComponent()
 
 bool JAttempter::loadComponent(JComponentConfig &componentConfig)
 {
-    // ÎÄ¼şÓĞĞ§ĞÔ¼ì²â
+    // æ–‡ä»¶æœ‰æ•ˆæ€§æ£€æµ‹
     if (!jframeFacade()->invokeMethod("library_query_exists", 2,
                                       componentConfig.componentDir.toLocal8Bit().data(),
                                       componentConfig.componentName.toLocal8Bit().data())) {
-        return true;    // Èç¹û²»´æ£¬ÔòºöÂÔ¼ÓÔØ
+        return true;    // å¦‚æœä¸å­˜ï¼Œåˆ™å¿½ç•¥åŠ è½½
     }
 
     //
@@ -433,41 +436,42 @@ bool JAttempter::loadComponent(JComponentConfig &componentConfig)
         return false;
     }
 
-    // ´´½¨×é¼ş
+    // åˆ›å»ºç»„ä»¶
     IJComponent *component = (IJComponent *)fCreateComponent(static_cast<IJAttempter *>(this));
     if (!component) {
-        return false;   // ´´½¨Ê§°Ü
+        return false;   // åˆ›å»ºå¤±è´¥
     }
-    // ×é¼şÀàĞÍ¼ì²â
+    // ç»„ä»¶ç±»å‹æ£€æµ‹
     if (component->componentType() == "mfc") {
 #ifdef _AFXDLL
         if (!AfxGetApp()) {
-            jframeLogWarning(QStringLiteral("MFCÀàĞÍ×é¼şÎ´¼ÓÔØ£¡(Ô­Òò£º·ÇMFC¿ò¼Ü) "
-                                            "×é¼şĞÅÏ¢£º[Â·¾¶: %1]£»[Ãû³Æ: %2]£»[ÃèÊö: %3]")
+            jframeLogWarning(QStringLiteral("MFCç±»å‹ç»„ä»¶æœªåŠ è½½ï¼(åŸå› ï¼šéMFCæ¡†æ¶) "
+                                            "ç»„ä»¶ä¿¡æ¯ï¼š[è·¯å¾„: %1]ï¼›[åç§°: %2]ï¼›[æè¿°: %3]")
                              .arg(componentConfig.componentDir)
                              .arg(componentConfig.componentName)
                              .arg(componentConfig.componentDesc).toLocal8Bit().data());
             delete component;
-            return false;       // Î´ÆôÓÃMFC¿ò¼Ü£¬ºöÂÔ¼ÓÔØ
+            return false;       // æœªå¯ç”¨MFCæ¡†æ¶ï¼Œå¿½ç•¥åŠ è½½
         }
 #endif
     }
-    // ´æ´¢×é¼şĞÅÏ¢
+    // å­˜å‚¨ç»„ä»¶ä¿¡æ¯
     componentConfig.component = component;
     q_mapComponent[componentConfig.componentName] = componentConfig;
 
-    // ´´½¨×é¼ş½çÃæ
+    // åˆ›å»ºç»„ä»¶ç•Œé¢
     q_mainWindow->createComponentUi(component, (componentConfig.componentDir + "/"
                                                 + componentConfig.componentName + ".xml")
                                     .toStdString());
 
-    // ¼ÓÔØ×é¼ş×ÊÔ´
+    // åŠ è½½ç»„ä»¶èµ„æº
     if (!component->loadInterface()) {
         return false;
     }
 
-    // ¹ÒÔØ×é¼şµ½¿ò¼Ü²¼¾ÖÏµÍ³
-    jframeLayout()->invokeMethod("attach_component", 2, component, componentConfig.stay);
+    // æŒ‚è½½ç»„ä»¶åˆ°æ¡†æ¶å¸ƒå±€ç³»ç»Ÿ
+    JFrameLayout::getInstance()->invokeMethod(
+                "attach_component", 2, component, componentConfig.stay);
 
     return true;
 }
@@ -480,18 +484,18 @@ bool JAttempter::releaseAllComponent()
     while (citer.hasPrevious()) {
         citer.previous();
         const JComponentConfig &componentConfig = citer.value();
-        // Ğ¶ÔØĞÅÏ¢ÏÔÊ¾
-        QString msg = QStringLiteral("ÕıÔÚĞ¶ÔØ#")
+        // å¸è½½ä¿¡æ¯æ˜¾ç¤º
+        QString msg = QStringLiteral("æ­£åœ¨å¸è½½#")
                 .append(componentConfig.componentDesc).append("#...");
         q_mainWindow->updateSplashInfo(msg.toLocal8Bit().data());
 
-        // Ğ¶ÔØ×é¼ş×ÊÔ´
+        // å¸è½½ç»„ä»¶èµ„æº
         componentConfig.component->releaseInterface();
 
-        // ´Ó¿ò¼Ü²¼¾ÖÏµÍ³Ğ¶ÔØ×é¼ş
+        // ä»æ¡†æ¶å¸ƒå±€ç³»ç»Ÿå¸è½½ç»„ä»¶
         jframeLayout()->invokeMethod("detach_component", 1, componentConfig.component);
 
-        // ÊÍ·Å
+        // é‡Šæ”¾
         delete componentConfig.component;
     }
 

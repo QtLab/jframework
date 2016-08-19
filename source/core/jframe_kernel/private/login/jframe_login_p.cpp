@@ -1,4 +1,4 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "jframe_login_p.h"
 #include "jloginmanager.h"
 
@@ -6,7 +6,7 @@
 
 struct JFrameLoginData
 {
-    IJLoginManager *loginManager;   // µÇÂ¼¹ÜÀíÆ÷ÊµÀı
+    IJLoginManager *loginManager;   // ç™»å½•ç®¡ç†å™¨å®ä¾‹
 
     JFrameLoginData() :
         loginManager(0)
@@ -23,7 +23,7 @@ JFrameLogin* JFrameLogin::_instance;
 
 JFrameLogin* JFrameLogin::getInstance()
 {
-    // Ë«ÖØ¼ì²â£¨·ÀÖ¹¶àÏß³Ì¾ºÕù£©
+    // åŒé‡æ£€æµ‹ï¼ˆé˜²æ­¢å¤šçº¿ç¨‹ç«äº‰ï¼‰
     if (JFrameLogin::_instance == 0) {
         JFrameLogin::_instance_mutex.lock();
         if (JFrameLogin::_instance == 0) {
@@ -38,7 +38,7 @@ JFrameLogin* JFrameLogin::getInstance()
 
 void JFrameLogin::releaseInstance()
 {
-    // Ë«ÖØ¼ì²â£¨·ÀÖ¹¶àÏß³Ì¾ºÕù£©
+    // åŒé‡æ£€æµ‹ï¼ˆé˜²æ­¢å¤šçº¿ç¨‹ç«äº‰ï¼‰
     if (JFrameLogin::_instance != 0) {
         JFrameLogin::_instance_mutex.lock();
         if (JFrameLogin::_instance != 0) {
@@ -73,7 +73,7 @@ bool JFrameLogin::loadInterface()
 {
     bool result = true;
 
-    // ¼ÓÔØµÇÂ¼¹ÜÀíÆ÷
+    // åŠ è½½ç™»å½•ç®¡ç†å™¨
     if (data->loginManager) {
         result = result && data->loginManager->loadInterface();
     }
@@ -83,7 +83,7 @@ bool JFrameLogin::loadInterface()
 
 void JFrameLogin::releaseInterface()
 {
-    // ÊÍ·ÅµÇÂ¼¹ÜÀíÆ÷
+    // é‡Šæ”¾ç™»å½•ç®¡ç†å™¨
     if (data->loginManager) {
         data->loginManager->releaseInterface();
     }
@@ -105,13 +105,13 @@ bool JFrameLogin::invokeMethod(const std::string &method, int argc, ...)
     va_list ap;
     va_start(ap, argc);
 
-    // Æô¶¯µÇÂ¼Ä£¿é£¬ÏÔÊ¾µÇÂ¼½çÃæ
+    // å¯åŠ¨ç™»å½•æ¨¡å—ï¼Œæ˜¾ç¤ºç™»å½•ç•Œé¢
     if (method == "frame_login") {
         if (data->loginManager) {
             result = data->loginManager->login();
         }
     }
-    // ×¢ÏúµÇÂ¼£¨Ä¬ÈÏ²ÉÓÃÖØÆô¿ò¼Ü·½Ê½£©
+    // æ³¨é”€ç™»å½•ï¼ˆé»˜è®¤é‡‡ç”¨é‡å¯æ¡†æ¶æ–¹å¼ï¼‰
     else if (method == "frame_logout") {
         if (data->loginManager) {
             result = data->loginManager->logout();
@@ -132,13 +132,13 @@ JFrameLogin::JFrameLogin()
 {
     data = new JFrameLoginData;
 
-    // ´´½¨µÇÂ¼¹ÜÀíÆ÷
+    // åˆ›å»ºç™»å½•ç®¡ç†å™¨
     data->loginManager = new JLoginManager();
 }
 
 JFrameLogin::~JFrameLogin()
 {
-    // Ïú»ÙµÇÂ¼¹ÜÀíÆ÷
+    // é”€æ¯ç™»å½•ç®¡ç†å™¨
     if (data->loginManager) {
         delete data->loginManager;
         data->loginManager = 0;

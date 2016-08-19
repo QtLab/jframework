@@ -1,4 +1,4 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "testwidget1.h"
 
 TestWidget1::TestWidget1(INotifier *notifier, QWidget *parent)
@@ -7,7 +7,7 @@ TestWidget1::TestWidget1(INotifier *notifier, QWidget *parent)
 {
     QHBoxLayout *horiLayoutMain = new QHBoxLayout(this);
 
-    QPushButton *button1 = new QPushButton(QStringLiteral("²âÊÔ×é¼þ3"), this);
+    QPushButton *button1 = new QPushButton(QStringLiteral("æµ‹è¯•ç»„ä»¶3"), this);
     horiLayoutMain->addWidget(button1);
 
     //

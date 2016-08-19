@@ -1,4 +1,4 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "jframe_kernel_p.h"
 #include "core/jframe_core_p.h"
 #include "layout/jframe_layout_p.h"
@@ -10,7 +10,7 @@
 
 struct JFrameKernelData
 {
-    IJLogManager *logManager;       // ¿ò¼ÜÈÕÖ¾ÏµÍ³²¿¼ş
+    IJLogManager *logManager;       // æ¡†æ¶æ—¥å¿—ç³»ç»Ÿéƒ¨ä»¶
 
     JFrameKernelData()
         : logManager(0)
@@ -27,7 +27,7 @@ JFrameKernel *JFrameKernel::_instance = 0;
 
 JFrameKernel *JFrameKernel::getInstance()
 {
-    // Ë«ÖØ¼ì²â£¨·ÀÖ¹¶àÏß³Ì¾ºÕù£©
+    // åŒé‡æ£€æµ‹ï¼ˆé˜²æ­¢å¤šçº¿ç¨‹ç«äº‰ï¼‰
     if (JFrameKernel::_instance == 0) {
         JFrameKernel::_instance_mutex.lock();
         if (JFrameKernel::_instance == 0) {
@@ -42,7 +42,7 @@ JFrameKernel *JFrameKernel::getInstance()
 
 void JFrameKernel::releaseInstance()
 {
-    // Ë«ÖØ¼ì²â£¨·ÀÖ¹¶àÏß³Ì¾ºÕù£©
+    // åŒé‡æ£€æµ‹ï¼ˆé˜²æ­¢å¤šçº¿ç¨‹ç«äº‰ï¼‰
     if (JFrameKernel::_instance != 0) {
         JFrameKernel::_instance_mutex.lock();
         if (JFrameKernel::_instance != 0) {
@@ -84,38 +84,43 @@ bool JFrameKernel::loadInterface()
     JwtCore::instance()->loadSystemLang();
     //qApp->setStyleSheet(JStyleSheet::instance()->styleSheet("default"));
 
-    // ¼ÓÔØÈÕÖ¾¹ÜÀíÆ÷
+    // åŠ è½½æ—¥å¿—ç®¡ç†å™¨
     if (data->logManager) {
         result = result && data->logManager->loadInterface();
     }
 
-    // ¼ÓÔØ¿ò¼ÜºËĞÄÏµÍ³
+    // åŠ è½½æ¡†æ¶æ ¸å¿ƒç³»ç»Ÿ
     result = result && frameCore()->loadInterface();
 
-    // ¼ÓÔØ¿ò¼Ü²¼¾ÖÏµÍ³
+    // åŠ è½½æ¡†æ¶å¸ƒå±€ç³»ç»Ÿ
     result = result && frameLayout()->loadInterface();
 
-    // ¼ÓÔØ¿ò¼ÜµÇÂ¼ÏµÍ³
+    // åŠ è½½æ¡†æ¶ç™»å½•ç³»ç»Ÿ
     result = result && frameLogin()->loadInterface();
 
-    // ¼ÓÔØ×é¼ş
+    // åŠ è½½ç»„ä»¶
     result = result && frameCore()->attempter()->loadComponent();
+
+    // å¯åŠ¨é»˜è®¤ç³»ç»Ÿ
+    if (result) {
+        frameLayout()->notifier()->postMessage("j_load_default_system");
+    }
 
     return true;
 }
 
 void JFrameKernel::releaseInterface()
 {
-    // ÊÍ·Å¿ò¼ÜµÇÂ¼ÏµÍ³
+    // é‡Šæ”¾æ¡†æ¶ç™»å½•ç³»ç»Ÿ
     frameLogin()->releaseInterface();
 
-    // ÊÍ·Å¿ò¼Ü²¼¾ÖÏµÍ³
+    // é‡Šæ”¾æ¡†æ¶å¸ƒå±€ç³»ç»Ÿ
     frameLayout()->releaseInterface();
 
-    // ÊÍ·Å¿ò¼ÜºËĞÄÏµÍ³
+    // é‡Šæ”¾æ¡†æ¶æ ¸å¿ƒç³»ç»Ÿ
     frameCore()->releaseInterface();
 
-    // ÊÍ·ÅÈÕÖ¾¹ÜÀíÆ÷
+    // é‡Šæ”¾æ—¥å¿—ç®¡ç†å™¨
     if (data->logManager) {
         data->logManager->releaseInterface();
     }
@@ -138,76 +143,81 @@ bool JFrameKernel::invokeMethod(const std::string &method, int argc, ...)
     va_list ap;
     va_start(ap, argc);
 
-    // Êä³öÒ»ÌõÈÕÖ¾
+    // è¾“å‡ºä¸€æ¡æ—¥å¿—
     if (method == "log") {
         result = invokeLog(argc, ap);
     }
-    // ÏÔÊ¾¿ò¼Ü
+    // æ˜¾ç¤ºæ¡†æ¶
     else if (method == "frame_show") {
         if (argc == 2) {
-            // ×ªµ½¿ò¼ÜºËĞÄÏµÍ³
+            // è½¬åˆ°æ¡†æ¶æ ¸å¿ƒç³»ç»Ÿ
+#if defined(__unix__)
+            bool show = va_arg(ap, int);
+            bool maximized = va_arg(ap, int);
+#else
             bool show = va_arg(ap, bool);
             bool maximized = va_arg(ap, bool);
+#endif
             result = frameCore()->invokeMethod("frame_show", 2, show, maximized);
         }
     }
-    // ³¢ÊÔÍË³ö¿ò¼Ü£¨Òì²½·½Ê½£©
+    // å°è¯•é€€å‡ºæ¡†æ¶ï¼ˆå¼‚æ­¥æ–¹å¼ï¼‰
     else if (method == "frame_try_exit") {
-        // ×ªµ½¿ò¼Ü²¼¾ÖÏµÍ³
+        // è½¬åˆ°æ¡†æ¶å¸ƒå±€ç³»ç»Ÿ
         result = frameLayout()->invokeMethod("frame_try_exit");
     }
-    // ÍË³ö¿ò¼Ü£¨Òì²½·½Ê½£©
+    // é€€å‡ºæ¡†æ¶ï¼ˆå¼‚æ­¥æ–¹å¼ï¼‰
     else if (method == "frame_exit") {
-        // ×ªµ½¿ò¼Ü²¼¾ÖÏµÍ³
+        // è½¬åˆ°æ¡†æ¶å¸ƒå±€ç³»ç»Ÿ
         result = frameLayout()->invokeMethod("frame_exit");
     }
-    // ÖØÆô¿ò¼Ü£¨Òì²½·½Ê½£©
+    // é‡å¯æ¡†æ¶ï¼ˆå¼‚æ­¥æ–¹å¼ï¼‰
     else if (method == "frame_restart") {
-        // ×ªµ½¿ò¼Ü²¼¾ÖÏµÍ³
+        // è½¬åˆ°æ¡†æ¶å¸ƒå±€ç³»ç»Ÿ
         result = frameLayout()->invokeMethod("frame_restart");
     }
-    // µÇÂ¼¿ò¼Ü
+    // ç™»å½•æ¡†æ¶
     else if (method == "frame_login") {
-        // ×ªµ½¿ò¼ÜµÇÂ¼ÏµÍ³
+        // è½¬åˆ°æ¡†æ¶ç™»å½•ç³»ç»Ÿ
         result = frameLogin()->invokeMethod("frame_login");
     }
-    // ×¢Ïú¿ò¼Ü
+    // æ³¨é”€æ¡†æ¶
     else if (method == "frame_logout") {
-        // ×ªµ½¿ò¼ÜµÇÂ¼ÏµÍ³
+        // è½¬åˆ°æ¡†æ¶ç™»å½•ç³»ç»Ÿ
         result = frameLogin()->invokeMethod("frame_logout");
     }
-    // ÔËĞĞQtÏûÏ¢Ñ­»·ÏµÍ³
+    // è¿è¡ŒQtæ¶ˆæ¯å¾ªç¯ç³»ç»Ÿ
     else if (method == "run_q_app") {
         if (argc == 2) {
-            // ×ªµ½¿ò¼ÜºËĞÄÏµÍ³
+            // è½¬åˆ°æ¡†æ¶æ ¸å¿ƒç³»ç»Ÿ
             void *mfcApp = va_arg(ap, void*);
             int *exitCode = va_arg(ap, int*);
             result = frameCore()->invokeMethod("run_q_app", 2, mfcApp, exitCode);
         }
     }
-    // ÔËĞĞQtÏûÏ¢Ñ­»·ÏµÍ³
+    // è¿è¡ŒQtæ¶ˆæ¯å¾ªç¯ç³»ç»Ÿ
     else if (method == "window_handle") {
         if (argc == 3) {
-            // ×ªµ½¿ò¼ÜºËĞÄÏµÍ³
+            // è½¬åˆ°æ¡†æ¶æ ¸å¿ƒç³»ç»Ÿ
             void *window = va_arg(ap, void*);
             const char *winType = va_arg(ap, char*);
             long *handle = va_arg(ap, long*);
             result = frameCore()->invokeMethod("window_handle", 3, window, winType, handle);
         }
     }
-    // ´´½¨QtÓ¦ÓÃÊµÌå
+    // åˆ›å»ºQtåº”ç”¨å®ä½“
     else if (method == "create_qapp") {
         if (argc == 3) {
-            // ×ªµ½¿ò¼ÜºËĞÄÏµÍ³
+            // è½¬åˆ°æ¡†æ¶æ ¸å¿ƒç³»ç»Ÿ
             int *argc = va_arg(ap, int*);
             char **argv = va_arg(ap, char**);
             void *app = va_arg(ap, void*);
             result = frameCore()->invokeMethod("create_qapp", 3, argc, argv, app);
         }
     }
-    // ¼ÓÔØÄ¬ÈÏ¿ò¼ÜÏµÍ³
+    // åŠ è½½é»˜è®¤æ¡†æ¶ç³»ç»Ÿ
     else if (method == "load_default_system") {
-        // ×ªµ½¿ò¼Ü²¼¾ÖÏµÍ³
+        // è½¬åˆ°æ¡†æ¶å¸ƒå±€ç³»ç»Ÿ
         result = frameLayout()->invokeMethod("load_default_system");
     }
 
@@ -238,20 +248,20 @@ IJFrameLogin *JFrameKernel::frameLogin()
 
 bool JFrameKernel::invokeLog(int argc, va_list ap)
 {
-    // ÈÕÖ¾¹ÜÀíÆ÷ÊµÀıµÄÓĞĞ§ĞÔ¼ì²â
+    // æ—¥å¿—ç®¡ç†å™¨å®ä¾‹çš„æœ‰æ•ˆæ€§æ£€æµ‹
     if (!data->logManager) {
-        return false;   // ÎŞĞ§
+        return false;   // æ— æ•ˆ
     }
 
-    // ²ÎÊıÓĞĞ§ĞÔ¼ì²â
+    // å‚æ•°æœ‰æ•ˆæ€§æ£€æµ‹
     if (argc < 2) {
-        return false;   // ÎŞĞ§ (type, msg, ...)
+        return false;   // æ— æ•ˆ (type, msg, ...)
     }
 
     //
     const char* sType = va_arg(ap, char*);
     if (!sType) {
-        return false;   // ²ÎÊıÎŞĞ§
+        return false;   // å‚æ•°æ— æ•ˆ
     }
 
     //
@@ -279,7 +289,7 @@ bool JFrameKernel::invokeLog(int argc, va_list ap)
     //
     const char* msg = va_arg(ap, char*);
     if (!msg) {
-        return false;   // ²ÎÊıÎŞĞ§
+        return false;   // å‚æ•°æ— æ•ˆ
     }
 
     //
@@ -296,7 +306,7 @@ bool JFrameKernel::invokeLog(int argc, va_list ap)
         func = va_arg(ap, char*);
     }
 
-    // µ÷ÓÃÈÕÖ¾¹ÜÀíÆ÷Êä³öÒ»ÌõÈÕÖ¾ĞÅÏ¢
+    // è°ƒç”¨æ—¥å¿—ç®¡ç†å™¨è¾“å‡ºä¸€æ¡æ—¥å¿—ä¿¡æ¯
     data->logManager->logging(msgType, msg, (argc - 1), file, line, func);
 
     return true;
@@ -304,32 +314,32 @@ bool JFrameKernel::invokeLog(int argc, va_list ap)
 
 JFrameKernel::JFrameKernel()
 {
-    // ´´½¨Ë½ÓĞÊı¾İÊµÀı
+    // åˆ›å»ºç§æœ‰æ•°æ®å®ä¾‹
     data = new JFrameKernelData;
 
-    // ¼ÓÔØÄ¬ÈÏÏµÍ³ÑùÊ½±í
+    // åŠ è½½é»˜è®¤ç³»ç»Ÿæ ·å¼è¡¨
     //KwtCore::instance().loadDefaultSystemSheet();
 
-    // ´´½¨ÈÕÖ¾¹ÜÀíÆ÷ÊµÀı
+    // åˆ›å»ºæ—¥å¿—ç®¡ç†å™¨å®ä¾‹
     data->logManager = JFRAME_FACTORY_CREATE(IJLogManager);
 }
 
 JFrameKernel::~JFrameKernel()
 {
-    // Ïú»Ù¿ò¼ÜµÇÂ¼²¿¼ş
+    // é”€æ¯æ¡†æ¶ç™»å½•éƒ¨ä»¶
     JFrameLogin::releaseInstance();
 
-    // Ïú»Ù¿ò¼Ü²¼¾Ö²¿¼ş
+    // é”€æ¯æ¡†æ¶å¸ƒå±€éƒ¨ä»¶
     JFrameLayout::releaseInstance();
 
-    // Ïú»Ù¿ò¼ÜºËĞÄ²¿¼ş
+    // é”€æ¯æ¡†æ¶æ ¸å¿ƒéƒ¨ä»¶
     JFrameCore::releaseInstance();
 
-    // Ïú»ÙÈÕÖ¾¹ÜÀíÆ÷ÊµÀı
+    // é”€æ¯æ—¥å¿—ç®¡ç†å™¨å®ä¾‹
     if (data->logManager) {
         JFRAME_FACTORY_RELEASE(data->logManager, IJLogManager);
     }
 
-    // Ïú»ÙË½ÓĞÊı¾İÊµÀı
+    // é”€æ¯ç§æœ‰æ•°æ®å®ä¾‹
     delete data;
 }

@@ -46,7 +46,7 @@ win32 {
 #    CONFIG      += QT_NO_DEBUG_OUTPUT
 
 } else {
-    CONFIG      += release
+#    CONFIG      += release
 }
 
 linux-g++ {
@@ -64,9 +64,9 @@ contains(DEFINES, PRO_CORE) {
     win32:CONFIG += build_all
 
     win32 {
-        !contains(DEFINES, USE_NO_LOG4CPP) {
+        !contains(DEFINES, NO_LOG4CPP_LIB) {
             DEFINES += \
-                USE_LOG4CPP
+                LOG4CPP_LIB
         }
     }
 }
@@ -84,11 +84,11 @@ contains(DEFINES, PRO_COMPONENT) {
         DESTDIR = $${jframe_root}/component/$$TARGET
     }
 
-    !contains(DEFINES, USE_NO_JFRAME_LIBS) {
+    !contains(DEFINES, NO_JFRAME_LIBS) {
         DEFINES += \
-            USE_JFRAME_FACTORY \
-            USE_JFRAME_KERNEL \
-            USE_JFRAME_FACADE
+            JFRAME_FACADE_LIB \
+            JFRAME_FACTORY_LIB \
+            JFRAME_KERNEL_LIB
     }
 }
 
@@ -106,85 +106,78 @@ DEPENDPATH += \
     $${jframe_root}/include/3rdpart \
     $${jframe_root}/include/jframe
 
-contains(DEFINES, USE_JFRAME_FACTORY) {
+contains(DEFINES, JFRAME_FACADE_LIB):!contains(DEFINES, JFRAME_FACADE_BUILD) {
+    ## import jframe_facade library
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facaded
+    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
+}
+
+contains(DEFINES, JFRAME_FACTORY_LIB):!contains(DEFINES, JFRAME_FACTORY_BUILD) {
     ## import jframe_factory library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_factory
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_factoryd
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_factory
     INCLUDEPATH += $${jframe_root}/include/jframe/factory
     DEPENDPATH += $${jframe_root}/include/jframe/factory
-    DEFINES += JFRAME_FACTORY_DLL
 }
 
-contains(DEFINES, USE_JFRAME_KERNEL) {
+contains(DEFINES, JFRAME_KERNEL_LIB):!contains(DEFINES, JFRAME_KERNEL_BUILD) {
     ## import jframe_layout library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_kerneld
     else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
     INCLUDEPATH += $${jframe_root}/include/jframe/kernel
     DEPENDPATH += $${jframe_root}/include/jframe/kernel
-    DEFINES += JFRAME_KERNEL_DLL
 }
 
-contains(DEFINES, USE_JFRAME_FACADE) {
-    ## import jframe_facade library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facaded
-    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
-    DEFINES += JFRAME_FACADE_DLL
-}
-
-contains(DEFINES, USE_TINYXML) {
+contains(DEFINES, TINYXML_LIB):!contains(DEFINES, TINYXML_BUILD) {
     ## import tinyxml library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxml
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxmld
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxml
     INCLUDEPATH += $${jframe_root}/include/3rdpart/tinyxml
     DEPENDPATH += $${jframe_root}/include/3rdpart/tinyxml
-    DEFINES += TINYXML_DLL
 }
 
-contains(DEFINES, USE_QTWINMIGRATE) {
+contains(DEFINES, QTWINMIGRATE_LIB):!contains(DEFINES, QTWINMIGRATE_BUILD) {
     ## import qtwinmigrate library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrate
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrated
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrate
     INCLUDEPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
     DEPENDPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
-    DEFINES += _AFXDLL QTWINMIGRATE_DLL
+    win32:DEFINES += _AFXDLL
 }
 
-contains(DEFINES, USE_QTRIBBON) {
+contains(DEFINES, QTRIBBON_LIB):!contains(DEFINES, QTRIBBON_BUILD) {
     ## import qtribbon library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbon
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbond
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbon
     INCLUDEPATH += $${jframe_root}/include/3rdpart/qtribbon
     DEPENDPATH += $${jframe_root}/include/3rdpart/qtribbon
-    DEFINES +=
 }
 
-contains(DEFINES, USE_LOG4CPP) {
+contains(DEFINES, LOG4CPP_LIB):!contains(DEFINES, LOG4CPP_BUILD) {
     ## import log4cpp library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -llog4cpp
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -llog4cppd
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -llog4cpp
     INCLUDEPATH += $${jframe_root}/include/3rdpart/log4cpp
     DEPENDPATH += $${jframe_root}/include/3rdpart/log4cpp
-    DEFINES += LOG4CPP_HAS_DLL
 }
 
-contains(DEFINES, USE_JWT) {
+contains(DEFINES, JWT_LIB):!contains(DEFINES, JWT_BUILD) {
     ## import jwt library
     win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ljwt
     else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ljwtd
     else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -ljwt
     INCLUDEPATH += $${jframe_root}/include/3rdpart/jwt
     DEPENDPATH += $${jframe_root}/include/3rdpart/jwt
-    DEFINES += JWT_DLL
 }
 
-contains(DEFINES, USE_BCG) {
+contains(DEFINES, BCG_LIB):!contains(DEFINES, BCG_BUILD) {
     ## import BCGCBPro library
     error(not supported!)
 }

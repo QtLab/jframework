@@ -1,13 +1,13 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "jcom_login.h"
 
 //
-extern "C" __declspec(dllexport) void *CreateComponent(void *attempter)
+J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void *attempter)
 {
-    // µÇÂ¼ÏÔÊ¾
+    // ç™»å½•æ˜¾ç¤º
     if (!jframeFacade()->loginFrame()) {
         jframeFacade()->exitFrame();
-        return 0;   // µÇÂ¼Ê§°Ü
+        return 0;   // ç™»å½•å¤±è´¥
     }
 
     return static_cast<IJComponent *>
@@ -59,7 +59,7 @@ std::string JComLogin::componentName() const
 
 std::string JComLogin::componentDesc() const
 {
-    return "¿ò¼ÜµÇÂ¼×é¼þ";
+    return QStringLiteral("æ¡†æž¶ç™»å½•ç»„ä»¶").toStdString();
 }
 
 void JComLogin::attach()

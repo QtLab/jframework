@@ -10,13 +10,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += \
     PRO_CORE \
-    JFRAME_NO_PRECOMPILED
-
-win32 {
-    DEFINES += \
-        JFRAME_FACTORY_DLL \
-        JFRAME_FACTORY_MAKEDLL
-}
+    JFRAME_FACTORY_LIB \
+    JFRAME_FACTORY_BUILD \
+    JFRAME_NO_PRECOMPILED \
+    LOG4CPP_LIB
 
 include($${jframe_root}/source/common/build.pri)
 
@@ -53,7 +50,8 @@ RESOURCES +=
 ###############################################################
 
 win32|unix: {
-    copyCommand = @echo off
+    win32:copyCommand = @echo off
+    unix:copyCommand = @echo
     copyCommand += && echo --- console - $$TARGET ---
 
     excludefile = $$PWD/copy.ignore
@@ -65,9 +63,11 @@ win32|unix: {
     dstdir = $${jframe_root}/include/jframe/factory
     win32:dstdir = $$replace(dstdir, /, \\)
     !exists("$$dstdir"):copyCommand += && $(MKDIR) "$$dstdir"
-    srcdir = $$PWD/*.h
+    win32:srcdir = $$PWD/*.h
+    unix:srcdir = $$PWD/
     win32:srcdir = $$replace(srcdir, /, \\)
-    copyCommand += && $(COPY_DIR) "$$srcdir" "$$dstdir" /exclude:"$$excludefile"
+    win32:copyCommand += && $(COPY_DIR) "$$srcdir" "$$dstdir" /exclude:"$$excludefile"
+    unix:copyCommand += && "$${jframe_root}/tools/xcopy.py" "$${srcdir}" "$${dstdir}" "*.h"
 
     deployment.commands = $$copyCommand
     first.depends = $(first) deployment

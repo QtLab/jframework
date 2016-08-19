@@ -410,12 +410,12 @@ public:
 };
 
 //
-typedef bool (__cdecl *FuncInitComponent)(void);
+typedef bool (J_ATTR_CDECL *FuncInitComponent)(void);
 
 //
-typedef void *(__cdecl *FuncCreateAttempter)(void);
+typedef void *(J_ATTR_CDECL *FuncCreateAttempter)(void);
 
 //
-typedef void *(__cdecl *FuncCreateComponent)(IJAttempter *attempter);
+typedef void *(J_ATTR_CDECL *FuncCreateComponent)(IJAttempter *attempter);
 
 #endif // JFRAME_CORE_H

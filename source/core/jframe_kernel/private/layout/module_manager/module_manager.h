@@ -1,4 +1,4 @@
-#ifndef MODULE_MANAGER_H
+ï»¿#ifndef MODULE_MANAGER_H
 #define MODULE_MANAGER_H
 
 #include "factory/jnotifier.h"
@@ -22,34 +22,34 @@ public:
     void releaseInterface();
 
 public:
-    // ¼ÓÔØ¿ò¼ÜÏµÍ³
+    // åŠ è½½æ¡†æ¶ç³»ç»Ÿ
     bool loadSystem();
 
-    // »ñÈ¡×é¼şĞÅÏ¢
+    // è·å–ç»„ä»¶ä¿¡æ¯
     JComponentInfo *componentByName(const QString &componentName);
 
-    // ¼ì²â×é¼ş¹ÒÔØ×´Ì¬
+    // æ£€æµ‹ç»„ä»¶æŒ‚è½½çŠ¶æ€
     bool isComponentAttached(const JComponentInfo *componentInfo);
 
-    // ¹ÒÔØ×é¼ş
+    // æŒ‚è½½ç»„ä»¶
     bool attachComponent(JComponentInfo *componentInfo, bool show);
 
-    // ¹ÒÔØ×é¼ş½çÃæ
+    // æŒ‚è½½ç»„ä»¶ç•Œé¢
     bool attachComponentUi(const JComponentInfo *componentInfo);
 
-    // ·ÖÀë×é¼ş
+    // åˆ†ç¦»ç»„ä»¶
     bool detachComponent(JComponentInfo *componentInfo);
 
-    // ½«ËùÓĞÊÓÍ¼´°¿ÚÖÃÎªÎ´¼¤»î×´Ì¬
+    // å°†æ‰€æœ‰è§†å›¾çª—å£ç½®ä¸ºæœªæ¿€æ´»çŠ¶æ€
     void inactivateAllComponent();
 
-    // ½«ËùÓĞ´¦ÓÚÎ´¼¤»î×´Ì¬µÄ×é¼ş·ÖÀë
+    // å°†æ‰€æœ‰å¤„äºæœªæ¿€æ´»çŠ¶æ€çš„ç»„ä»¶åˆ†ç¦»
     void detachAllInactivateComponent();
 
-    // ¸´Î»ËùÓĞ´¦ÓÚÎ´¼¤»î×´Ì¬µÄÊÓÍ¼×é¼şµÄ¸¸´°¿Ú
+    // å¤ä½æ‰€æœ‰å¤„äºæœªæ¿€æ´»çŠ¶æ€çš„è§†å›¾ç»„ä»¶çš„çˆ¶çª—å£
     void resetAllInactivateViewComponent();
 
-    // ÏÔÊ¾ËùÓĞ´¦ÓÚ¼¤»î×´Ì¬µÄÊÓÍ¼×é¼şµÄ¸¸´°¿Ú
+    // æ˜¾ç¤ºæ‰€æœ‰å¤„äºæ¿€æ´»çŠ¶æ€çš„è§†å›¾ç»„ä»¶çš„çˆ¶çª—å£
     void showAllActivateViewComponent();
 
     //
@@ -58,10 +58,10 @@ public:
     bool detachComponent(IJComponent *component);
     bool attachComponentUi(IJComponent *component, QWidget *widget);
 
-    // »ñÈ¡µ±Ç°ÏµÍ³Ãû³Æ
+    // è·å–å½“å‰ç³»ç»Ÿåç§°
     std::string currentSystem() const;
 
-    // »ñÈ¡µ±Ç°Ä£Ê½Ãû³Æ
+    // è·å–å½“å‰æ¨¡å¼åç§°
     std::string currentModule() const;
 
     // JObserver interface
@@ -83,7 +83,7 @@ private:
     bool switchSystem(const std::string &system, JLPARAM lParam = 0);
     bool switchModule(const std::string &module, JLPARAM lParam = 0);
 
-    // ·ÖÀëËùÓĞ×é¼ş
+    // åˆ†ç¦»æ‰€æœ‰ç»„ä»¶
     void detachAllComponent();
 
 private:

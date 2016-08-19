@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <jframe version="1.0.0">
   <envval>
     <global>
@@ -41,6 +41,7 @@
     systemFont="Microsoft Yahei,9">
     toolBarType="ribbon"
     layoutType="splitter"
+    <splash />
       <ribbonBar
         visible="true"
         minimized="false" />

@@ -32,6 +32,8 @@ BOOL CMfcDemo1Dlg::PreTranslateMessage(MSG* pMsg)
 	// ignore some keys
 	switch (pMsg->message)
 	{
+	case 0:
+		break;
 	default:
 		break;
 	}

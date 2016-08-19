@@ -1,10 +1,10 @@
-#ifndef JMAIN_WINDOW_H
+ï»¿#ifndef JMAIN_WINDOW_H
 #define JMAIN_WINDOW_H
 
 #include "../../jframe_core.h"
 #include <QHash>
 
-// Ö÷´°¿ÚÅäÖÃĞÅÏ¢
+// ä¸»çª—å£é…ç½®ä¿¡æ¯
 struct JMainWindowConfig
 {
     std::string toolBarType;    // 1) ribbon; 2) menu

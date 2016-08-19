@@ -1,4 +1,4 @@
-#ifndef JFRAME_KERNEL_P_H
+ï»¿#ifndef JFRAME_KERNEL_P_H
 #define JFRAME_KERNEL_P_H
 
 #include "../jframe_kernel.h"
@@ -42,8 +42,8 @@ private:
     JFrameKernelData *data;
 
     //
-    static QMutex _instance_mutex;      // µ¥ÊµÀıËø
-    static JFrameKernel *_instance;     // µ¥ÊµÀıÖ¸Õë
+    static QMutex _instance_mutex;      // å•å®ä¾‹é”
+    static JFrameKernel *_instance;     // å•å®ä¾‹æŒ‡é’ˆ
 };
 
 #endif // JFRAME_KERNEL_P_H

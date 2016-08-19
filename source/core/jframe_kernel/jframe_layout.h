@@ -91,4 +91,4 @@ public:
     virtual std::string currentModule() const = 0;
 };
 
-#endif JFRAME_LAYOUT_H
+#endif // JFRAME_LAYOUT_H

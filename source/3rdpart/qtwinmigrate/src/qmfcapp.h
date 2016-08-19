@@ -57,23 +57,20 @@
 class CWinApp;
 #endif
 
-#ifdef QTWINMIGRATE_DLL
-#ifdef _MSC_VER
-#   ifdef QTWINMIGRATE_MAKEDLL
+#ifdef QTWINMIGRATE_LIB
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__MINGW32__)
+#   ifdef QTWINMIGRATE_BUILD
 #       define QT_QTWINMIGRATE_EXPORT __declspec(dllexport)
 #   else
 #       define QT_QTWINMIGRATE_EXPORT __declspec(dllimport)
-
 #       if defined(DEBUG) || defined(_DEBUG)
 #           pragma comment(lib, "qtwinmigrated.lib")
 #       else
 #           pragma comment(lib, "qtwinmigrate.lib")
 #       endif
-
-#   endif // !QTWINMIGRATE_MAKEDLL
-#endif // _MSC_VER
-
-#endif // QTWINMIGRATE_DLL
+#   endif // !QTWINMIGRATE_BUILD
+#endif // _MSC_VER || ...
+#endif // QTWINMIGRATE_LIB
 
 #ifndef QT_QTWINMIGRATE_EXPORT
 #define QT_QTWINMIGRATE_EXPORT
@@ -93,11 +90,12 @@ public:
     QMfcApp(void *mfcApp, int &argc, char **argv);
 #endif
     ~QMfcApp();
-
+#ifdef _MSC_VER
     bool winEventFilter(MSG *msg, long *result);
 
     static void enterModalLoop();
     static void exitModalLoop();
+#endif
 
 private:
 #ifdef QTWINMIGRATE_WITHMFC

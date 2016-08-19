@@ -44,9 +44,9 @@
      namespace std {
        class LOG4CPP_EXPORT ostringstream : public ostrstream {
        public:
-	 std::string str();
+     std::string str();
        };
-     };
+     }
 #  endif // LOG4CPP_HAVE_SSTREAM
 #endif // _APPLE_
 

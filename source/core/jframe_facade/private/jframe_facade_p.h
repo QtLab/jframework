@@ -84,8 +84,14 @@ private:
     //
     bool generateAppQtConf(const std::map<std::string, std::string> &values);
 
+    // 获取模块前缀
+    std::string dynamicPrefix() const;
+
     // 获取模块后缀
     std::string dynamicSuffix() const;
+
+    // 获取环境变量的分割符
+    std::string envSeparator() const;
 
     // 强制退出当前进程
     bool terminateProcess();
@@ -101,6 +107,9 @@ private:
 
     //
     bool testAnotherApp();
+
+    //
+    bool loadTextCodecConfig();
 
 private:
     bool invokeLog(const std::string &method, int argc, va_list ap);

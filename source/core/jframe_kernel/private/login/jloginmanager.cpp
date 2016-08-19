@@ -1,4 +1,4 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "jloginmanager.h"
 #include "jlogindbmgr.h"
 
@@ -39,7 +39,7 @@ bool JLoginManager::loadInterface()
 {
     bool result = true;
 
-    // ¼ÓÔØµÇÂ¼Êý¾Ý¿â¹ÜÀíÆ÷
+    // åŠ è½½ç™»å½•æ•°æ®åº“ç®¡ç†å™¨
     result = result && q_loginDBMgr->loadInterface();
 
     return result;
@@ -47,12 +47,12 @@ bool JLoginManager::loadInterface()
 
 void JLoginManager::releaseInterface()
 {
-    // ×¢ÏúµÇÂ¼
+    // æ³¨é”€ç™»å½•
     if (!logout()) {
         //
     }
 
-    // ×¢ÏúµÇÂ¼Êý¾Ý¿â¹ÜÀíÆ÷
+    // æ³¨é”€ç™»å½•æ•°æ®åº“ç®¡ç†å™¨
     q_loginDBMgr->releaseInterface();
 }
 

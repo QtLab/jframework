@@ -1,4 +1,4 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "frame_filter.h"
 #include "jframe_kernel.h"
 
@@ -27,7 +27,7 @@ FrameFilter::FrameFilter(INotifier *notifier, IJAttempter *attempter, QObject *p
     //
     data->notifier = notifier;
 
-    // ½âÎöÖ÷´°¿Ú
+    // è§£æä¸»çª—å£
     data->mainWindow = parseMainWindow(attempter);
 }
 
@@ -38,14 +38,14 @@ FrameFilter::~FrameFilter()
 
 bool FrameFilter::init()
 {
-    // ¼ÓÔØÅäÖÃ
+    // åŠ è½½é…ç½®
     if (!loadConfig()) {
         return false;
     }
 
-    // ÉèÖÃ¿ò¼ÜÖ÷´°¿Ú±êÌâ
+    // è®¾ç½®æ¡†æ¶ä¸»çª—å£æ ‡é¢˜
     if (jloginManager()->isValid()) {
-        const QString windowTitle = QString("%1 ¡ª¡ª %1@%2")
+        const QString windowTitle = QString("%1 â€”â€” %1@%2")
                 .arg(QString::fromStdString(jloginManager()->currentSystem()))
                 .arg(QString::fromStdString(jloginManager()->userName()))
                 .arg(QString::fromStdString(jloginManager()->currentSeat()));
@@ -91,20 +91,20 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
         case QEvent::Close:
         {
             const int result = QMessageBox::warning(data->mainWindow,
-                                                    QStringLiteral("¹Ø±ÕÈí¼ş"),
-                                                    QStringLiteral("ÇëÑ¡ÔñÒÔÏÂ°´Å¥£¬¼ÌĞø¡­¡­"),
-                                                    QStringLiteral("×¢Ïú£¨ÖØÆô£©"),
-                                                    QStringLiteral("ÍË³ö"),
-                                                    QStringLiteral("È¡Ïû"), 1);
+                                                    QStringLiteral("å…³é—­è½¯ä»¶"),
+                                                    QStringLiteral("è¯·é€‰æ‹©ä»¥ä¸‹æŒ‰é’®ï¼Œç»§ç»­â€¦â€¦"),
+                                                    QStringLiteral("æ³¨é”€ï¼ˆé‡å¯ï¼‰"),
+                                                    QStringLiteral("é€€å‡º"),
+                                                    QStringLiteral("å–æ¶ˆ"), 1);
             switch (result) {
-            case 0:     // ×¢Ïú£¨ÖØÆô£©
+            case 0:     // æ³¨é”€ï¼ˆé‡å¯ï¼‰
                 data->notifier->imm().postMessage("jlayout.notify_manager", "j_frame_restart");
                 break;
-            case 1:     // ÍË³ö
+            case 1:     // é€€å‡º
                 data->notifier->imm().postMessage("jlayout.notify_manager", "j_frame_exit");
                 break;
-            case 2:     // È¡Ïû
-            default:    // ºöÂÔ
+            case 2:     // å–æ¶ˆ
+            default:    // å¿½ç•¥
                 break;
             }
             event->ignore();
@@ -146,17 +146,17 @@ bool FrameFilter::loadConfig()
     //
     QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
     if (!file.exists()) {
-        const QString text = QStringLiteral("¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼ş\"%1\"²»´æÔÚ£¡")
+        const QString text = QStringLiteral("æ¡†æ¶å…¨å±€é…ç½®æ–‡ä»¶\"%1\"ä¸å­˜åœ¨ï¼")
                 .arg(file.fileName());
-        QMessageBox::warning(data->mainWindow, QStringLiteral("¾¯¸æ"), text);
-        return false;   // ÎÄ¼ş²»´æÔÚ
+        QMessageBox::warning(data->mainWindow, QStringLiteral("è­¦å‘Š"), text);
+        return false;   // æ–‡ä»¶ä¸å­˜åœ¨
     }
 
-    // ´ò¿ªÎÄ¼ş
+    // æ‰“å¼€æ–‡ä»¶
     if (!file.open(QFile::ReadOnly)) {
-        const QString text = QStringLiteral("¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼ş\"%1\"´ò¿ªÊ§°Ü£¡")
+        const QString text = QStringLiteral("æ¡†æ¶å…¨å±€é…ç½®æ–‡ä»¶\"%1\"æ‰“å¼€å¤±è´¥ï¼")
                 .arg(file.fileName());
-        QMessageBox::warning(data->mainWindow, QStringLiteral("¾¯¸æ"), text);
+        QMessageBox::warning(data->mainWindow, QStringLiteral("è­¦å‘Š"), text);
         return false;
     }
 
@@ -165,25 +165,25 @@ bool FrameFilter::loadConfig()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼ş\"%1\"½âÎöÊ§°Ü£¡\n"
-                                            "´íÎóÃèÊö£º%2\n"
-                                            "´íÎóÎ»ÖÃ£º£¨ĞĞºÅ£º%3£¬ÁĞºÅ£º%4£©")
+        const QString text = QStringLiteral("æ¡†æ¶å…¨å±€é…ç½®æ–‡ä»¶\"%1\"è§£æå¤±è´¥ï¼\n"
+                                            "é”™è¯¯æè¿°ï¼š%2\n"
+                                            "é”™è¯¯ä½ç½®ï¼šï¼ˆè¡Œå·ï¼š%3ï¼Œåˆ—å·ï¼š%4ï¼‰")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
-        QMessageBox::warning(data->mainWindow, QStringLiteral("¾¯¸æ"), text);
+        QMessageBox::warning(data->mainWindow, QStringLiteral("è­¦å‘Š"), text);
         return false;
     }
 
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     file.close();
 
-    // »ñÈ¡¸ù½Úµã
+    // è·å–æ ¹èŠ‚ç‚¹
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
         return false;
     }
 
-    // »ñÈ¡MainWindow½Úµã
+    // è·å–MainWindowèŠ‚ç‚¹
     QDomElement emMainWindow = emRoot.firstChildElement("mainWindow");
     if (emMainWindow.isNull()) {
         return false;

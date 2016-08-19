@@ -190,7 +190,7 @@ protected:
      * @param offset : 接口地址差值
      * @return : 消息分发器
      */
-    virtual INotifier& beginGroup(JObserver *obs, int offset) = 0;
+    virtual INotifier& beginGroup(JObserver *obs, int offset = 0) = 0;
 
     /**
      * @brief append : 订阅消息
@@ -292,8 +292,16 @@ public:
 template<typename T>
 inline INotifier& INotifier::beginGroup(T *obs)
 {
-    return beginGroup(obs, (reinterpret_cast<JObserver *>(obs)
-                            - static_cast<JObserver *>(obs)));
+    return beginGroup(obs,
+                  #ifdef _MSC_VER
+                      (reinterpret_cast<JObserver *>(obs) - static_cast<JObserver *>(obs))
+                  #elif defined(__unix__)
+                      0
+                  #else
+                  #pragma message("Not supported!"))
+                      0
+                  #endif
+                      );
 }
 
 template<typename T>
@@ -301,7 +309,15 @@ inline INotifier& INotifier::append(T *obs, const std::string &id,
                                     JLRESULT(T::*cb)(const std::string &, JWPARAM, JLPARAM))
 {
     return append(obs, id, static_cast<jobserver_cb>(cb),
-                  (reinterpret_cast<JObserver *>(obs) - static_cast<JObserver *>(obs)));
+              #ifdef _MSC_VER
+                  (reinterpret_cast<JObserver *>(obs) - static_cast<JObserver *>(obs))
+              #elif defined(__unix__)
+                  0
+              #else
+              #pragma message("Not supported!"))
+                  0
+              #endif
+                  );
 }
 
 template<typename T>

@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 DEFINES += \
     PRO_COMPONENT \
     JFRAME_COMPONENT \
-    USE_QTRIBBON
+    QTRIBBON_LIB
 
 include($${jframe_root}/source/common/build.pri)
 
@@ -42,8 +42,9 @@ exists($$PWD/jcom_layout.xml) {
 #-------------------------------------------------
 
 win32|unix: {
-    copyCommand = @echo off
-    copyCommand += && @echo ---- console - jcom_layout ----
+    win32:copyCommand = @echo off
+    unix:copyCommand = @echo
+    copyCommand += && echo --- console - $$TARGET ---
 
     ## copy files
     dstdir = $${jframe_root}/component/jframe/jcom_layout

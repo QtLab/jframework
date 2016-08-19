@@ -1,4 +1,4 @@
-#ifndef JFRAME_LOGIN_P_H
+ï»¿#ifndef JFRAME_LOGIN_P_H
 #define JFRAME_LOGIN_P_H
 
 #include "../../jframe_login.h"
@@ -37,8 +37,8 @@ private:
     JFrameLoginData* data;
 
     //
-    static QMutex _instance_mutex;      // µ¥ÊµÀı±£»¤Ëø
-    static JFrameLogin* _instance;    // µ¥ÊµÀıÖ¸Õë
+    static QMutex _instance_mutex;      // å•å®ä¾‹ä¿æŠ¤é”
+    static JFrameLogin* _instance;    // å•å®ä¾‹æŒ‡é’ˆ
 };
 
 #endif // JFRAME_LOGIN_H

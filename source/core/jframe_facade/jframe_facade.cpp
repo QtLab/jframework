@@ -9,13 +9,13 @@ IJFrameFacade *jframeFacade()
 }
 
 //
-extern "C" JFRAME_FACADE_EXPORT IJUnknown* CreateInstance()
+J_EXTERN_C JFRAME_FACADE_EXPORT IJUnknown* CreateInstance()
 {
     return static_cast<IJUnknown *>(JFrameFacade::getInstance());
 }
 
 //
-extern "C" JFRAME_FACADE_EXPORT void ReleaseInstance()
+J_EXTERN_C JFRAME_FACADE_EXPORT void ReleaseInstance()
 {
     JFrameFacade::releaseInstance();
 }

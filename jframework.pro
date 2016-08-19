@@ -11,3 +11,7 @@ SUBDIRS += \
     source
 
 include($$PWD/config/config.pri)
+
+OTHER_FILES += \
+    $$PWD/syncjframe.cmd \
+    $$PWD/syncjframe.sh

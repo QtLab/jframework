@@ -1,9 +1,9 @@
-#ifndef JFRAME_KERNEL_H
+ï»¿#ifndef JFRAME_KERNEL_H
 #define JFRAME_KERNEL_H
 
 #include "jframe_facade.h"
 
-// ½Ó¿ÚÃèÊö
+// æŽ¥å£æè¿°
 #define VER_IJFrameKernel J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameKernel J_IID_INTERFACE(IJFrameKernel)
 
@@ -21,73 +21,70 @@ public:
     virtual ~IJFrameKernel() {}
 
     /**
-     * @brief intefcaceIdentity : »ñÈ¡½Ó¿Ú±êÊ¶
-     * @return : ½Ó¿Ú±êÊ¶
+     * @brief intefcaceIdentity : èŽ·å–æŽ¥å£æ ‡è¯†
+     * @return : æŽ¥å£æ ‡è¯†
      */
     virtual std::string intefcaceIdentity() const { return IID_IJFrameKernel; }
 
     /**
-     * @brief interfaceVersion : »ñÈ¡½Ó¿Ú°æ±¾
-     * @return : ½Ó¿Ú°æ±¾
+     * @brief interfaceVersion : èŽ·å–æŽ¥å£ç‰ˆæœ¬
+     * @return : æŽ¥å£ç‰ˆæœ¬
      */
     virtual unsigned int interfaceVersion() const { return VER_IJFrameKernel; }
 
     /**
-     * @brief logManager : »ñÈ¡ÈÕÖ¾¹ÜÀíÆ÷
-     * @return : ÈÕÖ¾¹ÜÀíÆ÷
+     * @brief logManager : èŽ·å–æ—¥å¿—ç®¡ç†å™¨
+     * @return : æ—¥å¿—ç®¡ç†å™¨
      */
     virtual IJLogManager *logManager() = 0;
 
     /**
-     * @brief frameCore : »ñÈ¡¿ò¼ÜºËÐÄÏµÍ³½Ó¿Ú
-     * @return : ¿ò¼ÜºËÐÄÏµÍ³½Ó¿Ú
+     * @brief frameCore : èŽ·å–æ¡†æž¶æ ¸å¿ƒç³»ç»ŸæŽ¥å£
+     * @return : æ¡†æž¶æ ¸å¿ƒç³»ç»ŸæŽ¥å£
      */
     virtual IJFrameCore *frameCore() = 0;
 
     /**
-     * @brief frameLayout : »ñÈ¡¿ò¼Ü²¼¾ÖÏµÍ³½Ó¿Ú
-     * @return : ¿ò¼Ü²¼¾ÖÏµÍ³½Ó¿Ú
+     * @brief frameLayout : èŽ·å–æ¡†æž¶å¸ƒå±€ç³»ç»ŸæŽ¥å£
+     * @return : æ¡†æž¶å¸ƒå±€ç³»ç»ŸæŽ¥å£
      */
     virtual IJFrameLayout *frameLayout() = 0;
 
     /**
-     * @brief frameLogin : »ñÈ¡¿ò¼ÜµÇÂ¼ÏµÍ³½Ó¿Ú
-     * @return : ¿ò¼ÜµÇÂ¼ÏµÍ³½Ó¿Ú
+     * @brief frameLogin : èŽ·å–æ¡†æž¶ç™»å½•ç³»ç»ŸæŽ¥å£
+     * @return : æ¡†æž¶ç™»å½•ç³»ç»ŸæŽ¥å£
      */
     virtual IJFrameLogin *frameLogin() = 0;
 };
 
 ///
 
-#ifdef JFRAME_KERNEL_DLL
-#ifdef _MSC_VER
-#   ifdef JFRAME_KERNEL_MAKEDLL
+#ifdef JFRAME_KERNEL_LIB
+#if defined(_MSC_VER) || defined(__BORLANDC__) || defined(__MINGW32__)
+#   ifdef JFRAME_KERNEL_BUILD
 #       define JFRAME_KERNEL_EXPORT __declspec(dllexport)
 #   else
 #       define JFRAME_KERNEL_EXPORT __declspec(dllimport)
-
 #       if defined(DEBUG) || defined(_DEBUG)
 #           pragma comment(lib, "jframe_kerneld.lib")
 #       else
 #           pragma comment(lib, "jframe_kernel.lib")
 #       endif
-
-#   endif // !JFRAME_KERNEL_MAKEDLL
-#endif // _MSC_VER
-
-#endif // JFRAME_KERNEL_DLL
+#   endif // !JFRAME_KERNEL_BUILD
+#endif // _MSC_VER || ...
+#endif // JFRAME_KERNEL_LIB
 
 #ifndef JFRAME_KERNEL_EXPORT
 #define JFRAME_KERNEL_EXPORT
 #endif
 
 /**
- * @brief jframeKernel : »ñÈ¡¿ò¼ÜÄÚºËÏµÍ³½Ó¿Úµ¥ÊµÀý
- * @return : ¿ò¼ÜÄÚºËÏµÍ³½Ó¿Úµ¥ÊµÀý
+ * @brief jframeKernel : èŽ·å–æ¡†æž¶å†…æ ¸ç³»ç»ŸæŽ¥å£å•å®žä¾‹
+ * @return : æ¡†æž¶å†…æ ¸ç³»ç»ŸæŽ¥å£å•å®žä¾‹
  */
 JFRAME_KERNEL_EXPORT IJFrameKernel* jframeKernel();
 
-#ifdef JFRAME_KERNEL_DLL
+#ifdef JFRAME_KERNEL_LIB
 
 //
 #ifndef JFRAME_LOGMANAGER_INSTANCE
@@ -125,7 +122,7 @@ JFRAME_KERNEL_EXPORT IJFrameKernel* jframeKernel();
 #define jloginDBMgr() jloginManager()->loginDBMgr()
 #endif
 
-#endif // JFRAME_KERNEL_DLL
+#endif // JFRAME_KERNEL_LIB
 
 //
 #ifndef QStringLiteral

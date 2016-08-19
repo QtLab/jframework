@@ -146,7 +146,11 @@ bool JFrameLayout::invokeMethod(const std::string &method, int argc, ...)
     if (method == "attach_component") {
         if (argc == 2) {
             IJComponent *component = va_arg(ap, IJComponent*);
+#if defined(__unix__)
+            bool stayOn = va_arg(ap, int);
+#else
             bool stayOn = va_arg(ap, bool);
+#endif
             result = attachComponent(component, stayOn);
         }
     }

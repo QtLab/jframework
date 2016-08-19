@@ -10,6 +10,7 @@
 #include <QPlainTextEdit>
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QDateTimeEdit>
 #include <QBuffer>
 #include "../jipaddressedit.h"
 #include "../jcheckcombobox.h"

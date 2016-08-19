@@ -1,46 +1,46 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "com_demo5.h"
 #include "MfcDemo1Container.h"
 
 //
-extern "C" __declspec(dllexport) void *CreateComponent(void* attemper)
+J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
 {
-    // ·Ç¹ÜÀíÔ±ÓÃ»§²ÅÄÜÊ¹ÓÃ´Ë×é¼þ
-    if (jframeLogin()->loginManager()->isAdminUser()) {
-        return 0;
-    }
+	// éžç®¡ç†å‘˜ç”¨æˆ·æ‰èƒ½ä½¿ç”¨æ­¤ç»„ä»¶
+	if (jframeLogin()->loginManager()->isAdminUser()) {
+		return 0;
+	}
 
-    return static_cast<IJComponent *>
-            (new ComDemo5(reinterpret_cast<IJAttempter *>(attemper)));
+	return static_cast<IJComponent *>
+		(new ComDemo5(reinterpret_cast<IJAttempter *>(attemper)));
 }
 
 ComDemo5::ComDemo5(IJAttempter *attemper)
-    : q_attempter(attemper)
-    , q_widget(0)
+	: q_attempter(attemper)
+	, q_widget(0)
 {
-    q_notifier = jframeLayout()->notifier();
+	q_notifier = jframeLayout()->notifier();
 }
 
 ComDemo5::~ComDemo5()
 {
-    if (q_widget) {
-        q_widget->deleteLater();
-        q_widget = 0;
-    }
+	if (q_widget) {
+		q_widget->deleteLater();
+		q_widget = 0;
+	}
 }
 
 bool ComDemo5::loadInterface()
 {
-    return true;
+	return true;
 }
 
 bool ComDemo5::updateInterface()
 {
-    bool result = true;
+	bool result = true;
 
-    //
+	//
 
-    return result;
+	return result;
 }
 
 void ComDemo5::releaseInterface()
@@ -52,19 +52,19 @@ void ComDemo5::releaseInterface()
 
 void* ComDemo5::queryInterface(const std::string &iid, unsigned int ver)
 {
-    J_QUERY_INTERFACE(IJComponentUi, iid, ver);
+	J_QUERY_INTERFACE(IJComponentUi, iid, ver);
 
-    return 0;
+	return 0;
 }
 
 std::string ComDemo5::componentName() const
 {
-    return "com_demo5";
+	return "com_demo5";
 }
 
 std::string ComDemo5::componentDesc() const
 {
-    return "×é¼þÊ¾Àý #5";
+	return QStringLiteral("ç»„ä»¶ç¤ºä¾‹ #5").toStdString();
 }
 
 std::string ComDemo5::componentType() const
@@ -74,35 +74,35 @@ std::string ComDemo5::componentType() const
 
 void ComDemo5::attach()
 {
-    // ¶©ÔÄÏûÏ¢
-    q_notifier->beginGroup(this)
-            .endGroup();
+	// è®¢é˜…æ¶ˆæ¯
+	q_notifier->beginGroup(this)
+		.endGroup();
 }
 
 void ComDemo5::detach()
 {
-    // È¡Ïû¶©ÔÄÏûÏ¢
-    q_notifier->remove(this);
+	// å–æ¶ˆè®¢é˜…æ¶ˆæ¯
+	q_notifier->remove(this);
 }
 
 void *ComDemo5::createWindow(void *parent, const std::string &objectName)
 {
-    Q_UNUSED(parent);
-    Q_UNUSED(objectName);
+	Q_UNUSED(parent);
+	Q_UNUSED(objectName);
 
-    //
-    if (q_widget) {
-        Q_ASSERT(false);
-        return 0;
-    }
+	//
+	if (q_widget) {
+		Q_ASSERT(false);
+		return 0;
+	}
 
-    //
-    q_widget = new CMfcDemo1Container(q_notifier);
+	//
+	q_widget = new CMfcDemo1Container(q_notifier);
 
-    return qobject_cast<QWidget *>(q_widget);
+	return qobject_cast<QWidget *>(q_widget);
 }
 
 std::string ComDemo5::observerId() const
 {
-    return componentName();
+	return componentName();
 }

@@ -66,8 +66,9 @@
 #include <qevent.h>
 
 #include "qwinwidget.h"
-
+#ifdef _MSC_VER
 #include <qt_windows.h>
+#endif
 
 /*!
     \class QWinWidget qwinwidget.h

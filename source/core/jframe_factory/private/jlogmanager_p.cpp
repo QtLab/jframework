@@ -1,6 +1,9 @@
 ﻿#include "precomp.h"
 #include "jlogmanager_p.h"
 #include <sstream>
+#if defined(__unix__)
+#include <unistd.h>
+#endif
 
 // log4cpp
 #include "log4cpp/convenience.h"
@@ -214,8 +217,26 @@ bool JLogManagerPri::init()
 
 QString JLogManagerPri::applicationDirPath()
 {
-    extern QString qAppFileName();
-    return QFileInfo(qAppFileName()).absolutePath();
+    static QString _path("");
+    if (_path.isEmpty()) {
+        // 获取软件实体绝对路径
+#ifdef _MSC_VER
+        extern QString qAppFileName();
+        _path = QFileInfo(qAppFileName()).canonicalPath();
+#elif defined(__unix__)
+        // Try looking for a /proc/<pid>/exe symlink first which points to
+        // the absolute path of the executable
+        QFileInfo fileInfo(QString::fromLatin1("/proc/%1/exe").arg(getpid()));
+        //printf("%s\n", fileInfo.canonicalPath().toLatin1().data());
+        if (fileInfo.exists() && fileInfo.isSymLink()) {
+            _path = fileInfo.canonicalPath();
+        }
+#else
+#pragma message("Not supported!")
+#endif
+    }
+
+    return _path;
 }
 
 std::string JLogManagerPri::formatMessage(const std::string &msg, int argc, va_list ap)
