@@ -4,6 +4,7 @@
 #include "../module_manager/module_manager.h"
 #include "../mainview_manager/mainview_manager.h"
 #include "../../../jframe_core.h"
+#include <QtXml>
 
 // class LayoutManager
 
@@ -276,7 +277,7 @@ bool LayoutManager::resetModuleElement()
              !emModule.isNull();
              emModule = emModule.nextSiblingElement("module")) {
             //
-            resetModuleElement();
+            resetModuleElement(emModule);
         }
     }
 
@@ -340,7 +341,10 @@ QString LayoutManager::currentConfigModule(const QDomElement &emSystem)
             }
         }
 #else
-        break;
+        // 匹配模式
+        if (emItem.attribute("module") == lastModule) {
+            break;  // 匹配成功
+        }
 #endif
     }
 
@@ -383,7 +387,7 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
     }
 
     // find current system
-    emSystem = findSystemNodeConst(emRoot, system);
+    emSystem = findSystemNode(emRoot, system);
     if (emSystem.isNull()) {
         QMessageBox::critical(q_frameLayout->mainViewManager(),
                               QStringLiteral("错误"),
@@ -394,35 +398,40 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
     }
 
     // 更新当前系统
-    std::string _system = system.toStdString();
+    const std::string _system = system.toStdString();
     q_notifier->sendMessage("j_previous_system_changed", (JWPARAM)&_system);
 
     // get current module
     if (module.isEmpty()) {
         // 获取配置文件中指定系统下的当前模式
-        QString tempModule = currentConfigModule(emSystem);
-        if (tempModule.isEmpty()) {
-            // 获取当前模式名称字段
-            module = emSystem.attribute("module");
-        } else {
-            module = tempModule;
+        emModule = findDefaultModuleNode(emSystem, module);
+        if (emModule.isNull()) {
+            emModule = emSystem.firstChildElement("module");
+            if (emModule.isNull()) {
+                QMessageBox::critical(q_frameLayout->mainViewManager(),
+                                      QStringLiteral("错误"),
+                                      QStringLiteral("没有找到有效的模式节点，请检查框架布局配置文件！"));
+                return false;
+            }
+        }
+    } else {
+        // find current module
+        emModule = findModuleNode(emSystem, module, true);
+        if (emModule.isNull()) {
+            QMessageBox::critical(q_frameLayout->mainViewManager(),
+                                  QStringLiteral("错误"),
+                                  QStringLiteral("没有找到有效的模式节点，请检查框架布局配置文件！"));
+            return false;
+        }
+
+        // 存储当前顶层模式
+        if (q_layoutConfig.sw.remember) {
+            emSystem.setAttribute("module", module.section(">>", 0, 0, QString::SectionSkipEmpty).trimmed());
         }
     }
 
-    // 复位模式节点信息
-    resetModuleElement(emSystem);
-
-    // find current module
-    emModule = findModuleNode(emSystem, module);
-    if (emModule.isNull()) {
-        QMessageBox::critical(q_frameLayout->mainViewManager(),
-                              QStringLiteral("错误"),
-                              QStringLiteral("没有找到有效的模式节点，请检查框架布局配置文件！"));
-        return false;
-    }
-
     // 更新当前模式
-    std::string _module = module.toStdString();
+    const std::string _module = module.toStdString();
     q_notifier->sendMessage("j_previous_module_changed", (JWPARAM)&_module);
 
     // load popup node (global component within current system <befor module loaded>)
@@ -699,7 +708,7 @@ bool LayoutManager::loadModuleDockNode(const QDomElement &emDock)
     return false;
 }
 
-QDomElement LayoutManager::findSystemNodeConst(const QDomElement &emParent, const QString &system) const
+QDomElement LayoutManager::findSystemNode(const QDomElement &emParent, const QString &system) const
 {
     // 参数检测
     if (emParent.isNull()) {
@@ -711,7 +720,7 @@ QDomElement LayoutManager::findSystemNodeConst(const QDomElement &emParent, cons
          !emSystem.isNull();
          emSystem = emSystem.nextSiblingElement("system")) {
         //
-        if (emSystem.attribute("name") == system) {
+        if (emSystem.attribute("name").trimmed() == system) {
             return emSystem;    // 找到
         }
     }
@@ -719,107 +728,7 @@ QDomElement LayoutManager::findSystemNodeConst(const QDomElement &emParent, cons
     return QDomElement();
 }
 
-QDomElement LayoutManager::findModuleNode(QDomElement &emParent, QString &section)
-{
-    // 参数检测
-    if (emParent.isNull()) {
-        return QDomElement();   // 无效
-    }
-
-    // system node
-    if (section.isEmpty() && emParent.nodeName() == "system") {
-        const QString currentModule = emParent.attribute("module");
-        if (!currentModule.isEmpty()) {
-            QString module;
-            QDomElement emModule;
-            for (emModule = emParent.firstChildElement("module");
-                 !emModule.isNull();
-                 emModule = emModule.nextSiblingElement("module")) {
-                // 获取模式名称
-                module = emModule.attribute("name");
-                if (module == currentModule) {
-                    section = module;
-                    break;  // 找到
-                }
-            }
-            //
-            return emModule;
-        }
-    }
-
-    //
-    if (section.isEmpty()) {
-        return QDomElement();   // 无效
-    }
-
-    //
-    QString module = section.section(">>", 0, 0, QString::SectionSkipEmpty).trimmed();
-    QString subSection = section.section(">>", 1, -1, QString::SectionSkipEmpty).trimmed();
-    QString realSection = module;
-
-    //
-    QDomElement emModule;
-    for (emModule = emParent.firstChildElement("module");
-         !emModule.isNull();
-         emModule = emModule.nextSiblingElement("module")) {
-        //
-        if (module.isEmpty()) {
-            const QString _module = emModule.attribute("submodule");
-            if (_module.isEmpty()) {
-                realSection = emModule.attribute("name");
-                break;  // find out by default module node
-            } else {
-                // truncate
-                if (emModule.firstChildElement("module").isNull()) {
-                    break;  // error
-                }
-                //
-                subSection = _module;
-            }
-        } else {
-            const QString name = emModule.attribute("name");
-            if (name == module && subSection.isEmpty()) {
-                break;  // found
-            }
-            // truncate
-            if (emModule.firstChildElement("module").isNull()) {
-                continue;
-            }
-        }
-
-        //
-        if (section.isEmpty()) {
-            continue;
-        }
-
-        // sub-module
-        QString _section = subSection;
-        QDomElement emSubModule = findModuleNode(emModule, _section);
-        if (!emSubModule.isNull()) {
-            emModule = emSubModule;
-            realSection.append(">>").append(_section);
-            break;  // found
-        }
-    }
-
-    // 更新当前模式层
-    section = realSection;
-
-    // 更新父节点模式状态
-    if (q_layoutConfig.sw.remember) {
-        const QString currentModule =
-                realSection.section(">>", 0, 0, QString::SectionSkipEmpty);
-        if (emParent.nodeName() == "system") {
-            emParent.setAttribute("module", currentModule);
-        } else {
-            emParent.setAttribute("submodule", currentModule);
-        }
-    }
-
-    return emModule;
-}
-
-QDomElement LayoutManager::findModuleNodeConst(const QDomElement &emParent, const QString &section) const
+QDomElement LayoutManager::findModuleNode(QDomElement emParent, const QString &section, bool update)
 {
     // check parameters
     if (emParent.isNull()) {
@@ -839,20 +748,77 @@ QDomElement LayoutManager::findModuleNodeConst(const QDomElement &emParent, cons
         // check
         if (subModule.isEmpty()) {
             // match the module
-            if (emModule.attribute("name") == topModule) {
+            if (emModule.attribute("name").trimmed() == topModule) {
+                // 更新父节点子模式 submodule 状态
+                if (update && q_layoutConfig.sw.remember) {
+                    if (emParent.nodeName() == "system") {
+                        emParent.setAttribute("module", topModule);
+                    } else {
+                        emParent.setAttribute("submodule", topModule);
+                    }
+                }
+                // 递归清除其下面的 submodule
+                resetModuleElement(emModule);
                 break;      // found, break
             } else {
                 continue;   // not found and has no any submodule, continue to find
             }
         } else {
             //
-            const QDomElement emSubModule = findModuleNodeConst(emModule, subModule);
+            const QDomElement emSubModule = findModuleNode(emModule, subModule, update);
             if (emSubModule.isNull()) {
                 continue;   // not found, continue to find
             } else {
                 emModule = emSubModule;
                 break;      // found, break
             }
+        }
+    }
+
+    return emModule;
+}
+
+QDomElement LayoutManager::findDefaultModuleNode(QDomElement emParent, QString &section)
+{
+    //
+    if (emParent.isNull()) {
+        return QDomElement();
+    }
+
+    //
+    QString module;
+
+    //
+    if (emParent.nodeName() == "system") {
+        module = emParent.attribute("module").trimmed();
+    } else {
+        module = emParent.attribute("submodule").trimmed();
+    }
+
+    //
+    if (module.isEmpty()) {
+        return QDomElement();
+    }
+
+    //
+    QDomElement emModule;
+    for (emModule = emParent.firstChildElement("module");
+         !emModule.isNull();
+         emModule = emModule.nextSiblingElement("module")) {
+        //
+        if (emModule.attribute("name").trimmed() == module) {
+            //
+            if (section.isEmpty()) {
+                section = module;
+            } else {
+                section.append(">>").append(module);
+            }
+            // child module node
+            QDomElement emSubModule = findDefaultModuleNode(emModule, section);
+            if (!emSubModule.isNull()) {
+                emModule = emSubModule;     //
+            }
+            break;      // finish
         }
     }
 
@@ -1131,13 +1097,13 @@ bool LayoutManager::saveCurrentSplitterScales()
     const QString currentModule = QString::fromStdString(q_frameLayout->currentModule());
 
     // 查找系统节点
-    QDomElement emSystem = findSystemNodeConst(emRoot, currentSystem);
+    QDomElement emSystem = findSystemNode(emRoot, currentSystem);
     if (emSystem.isNull()) {
         return false;   // 未找到
     }
 
     // 查找模式节点
-    QDomElement emModule = findModuleNodeConst(emSystem, currentModule);
+    QDomElement emModule = findModuleNode(emSystem, currentModule, false);
     if (emModule.isNull()) {
         return false;   // 未找到
     }

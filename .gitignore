@@ -64,7 +64,7 @@ target/
 /GeneratedFiles
 /ipch
 /.vs
-/.vscode/.BROWSE.VC.DB
+/.vscode/.BROWSE.*
 *.pro.user*
 *.user
 *.ncb

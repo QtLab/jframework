@@ -81,13 +81,13 @@ private:
     bool loadModuleDockNode(const QDomElement &emDock);
 
     // 查找系统节点
-    QDomElement findSystemNodeConst(const QDomElement &emParent, const QString &system) const;
+    QDomElement findSystemNode(const QDomElement &emParent, const QString &system) const;
 
     // 查找模式节点
-    QDomElement findModuleNode(QDomElement &emParent, QString &section);
+    QDomElement findModuleNode(QDomElement emParent, const QString &section, bool update);
 
-    // 查找模式节点（不修改配置信息）
-    QDomElement findModuleNodeConst(const QDomElement &emParent, const QString &section) const;
+    // 查找默认模式节点
+    QDomElement findDefaultModuleNode(QDomElement emParent, QString &section);
 
     // 检测组件是否可以挂载（相应用户系统、模式下）
     bool isComponentAttachEnabled(const JComponentInfo *componentInfo) const;

@@ -22,5 +22,5 @@ TestWidget1::~TestWidget1()
 void TestWidget1::onButton1Clicked()
 {
     //const std::string currentModule = jframeLayout()->currentModule();
-    q_notifier->postMessage("j_switch_module", "module #2");
+    q_notifier->postMessage("j_switch_module", "module #2 >> module #3");
 }
