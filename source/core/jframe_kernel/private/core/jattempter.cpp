@@ -273,7 +273,7 @@ bool JAttempter::loadConfig()
 bool JAttempter::loadInitComponent()
 {
     const std::string dirPath =
-            QDir(QString::fromStdString(jframeFacade()->appDirPath()).append("/../initcomponent"))
+            QDir(QString::fromStdString(jframeFacade()->thisDirPath()).append("/initcomponent"))
             .absolutePath().toStdString();
     if (!jframeFacade()->invokeMethod(
                 "library_query_exists", 3, dirPath.c_str(), "InitComponent")) {
@@ -374,12 +374,11 @@ bool JAttempter::loadAllComponent()
         // dir
         QString componentDir = emComponent.attribute("dir").trimmed();
         if (componentDir.isEmpty()) {
-            componentDir = QString::fromStdString(jframeFacade()->appDirPath()).append("/../component");
+            componentDir = QString::fromStdString(jframeFacade()->thisDirPath()).append("/component");
         } else {
             componentDir.replace("@FrameDir@", QString::fromStdString(jframeFacade()->frameDirPath()));
-            componentDir.replace("@AppDir@", QString::fromStdString(jframeFacade()->appDirPath()));
+            componentDir.replace("@ThisDir@", QString::fromStdString(jframeFacade()->thisDirPath()));
         }
-        componentDir = QDir(componentDir).absolutePath();
         componentDir.append("/").append(componentConfig.componentName);
         componentConfig.componentDir = componentDir;
         // stay

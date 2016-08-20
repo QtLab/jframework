@@ -55,34 +55,42 @@ CString CApplicationApp::ApplicationDirPath()
 
 IJFrameFacade * CApplicationApp::LoadFrameFacade()
 {
-	//
+	// 生成文件路径
 	CString filePath = ApplicationDirPath();
-	filePath.Append(_T("\\jframe\\jframe_facade"));
-#if defined(_DEBUG)
-	filePath.Append(_T("d.dll"));
+	filePath.Append(_T("\\jframeworkdir.dll"));
+
+	/// 获取 FrameFacadeInstace 导出接口
+
+	// 加载库文件
+	HMODULE hFrameworkDir = ::LoadLibrary(filePath.GetBuffer());
+	if (hFrameworkDir == NULL)
+	{
+		return NULL;
+	}
+
+	// 获取 FrameFacadeInstance 导出接口
+	typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int);
+	FrameFacadeInstace frameFacadeInstace =
+		(FrameFacadeInstace)::GetProcAddress(hFrameworkDir, "FrameFacadeInstace");
+	if (frameFacadeInstace == NULL)
+	{
+		return NULL;	// 获取导出接口失败
+	}
+
+	// 获取 IJFrameFacade 接口实例
+	IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>
+		((IJUnknown *)(frameFacadeInstace(
+#ifdef _MSC_VER
+#if defined(DEBUG) || defined(_DEBUG)
+			1
 #else
-	filePath.Append(_T(".dll"));
+			0
 #endif
-
-	HMODULE hFrameFacade = ::LoadLibrary(filePath.GetBuffer());
-	if (hFrameFacade == NULL)
-	{
-		return NULL;
-	}
-
-	//
-	FuncFrameFacadeInst fFrameFacadeInst = 
-		(FuncFrameFacadeInst)::GetProcAddress(hFrameFacade, "CreateInstance");
-	if (fFrameFacadeInst == NULL)
-	{
-		return NULL;
-	}
-
-	//
-	IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>(fFrameFacadeInst());
+#endif  // _MSC_VER
+		)));
 	if (frameFacade == NULL)
 	{
-		return NULL;
+		return NULL;      // 获取实例失败
 	}
 
 	return frameFacade;
@@ -201,13 +209,13 @@ class CAboutDlg : public CBCGPDialog
 public:
 	CAboutDlg();
 
-// Dialog Data
+	// Dialog Data
 	enum { IDD = IDD_ABOUTBOX };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-// Implementation
+														// Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
 };

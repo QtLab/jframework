@@ -30,10 +30,10 @@
 
 namespace log4cpp {
 
-    FileAppender::FileAppender(const std::string& name, 
+    FileAppender::FileAppender(const std::string& name,
                                const std::string& fileName,
                                bool append,
-                               mode_t mode) : 
+                               mode_t mode) :
             LayoutAppender(name),
             _fileName(fileName),
             _flags(O_CREAT | O_APPEND | O_WRONLY),
@@ -48,21 +48,22 @@ namespace log4cpp {
         }
         if (index != -1) {
             path = path.substr(0, index + 1);
-        }
+            //
 #if defined(_MSC_VER)
-        if (_access(path.c_str(), 0) == -1) {
-            mkdir(path.c_str());
+            if (_access(path.c_str(), 0) == -1) {
+                mkdir(path.c_str());
 #elif defined(__unix__)
-        if (access(path.c_str(), F_OK) != 0) {
-            mkdir(path.c_str(), S_IRWXU|S_IRWXG|S_IRWXO);
+            if (access(path.c_str(), F_OK) != 0) {
+                mkdir(path.c_str(), S_IRWXU|S_IRWXG|S_IRWXO);
 #else
 #pragma message("Not supported!")
 #endif
+            }
         }
         //
         _fd = ::open(_fileName.c_str(), _flags, _mode);
     }
-    
+
     FileAppender::FileAppender(const std::string& name, int fd) :
         LayoutAppender(name),
         _fileName(""),
@@ -70,7 +71,7 @@ namespace log4cpp {
         _flags(O_CREAT | O_APPEND | O_WRONLY),
         _mode(00644) {
     }
-    
+
     FileAppender::~FileAppender() {
         close();
     }
@@ -115,14 +116,14 @@ namespace log4cpp {
             if (fd < 0)
                 return false;
             else {
-	        if (_fd != -1)
+            if (_fd != -1)
                     ::close(_fd);
                 _fd = fd;
                 return true;
             }
         } else {
             return true;
-        }      
+        }
     }
 
    std::auto_ptr<Appender> create_file_appender(const FactoryParams& params)

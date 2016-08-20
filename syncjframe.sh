@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 # --------------------
 jframe_dir="$(dirname $(readlink -f $0))"
@@ -98,6 +98,18 @@ cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so" "${jframe_dir}/bin/3rdpart/"
 cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so.1" "${jframe_dir}/bin/3rdpart/"
 cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so.1.0" "${jframe_dir}/bin/3rdpart/"
 cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so.1.0.0" "${jframe_dir}/bin/3rdpart/"
+
+# --------------------
+
+cp -f "${jframe_dir}/lib/jframe/libjframeworkdir.so" "${jframe_dir}/bin/"
+cp -f "${jframe_dir}/lib/jframe/libjframeworkdir.so.1" "${jframe_dir}/bin/"
+cp -f "${jframe_dir}/lib/jframe/libjframeworkdir.so.1.0" "${jframe_dir}/bin/"
+cp -f "${jframe_dir}/lib/jframe/libjframeworkdir.so.1.0.0" "${jframe_dir}/bin/"
+
+cp -f "${jframe_dir}/lib/jframe/libjframeworkenv.so" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/jframe/libjframeworkenv.so.1" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/jframe/libjframeworkenv.so.1.0" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/jframe/libjframeworkenv.so.1.0.0" "${jframe_dir}/bin/jframe/"
 
 # --------------------
 

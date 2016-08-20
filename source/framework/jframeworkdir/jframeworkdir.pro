@@ -4,59 +4,52 @@
 #
 #-------------------------------------------------
 
+QT -= gui
+
 jframe_root = $$PWD/../../..
 
-QT     -= core gui
-CONFIG -= app_bundle
-#CONFIG -= qt
-#CONFIG += console
-TEMPLATE = app
-
-DESTDIR = $${jframe_root}/bin
+TEMPLATE = lib
+DESTDIR = $${jframe_root}/lib/jframe
 
 ##
-win32:{
-    lessThan(QT_MAJOR_VERSION, 5):{
-        CONFIG(debug, debug|release):TARGET = applicationd
-        else:TARGET = application
-    } else {
-        TARGET = $$qtLibraryTarget(application)
-    }
-} else {
-    TARGET = $$qtLibraryTarget(application)
-}
+TARGET = jframeworkdir
 
 ## use JLibrary class
 DEFINES += JLIBRARY_MODULE
 
 ##
-unix {
-    LIBS += -ldl
+win32 {
+    LIBS += -ladvapi32  # registry operation
 }
 
 # The .h file which was generated for your project. Feel free to hck it.
-HEADERS += \
+HEADERS +=
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
     main.cpp
 
-OTHER_FILES += \
+# tinyxml
+include($${jframe_root}/source/3rdpart/tinyxml/src.pri)
+INCLUDEPATH += $${jframe_root}/source/3rdpart/tinyxml
+
+#
+OTHER_FILES +=
 
 #######################################################
 # Copyright Information
 #######################################################
 
 QMAKE_TARGET_COMPANY = "Smartsoft"
-QMAKE_TARGET_DESCRIPTION = "jframework"
+QMAKE_TARGET_DESCRIPTION = "jframeworkdir"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2016 Smartsoft Inc."
 
 win32:RC_ICONS = $${jframe_root}/config/resource/app.ico
 
-VER_MAJ = 1
-VER_MIN = 0
-VER_PAT = 0
-VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
+#VER_MAJ = 1
+#VER_MIN = 0
+#VER_PAT = 0
+#VERSION = 2.2.3
 
 #######################################################
 # qmake internal options
@@ -80,9 +73,9 @@ win32 {
 
     #CONFIG      += debug_and_release
     #CONFIG      += build_all
-
+    #CONFIG      += release
 } else {
-#    CONFIG      += release
+    #CONFIG      += release
 }
 
 linux-g++ {
@@ -109,20 +102,8 @@ win32|unix: {
     ## remove files
     dstdir = $$DESTDIR/
     win32:dstdir = $$replace(dstdir, /, \\)
-    exists("$${dstdir}$${TARGET}.exp"):copyCommand += && $(DEL_FILE) "$${dstdir}$${TARGET}.exp"
-    exists("$${dstdir}$${TARGET}.ilk"):copyCommand += && $(DEL_FILE) "$${dstdir}$${TARGET}.ilk"
-    exists("$${dstdir}$${TARGET}.lib"):copyCommand += && $(DEL_FILE) "$${dstdir}$${TARGET}.lib"
-    #exists("$${dstdir}$${TARGET}.pdb"):copyCommand += && $(DEL_FILE) "$${dstdir}$${TARGET}.pdb"
 
     deployment.commands = $$copyCommand
     first.depends = $(first) deployment
     QMAKE_EXTRA_TARGETS += first deployment
-
-    ##
-    win32:CONFIG(debug, debug|release):debug_suffix=d
-    else:win32:debug_suffix=
-
-    ##
-    win32:system($${jframe_root}\\syncjframe.cmd $$QT_MAJOR_VERSION $$debug_suffix)
-    unix:system($${jframe_root}/syncjframe.sh $$QT_MAJOR_VERSION $$debug_suffix)
 }

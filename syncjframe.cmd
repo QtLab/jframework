@@ -1,3 +1,4 @@
+﻿
 @echo off
 
 rem -----
@@ -27,7 +28,7 @@ if not exist "%jframe_dir%\bin\3rdpart\Qt\plugins\" (
 
 rem -----
 
-copy "%qt_dir%\bin\Qt?Core%debug_suffix%*.dll" "%jframe_dir%\bin\"
+copy "%qt_dir%\bin\Qt?Core%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
 copy "%qt_dir%\bin\Qt?Gui%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
 copy "%qt_dir%\bin\Qt?Widgets%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
 copy "%qt_dir%\bin\Qt?Xml%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
@@ -44,6 +45,20 @@ copy "%jframe_dir%\lib\3rdpart\log4cpp%debug_suffix%*.dll" "%jframe_dir%\bin\3rd
 copy "%jframe_dir%\lib\3rdpart\qtribbon%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
 copy "%jframe_dir%\lib\3rdpart\qtwinmigrate%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
 copy "%jframe_dir%\lib\3rdpart\tinyxml%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
+
+rem -----
+
+if exist "%jframe_dir%\lib\jframe\jframeworkdir.dll" (
+    echo copy jframeworkdir
+    copy "%jframe_dir%\lib\jframe\jframeworkdir.dll" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\jframe\jframeworkdir.pdb" "%jframe_dir%\bin\"
+)
+
+if exist "%jframe_dir%\lib\jframe\jframeworkenv.dll" (
+    echo copy jframeworkenv
+    copy "%jframe_dir%\lib\jframe\jframeworkenv.dll" "%jframe_dir%\bin\jframe\"
+    copy "%jframe_dir%\lib\jframe\jframeworkenv.pdb" "%jframe_dir%\bin\jframe\"
+)
 
 rem -----
 

@@ -1,4 +1,4 @@
-/****************************************************************************
+﻿/****************************************************************************
 ** 
 ** Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** All rights reserved.
@@ -229,15 +229,20 @@ LRESULT CALLBACK WinHostProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	    break;
 
 	case WM_KEYDOWN:
-	    if (wParam == VK_TAB) {
-		QT_WA({
-            SendMessage((HWND)widget->winId(), msg, wParam, lParam);
-		}, {
-            SendMessageA((HWND)widget->winId(), msg, wParam, lParam);
-		})
-	    }
+        switch (wParam) {
+        case VK_TAB:
+            QT_WA({
+                SendMessage((HWND)widget->winId(), msg, wParam, lParam);
+            }, {
+                SendMessageA((HWND)widget->winId(), msg, wParam, lParam);
+            })
+            break;
+        case VK_ESCAPE:
+            break;
+        default:
+            break;
+        }
 	    break;
-
 	default:
 	    break;
 	}

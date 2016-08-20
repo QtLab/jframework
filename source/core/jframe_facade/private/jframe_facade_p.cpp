@@ -6,39 +6,30 @@
 #include <unistd.h>
 #endif
 
-// get application file name
-JFRAME_FACADE_EXPORT std::string jAppFileName()
-{
-    static std::string _path("");
-    if (_path.empty()) {
-        // 获取软件实体绝对路径
-#ifdef _MSC_VER
-        extern QString qAppFileName();
-        _path = QFileInfo(qAppFileName()).canonicalPath().toStdString();
-#elif defined(__unix__)
-        // Try looking for a /proc/<pid>/exe symlink first which points to
-        // the absolute path of the executable
-        QFileInfo fileInfo(QString::fromLatin1("/proc/%1/exe").arg(getpid()));
-        if (fileInfo.exists() && fileInfo.isSymLink()) {
-            _path = fileInfo.canonicalPath().toStdString();
-        }
-#else
-#pragma message("Not supported!")
-#endif
-    }
-
-    return _path;
-}
+// export from jframeworkdir library
+J_EXTERN_C J_EXTERN const char* appDirPath();
+J_EXTERN_C J_EXTERN const char* thisDirPath();
+J_EXTERN_C J_EXTERN const char* frameDirPath();
+J_EXTERN_C J_EXTERN const char* nativeSeparator();
+J_EXTERN_C J_EXTERN const char* envSeparator();
+J_EXTERN_C J_EXTERN bool fileExists(const char* filePath);
+J_EXTERN_C J_EXTERN const char* frameVersion();
+J_EXTERN_C J_EXTERN const char* libraryPrefix();
+J_EXTERN_C J_EXTERN const char* librarySuffix();
 
 // struct JFrameFacadeData
 
 struct JFrameFacadeData
 {
     bool frameLoaded;           // 框架加载状态
+
     IJUnknown* frameFactory;    // 框架工厂系统部件
     IJUnknown* frameKernel;     // 框架内核系统部件
 
+    std::string appDirPath;     // 软件实体路径
+    std::string thisDirPath;    // 软件实体部署路径（application可执行文件上一级路径）
     std::string frameDirPath;   // 框架部署路径
+
     std::string frameVersion;   // 框架版本
 
     //
@@ -176,14 +167,19 @@ bool JFrameFacade::invokeMethod(const std::string &method, int argc, ...)
     return result;
 }
 
+std::string JFrameFacade::appDirPath() const
+{
+    return data->appDirPath;
+}
+
+std::string JFrameFacade::thisDirPath() const
+{
+    return data->thisDirPath;
+}
+
 std::string JFrameFacade::frameDirPath() const
 {
     return data->frameDirPath;
-}
-
-std::string JFrameFacade::appDirPath() const
-{
-    return jAppFileName();
 }
 
 std::string JFrameFacade::frameConfigPath() const
@@ -225,9 +221,9 @@ bool JFrameFacade::loadFrame(int *argc, char** argv, void *app)
         return true;    // 已加载
     }
 
-    // 加载框架配置
-    if (!loadGlobalConfig(frameVersionFromConfig())) {
-        return false;   // 加载框架全局配置失败
+    // 加载框架全局配置信息
+    if (!loadConfig()) {
+        return false;   // 加载失败
     }
 
     // 加载框架
@@ -452,25 +448,10 @@ bool JFrameFacade::loadFrameKernel()
     return true;
 }
 
-bool JFrameFacade::loadGlobalConfig(const std::string &version)
-{
-    data->frameVersion = version;
-
-    //
-    std::string path = framePathFromRegistry(data->frameVersion);
-    if (path.empty()) {
-        std::string framePath = appDirPath();
-        framePath = framePath.substr(0, framePath.size() - 4);
-        path = framePath;
-    }
-
-    return loadConfig(path);
-}
-
 void JFrameFacade::copyFrameFile()
 {
-    QString srcdir = QString::fromStdString(frameDirPath().append("/bin")).toLower();
-    QString dstdir = QString::fromStdString(appDirPath()).toLower();
+    QString srcdir = QString::fromStdString(data->frameDirPath).append("/bin").toLower();
+    QString dstdir = QString::fromStdString(data->thisDirPath).toLower();
     if (srcdir == dstdir) {
         return;     // 框架位置与应用实例相同，不需要更新
     }
@@ -478,95 +459,26 @@ void JFrameFacade::copyFrameFile()
     /// 拷贝框架组件
 
     //
-    QDir componentSrcDir(srcdir + "/../Component/jframe");
+    QDir componentSrcDir(srcdir + "/Component/jframe");
     if (componentSrcDir.exists()) {
         // 删除软件实体中的框架组件文件夹
-        QString componentNewDir(dstdir + "/../Component/jframe");
+        QString componentNewDir(dstdir + "/Component/jframe");
         //deleteDir(componentNewDir);
         copyDir(componentSrcDir.absolutePath(), componentNewDir);
     }
 }
 
-std::string JFrameFacade::frameVersionFromConfig() const
+bool JFrameFacade::loadConfig()
 {
-    if (!QFileInfo(QString::fromStdString(frameGlobalPath())).isReadable()) {
-        Q_ASSERT_X(false, "Warning", QStringLiteral("配置文件不存在，即将退出软件！")
-                   .toUtf8().data());
-        return std::string();
-    }
-
-    // 读取配置文件
-    TiXmlDocument document(frameGlobalPath());
-    if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
-        Q_ASSERT_X(false, "Warning",
-                   QStringLiteral("配置文件打\"%1\"开失败，即将退出软件！\n"
-                                  "错误标识：%2\n"
-                                  "错误描述：%3\n"
-                                  "错误位置：[%4, %5]")
-                   .arg(QString::fromStdString(frameGlobalPath()))
-                   .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
-                   .arg(document.ErrorRow()).arg(document.ErrorCol())
-                   .toUtf8().data());
-        return std::string();
-    }
-
-    // 获取根节点
-    TiXmlElement *emRoot = document.RootElement();
-    if (!emRoot) {
-        return std::string();
-    }
-
     //
-    std::string sVal;
-
-    // framework config
-    if (emRoot->QueryStringAttribute("version", &sVal) != TIXML_SUCCESS) {
-        Q_ASSERT_X(false, "Warning", QStringLiteral("未指定框架版本，即将退出软件")
-                   .toUtf8());
-        return std::string();
-    }
-
-    return sVal;
-}
-
-std::string JFrameFacade::framePathFromRegistry(const std::string &version)
-{
-#ifdef _MSC_VER
-    QSettings settings("HKEY_CURRENT_USER\\Software\\Smartsoft\\JFrame\\"
-                       + QString::fromStdString(version),
-                       QSettings::NativeFormat);
-    QString installPath = settings.value("InstallPath").toString();
-    if (installPath.isEmpty()) {
-        return std::string();
-    } else {
-        installPath.append("\\frame");
-    }
-
-    //
-    installPath.replace('\\', '/');
-
-    return installPath.toStdString();
-#else
-    Q_UNUSED(version);
-    //#pragma message("在非Windows环境下还未实现此功能！");
-    return std::string();
-#endif
-}
-
-bool JFrameFacade::loadConfig(const std::string &frameDirPath)
-{
-    // 保存框架路径
-    data->frameDirPath = frameDirPath;
-
-    //
-    if (!QFileInfo(QString::fromStdString(frameGlobalPath())).isReadable()) {
+    if (!QFileInfo(QString::fromStdString(data->frameGlobalPath)).isReadable()) {
         Q_ASSERT_X(false, "Warning", QStringLiteral("配置文件不存在，即将退出软件！")
                    .toUtf8().data());
         return false;
     }
 
     // 读取配置文件
-    TiXmlDocument document(frameGlobalPath());
+    TiXmlDocument document(data->frameGlobalPath);
     if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
         Q_ASSERT_X(false, "Warning", QStringLiteral("配置文件加载错误，即将推出软件！")
                    .toUtf8().data());
@@ -579,215 +491,24 @@ bool JFrameFacade::loadConfig(const std::string &frameDirPath)
         return false;
     }
 
-    // 获取环境变量配置项
-    TiXmlElement *emEnvval = emRoot->FirstChildElement("envval");
-    if (!emEnvval) {
-        return false;
-    }
-
-    // 获取全局环境变量配置节点
-    TiXmlElement *emGlobal = emEnvval->FirstChildElement("global");
-    if (!emGlobal) {
-        return false;
-    }
-
-    //
-    std::string sVal;
-    std::string paths = this->frameDirPath() + "/bin";
-
-    // 寻找全局变量配置->path节点
-    for (TiXmlElement *emPath = emGlobal->FirstChildElement("path");
-         emPath != 0;
-         emPath = emPath->NextSiblingElement("path")) {
-        // 获取base属性值
-        if (emPath->QueryStringAttribute("base", &sVal) != TIXML_SUCCESS) {
-            continue;
-        }
-
-        // 替换特殊字段
-        QString pathBase = QString::fromStdString(sVal);
-        pathBase.replace("@FrameDir@", QString::fromStdString(data->frameDirPath));
-        pathBase.replace("@AppDir@", QString::fromStdString(appDirPath()));
-
-        // 路径有效性检测
-        if (!QDir(pathBase).exists()) {
-            continue;   // 路径无效
-        }
-
-        // 获取type属性值
-        std::string pathType;
-        if (emPath->QueryStringAttribute("type", &pathType) != TIXML_SUCCESS
-                || pathType.empty()) {
-            continue;
-        }
-
-        //
-        std::string newPaths;
-        for (TiXmlElement *emItem = emPath->FirstChildElement("item");
-             emItem != 0;
-             emItem = emItem->NextSiblingElement("item")) {
-            // 获取path属性值
-            std::string path;
-            if (emItem->QueryStringAttribute("path", &path) != TIXML_SUCCESS
-                    || path.empty()) {
-                continue;
-            }
-
-            //
-            path = pathBase.toStdString() + '/' + path;
-            if (newPaths.empty()) {
-                newPaths = path;
-            } else {
-                newPaths += envSeparator() + path;
-            }
-        }
-
-        //
-        if (pathType == "append") {
-            paths += envSeparator() + newPaths;
-        } else if (pathType == "prefix") {
-            paths = newPaths + envSeparator() + paths;
-        } else if (pathType == "replace") {
-            paths = newPaths;
-        } else {
-            //
-        }
-    }
-
-    // 设置环境变量
-#ifdef _MSC_VER
-    std::string envPath = getEnvValue("PATH");
-    paths = envPath + envSeparator() + paths;
-    qputenv("Path", QByteArray(paths.c_str()));
-#elif defined(__unix__)
-    std::string envPath = getEnvValue("LD_LIBRARY_PATH");
-    qputenv("LD_LIBRARY_PATH", QByteArray(envPath.c_str()));
-#else
-#pragma message("Not supported!")
-#endif
-
-    /// for qt.conf
-
-    // 获取qtconf节点
-    TiXmlElement *emQtConf = emRoot->FirstChildElement("qtconf");
-    if (!emQtConf) {
-        return false;
-    }
-
-    // 获取paths节点
-    TiXmlElement *emPaths = emQtConf->FirstChildElement("paths");
-    if (!emPaths) {
-        return false;
-    }
-
-    //
-    std::map<std::string, std::string> values;
-
-    // 获取item节点
-    for (TiXmlElement *emItem = emPaths->FirstChildElement("item");
-         emItem != 0;
-         emItem = emItem->NextSiblingElement("item")) {
-        // key
-        std::string sKey;
-        if (emItem->QueryStringAttribute("key", &sKey) != TIXML_SUCCESS
-                || sKey.empty()) {
-            continue;
-        }
-
-        // value
-        if (emItem->QueryStringAttribute("value", &sVal) != TIXML_SUCCESS) {
-            continue;
-        }
-
-        // 替换特殊字段
-        QString pathValue = QString::fromStdString(sVal);
-        pathValue.replace("@FrameDir@", QString::fromStdString(data->frameDirPath));
-        pathValue.replace("@AppDir@", QString::fromStdString(appDirPath()));
-
-        // 路径有效性检测
-        if (!QDir(pathValue).exists()) {
-            continue;   // 路径无效
-        }
-
-        //
-        if (sKey == "Plugins") {
-            values[sKey] = pathValue.toStdString();
-        } else if (sKey == "Imports") {
-            values[sKey] = pathValue.toStdString();
-        } else if (sKey == "Qml2Imports") {
-            values[sKey] = pathValue.toStdString();
-        }
-    }
-
-    //
-    if (!values.empty()) {
-        generateAppQtConf(values);
-    }
-
     // 解析系统节点信息
-
-    return true;
-}
-
-#if defined(__unix__)
-bool JFrameFacade::generatorLdConfig(const std::list<std::string> &paths)
-{
-    //
-
-    return true;
-}
-#endif
-
-bool JFrameFacade::generateAppQtConf(const std::map<std::string, std::string> &values)
-{
-    QString filePath = QString::fromStdString(appDirPath()).append("/qt.conf");
-    QSettings settings(filePath, QSettings::IniFormat);
-    settings.setIniCodec(QTextCodec::codecForLocale());
-    settings.beginGroup("Paths");
-    std::map<std::string, std::string>::const_iterator citer(values.begin());
-    for (; citer != values.end(); ++citer) {
-        settings.setValue(QString::fromStdString(citer->first),
-                          QString::fromStdString(citer->second));
-        //
-        QCoreApplication::addLibraryPath(QString::fromStdString(citer->second));
-    }
-    settings.endGroup();
 
     return true;
 }
 
 std::string JFrameFacade::dynamicPrefix() const
 {
-#ifdef _MSC_VER
-    return "";
-#elif defined(__unix__)
-    return "lib";
-#endif
+    return ::libraryPrefix();
 }
 
 std::string JFrameFacade::dynamicSuffix() const
 {
-#ifdef _MSC_VER
-#if defined(_DEBUG) || defined(DEBUG)
-    return "d.dll";
-#else
-    return ".dll";
-#endif
-#else
-    return ".so";
-#endif
+    return ::librarySuffix();
 }
 
 std::string JFrameFacade::envSeparator() const
 {
-#ifdef _MSC_VER
-    return ";";
-#elif defined(__unix__)
-    return ":";
-#else
-#pragma message("Not supported!")
-    return ";";
-#endif
+    return ::envSeparator();
 }
 
 bool JFrameFacade::terminateProcess()
@@ -808,6 +529,11 @@ bool JFrameFacade::terminateProcess()
 
 bool JFrameFacade::loadDefaultSystem()
 {
+    // 参数有效性检测
+    if (!data->frameKernel) {
+        return false;   // 无效
+    }
+
     // 转到框架内核系统
     return data->frameKernel->invokeMethod("load_default_system");
 }
@@ -1083,9 +809,9 @@ bool JFrameFacade::invokeLibraryResolve(int argc, va_list ap)
     }
 
     // 获取导出函数地址
-    void* tmpFunc = (void *)QLibrary::resolve(QString("%1/%2%3")
-                                              .arg(dir).arg(fileName).arg(dynamicSuffix().c_str()),
-                                              funcName);
+    void* tmpFunc = (void *)QLibrary::resolve(
+                QString("%1/%2%3").arg(dir).arg(fileName).arg(dynamicSuffix().c_str()),
+                funcName);
     if (!tmpFunc) {
         return false;   // 获取失败
     }
@@ -1099,11 +825,16 @@ JFrameFacade::JFrameFacade()
 {
     data = new JFrameFacadeData;
 
-    // 获取框架配置文件路径前缀
-    data->frameConfigPath = QDir(QString::fromStdString(appDirPath().append("/../config")))
-            .absolutePath().toStdString();
+    // 初始化框架版本
+    data->frameVersion = ::frameVersion();
+
+    // 初始化各路径
+    data->appDirPath = ::appDirPath();
+    data->thisDirPath = ::thisDirPath();
+    data->frameDirPath = ::frameDirPath();
 
     // 初始化框架各配置文件路径
+    data->frameConfigPath = data->thisDirPath + "/config";
     data->frameGlobalPath = data->frameConfigPath + "/frame/jframe_global.xml";
     data->frameLayoutPath = data->frameConfigPath + "/frame/jframe_layout.xml";
 

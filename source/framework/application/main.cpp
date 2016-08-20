@@ -1,62 +1,156 @@
-﻿#include <QCoreApplication>
-#include <QLibrary>
-#include <QFileInfo>
-#include <QTextCodec>
-#include <QDebug>
-#include "jframe/jframe_facade.h"
-#if defined(__unix__)
-#include <unistd.h>
+﻿#ifdef _MSC_VER
+#include <Windows.h>
+#include <string>
+#elif defined(__unix__)
+#include <sstream>
 #endif
 
-//
-QString applicationDirPath()
+#include "jframe/jframe_facade.h"
+#include <assert.h>
+
+/**
+ * @brief appDirPath : 获取 application 所在路径（不包含文件名称）
+ * @return : application 所在路径（不包含文件名称）
+ */
+J_EXTERN_C J_ATTR_EXPORT const char* appDirPath()
+{
+    static std::string _path = "";
+    if (_path.empty()) {
+#ifdef __unix__
+        std::stringstream ss;
+        ss << "/proc/" << getpid() << "/exe";
+#endif
+        //
+        char buffer[J_PATH_MAX + 2];
+        unsigned int length = 0;
+#ifdef _MSC_VER
+        length = (unsigned int)GetModuleFileNameA(NULL, buffer, J_PATH_MAX + 1);
+#elif defined(__unix__)
+        length = (unsigned int)readlink(ss.str().c_str(), buffer, J_PATH_MAX);
+#endif
+        //
+        if (length == 0) {
+            // error
+        } else if (length <= J_PATH_MAX) {
+            buffer[J_PATH_MAX + 1] = '\0';
+            _path = buffer;
+        } else {
+            // J_PATH_MAX sized buffer wasn't large enough to contain the full path, use heap
+            char *bufferNew = 0;
+            int i = 1;
+            size_t size;
+            do {
+                ++i;
+                size = J_PATH_MAX * i;
+                bufferNew = reinterpret_cast<char *>(realloc(bufferNew, (size + 1) * sizeof(char)));
+                if (bufferNew) {
+#ifdef _MSC_VER
+                    length = (unsigned int)GetModuleFileNameA(NULL, buffer, J_PATH_MAX + 1);
+#elif defined(__unix__)
+                    length = (unsigned int)readlink(ss.str().c_str(), buffer, J_PATH_MAX);
+#endif
+                }
+            } while (bufferNew && length == size);
+
+            if (bufferNew) {
+                *(bufferNew + size) = '\0';
+            }
+
+            _path = bufferNew;
+            free(bufferNew);
+        }
+
+        //
+        if (!_path.empty()) {
+            //
+            int index = _path.find_last_of('/');
+            if (index == -1) {
+                index = _path.find_last_of('\\');
+            }
+            if (index != -1) {
+                _path = _path.substr(0, index);
+            }
+            // replace '\\' with '/'
+            std::string::iterator iter = _path.begin();
+            for (; iter != _path.end(); ++iter) {
+                if (*iter == '\\') {
+                    *iter = '/';
+                }
+            }
+        }
+    }
+
+    return _path.c_str();
+}
+
+/**
+ * @brief libraryPrefix
+ * @return
+ */
+const char* libraryPrefix()
+{
+    static std::string _v = "";
+    if (_v.empty()) {
+#ifdef _MSC_VER
+        _v = "";
+#elif defined(__unix__)
+        _v = "lib";
+#else
+#pragma message("not supported!")
+        _v = "";
+#endif
+    }
+
+    return _v.c_str();
+}
+
+/**
+ * @brief librarySuffix
+ * @param debug
+ * @return
+ */
+const char* librarySuffix(bool debug)
 {
 #ifdef _MSC_VER
-    extern QString qAppFileName();
-    return QFileInfo(qAppFileName()).canonicalPath();
+    return debug ? "d.dll" : ".dll";
 #elif defined(__unix__)
-    // Try looking for a /proc/<pid>/exe symlink first which points to
-    // the absolute path of the executable
-    QFileInfo fileInfo(QString::fromLatin1("/proc/%1/exe").arg(getpid()));
-    //printf("%s\n", fileInfo.canonicalPath().toLatin1().data());
-    if (fileInfo.exists() && fileInfo.isSymLink()) {
-        return fileInfo.canonicalPath();
-    }
-    return QString();
+    (void)debug;
+    return ".so";
 #else
-#pragma message("Not supported!")
-    return QString();
+#pragma message("not supported!")
+    (void)debug;
+    return "";
 #endif
 }
 
+/**
+ * @brief main
+ * @param argc
+ * @param argv
+ * @return
+ */
 int main(int argc, char *argv[])
 {
-    //
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
-#if QT_VERSION < 0x050000
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
-    QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
-#endif
-    //
-    FuncFrameFacadeInst fFrameFacadeInst = (FuncFrameFacadeInst)QLibrary::resolve(
-                applicationDirPath().append("/jframe/")
-            #ifdef _MSC_VER
-            #if defined(_DEBUG) || defined(DEBUG)
-                .append("jframe_facaded.dll")
-            #else
-                .append("jframe_facade.dll")
-            #endif
-            #elif defined(__apple__)
-               #pragma message("Not supported!")
-            #elif defined(__unix__)
-                .append("libjframe_facade.so")
-            #endif
-                , "CreateInstance");
-    if (!fFrameFacadeInst) {
+    // 加载库
+    const std::string filePath = std::string(appDirPath()).append("/").append(libraryPrefix())
+            .append("jframeworkdir").append(librarySuffix(false));
+
+    // 获取 FrameFacadeInstace 导出接口
+    typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int);
+    FrameFacadeInstace frameFacadeInstace = (FrameFacadeInstace)
+            JLibrary::resolve(filePath, "FrameFacadeInstace");
+    if (!frameFacadeInstace) {
         return -1;      // 获取导出接口失败
     }
 
-    IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>(fFrameFacadeInst());
+    IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>
+            ((IJUnknown *)(frameFacadeInstace(
+                           #if defined(_MSC_VER) || defined(DEBUG) || defined(_DEBUG)
+                               1
+                           #else
+                               0
+                           #endif  // _MSC_VER
+                               )));
     if (!frameFacade) {
         return -1;      // 获取实例失败
     }

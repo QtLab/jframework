@@ -27,9 +27,9 @@ public:
 
     // IJFrameFacade interface
 public:
-    std::string frameDirPath() const;
     std::string appDirPath() const;
-
+    std::string thisDirPath() const;
+    std::string frameDirPath() const;
     std::string frameConfigPath() const;
     std::string frameGlobalPath() const;
     std::string frameLayoutPath() const;
@@ -66,28 +66,11 @@ private:
     bool loadFrameFactory();
     bool loadFrameKernel();
 
-    // 加载程序配置文件
-    bool loadGlobalConfig(const std::string &version);
-
     //
     void copyFrameFile();
 
-    // 从配置文件获取框架版本
-    std::string frameVersionFromConfig() const;
-
-    // 从注册表获取指定版本的框架安装路径
-    std::string framePathFromRegistry(const std::string &version);
-
     // 加载程序配置文件
-    bool loadConfig(const std::string &frameDirPath);
-
-    //
-#if defined(__unix__)
-    bool generatorLdConfig(const std::list<std::string> &paths);
-#endif
-
-    //
-    bool generateAppQtConf(const std::map<std::string, std::string> &values);
+    bool loadConfig();
 
     // 获取模块前缀
     std::string dynamicPrefix() const;

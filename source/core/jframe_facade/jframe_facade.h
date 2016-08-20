@@ -62,24 +62,24 @@
 
 #define J_QUERY_INTERFACE(_interface_, _iid_, _ver_) \
     do { \
-        if (J_IS_INSTANCEOF(_interface_, _iid_, _ver_)) \
-        { return static_cast<_interface_ *>(this); } \
+    if (J_IS_INSTANCEOF(_interface_, _iid_, _ver_)) \
+{ return static_cast<_interface_ *>(this); } \
     } while(0)
 
 // 在给定接口子对象中查询
 #define J_QUERY_IJUNKNOWN(_interface_, _iid_, _ver_) \
     do { \
-        if (J_IS_INSTANCEOF(IJUnknown, _iid_, _ver_)) \
-        { return static_cast<IJUnknown *>(static_cast<_interface_ *>(this)); } \
+    if (J_IS_INSTANCEOF(IJUnknown, _iid_, _ver_)) \
+{ return static_cast<IJUnknown *>(static_cast<_interface_ *>(this)); } \
     } while(0)
 
 // 查询成员对象实例
 #define J_QUERY_MEMBER_OBJECT(_interface_, _iid_, _ver_, _object_) \
     do { \
-        if ((_object_) != 0) { \
-            if (J_IS_INSTANCEOF(_interface_, _iid_, _ver_)) \
-            { return static_cast<_interface_ *>(_object_); } \
-        } \
+    if ((_object_) != 0) { \
+    if (J_IS_INSTANCEOF(_interface_, _iid_, _ver_)) \
+{ return static_cast<_interface_ *>(_object_); } \
+    } \
     } while(0)
 
 /// 外部接口查询
@@ -95,14 +95,24 @@
 // 给定对象指针查询
 #define J_QUERY_POBJECT_INTERFACE(_object_, _interface) \
     do { \
-        if (_object_ != 0) { \
-            _interface_ *_t = ((_interface_ *)_object_->queryInterface( \
-                IID_ ## _interface_, VER_ ## _interface_)); \
-            if (_t) { return _t_; } \
-        } \
+    if (_object_ != 0) { \
+    _interface_ *_t = ((_interface_ *)_object_->queryInterface( \
+    IID_ ## _interface_, VER_ ## _interface_)); \
+    if (_t) { return _t_; } \
+    } \
     } while(0)
 
 ///
+
+//
+#ifdef _MSC_VER
+#define J_PATH_MAX MAX_PATH
+#elif defined(__unix__)
+#include <limits.h>
+#define J_PATH_MAX PATH_MAX
+#else
+#pragma message("not supported!")
+#endif
 
 //
 #ifndef J_ATTR_CDECL
@@ -115,9 +125,12 @@
 #define J_ATTR_CDECL __cdecl
 #define J_ATTR_STDCALL __stdcall
 #define J_ATTR_EXPORT __declspec(dllexport)
+#define J_EXTERN extern
 #elif defined(__apple__)
 #define J_ATTR_CDECL
 #define J_ATTR_STDCALL
+#define J_ATTR_EXPORT
+#define J_EXTERN
 #elif defined(__unix__)
 #  ifdef __cplusplus
 #    define J_EXTERN_C extern "C"
@@ -127,6 +140,7 @@
 #define J_ATTR_CDECL __attribute__((__cdecl__))
 #define J_ATTR_STDCALL __attribute__((__stdcall__))
 #define J_ATTR_EXPORT __attribute__((visibility("default")))
+#define J_EXTERN
 #endif
 #endif  // J_ATTR_CDECL
 
@@ -149,6 +163,8 @@ typedef long long JLRESULT;
 #endif
 
 // 框架窗体风格
+#ifndef J_FRAME_THEME
+#define J_FRAME_THEME
 #define J_FRAME_THEME_OFFICE_2007BLUE       J_TO_STRING(Office2007Blue)
 #define J_FRAME_THEME_OFFICE_2007BLACK      J_TO_STRING(Office2007Black)
 #define J_FRAME_THEME_OFFICE_2007SILVER     J_TO_STRING(Office2007Silver)
@@ -157,6 +173,7 @@ typedef long long JLRESULT;
 #define J_FRAME_THEME_OFFICE_2010SILVER     J_TO_STRING(Office2010Silver)
 #define J_FRAME_THEME_OFFICE_2010BLUE       J_TO_STRING(Office2010Blue)
 #define J_FRAME_THEME_OFFICE_2010BLACK      J_TO_STRING(Office2010Black)
+#endif // J_FRAME_THEME
 
 // 接口描述
 #define VER_IJUnknown J_INTERFACE_VERSION(1, 0)
@@ -257,16 +274,22 @@ public:
     virtual unsigned int interfaceVersion() const { return VER_IJFrameFacade; }
 
     /**
-     * @brief frameDirPath : 获取框架路径
-     * @return : 框架路径
-     */
-    virtual std::string frameDirPath() const = 0;
-
-    /**
      * @brief appDirPath : 获取软件实体路径
      * @return : 软件实体路径
      */
     virtual std::string appDirPath() const = 0;
+
+    /**
+     * @brief thisDirPath : 获取软件实体部署路径（application可执行文件上一级路径）
+     * @return : 框架部署路径
+     */
+    virtual std::string thisDirPath() const = 0;
+
+    /**
+     * @brief frameDirPath : 获取框架路径
+     * @return : 框架路径
+     */
+    virtual std::string frameDirPath() const = 0;
 
     /**
      * @brief frameConfigPath : 获取框架配置文件夹路径
@@ -357,7 +380,7 @@ public:
      * @param mfcApp : CWinApp类型实例，即theApp
      * @return : Qt环境退出码
      */
-    virtual int runQApp(void *mfcApp) = 0;
+    virtual int runQApp(void *mfcApp = 0) = 0;
 
     /**
      * @brief windowHandle : 获取窗口实例的句柄
@@ -456,6 +479,142 @@ JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 // log - debug - (msg: char*)
 #define jframeLogDebug(msg) \
     jframeLog("debug", msg, "all")
+
+#endif
+
+/////////////////////////////////////////////////////////////
+
+#ifdef JLIBRARY_MODULE
+
+#ifdef _MSC_VER
+#include <Windows.h>
+#elif defined(__unix__)
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <dlfcn.h>
+#endif
+
+/**
+ * @brief The JLibraryT class
+ */
+template<typename T> class JLibraryT
+{
+public:
+    /**
+     * @brief JLibraryT
+     * @param filepath
+     * @param autoclose
+     */
+    explicit JLibraryT(const std::basic_string<T> &filepath, bool autoclose = true)
+        : _handle(0)
+        , _filepath(filepath)
+        , _autoclose(autoclose)
+    {
+        if (!_autoclose) {
+            load();
+        }
+    }
+
+    ~JLibraryT()
+    {
+        unload();
+    }
+
+    /**
+     * @brief load
+     * @return
+     */
+    bool load()
+    {
+        if (_handle) {
+            return true;
+        }
+#ifdef _MSC_VER
+        _handle = (void *)LoadLibraryA(_filepath.c_str());
+#elif defined(__unix__)
+        _handle = dlopen(_filepath.c_str(), RTLD_LAZY);
+#else
+#pragma message("not supported!")
+#endif
+        if (_handle) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @brief load
+     * @param filepath
+     * @return
+     */
+    bool load(const std::basic_string<T> &filepath)
+    {
+        unload();
+        _filepath = filepath;
+        return load();
+    }
+
+    /**
+     * @brief unload
+     */
+    void unload()
+    {
+        if (_handle && _autoclose) {
+#ifdef _MSC_VER
+            CloseHandle((HANDLE)_handle);
+#elif defined(__unix__)
+            dlclose(_handle);
+#else
+#pragma message("not supported!")
+#endif
+            _handle = 0;
+        }
+    }
+
+    /**
+     * @brief resolve
+     * @param methodname
+     * @return
+     */
+    void *resolve(const std::basic_string<T> &methodname)
+    {
+        if (!_handle) {
+            return 0;   // failure
+        }
+
+        // 获取导出接口
+#ifdef _MSC_VER
+        return GetProcAddress((HMODULE)_handle, methodname.c_str());
+#elif defined(__unix__)
+        return dlsym(_handle, methodname.c_str());
+#else
+#pragma message("not supported!")
+        return 0;
+#endif
+    }
+
+    /**
+     * @brief resolve
+     * @param filepath
+     * @param methodname
+     * @return
+     */
+    static void *resolve(const std::basic_string<T> &filepath, const std::basic_string<T> &methodname)
+    {
+        JLibraryT<T> library(filepath, false);
+        return library.resolve(methodname);
+    }
+
+private:
+    void *_handle;
+    std::basic_string<T> _filepath;
+    bool _autoclose;
+};
+
+//
+typedef JLibraryT<char> JLibrary, JLibraryA;
 
 #endif
 

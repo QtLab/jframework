@@ -8,7 +8,7 @@
         <item path="3rdpart/Qt" />
         <item path="jframe" />
       </path>
-      <path base="@AppDir@" type="append">
+      <path base="@ThisDir@" type="append">
       </path>
     </global>
   </envval>
@@ -30,7 +30,7 @@
     <language name="zh_CN" path="@FrameDir@/config/language">
     </language>
   </system>
-  <textCodec encoding="GBK" />
+  <textCodec encoding="utf-8" />
   <logging filePath="@ConfigDir@/frame/jframe_logging.conf" ></logging>
   <mainWindow
     windowTitle="框架测试程序"

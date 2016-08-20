@@ -36,6 +36,9 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
 //
+#ifndef JLIBRARY_MODULE
+#define JLIBRARY_MODULE
+#endif
 #include "jframe/jframe_facade.h"
 #include "3rdpart/BCGCBPro/BCGCBProInc.h"
 
