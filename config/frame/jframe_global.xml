@@ -30,25 +30,32 @@
     <language name="zh_CN" path="@FrameDir@/config/language">
     </language>
   </system>
-  <textCodec encoding="utf-8" />
-  <logging filePath="@ConfigDir@/frame/jframe_logging.conf" ></logging>
-  <mainWindow
-    windowTitle="框架测试程序"
+  <textCodec encoding="utf-8" >
+  </textCodec>
+  <logging filePath="@ConfigDir@/frame/jframe_logging.conf" >
+  </logging>
+  <mainWindow windowTitle="框架测试程序"
     windowIcon="@ConfigDir@/resource/app.ico"
     windowTheme="Office2010Blue"
     closeKilled="true"
     systemFont="Microsoft Yahei, 9">
-    toolBarType="ribbon"
-    layoutType="splitter"
-    <splash
-      fullScreen="false"
+    <splash fullScreen="false"
       imageStart="@ConfigDir@/resource/splash.png"
       imageFinish="@ConfigDir@/resource/finish.png"
       font="Microsoft Yahei, 24, blue"
-      msgAlign="AlignCenter"
-    />
-    <ribbonBar
-      visible="true"
-      minimized="false" />
+      msgAlign="AlignHCenter|AlignBottom" >
+    </splash>
+    <toolBar type="ribbonBar">
+      <menuBar>
+      </menuBar>
+      <toolButton>
+      </toolButton>
+      <ribbonBar visible="true" minimized="false" >
+      </ribbonBar>
+    </toolBar>
+    <statusBar type="">
+    </statusBar>
+    <layout type="splitter" >
+    </layout>
   </mainWindow>
 </jframe>

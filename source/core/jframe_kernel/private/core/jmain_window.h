@@ -121,7 +121,7 @@ private:
     bool createMenuItem(const QDomElement &emItem, QMenu *menu);
 
     //
-    QString &parsePath(QString &src) const;
+    QString parsePath(const QString &src) const;
 
 private:
     JAttempter *q_attempter;

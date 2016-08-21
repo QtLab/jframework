@@ -551,7 +551,7 @@ QAction* JMainWindow::createItemAction(const QDomElement &emItem)
 {
     //
     if (emItem.isNull()) {
-        return false;
+        return 0;
     }
 
     //
@@ -594,7 +594,7 @@ QComboBox *JMainWindow::createItemComboBox(const QDomElement &emItem)
 {
     //
     if (emItem.isNull()) {
-        return false;
+        return 0;
     }
 
     //
@@ -644,7 +644,7 @@ QCheckBox *JMainWindow::createItemCheckBox(const QDomElement &emItem)
 {
     //
     if (emItem.isNull()) {
-        return false;
+        return 0;
     }
 
     //
@@ -687,7 +687,7 @@ QRadioButton *JMainWindow::createItemRadioButton(const QDomElement &emItem)
 {
     //
     if (emItem.isNull()) {
-        return false;
+        return 0;
     }
 
     //
@@ -730,7 +730,7 @@ QLabel *JMainWindow::createItemLabel(const QDomElement &emItem)
 {
     //
     if (emItem.isNull()) {
-        return false;
+        return 0;
     }
 
     //
@@ -764,7 +764,7 @@ QMenu *JMainWindow::createSubMenu(const QDomElement &emItem, QWidget *parentWidg
 {
     //
     if (emItem.isNull() || !parentWidget) {
-        return false;
+        return 0;
     }
 
     //
@@ -839,9 +839,9 @@ bool JMainWindow::createMenuItem(const QDomElement &emItem, QMenu *menu)
     return true;
 }
 
-QString &JMainWindow::parsePath(QString &src) const
+QString JMainWindow::parsePath(const QString &src) const
 {
-    return src
+    return QString(src)
             .replace("@AppDir", QString::fromStdString(jframeFacade()->appDirPath()))
             .replace("@ConfigDir", QString::fromStdString(jframeFacade()->configDirPath()))
             .replace("@ThisDir", QString::fromStdString(jframeFacade()->thisDirPath()))

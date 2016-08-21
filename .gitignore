@@ -77,3 +77,4 @@ target/
 *.vspscc
 *.VC.db
 *.VC.opendb
+*.autosave
