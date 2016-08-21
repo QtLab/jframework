@@ -39,7 +39,9 @@ private:
 
     bool createOptionAction();
 
-    QSplashScreen *splashScreen();
+    void startSplash();
+    void finishSplash();
+    void updateSplash();
 
 private:
     friend class JMainWindow;

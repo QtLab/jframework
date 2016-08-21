@@ -31,6 +31,8 @@ ComDemo2::~ComDemo2()
 
 bool ComDemo2::loadInterface()
 {
+    //TODO
+    ::Sleep(3000);
     return true;
 }
 

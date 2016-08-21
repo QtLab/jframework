@@ -17,6 +17,8 @@ JFrameWnd::JFrameWnd(JAttempter *attempter, QWidget *parent, Qt::WindowFlags f)
     //
     q_splashScreen = new QSplashScreen(this);
     q_splashScreen->setFont(QFont("microsoft yahei", 24));  //DEMO
+
+    //
     q_centralWidget = new QStackedWidget(this);
     setCentralWidget(q_centralWidget);
 
@@ -47,7 +49,11 @@ bool JFrameWnd::init()
 
 void JFrameWnd::updateSplashInfo(const QString &info)
 {
-    q_splashScreen->showMessage(info, Qt::AlignCenter, Qt::blue);
+    if (q_splashScreen) {
+        q_splashScreen->showMessage(info,
+                                    Qt::AlignHCenter | Qt::AlignBottom,
+                                    QColor("steelblue"));
+    }
 }
 
 void JFrameWnd::setCurrentWidget(QWidget *widget)
@@ -172,7 +178,7 @@ bool JFrameWnd::loadConfig()
         setWindowIcon(QIcon(emMainWindow.attribute("windowIcon")
                             .replace("@ConfigDir@", QString::fromStdString(
                                          jframeFacade()->frameConfigPath()))));
-        //qApp->setWindowIcon(windowIcon());
+        qApp->setWindowIcon(windowIcon());
     }
 
     // windowTheme
@@ -180,18 +186,30 @@ bool JFrameWnd::loadConfig()
         setTheme(emMainWindow.attribute("windowTheme").toStdString().c_str());
     }
 
-    // imageSplash
-    if (emMainWindow.hasAttribute("imageSplash")) {
-        q_pixmapSplash = emMainWindow.attribute("imageSplash")
-                .replace("@ConfigDir@", QString::fromStdString(
-                             jframeFacade()->frameConfigPath()));
-    }
+    // splash node
+    QDomElement emSplash = emMainWindow.firstChildElement("splash");
+    if (!emSplash.isNull() && q_splashScreen) {
+        // imageSplash
+        if (emSplash.hasAttribute("imageStart")) {
+            const QString imageStart = emSplash.attribute("imageStart")
+                    .replace("@ConfigDir@", QString::fromStdString(
+                                 jframeFacade()->frameConfigPath()));
+            if (!imageStart.isEmpty()) {
+                q_pixmapSplash = QPixmap(imageStart);
+                q_splashScreen->resize(q_pixmapSplash.size());
+            }
+        }
+        q_splashScreen->setPixmap(q_pixmapSplash);
 
-    // imageFinish
-    if (emMainWindow.hasAttribute("imageFinish")) {
-        q_pixmapFinish = emMainWindow.attribute("imageFinish")
-                .replace("@ConfigDir@", QString::fromStdString(
-                             jframeFacade()->frameConfigPath()));
+        // imageFinish
+        if (emSplash.hasAttribute("imageFinish")) {
+            const QString imageFinish = emSplash.attribute("imageFinish")
+                    .replace("@ConfigDir@", QString::fromStdString(
+                                 jframeFacade()->frameConfigPath()));
+            if (!imageFinish.isEmpty()) {
+                q_pixmapFinish = QPixmap(imageFinish);
+            }
+        }
     }
 
     // systemFont
@@ -203,7 +221,7 @@ bool JFrameWnd::loadConfig()
 
     /// for ribbon
     //
-    q_splashScreen->setPixmap(q_pixmapSplash);
+
     // 获取RibbonBar节点
     QDomElement emRibbonBar = emMainWindow.firstChildElement("ribbonBar");
     if (!emRibbonBar.isNull()) {
@@ -314,7 +332,24 @@ bool JFrameWnd::createOptionAction()
     return true;
 }
 
-QSplashScreen *JFrameWnd::splashScreen()
+void JFrameWnd::startSplash()
 {
-    return q_splashScreen;
+    if (q_splashScreen) {
+        q_splashScreen->show();
+        updateSplash();
+    }
+}
+
+void JFrameWnd::finishSplash()
+{
+    if (q_splashScreen) {
+        q_splashScreen->finish(this);
+        q_splashScreen->deleteLater();
+        q_splashScreen = 0;
+    }
+}
+
+void JFrameWnd::updateSplash()
+{
+    //QApplication::processEvents();
 }

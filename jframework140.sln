@@ -35,6 +35,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BCGCBPro140", "source\3rdpa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "com_demo4", "source\component\com_demo4\com_demo4140.vcxproj", "{14783F01-D40B-4C31-A410-7983AFEC28FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkMode_Test2", "WorkMode_Test2", "{A50CF7ED-161B-4850-9DE2-EA28F8A60623}"
+	ProjectSection(SolutionItems) = preProject
+		config\WorkMode_Test2\jframe_component.xml = config\WorkMode_Test2\jframe_component.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -123,5 +128,6 @@ Global
 		{ECDB12B2-CA9C-47E6-B7BA-A76AFF03AF40} = {DD571CE6-4A53-49B4-AA63-643DF8F1314E}
 		{9DF443FB-9EC0-4511-9262-D9AE2C74F5DD} = {DE34443C-CEF7-4EF2-9861-A393183ED5D7}
 		{14783F01-D40B-4C31-A410-7983AFEC28FC} = {039F13E9-F117-4996-BFD1-495519672773}
+		{A50CF7ED-161B-4850-9DE2-EA28F8A60623} = {8FDFE602-85AF-4EE7-8563-366825C6D20E}
 	EndGlobalSection
 EndGlobal

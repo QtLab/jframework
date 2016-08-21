@@ -297,21 +297,22 @@ std::string JMainWindow::layoutType() const
 void JMainWindow::startSplash()
 {
     if (q_frameWnd) {
-        q_frameWnd->splashScreen()->showFullScreen();
-        updateSplash();
+        q_frameWnd->startSplash();
     }
 }
 
 void JMainWindow::finishSplash()
 {
     if (q_frameWnd) {
-        q_frameWnd->splashScreen()->finish(q_frameWnd);
+        q_frameWnd->finishSplash();
     }
 }
 
 void JMainWindow::updateSplash()
 {
-    QApplication::processEvents();
+    if (q_frameWnd) {
+        q_frameWnd->updateSplash();
+    }
 }
 
 bool JMainWindow::loadConfig()
