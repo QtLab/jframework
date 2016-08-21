@@ -4,7 +4,9 @@
 
 jframe_root = $$PWD/../../..
 
-QT -= gui
+QT += gui
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DEFINES += \
     PRO_CORE \

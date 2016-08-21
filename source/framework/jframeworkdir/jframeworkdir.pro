@@ -4,7 +4,10 @@
 #
 #-------------------------------------------------
 
-QT -= gui
+QT     -= core gui
+CONFIG -= app_bundle
+CONFIG -= qt
+#CONFIG += console
 
 jframe_root = $$PWD/../../..
 

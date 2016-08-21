@@ -4,7 +4,10 @@
 #
 #-------------------------------------------------
 
-QT -= gui
+QT     -= core gui
+CONFIG -= app_bundle
+CONFIG -= qt
+#CONFIG += console
 
 jframe_root = $$PWD/../../..
 
@@ -26,10 +29,10 @@ SOURCES += \
 
 !win32 {
     HEADERS += \
-        $$PWD/inifileopt.h
+        $$PWD/inifile.h
 
     SOURCES += \
-        $$PWD/inifileopt.cpp
+        $$PWD/inifile.c
 }
 
 # tinyxml

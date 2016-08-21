@@ -37,7 +37,7 @@ public:
     std::string frameVersion() const;
     bool frameVersion(int &major, int &minor, int &patch) const;
 
-    bool loadFrame(int *argc = 0, char** argv = 0, void *app = 0);
+    bool loadFrame(int argc = 0, char** argv = 0, void *app = 0);
 
     void showFrame(bool show = true, bool maximized = true);
 
@@ -56,7 +56,7 @@ public:
 
 private:
      //
-    bool loadFramePrivate(int *argc, char** argv, void *app);
+    bool loadFramePrivate(int argc, char** argv, void *app);
 
      //
     IJUnknown *loadFrameInterface(const std::string &moduleName);

@@ -8,7 +8,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-#    jwt \
+    jwt \
     log4cpp \
     qtribbon \
     qtwinmigrate \

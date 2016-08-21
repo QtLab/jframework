@@ -137,7 +137,7 @@
 #  else
 #    define J_EXTERN_C extern
 #  endif
-#define J_ATTR_CDECL __attribute__((__cdecl__))
+#define J_ATTR_CDECL //__attribute__((__cdecl__))
 #define J_ATTR_STDCALL __attribute__((__stdcall__))
 #define J_ATTR_EXPORT __attribute__((visibility("default")))
 #define J_EXTERN
@@ -331,7 +331,7 @@ public:
      * @param app : 外部app实体（如MFC框架的CWinApp*）
      * @return : 执行结果。true，加载成功；false，加载失败
      */
-    virtual bool loadFrame(int *argc = 0, char** argv = 0, void *app = 0) = 0;
+    virtual bool loadFrame(int argc = 0, char** argv = 0, void *app = 0) = 0;
 
     /**
      * @brief showFrame : 显示/隐藏框架主窗口

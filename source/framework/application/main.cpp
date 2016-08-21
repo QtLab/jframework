@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     }
 
     // 加载框架
-    if (!frameFacade->loadFrame(&argc, argv)) {
+    if (!frameFacade->loadFrame(argc, argv)) {
         frameFacade->exitFrame();
         return -1;      // 加载失败
     }

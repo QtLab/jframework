@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QDebug>
 #include <QDateTime>
+#include <QStringList>
 
 // - enum JValueType -
 

@@ -1,5 +1,6 @@
 ﻿#include "precomp.h"
 #include "com_demo2.h"
+#include "testwidget1.h"
 
 //
 J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
@@ -15,16 +16,16 @@ J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
 
 ComDemo2::ComDemo2(IJAttempter *attemper)
     : q_attempter(attemper)
-    , q_widget(0)
+    , q_testWidget1(0)
 {
     q_notifier = jframeLayout()->notifier();
 }
 
 ComDemo2::~ComDemo2()
 {
-    if (q_widget) {
-        q_widget->deleteLater();
-        q_widget = 0;
+    if (q_testWidget1) {
+        q_testWidget1->deleteLater();
+        q_testWidget1 = 0;
     }
 }
 
@@ -83,15 +84,15 @@ void *ComDemo2::createWindow(void *parent, const std::string &objectName)
     Q_UNUSED(objectName);
 
     //
-    if (q_widget) {
+    if (q_testWidget1) {
         Q_ASSERT(false);
         return 0;
     }
 
     //
-    q_widget = new QPushButton(QStringLiteral("测试组件2"));
+    q_testWidget1 = new TestWidget1(q_notifier);
 
-    return qobject_cast<QWidget *>(q_widget);
+    return qobject_cast<QWidget *>(q_testWidget1);
 }
 
 std::string ComDemo2::observerId() const

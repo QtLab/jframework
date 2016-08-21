@@ -387,15 +387,19 @@ bool JAttempter::loadAllComponent()
         componentConfig.componentType = emComponent.attribute("type").trimmed();
         //
         if (componentConfig.componentType == "mfc") {
+            const QString msg = QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "
+                                               "组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
+                                .arg(componentConfig.componentDir)
+                                .arg(componentConfig.componentName)
+                                .arg(componentConfig.componentDesc);
 #ifdef _AFXDLL
             if (!AfxGetApp()) {
-                jframeLogWarning(QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "
-                                                "组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
-                                 .arg(componentConfig.componentDir)
-                                 .arg(componentConfig.componentName)
-                                 .arg(componentConfig.componentDesc).toLocal8Bit().data());
+                jframeLogWarning(msg.toLocal8Bit().data());
                 continue;       // 未启用MFC框架，忽略加载
             }
+#else
+            jframeLogWarning(msg.toLocal8Bit().data());
+            continue;           // 未启用MFC框架，忽略加载
 #endif
         }
         // 加载信息显示
@@ -442,16 +446,21 @@ bool JAttempter::loadComponent(JComponentConfig &componentConfig)
     }
     // 组件类型检测
     if (component->componentType() == "mfc") {
+        const QString msg = QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "
+                                           "组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
+                            .arg(componentConfig.componentDir)
+                            .arg(componentConfig.componentName)
+                            .arg(componentConfig.componentDesc);
 #ifdef _AFXDLL
         if (!AfxGetApp()) {
-            jframeLogWarning(QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "
-                                            "组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
-                             .arg(componentConfig.componentDir)
-                             .arg(componentConfig.componentName)
-                             .arg(componentConfig.componentDesc).toLocal8Bit().data());
+            jframeLogWarning(msg.toLocal8Bit().data());
             delete component;
             return false;       // 未启用MFC框架，忽略加载
         }
+#else
+        jframeLogWarning(msg.toLocal8Bit().data());
+        delete component;
+        return false;       // 未启用MFC框架，忽略加载
 #endif
     }
     // 存储组件信息

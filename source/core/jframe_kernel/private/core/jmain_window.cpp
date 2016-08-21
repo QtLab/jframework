@@ -16,8 +16,7 @@ JMainWindow::JMainWindow(JAttempter *attempter)
 JMainWindow::~JMainWindow()
 {
     if (q_frameWnd) {
-        //q_frameWnd->deleteLater();
-        delete q_frameWnd;
+        q_frameWnd->deleteLater();
         q_frameWnd = 0;
     }
 }
@@ -85,49 +84,65 @@ bool JMainWindow::invokeMethod(const std::string &method, int argc, ...)
 
 void JMainWindow::showNormal()
 {
-    q_frameWnd->showNormal();
+    if (q_frameWnd) {
+        q_frameWnd->showNormal();
+    }
 }
 
 void JMainWindow::showMinimized()
 {
-    q_frameWnd->showMinimized();
+    if (q_frameWnd) {
+        q_frameWnd->showMinimized();
+    }
 }
 
 void JMainWindow::showMaximized()
 {
-    q_frameWnd->showMaximized();
+    if (q_frameWnd) {
+        q_frameWnd->showMaximized();
+    }
 }
 
 void JMainWindow::showFullScreen()
 {
-    q_frameWnd->showFullScreen();
+    if (q_frameWnd) {
+        q_frameWnd->showFullScreen();
+    }
 }
 
 void JMainWindow::closeWindow()
 {
-    q_frameWnd->close();
+    if (q_frameWnd) {
+        q_frameWnd->close();
+    }
 }
 
 void JMainWindow::setVisible(bool visible)
 {
-    q_frameWnd->setVisible(visible);
+    if (q_frameWnd) {
+        q_frameWnd->setVisible(visible);
 
-    //
-    restoreWindowState();
+        //
+        restoreWindowState();
+    }
 }
 
 void JMainWindow::showStaysOnTop(bool stayOnTop)
 {
-    if (stayOnTop) {
-        q_frameWnd->setWindowFlags(q_frameWnd->windowFlags() | Qt::WindowStaysOnTopHint);
-    } else {
-        q_frameWnd->setWindowFlags(q_frameWnd->windowFlags() & (~Qt::WindowStaysOnTopHint));
+    if (q_frameWnd) {
+        if (stayOnTop) {
+            q_frameWnd->setWindowFlags(q_frameWnd->windowFlags() | Qt::WindowStaysOnTopHint);
+        } else {
+            q_frameWnd->setWindowFlags(q_frameWnd->windowFlags() & (~Qt::WindowStaysOnTopHint));
+        }
     }
 }
 
 void JMainWindow::resize(int width, int height)
 {
-    q_frameWnd->resize(width, height);
+    if (q_frameWnd) {
+        q_frameWnd->resize(width, height);
+    }
 }
 
 void *JMainWindow::queryObject(const std::string &objectName)
@@ -143,11 +158,19 @@ void *JMainWindow::queryObject(const std::string &objectName)
 
 void *JMainWindow::statusBar()
 {
-    return (void *)q_frameWnd->statusBar();
+    if (q_frameWnd) {
+        return (void *)q_frameWnd->statusBar();
+    } else {
+        return 0;
+    }
 }
 
 void JMainWindow::activeView(const std::string &viewName)
 {
+    if (!q_frameWnd) {
+        return;
+    }
+
     //
     QObject *object = reinterpret_cast<QObject *>(queryObject(viewName));
     if (!object) {
@@ -171,11 +194,17 @@ void JMainWindow::activeView(const std::string &viewName)
 
 void JMainWindow::updateSplashInfo(const std::string &info)
 {
-    q_frameWnd->updateSplashInfo(QString::fromStdString(info));
+    if (q_frameWnd) {
+        q_frameWnd->updateSplashInfo(QString::fromStdString(info));
+    }
 }
 
 bool JMainWindow::createComponentUi(IJComponent *component, const std::string &filePath)
 {
+    if (!q_frameWnd) {
+        return false;
+    }
+
     // 参数有效性检测
     if (!component) {
         return false;       // 参数无效
@@ -241,12 +270,18 @@ bool JMainWindow::createComponentUi(IJComponent *component, const std::string &f
 
 void *JMainWindow::mainWidget()
 {
-    return static_cast<QWidget *>(q_frameWnd);
+    if (q_frameWnd) {
+        return static_cast<QWidget *>(q_frameWnd);
+    } else {
+        return 0;
+    }
 }
 
 void JMainWindow::setTheme(const std::string &theme)
 {
-    q_frameWnd->setTheme(QString::fromStdString(theme));
+    if (q_frameWnd) {
+        q_frameWnd->setTheme(QString::fromStdString(theme));
+    }
 }
 
 std::string JMainWindow::toolBarType() const
@@ -261,13 +296,17 @@ std::string JMainWindow::layoutType() const
 
 void JMainWindow::startSplash()
 {
-    q_frameWnd->splashScreen()->showFullScreen();
-    updateSplash();
+    if (q_frameWnd) {
+        q_frameWnd->splashScreen()->showFullScreen();
+        updateSplash();
+    }
 }
 
 void JMainWindow::finishSplash()
 {
-    q_frameWnd->splashScreen()->finish(q_frameWnd);
+    if (q_frameWnd) {
+        q_frameWnd->splashScreen()->finish(q_frameWnd);
+    }
 }
 
 void JMainWindow::updateSplash()
@@ -304,6 +343,10 @@ bool JMainWindow::createRibbonPage(const QDomElement &emRibbonPage)
 
 bool JMainWindow::createComponentUi(IJComponent *component, const QDomElement &emWindow)
 {
+    if (!q_frameWnd) {
+        return false;
+    }
+
     //
     if (!component || emWindow.isNull()) {
         return false;   //

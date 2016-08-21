@@ -9,6 +9,7 @@
 #include <sstream>
 #include "inifileopt.h"
 #define WritePrivateProfileStringA WritePrivateProfileString
+#include "inifile.h"
 #endif
 
 //
@@ -59,8 +60,15 @@ bool generateQtConf(const std::map<std::string, std::string> &values)
     const std::string filePath = std::string(thisDirPath()).append("/bin/qt.conf");
     std::map<std::string, std::string>::const_iterator citer(values.begin());
     for (; citer != values.end(); ++citer) {
+#ifdef _MSC_VER
         WritePrivateProfileStringA("Paths", citer->first.c_str(),
                                    citer->second.c_str(), filePath.c_str());
+#elif defined(__unix__)
+        write_profile_string("Paths", citer->first.c_str(),
+                             citer->second.c_str(), filePath.c_str());
+#else
+#pragma message("not supported!")
+#endif
     }
 
     return true;

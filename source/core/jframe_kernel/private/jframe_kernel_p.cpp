@@ -211,7 +211,7 @@ bool JFrameKernel::invokeMethod(const std::string &method, int argc, ...)
     else if (method == "create_qapp") {
         if (argc == 3) {
             // 转到框架核心系统
-            int *argc = va_arg(ap, int*);
+            int argc = va_arg(ap, int);
             char **argv = va_arg(ap, char**);
             void *app = va_arg(ap, void*);
             result = frameCore()->invokeMethod("create_qapp", 3, argc, argv, app);
@@ -336,19 +336,19 @@ bool JFrameKernel::invokeLog(int argc, va_list ap)
         msgType = IJLogManager::EmergeMsg;
     } else if (strcmp(sType, "fatal") == 0) {
         msgType = IJLogManager::FatalMsg;
-    } if (strcmp(sType, "alert") == 0) {
+    } else if (strcmp(sType, "alert") == 0) {
         msgType = IJLogManager::AlertMsg;
-    } if (strcmp(sType, "crit") == 0) {
+    } else if (strcmp(sType, "crit") == 0) {
         msgType = IJLogManager::CriticalMsg;
-    } if (strcmp(sType, "error") == 0) {
+    } else if (strcmp(sType, "error") == 0) {
         msgType = IJLogManager::ErrorMsg;
-    } if (strcmp(sType, "warn") == 0) {
+    } else if (strcmp(sType, "warn") == 0) {
         msgType = IJLogManager::WarningMsg;
-    } if (strcmp(sType, "notice") == 0) {
+    } else if (strcmp(sType, "notice") == 0) {
         msgType = IJLogManager::NoticeMsg;
-    } if (strcmp(sType, "info") == 0) {
+    } else if (strcmp(sType, "info") == 0) {
         msgType = IJLogManager::InfoMsg;
-    } if (strcmp(sType, "debug") == 0) {
+    } else if (strcmp(sType, "debug") == 0) {
         msgType = IJLogManager::DebugMsg;
     }
 
@@ -359,7 +359,7 @@ bool JFrameKernel::invokeLog(int argc, va_list ap)
     }
 
     //
-    const char* where = va_arg(ap, const char *);
+    const char* where = va_arg(ap, char*);
 
     //
     const char* file = 0;

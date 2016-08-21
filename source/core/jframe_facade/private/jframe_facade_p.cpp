@@ -214,7 +214,7 @@ bool JFrameFacade::frameVersion(int &major, int &minor, int &patch) const
     return true;
 }
 
-bool JFrameFacade::loadFrame(int *argc, char** argv, void *app)
+bool JFrameFacade::loadFrame(int argc, char** argv, void *app)
 {
     // 检测框架是否已加载
     if (data->frameLoaded) {
@@ -343,8 +343,13 @@ std::string JFrameFacade::language() const
     return data->language;
 }
 
-bool JFrameFacade::loadFramePrivate(int *argc, char **argv, void *app)
+bool JFrameFacade::loadFramePrivate(int argc, char **argv, void *app)
 {
+    //
+#ifdef __unix__
+    (void)new QApplication(argc, argv);
+#endif // __unix__
+
     // 加载门面接口
     loadInterface();
 
@@ -401,8 +406,8 @@ void JFrameFacade::releaseFrameInterface(const std::string &moduleName)
     typedef void (*FuncReleaseInstance)();
 
     // 获取导出接口
-    const QString filePath = QString::fromStdString(frameDirPath() + "/bin/"
-                                                    + moduleName + dynamicSuffix());
+    const QString filePath = QString::fromStdString(frameDirPath() + "/bin/jframe/"
+                                                    + dynamicPrefix() + moduleName + dynamicSuffix());
     FuncReleaseInstance fReleaseInstance =
             (FuncReleaseInstance)QLibrary::resolve(filePath, "ReleaseInstance");
 
@@ -693,20 +698,20 @@ bool JFrameFacade::invokeLog(const std::string &method, int argc, va_list ap)
     }
 
     // 解析各参数值
-    const char *type = va_arg(ap, const char *);
-    const char *msg = va_arg(ap, const char *);
-    const char *where = va_arg(ap, const char *);
+    const char *type = va_arg(ap, char*);
+    const char *msg = va_arg(ap, char *);
+    const char *where = va_arg(ap, char *);
     const char *file = 0;
     int line = 0;
     const char *func = 0;
     if (argc > 3) {
-        file = va_arg(ap, const char *);
+        file = va_arg(ap, char *);
     }
     if (argc > 4) {
         line = va_arg(ap, int);
     }
     if (argc > 5) {
-        func = va_arg(ap, const char *);
+        func = va_arg(ap, char *);
     }
 
     // 转到框架内核系统
@@ -718,6 +723,21 @@ bool JFrameFacade::invokeExitFrame()
 {
     // 释放框架系统部件
     releaseInterface();
+
+    // 销毁框架内核系统部件
+    if (data->frameKernel) {
+        releaseFrameInterface("jframe_kernel");
+        data->frameKernel = 0;
+    }
+
+    // 销毁框架工厂系统部件
+    if (data->frameFactory) {
+        releaseFrameInterface("jframe_factory");
+        data->frameFactory = 0;
+    }
+
+    // 响应Qt事务
+    QCoreApplication::processEvents();
 
     // 强制退出当前进程
     terminateProcess();

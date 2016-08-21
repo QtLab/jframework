@@ -220,7 +220,12 @@ bool JFrameCore::invokeCreateQApp(int argc, va_list ap)
         return false;   // 参数无效
     }
 
-    int *argc1 = va_arg(ap, int*);
+    //
+    if (qApp) {
+        return true;
+    }
+
+    int _argc = va_arg(ap, int);
     char **argv = va_arg(ap, char**);
 #ifdef _AFXDLL
     void *app = va_arg(ap, void*);
@@ -228,12 +233,7 @@ bool JFrameCore::invokeCreateQApp(int argc, va_list ap)
         QMfcApp::instance((CWinApp *)app);
     } else
 #endif
-        if (argc1) {
-            (void)new QMfcApp(0, *argc1, argv);
-        } else {
-            int argc1 = 0;
-            (void)new QMfcApp(0, argc1, argv);
-        }
+        (void)new QApplication(_argc, argv);
 
     return true;
 }

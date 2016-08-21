@@ -124,5 +124,5 @@ win32|unix: {
 
     ##
     win32:system($${jframe_root}\\syncjframe.cmd $$QT_MAJOR_VERSION $$debug_suffix)
-    unix:system($${jframe_root}/syncjframe.sh $$QT_MAJOR_VERSION $$debug_suffix)
+    unix:system($${jframe_root}/syncjframe.sh $$QT_MAJOR_VERSION $$QT_MINOR_VERSION $$QT_VERSION $$debug_suffix)
 }

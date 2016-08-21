@@ -194,7 +194,7 @@ J_EXTERN_C J_ATTR_EXPORT const char* frameVersion()
 
     // 检测文件是否存在
     if (!fileExists(filePath.c_str())) {
-        assert(false);
+        //assert(false);
         return _version.c_str();   // not exists
     }
 

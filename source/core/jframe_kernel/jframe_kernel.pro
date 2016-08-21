@@ -4,9 +4,9 @@
 
 jframe_root = $$PWD/../../..
 
-QT += core gui xml concurrent
+QT += core gui xml
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets concurrent
 
 DEFINES += \
     PRO_CORE \
