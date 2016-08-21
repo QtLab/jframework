@@ -27,13 +27,13 @@ struct JFrameFacadeData
     IJUnknown* frameKernel;     // 框架内核系统部件
 
     std::string appDirPath;     // 软件实体路径
+    std::string configDirPath;  // 框架配置文件夹路径
     std::string thisDirPath;    // 软件实体部署路径（application可执行文件上一级路径）
     std::string frameDirPath;   // 框架部署路径
 
     std::string frameVersion;   // 框架版本
 
     //
-    std::string frameConfigPath;    // 框架配置文件夹路径
     std::string frameGlobalPath;    // 框架全局配置文件路径
     std::string frameLayoutPath;    // 框架布局配置文件路径
 
@@ -172,6 +172,11 @@ std::string JFrameFacade::appDirPath() const
     return data->appDirPath;
 }
 
+std::string JFrameFacade::configDirPath() const
+{
+    return data->configDirPath;
+}
+
 std::string JFrameFacade::thisDirPath() const
 {
     return data->thisDirPath;
@@ -180,11 +185,6 @@ std::string JFrameFacade::thisDirPath() const
 std::string JFrameFacade::frameDirPath() const
 {
     return data->frameDirPath;
-}
-
-std::string JFrameFacade::frameConfigPath() const
-{
-    return data->frameConfigPath;
 }
 
 std::string JFrameFacade::frameGlobalPath() const
@@ -854,9 +854,9 @@ JFrameFacade::JFrameFacade()
     data->frameDirPath = ::frameDirPath();
 
     // 初始化框架各配置文件路径
-    data->frameConfigPath = data->thisDirPath + "/config";
-    data->frameGlobalPath = data->frameConfigPath + "/frame/jframe_global.xml";
-    data->frameLayoutPath = data->frameConfigPath + "/frame/jframe_layout.xml";
+    data->configDirPath = data->thisDirPath + "/config";
+    data->frameGlobalPath = data->configDirPath + "/frame/jframe_global.xml";
+    data->frameLayoutPath = data->configDirPath + "/frame/jframe_layout.xml";
 
     // 加载Qt系统文本编码配置信息
     if (!loadTextCodecConfig()) {

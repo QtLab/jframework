@@ -280,6 +280,12 @@ public:
     virtual std::string appDirPath() const = 0;
 
     /**
+     * @brief configDirPath : 获取框架配置文件夹路径
+     * @return : 框架配置文件夹路径
+     */
+    virtual std::string configDirPath() const = 0;
+
+    /**
      * @brief thisDirPath : 获取软件实体部署路径（application可执行文件上一级路径）
      * @return : 框架部署路径
      */
@@ -290,12 +296,6 @@ public:
      * @return : 框架路径
      */
     virtual std::string frameDirPath() const = 0;
-
-    /**
-     * @brief frameConfigPath : 获取框架配置文件夹路径
-     * @return : 框架配置文件夹路径
-     */
-    virtual std::string frameConfigPath() const = 0;
 
     /**
      * @brief frameGlobalPath : 获取框架全局配置文件路径

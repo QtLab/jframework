@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component>
+  <ribbon>
+    <page objectName="pageHome" text="主页">
+      <group objectName="group #1" text="组">
+        <checkBox objectName="item #1" text=" 输出端" checked="true" />
+        <comboBox objectName="item #2" text=" 测试 #1" >
+          <item objectName="comboBox #1" text="Item 1" />
+          <item objectName="comboBox #2" text="Item 2" />
+          <item objectName="comboBox #3" text="Item 3" />
+        </comboBox>
+      </group>
+    </page>
+  </ribbon>
+  <window>
+    <view objectName="mainView" windowType="Qt" />
+  </window>
+</component>

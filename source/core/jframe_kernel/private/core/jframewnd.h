@@ -3,6 +3,8 @@
 
 #include "QtnRibbonMainWindow.h"
 #include "QtnRibbonStyle.h"
+#include "jattempter.h"
+#include "QtnRibbonBar.h"
 
 class QSplashScreen;
 class QStackedWidget;
@@ -53,6 +55,7 @@ private:
     QList<QToolBar *> q_toolBars;
     QPixmap q_pixmapSplash;
     QPixmap q_pixmapFinish;
+    QFont q_ribbonBarFont;
 };
 
 #endif // JFRAMEWND_H

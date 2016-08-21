@@ -28,9 +28,9 @@ public:
     // IJFrameFacade interface
 public:
     std::string appDirPath() const;
+    std::string configDirPath() const;
     std::string thisDirPath() const;
     std::string frameDirPath() const;
-    std::string frameConfigPath() const;
     std::string frameGlobalPath() const;
     std::string frameLayoutPath() const;
 

@@ -296,7 +296,7 @@ bool JFrameKernel::loadConfig()
 
     // 替换框架内部变量
     QString filePath = QString::fromUtf8(emLogging->Attribute("filePath"));
-    filePath.replace("@ConfigDir@", QString::fromStdString(jframeFacade()->frameConfigPath()));
+    filePath.replace("@ConfigDir@", QString::fromStdString(jframeFacade()->configDirPath()));
 
     // 读取日志配置文件路径属性
     data->loggingFilePath = filePath.toStdString();

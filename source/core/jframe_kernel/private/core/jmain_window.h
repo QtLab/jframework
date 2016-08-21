@@ -3,6 +3,8 @@
 
 #include "../../jframe_core.h"
 #include <QHash>
+#include "QtnRibbonBar.h"
+#include "QtnRibbonGroup.h"
 
 // 主窗口配置信息
 struct JMainWindowConfig
@@ -38,6 +40,10 @@ struct JMainWindowConfig
 class JAttempter;
 class JFrameWnd;
 class QDomElement;
+class QMenu;
+class QComboBox;
+class QRadioButton;
+class QLabel;
 
 class JMainWindow : public IJMainWindow
 {
@@ -86,10 +92,36 @@ private:
     void restoreWindowState();
 
     //
-    bool createRibbonPage(const QDomElement &emRibbonPage);
+    bool createComponentUi(IJComponent *component, const QDomElement &emWindow);
 
     //
-    bool createComponentUi(IJComponent *component, const QDomElement &emWindow);
+    bool createRibbonPage(const QDomElement &emRibbon);
+
+    //
+    bool createRibbinGroup(const QDomElement &emPage, QtRibbon::RibbonPage* ribbonPage);
+
+    //
+    bool createRibbinItem(const QDomElement &emGroup, QtRibbon::RibbonGroup *ribbonGroup);
+
+    //
+    QAction *createItemAction(const QDomElement &emItem);
+
+    //
+    QComboBox *createItemComboBox(const QDomElement &emItem);
+    //
+    QCheckBox *createItemCheckBox(const QDomElement &emItem);
+    //
+    QRadioButton *createItemRadioButton(const QDomElement &emItem);
+    //
+    QLabel *createItemLabel(const QDomElement &emItem);
+
+    //
+    QMenu *createSubMenu(const QDomElement &emItem, QWidget *parentWidget);
+    //
+    bool createMenuItem(const QDomElement &emItem, QMenu *menu);
+
+    //
+    QString &parsePath(QString &src) const;
 
 private:
     JAttempter *q_attempter;

@@ -15,6 +15,9 @@ JFrameWnd::JFrameWnd(JAttempter *attempter, QWidget *parent, Qt::WindowFlags f)
     resize(1024, 700);
 
     //
+    q_ribbonBarFont = ribbonBar()->font();
+
+    //
     q_splashScreen = new QSplashScreen(this);
     q_splashScreen->setFont(QFont("microsoft yahei", 24));  //DEMO
 
@@ -25,7 +28,8 @@ JFrameWnd::JFrameWnd(JAttempter *attempter, QWidget *parent, Qt::WindowFlags f)
     //
     QApplication::setStyle(new QtRibbon::RibbonStyle);
     ribbonBar()->setMinimizationEnabled(true);
-    ribbonBar()->setTitleBarVisible(false);
+    ribbonBar()->setFrameThemeEnabled(true);
+    //ribbonBar()->setTitleBarVisible(true);
 }
 
 JFrameWnd::~JFrameWnd()
@@ -43,6 +47,8 @@ bool JFrameWnd::init()
     if (!createOptionAction()) {
         return false;
     }
+
+    //
 
     return true;
 }
@@ -63,6 +69,9 @@ void JFrameWnd::setCurrentWidget(QWidget *widget)
 
 void JFrameWnd::setTheme(const QString &theme)
 {
+    //
+    q_ribbonBarFont = ribbonBar()->font();
+
     //
     QtRibbon::RibbonStyle *ribbonStyle =
             qobject_cast<QtRibbon::RibbonStyle *>(QApplication::style());
@@ -108,6 +117,9 @@ void JFrameWnd::setTheme(const QString &theme)
 
     //
     ribbonStyle->setTheme(nTheme);
+
+    //
+    ribbonBar()->setFont(q_ribbonBarFont);
 }
 
 QStackedWidget *JFrameWnd::stackedWidget()
@@ -171,13 +183,14 @@ bool JFrameWnd::loadConfig()
     // windowTitle
     if (emMainWindow.hasAttribute("windowTitle")) {
         setWindowTitle(emMainWindow.attribute("windowTitle"));
+        ribbonBar()->setWindowTitle(windowTitle());
     }
 
     // windowIcon
     if (emMainWindow.hasAttribute("windowIcon")) {
         setWindowIcon(QIcon(emMainWindow.attribute("windowIcon")
                             .replace("@ConfigDir@", QString::fromStdString(
-                                         jframeFacade()->frameConfigPath()))));
+                                         jframeFacade()->configDirPath()))));
         qApp->setWindowIcon(windowIcon());
     }
 
@@ -193,7 +206,7 @@ bool JFrameWnd::loadConfig()
         if (emSplash.hasAttribute("imageStart")) {
             const QString imageStart = emSplash.attribute("imageStart")
                     .replace("@ConfigDir@", QString::fromStdString(
-                                 jframeFacade()->frameConfigPath()));
+                                 jframeFacade()->configDirPath()));
             if (!imageStart.isEmpty()) {
                 q_pixmapSplash = QPixmap(imageStart);
                 q_splashScreen->resize(q_pixmapSplash.size());
@@ -205,7 +218,7 @@ bool JFrameWnd::loadConfig()
         if (emSplash.hasAttribute("imageFinish")) {
             const QString imageFinish = emSplash.attribute("imageFinish")
                     .replace("@ConfigDir@", QString::fromStdString(
-                                 jframeFacade()->frameConfigPath()));
+                                 jframeFacade()->configDirPath()));
             if (!imageFinish.isEmpty()) {
                 q_pixmapFinish = QPixmap(imageFinish);
             }
@@ -335,7 +348,9 @@ bool JFrameWnd::createOptionAction()
 void JFrameWnd::startSplash()
 {
     if (q_splashScreen) {
+        q_splashScreen->activateWindow();
         q_splashScreen->show();
+        q_splashScreen->raise();
         updateSplash();
     }
 }

@@ -301,7 +301,7 @@ bool JAttempter::loadAllComponent()
 {
     //
     const std::string currentWorkModeConfigDirName = this->currentWorkModeConfigDirName();
-    std::string frameComponentPath = jframeFacade()->frameConfigPath();
+    std::string frameComponentPath = jframeFacade()->configDirPath();
     if (currentWorkModeConfigDirName.empty()) {
         frameComponentPath.append("/frame");
     } else {
