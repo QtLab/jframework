@@ -240,7 +240,7 @@ bool JFrameWnd::loadConfig()
         return false;
     }
 
-    // 获取MainWindow节点
+    // 获取 MainWindow 节点
     QDomElement emMainWindow = emRoot.firstChildElement("mainWindow");
     if (emMainWindow.isNull()) {
         return false;
@@ -274,8 +274,9 @@ bool JFrameWnd::loadConfig()
                     .replace("@ConfigDir@", QString::fromStdString(
                                  jframeFacade()->configDirPath()));
             if (!imageStart.isEmpty()) {
-                q_pixmapSplash = QPixmap(imageStart);
-                q_splashScreen->resize(q_pixmapSplash.size());
+                QSize screenSize = QApplication::desktop()->screenGeometry().size();
+                QSize splashSize = screenSize / 2;
+                q_pixmapSplash = QPixmap(imageStart).scaled(splashSize);
             }
         }
         q_splashScreen->setPixmap(q_pixmapSplash);

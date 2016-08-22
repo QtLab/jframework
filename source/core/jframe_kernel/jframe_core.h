@@ -23,6 +23,8 @@ public:
      * @param sender :命令发起者（type: QObject *）
      * @param domain : 命令发起者所属域名 [componentName#...]
      * @param objectName : 发起者对象名称
+     * @param eventType : 信号、事件类型
+     * @param data : 数据、状态（看使用手册说明）
      * @return : 截断标志，true，停止下传；false，继续下传
      */
     virtual bool commandSink(void *sender, const std::string &domain,
@@ -369,14 +371,14 @@ public:
     virtual INotifier &notifier() = 0;
 
     /**
-     * @brief beginGroup :
-     * @param component :
-     * @return :
+     * @brief beginGroup : 开始消息订阅组
+     * @param component : 组件实例
+     * @return : 调度器引用
      */
     template<typename T> IJAttempter &beginGroup(T *component);
 
     /**
-     * @brief endGroup :
+     * @brief endGroup : 结束消息订阅组
      */
     virtual void endGroup() = 0;
 
@@ -384,7 +386,7 @@ public:
      * @brief subMessage : 订阅组件消息（可选：直接绑定id对应的响应函数）
      * @param id : 消息标识
      * @param cb : 消息标识对应的响应函数
-     * @return :
+     * @return : 调度器引用
      */
     template<typename T>
     IJAttempter &subMessage(const std::string &id, JLRESULT (T::*cb)
@@ -393,13 +395,13 @@ public:
     /**
      * @brief unsubMessage : 取消订阅组件消息
      * @param id : 消息标识
-     * @return :
+     * @return : 调度器引用
      */
     virtual IJAttempter &unsubMessage(const std::string &id) = 0;
 
     /**
-     * @brief unsubMessage :
-     * @param component :
+     * @brief unsubMessage : 取消订阅消息
+     * @param component : 组件实例
      */
     virtual void unsubMessage(IJComponent *component) = 0;
 
@@ -432,20 +434,22 @@ public:
 
 protected:
     /**
-     * @brief beginGroup :
-     * @param component :
+     * @brief beginGroup : 开始消息订阅组
+     * @param component : 组件实例
      * @param offset : reinterpret_cast<IJComponent *>(this) - static_cast<IJComponent *>(this)
-     * @return :
+     * @return : 调度器引用
      */
     virtual IJAttempter &beginGroup(IJComponent *component, int offset) = 0;
+
+    /**
+     * @brief subMessage : 订阅消息
+     * @param id : 消息标识
+     * @param cb : 消息响应函数地址
+     * @return : 调度器引用
+     */
     virtual IJAttempter &subMessage(const std::string &id, JMsgSinkCb cb) = 0;
 };
 
-/**
- * @brief IJAttempter::beginGroup :
- * @param component :
- * @return :
- */
 template<typename T> inline
 IJAttempter &IJAttempter::beginGroup(T *component)
 {
@@ -461,11 +465,6 @@ IJAttempter &IJAttempter::beginGroup(T *component)
                       );
 }
 
-/**
- * @brief IJAttempter::subMessage
- * @param id
- * @return
- */
 template<typename T> inline
 IJAttempter &IJAttempter::subMessage(const std::string &id, JLRESULT (T::*cb)
                                      (IJComponent *, const std::string &, JWPARAM, JLPARAM))

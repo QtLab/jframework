@@ -397,7 +397,7 @@ public:
     virtual std::string language() const = 0;
 };
 
-//
+///
 typedef IJUnknown *(J_ATTR_CDECL *FuncFrameFacadeInst)(void);
 
 ///
@@ -496,15 +496,15 @@ JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 #endif
 
 /**
- * @brief The JLibraryT class
+ * @brief The JLibraryT class : 链接库加载管理类
  */
 template<typename T> class JLibraryT
 {
 public:
     /**
-     * @brief JLibraryT
-     * @param filepath
-     * @param autoclose
+     * @brief JLibraryT : 构造函数
+     * @param filepath : 库文件路径
+     * @param autoclose : 自动销毁。true，使能；false，禁止
      */
     explicit JLibraryT(const std::basic_string<T> &filepath, bool autoclose = true)
         : _handle(0)
@@ -522,8 +522,8 @@ public:
     }
 
     /**
-     * @brief load
-     * @return
+     * @brief load : 加载库
+     * @return : 加载状态。true，加载成功；false，加载失败
      */
     bool load()
     {
@@ -545,9 +545,9 @@ public:
     }
 
     /**
-     * @brief load
-     * @param filepath
-     * @return
+     * @brief load : 加载库
+     * @param filepath : 库文件路径
+     * @return : 加载状态。true，加载成功；false，加载失败
      */
     bool load(const std::basic_string<T> &filepath)
     {
@@ -557,7 +557,7 @@ public:
     }
 
     /**
-     * @brief unload
+     * @brief unload : 卸载库
      */
     void unload()
     {
@@ -574,9 +574,9 @@ public:
     }
 
     /**
-     * @brief resolve
-     * @param methodname
-     * @return
+     * @brief resolve : 获取库中的方法接口
+     * @param methodname : 方法接口名称
+     * @return : 方法接口
      */
     void *resolve(const std::basic_string<T> &methodname)
     {
@@ -596,10 +596,10 @@ public:
     }
 
     /**
-     * @brief resolve
-     * @param filepath
-     * @param methodname
-     * @return
+     * @brief resolve : 获取库中的方法接口
+     * @param filepath : 库文件路径
+     * @param methodname : 方法接口名称
+     * @return : 方法接口
      */
     static void *resolve(const std::basic_string<T> &filepath, const std::basic_string<T> &methodname)
     {
