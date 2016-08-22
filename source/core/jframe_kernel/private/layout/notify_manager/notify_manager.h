@@ -1,4 +1,4 @@
-#ifndef NOTIFY_MANAGER_H
+﻿#ifndef NOTIFY_MANAGER_H
 #define NOTIFY_MANAGER_H
 
 #include "factory/jnotifier.h"
@@ -32,7 +32,7 @@ protected:
 
 private:
     JFrameLayout *q_frameLayout;
-    INotifier *q_notifier;
+    INotifier &q_notifier;
 };
 
 #endif // NOTIFY_MANAGER_H

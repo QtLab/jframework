@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <component>
   <ribbon>
-    <page objectName="pageHome" text="   主页   ">
-      <group objectName="group #1" text="分组 #1">
-        <checkBox objectName="item #1" text=" 输出端" checked="true" />
-        <comboBox objectName="item #2" text=" 测试 #1" >
+    <page objectName="pageEdit" text="   编辑   ">
+      <group objectName="group #3" text="分组 #3">
+        <checkBox objectName="check #1" text=" 输出端" checked="true" />
+        <comboBox objectName="test #3" text=" 测试 #3" >
           <item objectName="comboBox #1" text="Item 1" />
           <item objectName="comboBox #2" text="Item 2" />
           <item objectName="comboBox #3" text="Item 3" />

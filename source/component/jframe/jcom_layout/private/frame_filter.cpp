@@ -1,16 +1,18 @@
 ﻿#include "precomp.h"
 #include "frame_filter.h"
-#include "jframe_kernel.h"
+#include "factory/jnotifier.h"
+#include "kernel/jframe_kernel.h"
+#include "kernel/jframe_core.h"
 
 // struct FrameFilterData
 
 struct FrameFilterData
 {
-    INotifier *notifier;
+    IJAttempter &attempter;
     QWidget *mainWindow;
 
-    FrameFilterData()
-        : notifier(0)
+    FrameFilterData(IJAttempter &_attempter)
+        : attempter(_attempter)
         , mainWindow(0)
     {
 
@@ -19,16 +21,13 @@ struct FrameFilterData
 
 // class FrameFilter
 
-FrameFilter::FrameFilter(INotifier *notifier, IJAttempter *attempter, QObject *parent)
+FrameFilter::FrameFilter(IJAttempter *attempter, QObject *parent)
     : QObject(parent)
 {
-    data = new FrameFilterData;
-
-    //
-    data->notifier = notifier;
+    data = new FrameFilterData(*attempter);
 
     // 解析主窗口
-    data->mainWindow = parseMainWindow(attempter);
+    data->mainWindow = parseMainWindow();
 }
 
 FrameFilter::~FrameFilter()
@@ -83,10 +82,10 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
     if (watched == data->mainWindow) {
         switch (event->type()) {
         case QEvent::Resize:
-            data->notifier->postMessage("j_mainwindow_resized");
+            data->attempter.notifier().postMessage("j_mainwindow_resized");
             break;
         case QEvent::Move:
-            data->notifier->postMessage("j_mainwindow_moved");
+            data->attempter.notifier().postMessage("j_mainwindow_moved");
             break;
         case QEvent::Close:
         {
@@ -98,10 +97,10 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
                                                     QStringLiteral("取消"), 1);
             switch (result) {
             case 0:     // 注销（重启）
-                data->notifier->imm().postMessage("jlayout.notify_manager", "j_frame_restart");
+                data->attempter.notifier().imm().postMessage("jlayout.notify_manager", "j_frame_restart");
                 break;
             case 1:     // 退出
-                data->notifier->imm().postMessage("jlayout.notify_manager", "j_frame_exit");
+                data->attempter.notifier().imm().postMessage("jlayout.notify_manager", "j_frame_exit");
                 break;
             case 2:     // 取消
             default:    // 忽略
@@ -118,16 +117,16 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
     return false;
 }
 
-QWidget *FrameFilter::parseMainWindow(IJAttempter *attempter)
+QWidget *FrameFilter::parseMainWindow()
 {
     //
-    if (!attempter || !attempter->mainWindow()) {
+    if (!data->attempter.mainWindow()) {
         return 0;
     }
 
     //
-    QWidget *widget = reinterpret_cast<QWidget *>(attempter->mainWindow()->mainWidget());
-    if (!widget || widget->objectName() != "JFrameWnd") {
+    QWidget *widget = reinterpret_cast<QWidget *>(data->attempter.mainWindow()->mainWidget());
+    if (!widget || widget->objectName() != "jframeWnd") {
         return 0;
     }
 

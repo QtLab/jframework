@@ -8,13 +8,15 @@ JFrameWnd::JFrameWnd(JAttempter *attempter, QWidget *parent, Qt::WindowFlags f)
     , q_splashScreen(0)
     , q_centralWidget(0)
 {
-    setObjectName("JFrameWnd");
+    setObjectName("jframeWnd");
 
     //
     setMinimumSize(800, 480);
     resize(1024, 700);
 
     //
+    ribbonBar()->setObjectName("ribbonBar");
+    ribbonBar()->setProperty("domain", "framework");
     q_ribbonBarFont = ribbonBar()->font();
 
     //
@@ -30,6 +32,10 @@ JFrameWnd::JFrameWnd(JAttempter *attempter, QWidget *parent, Qt::WindowFlags f)
     ribbonBar()->setMinimizationEnabled(true);
     ribbonBar()->setFrameThemeEnabled(true);
     //ribbonBar()->setTitleBarVisible(true);
+
+    //
+    connect(ribbonBar(), SIGNAL(currentPageChanged(int)),
+            this, SLOT(onCurrentPageChanged(int)));
 }
 
 JFrameWnd::~JFrameWnd()
@@ -130,6 +136,66 @@ QStackedWidget *JFrameWnd::stackedWidget()
 void JFrameWnd::onStyleChanged(QAction *action)
 {
     setTheme(action->objectName());
+}
+
+void JFrameWnd::onCurrentPageChanged(int page)
+{
+    //
+    QObject *sender = this->sender();
+    if (!sender) {
+        return;
+    }
+
+    //
+    q_attempter->commandSink(sender, "currentPageChanged", (void *)&page);
+}
+
+void JFrameWnd::onActionTriggered(bool checked)
+{
+    //
+    QObject *sender = this->sender();
+    if (!sender) {
+        return;
+    }
+
+    //
+    q_attempter->commandSink(sender, "triggered", (void *)&checked);
+}
+
+void JFrameWnd::onComboBoxCurrentIndexChanged(int index)
+{
+    //
+    QObject *sender = this->sender();
+    if (!sender) {
+        return;
+    }
+
+    //
+    q_attempter->commandSink(sender, "currentIndexChanged", (void *)&index);
+}
+
+void JFrameWnd::onCheckBoxStateChanged(int state)
+{
+    //
+    QObject *sender = this->sender();
+    if (!sender) {
+        return;
+    }
+
+    //
+    q_attempter->commandSink(sender, "stateChanged", (void *)&state);
+}
+
+void JFrameWnd::onRadioButtonClicked(bool checked)
+{
+    //
+    QObject *sender = this->sender();
+    if (!sender) {
+        return;
+    }
+
+    //
+    q_attempter->commandSink(sender, "clicked", (void *)&checked);
 }
 
 bool JFrameWnd::loadConfig()

@@ -18,7 +18,7 @@ ComDemo1::ComDemo1(IJAttempter *attemper)
     : q_attempter(attemper)
     , q_testWidget1(0)
 {
-    q_notifier = jframeLayout()->notifier();
+
 }
 
 ComDemo1::~ComDemo1()
@@ -51,6 +51,8 @@ void ComDemo1::releaseInterface()
 void* ComDemo1::queryInterface(const std::string &iid, unsigned int ver)
 {
     J_QUERY_INTERFACE(IJComponentUi, iid, ver);
+    J_QUERY_INTERFACE(IJCommandSink, iid, ver);
+    J_QUERY_INTERFACE(IJMessageSink, iid, ver);
 
     return 0;
 }
@@ -68,14 +70,14 @@ std::string ComDemo1::componentDesc() const
 void ComDemo1::attach()
 {
     // 订阅消息
-    q_notifier->beginGroup(this)
+    q_attempter->notifier().beginGroup(this)
             .endGroup();
 }
 
 void ComDemo1::detach()
 {
     // 取消订阅消息
-    q_notifier->remove(this);
+    q_attempter->notifier().remove(this);
 }
 
 void *ComDemo1::createWindow(void *parent, const std::string &objectName)
@@ -90,9 +92,41 @@ void *ComDemo1::createWindow(void *parent, const std::string &objectName)
     }
 
     //
-    q_testWidget1 = new TestWidget1(q_notifier);
+    q_testWidget1 = new TestWidget1(*q_attempter);
 
     return qobject_cast<QWidget *>(q_testWidget1);
+}
+
+bool ComDemo1::commandSink(void *sender, const std::string &domain, const std::string &objectName,
+                           const std::string &eventType, void *data)
+{
+    Q_UNUSED(domain);
+    Q_UNUSED(objectName);
+    Q_UNUSED(eventType);
+    Q_UNUSED(data);
+
+    QObject *objectSender = reinterpret_cast<QObject *>(sender);
+    if (!objectSender) {
+        return false;
+    }
+
+    //TEST
+    qDebug() << "sender:" << objectSender
+             << ", domain:" << QString::fromStdString(domain)
+             << ", objectName:" << QString::fromStdString(objectName)
+             << ", eventType:" << QString::fromStdString(eventType);
+
+    return false;
+}
+
+bool ComDemo1::messageSink(IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+{
+    Q_UNUSED(sender);
+    Q_UNUSED(id);
+    Q_UNUSED(wParam);
+    Q_UNUSED(lParam);
+
+    return false;
 }
 
 std::string ComDemo1::observerId() const

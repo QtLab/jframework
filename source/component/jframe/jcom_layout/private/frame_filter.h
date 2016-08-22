@@ -1,4 +1,4 @@
-#ifndef FRAME_FILTER_H
+﻿#ifndef FRAME_FILTER_H
 #define FRAME_FILTER_H
 
 #include <QObject>
@@ -7,15 +7,13 @@
 // class FrameFilter
 
 struct FrameFilterData;
-class INotifier;
 class IJAttempter;
 class QWidget;
 
 class FrameFilter : public QObject
 {
 public:
-    explicit FrameFilter(INotifier *nofitier,
-                         IJAttempter *attempter,
+    explicit FrameFilter(IJAttempter *attempter,
                          QObject *parent = 0);
     ~FrameFilter();
 
@@ -31,7 +29,7 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event);
 
 private:
-    QWidget *parseMainWindow(IJAttempter *attempter);
+    QWidget *parseMainWindow();
     bool loadConfig();
 
 private:

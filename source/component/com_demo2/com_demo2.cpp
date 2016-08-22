@@ -18,7 +18,7 @@ ComDemo2::ComDemo2(IJAttempter *attemper)
     : q_attempter(attemper)
     , q_testWidget1(0)
 {
-    q_notifier = jframeLayout()->notifier();
+
 }
 
 ComDemo2::~ComDemo2()
@@ -51,6 +51,8 @@ void ComDemo2::releaseInterface()
 void* ComDemo2::queryInterface(const std::string &iid, unsigned int ver)
 {
     J_QUERY_INTERFACE(IJComponentUi, iid, ver);
+    J_QUERY_INTERFACE(IJCommandSink, iid, ver);
+    J_QUERY_INTERFACE(IJMessageSink, iid, ver);
 
     return 0;
 }
@@ -67,15 +69,23 @@ std::string ComDemo2::componentDesc() const
 
 void ComDemo2::attach()
 {
-    // 订阅消息
-    q_notifier->beginGroup(this)
+    // 订阅框架消息
+    q_attempter->notifier().beginGroup(this)
+            .endGroup();
+
+    // 订阅组件消息
+    q_attempter->beginGroup(this)
+            .subMessage("show_text", &ComDemo2::onShowText)
             .endGroup();
 }
 
 void ComDemo2::detach()
 {
-    // 取消订阅消息
-    q_notifier->remove(this);
+    // 取消订阅框架消息
+    q_attempter->notifier().remove(this);
+
+    // 取消订阅组件消息
+    q_attempter->unsubMessage(this);
 }
 
 void *ComDemo2::createWindow(void *parent, const std::string &objectName)
@@ -90,12 +100,48 @@ void *ComDemo2::createWindow(void *parent, const std::string &objectName)
     }
 
     //
-    q_testWidget1 = new TestWidget1(q_notifier);
+    q_testWidget1 = new TestWidget1(*q_attempter);
 
     return qobject_cast<QWidget *>(q_testWidget1);
+}
+
+bool ComDemo2::messageSink(IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+{
+    Q_UNUSED(sender);
+    Q_UNUSED(id);
+    Q_UNUSED(wParam);
+    Q_UNUSED(lParam);
+
+    return false;
+}
+
+bool ComDemo2::commandSink(void *sender, const std::string &domain, const std::string &objectName,
+                           const std::string &eventType, void *data)
+{
+    Q_UNUSED(sender);
+    Q_UNUSED(domain);
+    Q_UNUSED(objectName);
+    Q_UNUSED(eventType);
+    Q_UNUSED(data);
+
+    return false;
 }
 
 std::string ComDemo2::observerId() const
 {
     return componentName();
+}
+
+JLRESULT ComDemo2::onShowText(IJComponent *component, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+{
+    Q_UNUSED(component);
+    Q_UNUSED(id);
+    Q_UNUSED(wParam);
+    Q_UNUSED(lParam);
+
+    qDebug() << "onShowText >> component:"
+             << QString::fromStdString(component->componentName())
+             << "id:" << QString::fromStdString(id);
+
+    return 0;
 }

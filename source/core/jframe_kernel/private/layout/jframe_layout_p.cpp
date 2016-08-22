@@ -191,13 +191,13 @@ bool JFrameLayout::invokeMethod(const std::string &method, int argc, ...)
     // 退出框架（异步方式）
     else if (method == "frame_exit") {
         // 调用转入消息管理模块（异步消息）
-        notifier()->imm().postMessage("jlayout.notify_manager", "j_frame_exit");
+        notifier().imm().postMessage("jlayout.notify_manager", "j_frame_exit");
         result = true;
     }
     // 重启框架（异步方式）
     else if (method == "frame_restart") {
         // 调用转入消息管理模块（异步消息）
-        notifier()->imm().postMessage("jlayout.notify_manager", "j_frame_restart");
+        notifier().imm().postMessage("jlayout.notify_manager", "j_frame_restart");
         result = true;
     }
 
@@ -216,7 +216,7 @@ QWidget *JFrameLayout::mainView()
     return data->mainViewManager;
 }
 
-INotifier *JFrameLayout::notifier()
+INotifier &JFrameLayout::notifier()
 {
     return jframeCore()->attempter()->notifier();
 }
@@ -304,7 +304,7 @@ bool JFrameLayout::loadDefaultSystem()
     }
 
     // 异步方式启动默认设置系统
-    notifier()->imm().postMessage("jlayout.module_manager", "j_load_default_system");
+    notifier().imm().postMessage("jlayout.module_manager", "j_load_default_system");
 
     return true;
 }

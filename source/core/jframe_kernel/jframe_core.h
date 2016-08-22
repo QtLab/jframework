@@ -20,16 +20,22 @@ public:
 
     /**
      * @brief commandSink : 接收命令消息
-     * @param sender : 命令发起者
-     * @param senderName : 发起者名称
+     * @param sender :命令发起者（type: QObject *）
+     * @param domain : 命令发起者所属域名 [componentName#...]
+     * @param objectName : 发起者对象名称
      * @return : 截断标志，true，停止下传；false，继续下传
      */
-    virtual bool commandSink(void *sender, const std::string &senderName) = 0;
+    virtual bool commandSink(void *sender, const std::string &domain,
+                             const std::string &objectName,
+                             const std::string &eventType,
+                             void *data) = 0;
 };
 
 // 接口标识
 #define VER_IJMessageSink J_INTERFACE_VERSION(1, 0)
 #define IID_IJMessageSink J_IID_INTERFACE(IJMessageSink)
+
+class IJComponent;
 
 /**
  * @brief The IJMessageSink class :消息接收接口
@@ -50,7 +56,7 @@ public:
      * @param lParam : 参数2
      * @return : 截断标志。true，停止下传；false，继续下传
      */
-    virtual bool messageSink(void *sender, unsigned int id, JWPARAM wParam, JLPARAM lParam) = 0;
+    virtual bool messageSink(IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam) = 0;
 };
 
 // 接口标识
@@ -193,19 +199,6 @@ public:
     virtual void resize(int width, int height) = 0;
 
     /**
-     * @brief queryObject : 查询组件窗口
-     * @param objectName : 窗口名称
-     * @return : 组件窗口
-     */
-    virtual void *queryObject(const std::string &objectName) = 0;
-
-    /**
-     * @brief statusBar : 获取状态栏
-     * @return : 状态栏
-     */
-    virtual void *statusBar() = 0;
-
-    /**
      * @brief activeView : 激活视图
      * @param viewName : 视图名称
      */
@@ -239,7 +232,7 @@ public:
 
     /**
      * @brief toolBarType : 获取工具栏类型
-     * @return : 工具栏类型。1) ribbon; 2) menu
+     * @return : 工具栏类型。1) "menuBar"; 2) "toolButton"; 3) "ribbonBar"
      */
     virtual std::string toolBarType() const = 0;
 
@@ -248,11 +241,44 @@ public:
      * @return : 视图布局类型。1) dynamic; 2) static
      */
     virtual std::string layoutType() const = 0;
+
+    /**
+     * @brief queryObject : 查询指定组件中的配置生成的对象
+     * @param objectName : 对象名称
+     * @param componentName : 组件名称 （组件名称为空值时，查找所组件中第一个对象名称为objectName的对象）
+     * @return : 对象实例
+     */
+    virtual void *queryObject(const std::string &objectName, const std::string &componentName = "") = 0;
+
+    /**
+     * @brief menuBar : 获取菜单栏
+     * @return : 菜单栏
+     */
+    virtual void *menuBar() = 0;
+
+    /**
+     * @brief ribbonBar : 获取 ribbon 工具条
+     * @return : ribbon 工具条
+     */
+    virtual void *ribbonBar() = 0;
+
+    /**
+     * @brief statusBar : 获取状态栏
+     * @return : 状态栏
+     */
+    virtual void *statusBar() = 0;
 };
 
 // 接口标识
 #define VER_IJAttempter J_INTERFACE_VERSION(1, 0)
 #define IID_IJAttempter J_IID_INTERFACE(IJAttempter)
+
+//
+#ifndef J_MESSAGESINK_CALLBACK
+#define J_MESSAGESINK_CALLBACK
+typedef JLRESULT (IJComponent::*JMsgSinkCb)
+(IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+#endif // !J_MESSAGESINK_CALLBACK
 
 class INotifier;
 
@@ -328,27 +354,54 @@ public:
      * @brief currentWorkModeName : 获取当前工作模式名称
      * @return : 当前工作模式名称
      */
-    virtual const char *currentWorkModeName() const = 0;
+    virtual std::string currentWorkModeName() const = 0;
 
     /**
      * @brief currentWorkModeConfigDirName : 获取当前工作模式配置文件夹名称
      * @return : 当前工作模式配置文件夹名称
      */
-    virtual const char *currentWorkModeConfigDirName() const = 0;
+    virtual std::string currentWorkModeConfigDirName() const = 0;
 
     /**
-     * @brief subMessage : 订阅组件消息
-     * @param component : 组件
-     * @param id : 消息标识
+     * @brief notifier : 获取消息分发器
+     * @return : 消息分发器
      */
-    virtual void subMessage(IJComponent *component, unsigned int id) = 0;
+    virtual INotifier &notifier() = 0;
+
+    /**
+     * @brief beginGroup :
+     * @param component :
+     * @return :
+     */
+    template<typename T> IJAttempter &beginGroup(T *component);
+
+    /**
+     * @brief endGroup :
+     */
+    virtual void endGroup() = 0;
+
+    /**
+     * @brief subMessage : 订阅组件消息（可选：直接绑定id对应的响应函数）
+     * @param id : 消息标识
+     * @param cb : 消息标识对应的响应函数
+     * @return :
+     */
+    template<typename T>
+    IJAttempter &subMessage(const std::string &id, JLRESULT (T::*cb)
+                            (IJComponent *, const std::string &, JWPARAM, JLPARAM) = 0);
 
     /**
      * @brief unsubMessage : 取消订阅组件消息
-     * @param component : 组件
      * @param id : 消息标识
+     * @return :
      */
-    virtual void unsubMessage(IJComponent *component, unsigned int id) = 0;
+    virtual IJAttempter &unsubMessage(const std::string &id) = 0;
+
+    /**
+     * @brief unsubMessage :
+     * @param component :
+     */
+    virtual void unsubMessage(IJComponent *component) = 0;
 
     /**
      * @brief pubMessage : 发送组件消息（同步）
@@ -356,24 +409,69 @@ public:
      * @param id : 消息标识
      * @param wParam : 参数1
      * @param lParam : 参数2
+     * @return : 执行结果
      */
-    virtual void sendMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam) = 0;
+    virtual JLRESULT sendMessage(IJComponent *component, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief pubMessage : 发送组件消息（异步）
+     * @brief postMessage : 发送组件消息（异步）
      * @param component : 组件
      * @param id : 消息标识
      * @param wParam : 参数1
      * @param lParam : 参数2
      */
-    virtual void postMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam) = 0;
+    virtual void postMessage(IJComponent *component, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief notifier : 获取消息分发器
-     * @return : 消息分发器
+     * @brief postMessage : 发送组件消息（异步）
+     * @param component : 组件
+     * @param id : 消息标识
+     * @param msg : 消息信息
      */
-    virtual INotifier *notifier() = 0;
+    virtual void postMessage(IJComponent *component, const std::string &id, const std::string &msg) = 0;
+
+protected:
+    /**
+     * @brief beginGroup :
+     * @param component :
+     * @param offset : reinterpret_cast<IJComponent *>(this) - static_cast<IJComponent *>(this)
+     * @return :
+     */
+    virtual IJAttempter &beginGroup(IJComponent *component, int offset) = 0;
+    virtual IJAttempter &subMessage(const std::string &id, JMsgSinkCb cb) = 0;
 };
+
+/**
+ * @brief IJAttempter::beginGroup :
+ * @param component :
+ * @return :
+ */
+template<typename T> inline
+IJAttempter &IJAttempter::beginGroup(T *component)
+{
+    return beginGroup(component,
+                  #ifdef _MSC_VER
+                      (reinterpret_cast<IJComponent *>(component) - static_cast<IJComponent *>(component))
+                  #elif defined(__unix__)
+                      0
+                  #else
+                  #pragma message("not supported!"))
+                      0
+                  #endif
+                      );
+}
+
+/**
+ * @brief IJAttempter::subMessage
+ * @param id
+ * @return
+ */
+template<typename T> inline
+IJAttempter &IJAttempter::subMessage(const std::string &id, JLRESULT (T::*cb)
+                                     (IJComponent *, const std::string &, JWPARAM, JLPARAM))
+{
+    return subMessage(id, static_cast<JMsgSinkCb>(cb));
+}
 
 // 接口标识
 #define VER_IJFrameCore J_INTERFACE_VERSION(1, 0)

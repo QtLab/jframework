@@ -399,7 +399,7 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
 
     // 更新当前系统
     const std::string _system = system.toStdString();
-    q_notifier->sendMessage("j_previous_system_changed", (JWPARAM)&_system);
+    q_notifier.sendMessage("j_previous_system_changed", (JWPARAM)&_system);
 
     // get current module
     if (module.isEmpty()) {
@@ -432,7 +432,7 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
 
     // 更新当前模式
     const std::string _module = module.toStdString();
-    q_notifier->sendMessage("j_previous_module_changed", (JWPARAM)&_module);
+    q_notifier.sendMessage("j_previous_module_changed", (JWPARAM)&_module);
 
     // load popup node (global component within current system <befor module loaded>)
     QDomElement emPopup = emSystem.firstChildElement("module");

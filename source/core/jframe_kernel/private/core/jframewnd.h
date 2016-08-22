@@ -5,6 +5,7 @@
 #include "QtnRibbonStyle.h"
 #include "jattempter.h"
 #include "QtnRibbonBar.h"
+#include "QtnRibbonPage.h"
 
 class QSplashScreen;
 class QStackedWidget;
@@ -32,6 +33,21 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void onStyleChanged(QAction *action);
+
+    // QtRibbon::RibbonPage
+    void onCurrentPageChanged(int page);
+
+    // QAction
+    void onActionTriggered(bool checked);
+
+    // QComboBox
+    void onComboBoxCurrentIndexChanged(int index);
+
+    // QCheckBox
+    void onCheckBoxStateChanged(int state);
+
+    // QRadioButton
+    void onRadioButtonClicked(bool checked);
 
 private:
     bool testAnotherApp();

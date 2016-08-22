@@ -13,7 +13,7 @@ JComLayout::JComLayout(IJAttempter *attempter)
     : q_attempter(attempter)
     , q_frameFilter(0)
 {
-    q_notifier = jframeLayout()->notifier();
+
 }
 
 JComLayout::~JComLayout()
@@ -24,7 +24,7 @@ JComLayout::~JComLayout()
 bool JComLayout::loadInterface()
 {
     // 创建框架过滤器
-    q_frameFilter = new FrameFilter(q_notifier, q_attempter);
+    q_frameFilter = new FrameFilter(q_attempter);
     if (!q_frameFilter->init()) {
         //
     }
@@ -75,14 +75,14 @@ std::string JComLayout::componentDesc() const
 void JComLayout::attach()
 {
     // 订阅消息
-    q_notifier->beginGroup(this)
+    q_attempter->notifier().beginGroup(this)
             .endGroup();
 }
 
 void JComLayout::detach()
 {
     // 取消订阅消息
-    q_notifier->remove(this);
+    q_attempter->notifier().remove(this);
 }
 
 void *JComLayout::createWindow(void *parent, const std::string &objectName)

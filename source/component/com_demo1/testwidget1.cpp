@@ -1,17 +1,26 @@
 ﻿#include "precomp.h"
 #include "testwidget1.h"
 
-TestWidget1::TestWidget1(INotifier *notifier, QWidget *parent)
+TestWidget1::TestWidget1(IJAttempter &attempter, QWidget *parent)
     : QWidget(parent)
-    , q_notifier(notifier)
+    , q_attempter(attempter)
 {
-    QHBoxLayout *horiLayoutMain = new QHBoxLayout(this);
+    QVBoxLayout *vertLayoutMain = new QVBoxLayout(this);
 
-    QPushButton *button1 = new QPushButton(QStringLiteral("测试组件1"), this);
-    horiLayoutMain->addWidget(button1);
+    QPushButton *buttomModeTest = new QPushButton(QStringLiteral("模式切换测试"), this);
+    buttomModeTest->setMaximumWidth(200);
+    vertLayoutMain->addWidget(buttomModeTest);
+    QPushButton *buttomCmdTest = new QPushButton(QStringLiteral("组件命令测试"), this);
+    buttomCmdTest->setMaximumWidth(200);
+    vertLayoutMain->addWidget(buttomCmdTest);
+    QPushButton *buttonMsgTest = new QPushButton(QStringLiteral("组件消息测试"), this);
+    buttonMsgTest->setMaximumWidth(200);
+    vertLayoutMain->addWidget(buttonMsgTest);
 
     //
-    connect(button1, SIGNAL(clicked(bool)), SLOT(onButton1Clicked()));
+    connect(buttomModeTest, SIGNAL(clicked(bool)), SLOT(onButtonModeTestClicked()));
+    connect(buttomCmdTest, SIGNAL(clicked(bool)), SLOT(onButtonCmdTestClicked()));
+    connect(buttonMsgTest, SIGNAL(clicked(bool)), SLOT(onButtonMsgTestClicked()));
 }
 
 TestWidget1::~TestWidget1()
@@ -19,12 +28,30 @@ TestWidget1::~TestWidget1()
 
 }
 
-void TestWidget1::onButton1Clicked()
+void TestWidget1::onButtonModeTestClicked()
 {
     const std::string currentModule = jframeLayout()->currentModule();
     if (currentModule == "module #1") {
-        q_notifier->postMessage("j_switch_module", "module #2 >> module #3 >> module #4");
+        q_attempter.notifier().postMessage("j_switch_module", "module #2 >> module #3 >> module #4");
     } else {
-        q_notifier->postMessage("j_switch_module", "module #1");
+        q_attempter.notifier().postMessage("j_switch_module", "module #1");
     }
+}
+
+void TestWidget1::onButtonCmdTestClicked()
+{
+
+}
+
+void TestWidget1::onButtonMsgTestClicked()
+{
+    //
+    IJComponent *component2 = q_attempter.queryComponent("com_demo2");
+    if (!component2) {
+        return;
+    }
+
+    //
+    const std::string &text = "hello, world!";
+    q_attempter.sendMessage(component2, "show_text", (JWPARAM)&text);
 }

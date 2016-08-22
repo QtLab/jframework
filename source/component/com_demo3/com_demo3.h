@@ -1,4 +1,4 @@
-#ifndef COM_DEMO3_H
+﻿#ifndef COM_DEMO3_H
 #define COM_DEMO3_H
 
 #include "kernel/jframe_core.h"
@@ -42,7 +42,6 @@ protected:
 
 private:
     IJAttempter *q_attempter;
-    INotifier* q_notifier;
     TestWidget1 *q_testWidget1;
 };
 

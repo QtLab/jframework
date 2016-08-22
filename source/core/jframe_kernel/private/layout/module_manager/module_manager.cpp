@@ -21,7 +21,7 @@ ModuleManager::~ModuleManager()
 bool ModuleManager::loadInterface()
 {
     // 订阅消息
-    q_notifier->beginGroup(this)
+    q_notifier.beginGroup(this)
             // layout
             .append("j_previous_system_changed", &ModuleManager::onPreviousSystemChanged)
             .append("j_previous_module_changed", &ModuleManager::onPreviousModuleChanged)
@@ -42,7 +42,7 @@ void ModuleManager::releaseInterface()
     detachAllComponent();
 
     // 取消订阅
-    q_notifier->remove(this);
+    q_notifier.remove(this);
 }
 
 bool ModuleManager::loadSystem()
@@ -53,7 +53,7 @@ bool ModuleManager::loadSystem()
     }
 
     // 异步通知模式已经切换
-    q_notifier->postMessage("j_module_changed", q_currentModule);
+    q_notifier.postMessage("j_module_changed", q_currentModule);
 
     return true;
 }
@@ -524,7 +524,7 @@ bool ModuleManager::switchSystem(const std::string &system, JLPARAM lParam)
     }
 
     // 异步通知系统已经切换
-    q_notifier->postMessage("j_system_changed", system, lParam);
+    q_notifier.postMessage("j_system_changed", system, lParam);
 
     return true;
 }
@@ -552,7 +552,7 @@ bool ModuleManager::switchModule(const std::string &module, JLPARAM lParam)
     }
 
     // 异步通知模式已经切换
-    q_notifier->postMessage("j_module_changed", specModule, lParam);
+    q_notifier.postMessage("j_module_changed", specModule, lParam);
 
     return true;
 }

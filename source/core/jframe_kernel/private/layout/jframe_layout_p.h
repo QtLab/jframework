@@ -81,7 +81,7 @@ public:
 public:
     QWidget *mainWindow();
     QWidget *mainView();
-    INotifier *notifier();
+    INotifier &notifier();
     IJAttempter *attempter();
     void setFrameTheme(const std::string &theme);
     int componentPowerLevel(const std::string &componentName) const;

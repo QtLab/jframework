@@ -57,7 +57,7 @@ public:
      * @brief notifier : 获取框架消息分发器
      * @return : 框架消息分发器
      */
-    virtual INotifier *notifier() = 0;
+    virtual INotifier &notifier() = 0;
 
     /**
      * @brief attempter : 获取框架调度器

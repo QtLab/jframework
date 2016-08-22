@@ -4,6 +4,7 @@
 #include "jframe_facade.h"
 #include "../../jframe_kernel.h"
 #include "../layout/jframe_layout_p.h"
+#include "jcomponent_notify.h"
 
 // class JAttempter
 
@@ -14,6 +15,7 @@ JAttempter::JAttempter()
 {
     // 创建消息分发器实例
     q_notifier = JFRAME_FACTORY_CREATE(INotifier);
+    Q_ASSERT(q_notifier);
 
     //
     q_mainWindow = new JMainWindow(this);
@@ -170,47 +172,63 @@ int JAttempter::currentWorkModeId() const
     return q_workModeId;
 }
 
-const char *JAttempter::currentWorkModeName() const
+std::string JAttempter::currentWorkModeName() const
 {
-    return q_workModeName.c_str();
+    return q_workModeName;
 }
 
-const char *JAttempter::currentWorkModeConfigDirName() const
+std::string JAttempter::currentWorkModeConfigDirName() const
 {
-    return q_workModeDir.c_str();
+    return q_workModeDir;
 }
 
-void JAttempter::subMessage(IJComponent *component, unsigned int id)
+INotifier &JAttempter::notifier()
 {
-    Q_UNUSED(component);
-    Q_UNUSED(id);
+    return *q_notifier;
 }
 
-void JAttempter::unsubMessage(IJComponent *component, unsigned int id)
+void JAttempter::endGroup()
 {
-    Q_UNUSED(component);
-    Q_UNUSED(id);
+    componentNotify.endGroup();
 }
 
-void JAttempter::sendMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam)
+IJAttempter &JAttempter::unsubMessage(const std::string &id)
 {
-    Q_UNUSED(component);
-    Q_UNUSED(id);
-    Q_UNUSED(wParam);
-    Q_UNUSED(lParam);
+    componentNotify.unsubMessage(id);
+    return *this;
 }
 
-void JAttempter::postMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam)
+void JAttempter::unsubMessage(IJComponent *component)
 {
-    Q_UNUSED(component);
-    Q_UNUSED(id);
-    Q_UNUSED(wParam);
-    Q_UNUSED(lParam);
+    componentNotify.unsubMessage(component);
 }
 
-INotifier *JAttempter::notifier()
+JLRESULT JAttempter::sendMessage(IJComponent *component, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
-    return q_notifier;
+    return componentNotify.sendMessage(component, id, wParam, lParam);
+}
+
+void JAttempter::postMessage(IJComponent *component, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+{
+    componentNotify.postMessage(component, id, wParam, lParam);
+}
+
+void JAttempter::postMessage(IJComponent *component, const std::string &id, const std::string &msg)
+{
+    componentNotify.postMessage(component, id, msg);
+}
+
+IJAttempter &JAttempter::beginGroup(IJComponent *obs, int offset)
+{
+    //
+    componentNotify.beginGroup(obs, offset);
+    return *this;
+}
+
+IJAttempter &JAttempter::subMessage(const std::string &id, JMsgSinkCb cb)
+{
+    componentNotify.subMessage(id, cb);
+    return *this;
 }
 
 bool JAttempter::loadConfig()
@@ -513,8 +531,13 @@ bool JAttempter::releaseAllComponent()
     return true;
 }
 
-void JAttempter::commandSink(void *sender, const std::string &senderName)
+void JAttempter::commandSink(QObject *sender, const std::string &eventType, void *data)
 {
+    if (!sender) {
+        Q_ASSERT(false);    //
+        return;
+    }
+
     QMapIterator<QString, JComponentConfig> citer(q_mapComponent);
     while (citer.hasNext()) {
         citer.next();
@@ -524,9 +547,18 @@ void JAttempter::commandSink(void *sender, const std::string &senderName)
         if (!cmdSink) {
             continue;   //
         }
+        // domain
+        std::string domain;
+        const QVariant variant = sender->property("domain");
+        if (variant.isValid()) {
+            domain = variant.toString().toStdString();
+        } else {
+            domain = componentConfig.componentName.toStdString();
+        }
         //
-        if (!cmdSink->commandSink(sender, senderName)) {
-            break;      //
+        if (cmdSink->commandSink(sender, domain, sender->objectName().toStdString(),
+                                 eventType, data)) {
+            break;      // truncate
         }
     }
 }

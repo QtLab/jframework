@@ -88,7 +88,7 @@ private:
 
 private:
     JFrameLayout *q_frameLayout;
-    INotifier *q_notifier;
+    INotifier &q_notifier;
     std::string q_currentSystem;
     std::string q_currentModule;
     QMap<QString/*componentName*/, JComponentInfo> q_mapComponentInfo;

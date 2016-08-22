@@ -3,8 +3,8 @@
 #include "jframewnd.h"
 #include <QtXml>
 #include "../layout/jframe_layout_p.h"
-#include "QtnRibbonGroup.h"
-#include "QtnRibbonGroupLayout.h"
+#include <QHash>
+#include <QPair>
 
 // class JMainWindow
 
@@ -147,26 +147,6 @@ void JMainWindow::resize(int width, int height)
     }
 }
 
-void *JMainWindow::queryObject(const std::string &objectName)
-{
-    QHash<QString, QObject*>::const_iterator citer =
-            q_hashObject.find(QString::fromStdString(objectName));
-    if (citer != q_hashObject.end()) {
-        return (void *)citer.value();
-    } else {
-        return 0;
-    }
-}
-
-void *JMainWindow::statusBar()
-{
-    if (q_frameWnd) {
-        return (void *)q_frameWnd->statusBar();
-    } else {
-        return 0;
-    }
-}
-
 void JMainWindow::activeView(const std::string &viewName)
 {
     if (!q_frameWnd) {
@@ -209,7 +189,7 @@ bool JMainWindow::createComponentUi(IJComponent *component, const std::string &f
 
     // 参数有效性检测
     if (!component) {
-        return false;       // 参数无效
+        return false;       // invalid
     }
 
     // 打开组件配置文件
@@ -223,8 +203,7 @@ bool JMainWindow::createComponentUi(IJComponent *component, const std::string &f
         const QString text = QStringLiteral("组件配置文件\"%1\"打开失败！")
                 .arg(file.fileName());
         QMessageBox::warning(q_frameWnd, QStringLiteral("警告"), text);
-        return false;
-        return false;       // 打开失败
+        return false;       // open failure
     }
 
     // 解析文件
@@ -238,7 +217,7 @@ bool JMainWindow::createComponentUi(IJComponent *component, const std::string &f
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameWnd, QStringLiteral("警告"), text);
-        return false;
+        return false;       // parse failure
     }
 
     // 关闭文件
@@ -247,13 +226,13 @@ bool JMainWindow::createComponentUi(IJComponent *component, const std::string &f
     // 获取根节点
     QDomElement emRoot = document.documentElement();
     if (emRoot.isNull()) {
-        return false;   // 无效
+        return false;       // invalid
     }
 
     // 获取 ribbon节点
     QDomElement emRibbon = emRoot.firstChildElement("ribbon");
     if (!emRibbon.isNull()) {
-        if (!createRibbonPage(emRibbon)) {
+        if (!createRibbonPage(emRibbon, QString::fromStdString(component->componentName()))) {
             // ignore
         }
     }
@@ -294,6 +273,68 @@ std::string JMainWindow::toolBarType() const
 std::string JMainWindow::layoutType() const
 {
     return q_mainWindowConfig.layoutType;
+}
+
+void *JMainWindow::queryObject(const std::string &objectName, const std::string &componentName)
+{
+    if (componentName.empty()) {
+        QHashIterator<QString, QHash<QString, QObject *> > citerHash(q_hashObject);
+        while (citerHash.hasNext()) {
+            citerHash.next();
+            // find object with objectName
+            QHash<QString, QObject *>::const_iterator citerObject =
+                    citerHash.value().find(QString::fromStdString(objectName));
+            if (citerObject != citerHash.value().end()) {
+                return citerObject.value();   // found out
+            }
+        }
+    } else {
+        // find hash<object> with componentName
+        QHash<QString, QHash<QString, QObject *> >::const_iterator citerHash =
+                q_hashObject.find(QString::fromStdString(componentName));
+        if (citerHash == q_hashObject.end()) {
+            return 0;   // not found
+        }
+
+        // find object with objectName
+        QHash<QString, QObject *>::const_iterator citerObject =
+                citerHash.value().find(QString::fromStdString(objectName));
+        if (citerObject == citerHash.value().end()) {
+            return 0;   // not found
+        }
+
+        //
+        return citerObject.value(); // found out
+    }
+
+    return 0;   // not found
+}
+
+void *JMainWindow::menuBar()
+{
+    if (q_frameWnd) {
+        return (void *)q_frameWnd->menuBar();
+    } else {
+        return 0;
+    }
+}
+
+void *JMainWindow::ribbonBar()
+{
+    if (q_frameWnd) {
+        return (void *)q_frameWnd->ribbonBar();
+    } else {
+        return 0;
+    }
+}
+
+void *JMainWindow::statusBar()
+{
+    if (q_frameWnd) {
+        return (void *)q_frameWnd->statusBar();
+    } else {
+        return 0;
+    }
 }
 
 void JMainWindow::startSplash()
@@ -379,8 +420,17 @@ bool JMainWindow::createComponentUi(IJComponent *component, const QDomElement &e
             //
             if (windowType == "Qt") {
                 QWidget *widget = reinterpret_cast<QWidget *>(window);
+                if (!widget) {
+                    Q_ASSERT(false);
+                    // convert failure
+                }
+                // set domain of object
+                widget->setProperty("domain", QString::fromStdString(component->componentName()));
                 //
-                q_hashObject.insert(objectName, qobject_cast<QObject *>(widget));
+                if (!insertHashObject(QString::fromStdString(component->componentName()), objectName,
+                                      qobject_cast<QObject *>(widget))) {
+                    // insert failure
+                }
                 //
                 QStackedWidget *centralWidget = q_frameWnd->stackedWidget();
                 if (centralWidget) {
@@ -401,10 +451,10 @@ bool JMainWindow::createComponentUi(IJComponent *component, const QDomElement &e
     return true;
 }
 
-bool JMainWindow::createRibbonPage(const QDomElement &emRibbon)
+bool JMainWindow::createRibbonPage(const QDomElement &emRibbon, const QString &componentName)
 {
     //
-    if (emRibbon.isNull()) {
+    if (emRibbon.isNull() || componentName.isEmpty()) {
         return false;   //
     }
 
@@ -417,34 +467,69 @@ bool JMainWindow::createRibbonPage(const QDomElement &emRibbon)
         const QString text = emPage.attribute("text");
         //
         QtRibbon::RibbonPage *ribbonPage = 0;
-        if (q_hashObject.contains(objectName)) {
-            ribbonPage = qobject_cast<QtRibbon::RibbonPage *>(q_hashObject.value(objectName));
-            if(!ribbonPage) {
-                ribbonPage = q_frameWnd->ribbonBar()->addPage(text);
+        QMutableHashIterator<QString, QHash<QString, QObject *> > iterHash(q_hashObject);
+        while (iterHash.hasNext()) {
+            iterHash.next();
+            QHash<QString, QObject *>::iterator iterObject
+                    = iterHash.value().find(objectName);
+            if (iterObject != iterHash.value().end()) {
+                ribbonPage = qobject_cast<QtRibbon::RibbonPage *>(iterObject.value());
+                if(ribbonPage) {
+                    break;  // found out
+                } else if (iterHash.key() == componentName) {
+                    // create
+                    ribbonPage = q_frameWnd->ribbonBar()->addPage(text);
+                    if (ribbonPage) {
+                        ribbonPage->setObjectName(objectName);
+                        // set domain of object
+                        ribbonPage->setProperty("domain", componentName);
+                        //
+                        qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]!"
+                                                     " destory and replace it!")
+                                      .arg(componentName).arg(objectName);
+                        // destory old object
+                        iterObject.value()->deleteLater();
+                        // replace
+                        *iterObject = ribbonPage;
+                    } else {
+                        ribbonPage = 0;
+                    }
+                } else {
+                    ribbonPage = 0;
+                }
             }
-        } else {
-            ribbonPage = q_frameWnd->ribbonBar()->addPage(text);
         }
+
         //
-        if (ribbonPage)	{
-            ribbonPage->setObjectName(objectName);
-            if(!objectName.isEmpty()) {
-                q_hashObject.insert(objectName, ribbonPage);
+        if (!ribbonPage) {
+            // create
+            ribbonPage = q_frameWnd->ribbonBar()->addPage(text);
+            if (ribbonPage) {
+                ribbonPage->setObjectName(objectName);
+                // set domain of object
+                ribbonPage->setProperty("domain", componentName);
+                //
+                QHash<QString, QObject *> hash;
+                hash.insert(objectName, ribbonPage);
+                q_hashObject.insert(componentName, hash);
+            } else {
+                return 0;       // create failure
             }
-            //
-            if (!createRibbinGroup(emPage, ribbonPage)) {
-                // create failure
-            }
+        }
+
+        //
+        if (!createRibbinGroup(emPage, ribbonPage, componentName)) {
+            // create failure
         }
     }
 
     return true;
 }
 
-bool JMainWindow::createRibbinGroup(const QDomElement &emPage, QtRibbon::RibbonPage *ribbonPage)
+bool JMainWindow::createRibbinGroup(const QDomElement &emPage, QtRibbon::RibbonPage *ribbonPage, const QString &componentName)
 {
     //
-    if (emPage.isNull() || !ribbonPage) {
+    if (emPage.isNull() || !ribbonPage || componentName.isEmpty()) {
         return false;
     }
 
@@ -456,36 +541,69 @@ bool JMainWindow::createRibbinGroup(const QDomElement &emPage, QtRibbon::RibbonP
         const QString objectName = emGroup.attribute("objectName");
         const QString text = emGroup.attribute("text");
         //
-        QtRibbon::RibbonGroup* ribbonGroup = 0;
-        if(q_hashObject.contains(objectName)) {
-            ribbonGroup = qobject_cast<QtRibbon::RibbonGroup *>(q_hashObject.value(objectName));
-            if(!ribbonGroup) {
-                ribbonGroup = ribbonPage->addGroup(text);
-                ribbonGroup->setObjectName(objectName);
-                if(!objectName.isEmpty()) {
-                    q_hashObject.insert(objectName, ribbonGroup);
+        QtRibbon::RibbonGroup *ribbonGroup = 0;
+        QMutableHashIterator<QString, QHash<QString, QObject *> > iterHash(q_hashObject);
+        while (iterHash.hasNext()) {
+            iterHash.next();
+            QHash<QString, QObject *>::iterator iterObject
+                    = iterHash.value().find(objectName);
+            if (iterObject != iterHash.value().end()) {
+                ribbonGroup = qobject_cast<QtRibbon::RibbonGroup *>(iterObject.value());
+                if(ribbonGroup) {
+                    break;  // found out
+                } else if (iterHash.key() == componentName) {
+                    // create
+                    ribbonGroup = ribbonPage->addGroup(text);
+                    if (ribbonGroup) {
+                        ribbonGroup->setObjectName(objectName);
+                        // set domain of object
+                        ribbonGroup->setProperty("domain", componentName);
+                        //
+                        qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]!"
+                                                     " destory and replace it!")
+                                      .arg(componentName).arg(objectName);
+                        // destory old object
+                        iterObject.value()->deleteLater();
+                        // replace
+                        *iterObject = ribbonGroup;
+                    } else {
+                        ribbonGroup = 0;
+                    }
+                } else {
+                    ribbonGroup = 0;
                 }
             }
-        } else {
+        }
+
+        //
+        if (!ribbonGroup) {
+            // create
             ribbonGroup = ribbonPage->addGroup(text);
-            ribbonGroup->setObjectName(objectName);
-            if(!objectName.isEmpty()) {
-                q_hashObject.insert(objectName, ribbonGroup);
+            if (ribbonGroup) {
+                ribbonGroup->setObjectName(objectName);
+                // set domain of object
+                ribbonGroup->setProperty("domain", componentName);
+                //
+                QHash<QString, QObject *> hash;
+                hash.insert(objectName, ribbonGroup);
+                q_hashObject.insert(componentName, hash);
+            } else {
+                return 0;       // create failure
             }
-            //
-            if (!createRibbinItem(emGroup, ribbonGroup)) {
-                // create failure
-            }
+        }
+        //
+        if (!createRibbinItem(emGroup, ribbonGroup, componentName)) {
+            // create failure
         }
     }
 
     return true;
 }
 
-bool JMainWindow::createRibbinItem(const QDomElement &emGroup, QtRibbon::RibbonGroup *ribbonGroup)
+bool JMainWindow::createRibbinItem(const QDomElement &emGroup, QtRibbon::RibbonGroup *ribbonGroup, const QString &componentName)
 {
     //
-    if (emGroup.isNull() || !ribbonGroup) {
+    if (emGroup.isNull() || !ribbonGroup || componentName.isEmpty()) {
         return false;
     }
 
@@ -497,47 +615,72 @@ bool JMainWindow::createRibbinItem(const QDomElement &emGroup, QtRibbon::RibbonG
         const QString nodeName = emItem.nodeName();
         if(nodeName == "action") {
             //
-            QAction *action = createItemAction(emItem);
+            QAction *action = createItemAction(emItem, componentName);
             if (action) {
+                // set domain of object
+                action->setProperty("domain", componentName);
+                //
+                action->setParent(ribbonGroup);
                 ribbonGroup->addAction(action, Qt::ToolButtonTextUnderIcon);
             }
         } else if(nodeName == "subMenu") {
             //
-            QMenu *menu = createSubMenu(emItem, ribbonGroup);
-            if (!menu) {
-                //
+            QMenu *menu = createSubMenu(emItem, ribbonGroup, componentName);
+            if (menu) {
+                // set domain of object
+                menu->setProperty("domain", componentName);
             }
         }
         else if(nodeName == "separator") {
             //
             ribbonGroup->addSeparator();
         } else if(nodeName == "comboBox") {
-            QComboBox *comboBox = createItemComboBox(emItem);
+            QComboBox *comboBox = createItemComboBox(emItem, componentName);
             if (comboBox) {
+                // set domain of object
+                comboBox->setProperty("domain", componentName);
+                //
+                comboBox->setParent(ribbonGroup);
                 ribbonGroup->addWidget(comboBox);
             }
         } else if(nodeName == "checkBox") {
             //
-            QCheckBox *checkBox = createItemCheckBox(emItem);
+            QCheckBox *checkBox = createItemCheckBox(emItem, componentName);
             if (checkBox) {
+                // set domain of object
+                checkBox->setProperty("domain", componentName);
+                //
+                checkBox->setParent(ribbonGroup);
                 ribbonGroup->addWidget(checkBox);
             }
         }
         else if(nodeName == "radioButton") {
             //
-            QRadioButton *radioButton = createItemRadioButton(emItem);
+            QRadioButton *radioButton = createItemRadioButton(emItem, componentName);
             if (radioButton) {
+                // set domain of object
+                radioButton->setProperty("domain", componentName);
+                //
+                radioButton->setParent(ribbonGroup);
                 ribbonGroup->addWidget(radioButton);
             }
         } else if(nodeName == "label") {
-            QLabel *label = createItemLabel(emItem);
+            QLabel *label = createItemLabel(emItem, componentName);
             if (label) {
+                // set domain of object
+                label->setProperty("domain", componentName);
+                //
+                label->setParent(ribbonGroup);
                 ribbonGroup->addWidget(label);
             }
         } else if(nodeName == "bitmap") {
             //
-            QLabel *label = createItemLabel(emItem);
+            QLabel *label = createItemLabel(emItem, componentName);
             if (label) {
+                // set domain of object
+                label->setProperty("domain", componentName);
+                //
+                label->setParent(ribbonGroup);
                 label->setPixmap(QPixmap(parsePath(emItem.attribute("icon"))));
                 ribbonGroup->addWidget(label);
             }
@@ -547,78 +690,54 @@ bool JMainWindow::createRibbinItem(const QDomElement &emGroup, QtRibbon::RibbonG
     return true;
 }
 
-QAction* JMainWindow::createItemAction(const QDomElement &emItem)
+QAction* JMainWindow::createItemAction(const QDomElement &emItem, const QString &componentName)
 {
     //
-    if (emItem.isNull()) {
+    if (emItem.isNull() || componentName.isEmpty()) {
         return 0;
     }
 
     //
     const QString objectName = emItem.attribute("objectName");
 
-    //
-    QAction *action = 0;
-    if(q_hashObject.contains(objectName)) {
-        action = qobject_cast<QAction *>(q_hashObject.value(objectName));
-        if (!action) {
-            action = new QAction();
-            if(!objectName.isEmpty()) {
-                q_hashObject.insert(objectName, action);
-            }
-        } else {
-            //
-            QObject::disconnect(action, SIGNAL(triggered(QAction*)),
-                                q_frameWnd, SLOT(onActionTriggered(QAction*)));
-        }
-    } else {
-        action = new QAction();
-        if(!objectName.isEmpty()) {
-            q_hashObject.insert(objectName, action);
-        }
+    // insert to hash table
+    QAction *action = createHashObject<QAction>
+            (componentName, objectName, q_frameWnd,
+             SIGNAL(triggered(bool)), SLOT(onActionTriggered(bool)));
+    if(!action) {
+        return 0;   // insert failure
     }
+
     //
     action->setObjectName(objectName);
     action->setText(emItem.attribute("text"));
     action->setIcon(QIcon(parsePath(emItem.attribute("icon"))));
     action->setShortcut(emItem.attribute("shortcut"));
     action->setCheckable(QVariant(emItem.attribute("checkable", "true")).toBool());
+
     //
-    QObject::connect(action, SIGNAL(triggered(QAction*)),
-                     q_frameWnd, SLOT(onActionTriggered(QAction*)));
+    QObject::connect(action, SIGNAL(triggered(bool)),
+                     q_frameWnd, SLOT(onActionTriggered(bool)));
 
     return action;
 }
 
-QComboBox *JMainWindow::createItemComboBox(const QDomElement &emItem)
+QComboBox *JMainWindow::createItemComboBox(const QDomElement &emItem, const QString &componentName)
 {
     //
-    if (emItem.isNull()) {
+    if (emItem.isNull() || componentName.isEmpty()) {
         return 0;
     }
 
     //
     const QString objectName = emItem.attribute("objectName");
 
-    //
-    QComboBox *comboBox = 0;
-    if(q_hashObject.contains(objectName)) {
-        comboBox = qobject_cast<QComboBox *>(q_hashObject.value(objectName));
-        if (!comboBox) {
-            comboBox = new QComboBox();
-            if(!objectName.isEmpty()) {
-                q_hashObject.insert(objectName, comboBox);
-            }
-        } else {
-            //
-            QObject::disconnect(comboBox, SIGNAL(triggered(QWidget*)),
-                                q_frameWnd, SLOT(onComboBoxTriggered(QWidget*)));
-        }
-    } else {
-        comboBox = new QComboBox();
-        if(!objectName.isEmpty()) {
-            q_hashObject.insert(objectName, comboBox);
-        }
+    // insert to hash table
+    QComboBox *comboBox = createHashObject<QComboBox>
+            (componentName, objectName, q_frameWnd,
+             SIGNAL(currentIndexChanged(int)), SLOT(onComboBoxCurrentIndexChanged(int)));
+    if(!comboBox) {
+        return 0;   // insert failure
     }
 
     //
@@ -634,41 +753,28 @@ QComboBox *JMainWindow::createItemComboBox(const QDomElement &emItem)
     }
 
     //
-    QObject::connect(comboBox, SIGNAL(triggered(QWidget*)),
-                     q_frameWnd, SLOT(onComboBoxTriggered(QWidget*)));
+    QObject::connect(comboBox, SIGNAL(currentIndexChanged(int)),
+                     q_frameWnd, SLOT(onComboBoxCurrentIndexChanged(int)));
 
     return comboBox;
 }
 
-QCheckBox *JMainWindow::createItemCheckBox(const QDomElement &emItem)
+QCheckBox *JMainWindow::createItemCheckBox(const QDomElement &emItem, const QString &componentName)
 {
     //
-    if (emItem.isNull()) {
+    if (emItem.isNull() || componentName.isEmpty()) {
         return 0;
     }
 
     //
     const QString objectName = emItem.attribute("objectName");
 
-    //
-    QCheckBox *checkBox = 0;
-    if(q_hashObject.contains(objectName)) {
-        checkBox = qobject_cast<QCheckBox *>(q_hashObject.value(objectName));
-        if (!checkBox) {
-            checkBox = new QCheckBox();
-            if(!objectName.isEmpty()) {
-                q_hashObject.insert(objectName, checkBox);
-            }
-        } else {
-            //
-            QObject::disconnect(checkBox, SIGNAL(triggered(QWidget*)),
-                                q_frameWnd, SLOT(onCheckBoxTriggered(QWidget*)));
-        }
-    } else {
-        checkBox = new QCheckBox();
-        if(!objectName.isEmpty()) {
-            q_hashObject.insert(objectName, checkBox);
-        }
+    // insert to hash table
+    QCheckBox *checkBox = createHashObject<QCheckBox>
+            (componentName, objectName, q_frameWnd,
+             SIGNAL(stateChanged(int)), SLOT(onCheckBoxStateChanged(int)));
+    if(!checkBox) {
+        return 0;   // insert failure
     }
 
     //
@@ -677,41 +783,28 @@ QCheckBox *JMainWindow::createItemCheckBox(const QDomElement &emItem)
     checkBox->setChecked(QVariant(emItem.attribute("checked", "false")).toBool());
 
     //
-    QObject::connect(checkBox, SIGNAL(triggered(QWidget*)),
-                     q_frameWnd, SLOT(onComboBoxTriggered(QWidget*)));
+    QObject::connect(checkBox, SIGNAL(stateChanged(int)),
+                     q_frameWnd, SLOT(onCheckBoxStateChanged(int)));
 
     return checkBox;
 }
 
-QRadioButton *JMainWindow::createItemRadioButton(const QDomElement &emItem)
+QRadioButton *JMainWindow::createItemRadioButton(const QDomElement &emItem, const QString &componentName)
 {
     //
-    if (emItem.isNull()) {
+    if (emItem.isNull() || componentName.isEmpty()) {
         return 0;
     }
 
     //
     const QString objectName = emItem.attribute("objectName");
 
-    //
-    QRadioButton *radioButton = 0;
-    if(q_hashObject.contains(objectName)) {
-        radioButton = qobject_cast<QRadioButton *>(q_hashObject.value(objectName));
-        if (!radioButton) {
-            radioButton = new QRadioButton();
-            if(!objectName.isEmpty()) {
-                q_hashObject.insert(objectName, radioButton);
-            }
-        } else {
-            //
-            QObject::disconnect(radioButton, SIGNAL(triggered(QWidget*)),
-                                q_frameWnd, SLOT(onCheckBoxTriggered(QWidget*)));
-        }
-    } else {
-        radioButton = new QRadioButton();
-        if(!objectName.isEmpty()) {
-            q_hashObject.insert(objectName, radioButton);
-        }
+    // insert to hash table
+    QRadioButton *radioButton = createHashObject<QRadioButton>
+            (componentName, objectName, q_frameWnd,
+             SIGNAL(clicked(bool)), SLOT(onRadioButtonClicked(bool)));
+    if(!radioButton) {
+        return 0;   // insert failure
     }
 
     //
@@ -720,37 +813,26 @@ QRadioButton *JMainWindow::createItemRadioButton(const QDomElement &emItem)
     radioButton->setChecked(QVariant(emItem.attribute("checked", "false")).toBool());
 
     //
-    QObject::connect(radioButton, SIGNAL(triggered(QWidget*)),
-                     q_frameWnd, SLOT(onRadioButtonTriggered(QWidget*)));
+    QObject::connect(radioButton, SIGNAL(clicked(bool)),
+                     q_frameWnd, SLOT(onRadioButtonClicked(bool)));
 
     return radioButton;
 }
 
-QLabel *JMainWindow::createItemLabel(const QDomElement &emItem)
+QLabel *JMainWindow::createItemLabel(const QDomElement &emItem, const QString &componentName)
 {
     //
-    if (emItem.isNull()) {
+    if (emItem.isNull() || componentName.isEmpty()) {
         return 0;
     }
 
     //
     const QString objectName = emItem.attribute("objectName");
 
-    //
-    QLabel *label = 0;
-    if(q_hashObject.contains(objectName)) {
-        label = qobject_cast<QLabel *>(q_hashObject.value(objectName));
-        if (!label) {
-            label = new QLabel();
-            if(!objectName.isEmpty()) {
-                q_hashObject.insert(objectName, label);
-            }
-        }
-    } else {
-        label = new QLabel();
-        if(!objectName.isEmpty()) {
-            q_hashObject.insert(objectName, label);
-        }
+    // insert to hash table
+    QLabel *label = createHashObject<QLabel>(componentName, objectName);
+    if(!label) {
+        return 0;   // insert failure
     }
 
     //
@@ -760,10 +842,10 @@ QLabel *JMainWindow::createItemLabel(const QDomElement &emItem)
     return label;
 }
 
-QMenu *JMainWindow::createSubMenu(const QDomElement &emItem, QWidget *parentWidget)
+QMenu *JMainWindow::createSubMenu(const QDomElement &emItem, QWidget *parentWidget, const QString &componentName)
 {
     //
-    if (emItem.isNull() || !parentWidget) {
+    if (emItem.isNull() || !parentWidget || componentName.isEmpty()) {
         return 0;
     }
 
@@ -793,22 +875,26 @@ QMenu *JMainWindow::createSubMenu(const QDomElement &emItem, QWidget *parentWidg
 
     //
     menu->setObjectName(objectName);
-    if(!objectName.isEmpty()) {
-        q_hashObject.insert(objectName, menu);
+    // set domain of object
+    menu->setProperty("domain", componentName);
+
+    // insert to hash table
+    if(!insertHashObject(componentName, objectName, menu)) {
+        // insert failure
     }
 
     //
-    if (!createMenuItem(emItem, menu)) {
+    if (!createMenuItem(emItem, menu, componentName)) {
         // create failure
     }
 
     return menu;
 }
 
-bool JMainWindow::createMenuItem(const QDomElement &emItem, QMenu *menu)
+bool JMainWindow::createMenuItem(const QDomElement &emItem, QMenu *menu, const QString &componentName)
 {
     //
-    if (emItem.isNull() || !menu) {
+    if (emItem.isNull() || !menu || componentName.isEmpty()) {
         return false;
     }
 
@@ -820,15 +906,19 @@ bool JMainWindow::createMenuItem(const QDomElement &emItem, QMenu *menu)
         const QString nodeName = emSubItem.nodeName();
         if(nodeName == "action") {
             //
-            QAction *action = createItemAction(emItem);
+            QAction *action = createItemAction(emItem, componentName);
             if (action) {
+                // set domain of object
+                menu->setProperty("domain", componentName);
+                //
                 menu->addAction(action);
             }
         } else if(nodeName == "subMenu") {
             //
-            QMenu *subMenu = createSubMenu(emItem, menu);
-            if (!subMenu) {
-                // create failure
+            QMenu *subMenu = createSubMenu(emItem, menu, componentName);
+            if (subMenu) {
+                // set domain of object
+                subMenu->setProperty("domain", componentName);
             }
         } else if(nodeName == "separator") {
             //
@@ -845,5 +935,51 @@ QString JMainWindow::parsePath(const QString &src) const
             .replace("@AppDir", QString::fromStdString(jframeFacade()->appDirPath()))
             .replace("@ConfigDir", QString::fromStdString(jframeFacade()->configDirPath()))
             .replace("@ThisDir", QString::fromStdString(jframeFacade()->thisDirPath()))
-            .replace("@FrameDit", QString::fromStdString(jframeFacade()->frameDirPath()));
+            .replace("@FrameDir", QString::fromStdString(jframeFacade()->frameDirPath()));
+}
+
+bool JMainWindow::insertHashObject(const QString &componentName, const QString &objectName, QObject *object)
+{
+    //
+    if (componentName.isEmpty() || objectName.isEmpty() || !object) {
+        Q_ASSERT(false);
+        return false;   //
+    }
+
+    //
+    QHash<QString, QHash<QString, QObject *> >::iterator iterHash =
+            q_hashObject.find(componentName);
+    if (iterHash != q_hashObject.end()) {
+        QHash<QString, QObject *>::iterator iterObject =
+                iterHash.value().find(objectName);
+        if (iterObject != iterHash.value().end()) {
+            qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]!"
+                                         " replace it!")
+                          .arg(componentName).arg(objectName);
+#if 1
+            // destroy old object
+            iterObject.value()->deleteLater();
+#else
+            return false;
+#endif
+        }
+        // insert or update
+        iterHash.value().insert(objectName, object);
+    } else {
+        QHash<QString, QObject *> hash;
+        hash.insert(objectName, object);
+        q_hashObject.insert(componentName, hash);
+    }
+
+    return true;
+}
+
+bool JMainWindow::checkObjectName(const QDomElement &element)
+{
+    if (element.isNull() && element.attribute("objectName").isEmpty()) {
+        //
+        return false;
+    }
+
+    return false;
 }

@@ -1,4 +1,4 @@
-#ifndef COM_DEMO2_H
+﻿#ifndef COM_DEMO2_H
 #define COM_DEMO2_H
 
 #include "kernel/jframe_core.h"
@@ -9,6 +9,8 @@ class TestWidget1;
 class ComDemo2 :
         public IJComponent,
         public IJComponentUi,
+        public IJCommandSink,
+        public IJMessageSink,
         public JObserver
 {
 public:
@@ -33,15 +35,24 @@ public:
 public:
     void *createWindow(void *parent, const std::string &objectName);
 
+    // IJMessageSink interface
+public:
+    bool messageSink(IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+
+    // IJCommandSink interface
+public:
+    bool commandSink(void *sender, const std::string &domain, const std::string &objectName,
+                     const std::string &eventType, void *data);
+
     // JObserver interface
 public:
     std::string observerId() const;
 
 protected:
+    JLRESULT onShowText(IJComponent *component, const std::string &id, JWPARAM wParam, JLPARAM lParam);
 
 private:
     IJAttempter *q_attempter;
-    INotifier* q_notifier;
     TestWidget1 *q_testWidget1;
 };
 

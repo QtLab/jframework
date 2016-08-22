@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <component>
   <ribbon>
-    <page objectName="pageHome" text="   主页   ">
-      <group objectName="group #1" text="分组 #1">
-        <checkBox objectName="item #1" text=" 输出端" checked="true" />
+    <page objectName="pageFile" text="   文件   ">
+      <group objectName="group #2" text="分组 #2">
+        <checkBox objectName="test #1" text=" 测试 #1" checked="true" />
         <comboBox objectName="item #2" text=" 测试 #1" >
           <item objectName="comboBox #1" text="Item 1" />
           <item objectName="comboBox #2" text="Item 2" />

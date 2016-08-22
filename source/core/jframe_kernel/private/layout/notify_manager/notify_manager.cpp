@@ -18,7 +18,7 @@ NotifyManager::~NotifyManager()
 bool NotifyManager::loadInterface()
 {
     // 订阅消息
-    q_notifier->beginGroup(this)
+    q_notifier.beginGroup(this)
             .append("j_frame_try_exit", &NotifyManager::onTryExitFrame)
             .append("j_frame_exit", &NotifyManager::onExitFrame)
             .append("j_frame_restart", &NotifyManager::onRestartFrame)
@@ -30,7 +30,7 @@ bool NotifyManager::loadInterface()
 void NotifyManager::releaseInterface()
 {
     // 取消订阅
-    q_notifier->remove(this);
+    q_notifier.remove(this);
 }
 
 std::string NotifyManager::observerId() const

@@ -1,9 +1,9 @@
 ﻿#include "precomp.h"
 #include "testwidget1.h"
 
-TestWidget1::TestWidget1(INotifier *notifier, QWidget *parent)
+TestWidget1::TestWidget1(IJAttempter &attempter, QWidget *parent)
     : QWidget(parent)
-    , q_notifier(notifier)
+    , q_attempter(attempter)
 {
     QHBoxLayout *horiLayoutMain = new QHBoxLayout(this);
 

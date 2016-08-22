@@ -2,6 +2,8 @@
 #define JATTEMPTER_H
 
 #include "../../jframe_core.h"
+#include "factory/jnotifier.h"
+#include "jcomponent_notify.h"
 #include <QMap>
 
 /**
@@ -77,15 +79,21 @@ public:
     void *queryInterface(const std::string &componentName, const std::string &iid, unsigned int ver);
     std::list<IJComponent *> allComponents() const;
     int currentWorkModeId() const;
-    const char *currentWorkModeName() const;
-    const char *currentWorkModeConfigDirName() const;
+    std::string currentWorkModeName() const;
+    std::string currentWorkModeConfigDirName() const;
 
-    void subMessage(IJComponent *component, unsigned int id);
-    void unsubMessage(IJComponent *component, unsigned int id);
-    void sendMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam);
-    void postMessage(IJComponent *component, unsigned int id, JWPARAM wParam, JLPARAM lParam);
+    INotifier &notifier();
 
-    INotifier *notifier();
+    void endGroup();
+    IJAttempter &unsubMessage(const std::string &id);
+    void unsubMessage(IJComponent *component);
+    JLRESULT sendMessage(IJComponent *component, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0);
+    void postMessage(IJComponent *component, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0);
+    void postMessage(IJComponent *component, const std::string &id, const std::string &msg);
+
+protected:
+    IJAttempter &beginGroup(IJComponent *obs, int offset);
+    IJAttempter &subMessage(const std::string &id, JMsgSinkCb cb = 0);
 
 private:
     bool loadConfig();
@@ -95,11 +103,12 @@ private:
     bool releaseAllComponent();
 
     //
-    void commandSink(void *sender, const std::string &senderName);
+    void commandSink(QObject *sender, const std::string &eventType, void *data);
 
 private:
     friend class JFrameWnd;
 
+    JComponentNotify componentNotify;
     INotifier *q_notifier;      // 消息分发器实例
 
     IJMainWindow *q_mainWindow;

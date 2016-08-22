@@ -1,4 +1,4 @@
-#ifndef JCOM_LAYOUT_H
+﻿#ifndef JCOM_LAYOUT_H
 #define JCOM_LAYOUT_H
 
 #include "kernel/jframe_core.h"
@@ -40,7 +40,6 @@ public:
 private:
     IJAttempter *q_attempter;
     FrameFilter *q_frameFilter;
-    INotifier *q_notifier;
 };
 
 #endif // JCOM_LAYOUT_H

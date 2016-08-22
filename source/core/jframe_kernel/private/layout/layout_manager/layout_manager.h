@@ -106,7 +106,7 @@ private:
 
 private:
     JFrameLayout *q_frameLayout;
-    INotifier *q_notifier;
+    INotifier &q_notifier;
     JSplitter *q_mainSplitter;
     JLayoutConfig q_layoutConfig;
 

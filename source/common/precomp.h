@@ -25,6 +25,10 @@
 #include <QtXml>
 #endif
 
+#ifdef QT_CONCURRENT_LIB
+#include <QtConcurrent>
+#endif
+
 #if (QT_VERSION < 0x050000)
 
 #include <QtDeclarative/QtDeclarative>
