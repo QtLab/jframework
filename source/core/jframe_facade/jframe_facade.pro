@@ -44,11 +44,6 @@ RESOURCES +=
 # import files
 ###############################################################
 
-## import jframeworkdir library
-win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframeworkdir
-else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframeworkdir
-else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframeworkdir
-
 ###############################################################
 # global commands
 ###############################################################

@@ -76,7 +76,7 @@ private:
     std::string dynamicPrefix() const;
 
     // 获取模块后缀
-    std::string dynamicSuffix() const;
+    std::string dynamicSuffix(bool debug = true) const;
 
     // 获取环境变量的分割符
     std::string envSeparator() const;
@@ -98,6 +98,9 @@ private:
 
     //
     bool loadTextCodecConfig();
+
+    //
+    bool loadFrameworkDirMethod();
 
 private:
     bool invokeLog(const std::string &method, int argc, va_list ap);

@@ -6,16 +6,85 @@
 #include <unistd.h>
 #endif
 
+/**
+ * @brief appDirPath : 获取 application 所在路径（不包含文件名称）
+ * @return : application 所在路径（不包含文件名称）
+ */
+const char* _static_appDirPath()
+{
+    static std::string _path = "";
+    if (_path.empty()) {
+#ifdef __unix__
+        std::stringstream ss;
+        ss << "/proc/" << getpid() << "/exe";
+#endif
+        //
+        char buffer[J_PATH_MAX + 2];
+        unsigned int length = 0;
+#ifdef _MSC_VER
+        length = (unsigned int)GetModuleFileNameA(NULL, buffer, J_PATH_MAX + 1);
+#elif defined(__unix__)
+        length = (unsigned int)readlink(ss.str().c_str(), buffer, J_PATH_MAX);
+#endif
+        //
+        if (length == 0) {
+            // error
+        } else if (length <= J_PATH_MAX) {
+            buffer[J_PATH_MAX + 1] = '\0';
+            _path = buffer;
+        } else {
+            // J_PATH_MAX sized buffer wasn't large enough to contain the full path, use heap
+            char *bufferNew = 0;
+            int i = 1;
+            size_t size;
+            do {
+                ++i;
+                size = J_PATH_MAX * i;
+                bufferNew = reinterpret_cast<char *>(realloc(bufferNew, (size + 1) * sizeof(char)));
+                if (bufferNew) {
+#ifdef _MSC_VER
+                    length = (unsigned int)GetModuleFileNameA(NULL, buffer, J_PATH_MAX + 1);
+#elif defined(__unix__)
+                    length = (unsigned int)readlink(ss.str().c_str(), buffer, J_PATH_MAX);
+#endif
+                }
+            } while (bufferNew && length == size);
+
+            if (bufferNew) {
+                *(bufferNew + size) = '\0';
+            }
+
+            _path = bufferNew;
+            free(bufferNew);
+        }
+
+        //
+        if (!_path.empty()) {
+            //
+            int index = _path.find_last_of('/');
+            if (index == -1) {
+                index = _path.find_last_of('\\');
+            }
+            if (index != -1) {
+                _path = _path.substr(0, index);
+            }
+            // replace '\\' with '/'
+            std::string::iterator iter = _path.begin();
+            for (; iter != _path.end(); ++iter) {
+                if (*iter == '\\') {
+                    *iter = '/';
+                }
+            }
+        }
+    }
+
+    return _path.c_str();
+}
+
 // export from jframeworkdir library
-J_EXTERN_C J_EXTERN const char* appDirPath();
-J_EXTERN_C J_EXTERN const char* thisDirPath();
-J_EXTERN_C J_EXTERN const char* frameDirPath();
-J_EXTERN_C J_EXTERN const char* nativeSeparator();
-J_EXTERN_C J_EXTERN const char* envSeparator();
-J_EXTERN_C J_EXTERN bool fileExists(const char* filePath);
-J_EXTERN_C J_EXTERN const char* frameVersion();
-J_EXTERN_C J_EXTERN const char* libraryPrefix();
-J_EXTERN_C J_EXTERN const char* librarySuffix();
+typedef const char* (J_ATTR_CDECL*ThisDirPath)();
+typedef const char* (J_ATTR_CDECL*FrameDirPath)();
+typedef const char* (J_ATTR_CDECL*FrameVersion)();
 
 // struct JFrameFacadeData
 
@@ -43,10 +112,19 @@ struct JFrameFacadeData
     //
     std::list<std::string> arguments;   // 重启框架命令行参数临时存放变量
 
-    JFrameFacadeData():
-        frameLoaded(false),
-        frameFactory(0),
-        frameKernel(0)
+    // export from jframeworkdir library
+    ThisDirPath fThisDirPath;       //
+    FrameDirPath fFrameDirPath;     //
+    FrameVersion fFrameVersion;     //
+
+    JFrameFacadeData()
+        : frameLoaded(false)
+        , frameFactory(0)
+        , frameKernel(0)
+        //
+        , fThisDirPath(0)
+        , fFrameDirPath(0)
+        , fFrameVersion(0)
     {
 
     }
@@ -169,7 +247,7 @@ bool JFrameFacade::invokeMethod(const std::string &method, int argc, ...)
 
 std::string JFrameFacade::appDirPath() const
 {
-    return data->appDirPath;
+    return _static_appDirPath();
 }
 
 std::string JFrameFacade::configDirPath() const
@@ -503,17 +581,50 @@ bool JFrameFacade::loadConfig()
 
 std::string JFrameFacade::dynamicPrefix() const
 {
-    return ::libraryPrefix();
+    static std::string prefix = "";
+    if (prefix.empty()) {
+#ifdef _MSC_VER
+        prefix = "";
+#elif defined(__unix__)
+        prefix = "lib";
+#else
+#pragma message("not supported!")
+        prefix = "";
+#endif
+    }
+
+    return prefix;
 }
 
-std::string JFrameFacade::dynamicSuffix() const
+std::string JFrameFacade::dynamicSuffix(bool debug) const
 {
-    return ::librarySuffix();
+#ifdef _MSC_VER
+    return debug ? "d.dll" : ".dll";
+#elif defined(__unix__)
+    (void)debug;
+    return ".so";
+#else
+#pragma message("not supported!")
+    (void)debug;
+    return "";
+#endif
 }
 
 std::string JFrameFacade::envSeparator() const
 {
-    return ::envSeparator();
+    static std::string sep = "";
+    if (sep.empty()) {
+#ifdef _MSC_VER
+        sep = ";";
+#elif defined(__unix__)
+        sep = ":";
+#else
+#pragma message("not supported!")
+        sep = ":";
+#endif
+    }
+
+    return sep;
 }
 
 bool JFrameFacade::terminateProcess()
@@ -685,6 +796,43 @@ bool JFrameFacade::loadTextCodecConfig()
     return true;
 }
 
+bool JFrameFacade::loadFrameworkDirMethod()
+{
+    bool result = true;
+
+    //
+    QLibrary lib(QString::fromStdString(std::string(_static_appDirPath()).append("/")
+                 .append(dynamicPrefix()).append("jframeworkdir").append(dynamicSuffix(false))));
+    if (!lib.load()) {
+        Q_ASSERT(false);
+        return false;
+    }
+
+    // thisDirPath
+    if (result) {
+        data->fThisDirPath = (ThisDirPath)lib.resolve("thisDirPath");
+        if (!data->fThisDirPath) {
+            result = false;
+        }
+    }
+    // frameDirPath
+    if (result) {
+        data->fFrameDirPath = (FrameDirPath)lib.resolve("frameDirPath");
+        if (!data->fFrameDirPath) {
+            result = false;
+        }
+    }
+    // frameVersion
+    if (result) {
+        data->fFrameVersion = (FrameVersion)lib.resolve("frameVersion");
+        if (!data->fFrameVersion) {
+            result = false;
+        }
+    }
+
+    return result;
+}
+
 bool JFrameFacade::invokeLog(const std::string &method, int argc, va_list ap)
 {
     // 检测框架内核系统部件有效性
@@ -845,13 +993,24 @@ JFrameFacade::JFrameFacade()
 {
     data = new JFrameFacadeData;
 
+    // 加载 jframeworkdir 库接口
+    if (!loadFrameworkDirMethod()) {
+        Q_ASSERT(false);
+    }
+
     // 初始化框架版本
-    data->frameVersion = ::frameVersion();
+    if (data->fFrameVersion) {
+        data->frameVersion = data->fFrameVersion();
+    }
 
     // 初始化各路径
-    data->appDirPath = ::appDirPath();
-    data->thisDirPath = ::thisDirPath();
-    data->frameDirPath = ::frameDirPath();
+    data->appDirPath = _static_appDirPath();
+    if (data->fThisDirPath) {
+        data->thisDirPath = data->fThisDirPath();
+    }
+    if (data->fFrameDirPath) {
+        data->frameDirPath = data->fFrameDirPath();
+    }
 
     // 初始化框架各配置文件路径
     data->configDirPath = data->thisDirPath + "/config";

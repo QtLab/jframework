@@ -111,7 +111,7 @@
 #include <limits.h>
 #define J_PATH_MAX PATH_MAX
 #else
-#pragma message("not supported!")
+#define J_PATH_MAX 1024
 #endif
 
 //
@@ -126,7 +126,12 @@
 #define J_ATTR_STDCALL __stdcall
 #define J_ATTR_EXPORT __declspec(dllexport)
 #define J_EXTERN extern
-#elif defined(__apple__)
+#elif defined(__APPLE__)
+#  ifdef __cplusplus
+#    define J_EXTERN_C extern "C"
+#  else
+#    define J_EXTERN_C extern
+#  endif
 #define J_ATTR_CDECL
 #define J_ATTR_STDCALL
 #define J_ATTR_EXPORT
