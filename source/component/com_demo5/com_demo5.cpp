@@ -18,7 +18,7 @@ ComDemo5::ComDemo5(IJAttempter *attemper)
 	: q_attempter(attemper)
 	, q_widget(0)
 {
-	q_notifier = jframeLayout()->notifier();
+
 }
 
 ComDemo5::~ComDemo5()
@@ -78,14 +78,14 @@ std::string ComDemo5::componentType() const
 void ComDemo5::attach()
 {
 	// 订阅消息
-	q_notifier->beginGroup(this)
+	q_attempter->notifier().beginGroup(this)
 		.endGroup();
 }
 
 void ComDemo5::detach()
 {
 	// 取消订阅消息
-	q_notifier->remove(this);
+	q_attempter->notifier().remove(this);
 }
 
 void *ComDemo5::createWindow(void *parent, const std::string &objectName)
@@ -100,7 +100,7 @@ void *ComDemo5::createWindow(void *parent, const std::string &objectName)
 	}
 
 	//
-	q_widget = new CMfcDemo1Container(q_notifier);
+	q_widget = new CMfcDemo1Container(*q_attempter);
 
 	return qobject_cast<QWidget *>(q_widget);
 }

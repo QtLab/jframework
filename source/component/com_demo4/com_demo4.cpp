@@ -17,7 +17,7 @@ ComDemo4::ComDemo4(IJAttempter *attemper)
 	: q_attempter(attemper)
 	, q_widget(0)
 {
-	q_notifier = jframeLayout()->notifier();
+
 }
 
 ComDemo4::~ComDemo4()
@@ -72,14 +72,14 @@ std::string ComDemo4::componentType() const
 void ComDemo4::attach()
 {
 	// 订阅消息
-	q_notifier->beginGroup(this)
+	q_attempter->notifier().beginGroup(this)
 		.endGroup();
 }
 
 void ComDemo4::detach()
 {
 	// 取消订阅消息
-	q_notifier->remove(this);
+	q_attempter->notifier().remove(this);
 }
 
 void *ComDemo4::createWindow(void *parent, const std::string &objectName)

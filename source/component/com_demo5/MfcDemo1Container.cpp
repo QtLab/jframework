@@ -3,9 +3,9 @@
 #include "MfcDemo1Dlg.h"
 #include "qtwinmigrate/qwinhost.h"
 
-CMfcDemo1Container::CMfcDemo1Container(INotifier *notifier, QWidget *parent)
+CMfcDemo1Container::CMfcDemo1Container(IJAttempter &attempter, QWidget *parent)
 	: QWidget(parent)
-	, q_notifier(notifier)
+	, q_attempter(attempter)
 	, q_mfcDemo1Dlg(0)
 {
 	QHBoxLayout *horiLayoutMain = new QHBoxLayout(this);
@@ -15,7 +15,7 @@ CMfcDemo1Container::CMfcDemo1Container(INotifier *notifier, QWidget *parent)
 	HINSTANCE hOldResHandle = ::AfxGetResourceHandle();
 	::AfxSetResourceHandle(hModule);
 
-	q_mfcDemo1Dlg = new CMfcDemo1Dlg(notifier);
+	q_mfcDemo1Dlg = new CMfcDemo1Dlg(attempter);
 	q_mfcDemo1Dlg->Create(CMfcDemo1Dlg::IDD);
 
 	AfxSetResourceHandle(hOldResHandle);

@@ -3,12 +3,14 @@
 
 // CMfcDemo1Dlg dialog
 
+class IJAttempter;
+
 class CMfcDemo1Dlg : public CBCGPDialog
 {
 	DECLARE_DYNAMIC(CMfcDemo1Dlg)
 
 public:
-	CMfcDemo1Dlg(INotifier *notifier, CWnd* pParent = NULL);   // standard constructor
+	CMfcDemo1Dlg(IJAttempter &attempter, CWnd* pParent = NULL);   // standard constructor
 	virtual ~CMfcDemo1Dlg();
 
 // Dialog Data
@@ -22,7 +24,7 @@ public:
 	afx_msg void OnBnClickedButtonApply();
 
 private:
-	INotifier *q_notifier;
+	IJAttempter &q_attempter;
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

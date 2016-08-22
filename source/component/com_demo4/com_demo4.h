@@ -42,7 +42,6 @@ protected:
 
 private:
     IJAttempter *q_attempter;
-    INotifier* q_notifier;
     QWidget *q_widget;
 };
 

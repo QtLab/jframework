@@ -42,7 +42,6 @@ protected:
 
 private:
     IJAttempter *q_attempter;
-    INotifier* q_notifier;
     CMfcDemo1Container *q_widget;
 };
 

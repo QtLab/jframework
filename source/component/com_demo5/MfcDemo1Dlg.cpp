@@ -10,9 +10,9 @@
 
 IMPLEMENT_DYNAMIC(CMfcDemo1Dlg, CBCGPDialog)
 
-CMfcDemo1Dlg::CMfcDemo1Dlg(INotifier *notifier, CWnd* pParent /*=NULL*/)
+CMfcDemo1Dlg::CMfcDemo1Dlg(IJAttempter &attempter, CWnd* pParent /*=NULL*/)
 	: CBCGPDialog(CMfcDemo1Dlg::IDD, pParent)
-	, q_notifier(notifier)
+	, q_attempter(attempter)
 {
 	EnableVisualManagerStyle(TRUE, TRUE);
 }
@@ -51,8 +51,5 @@ END_MESSAGE_MAP()
 
 void CMfcDemo1Dlg::OnBnClickedButtonApply()
 {
-	if (q_notifier != NULL)
-	{
-		q_notifier->postMessage("j_switch_module", "module #1");
-	}
+	q_attempter.notifier().postMessage("j_switch_module", "module #1");
 }
