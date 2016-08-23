@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <component>
   <ribbon>
-    <page objectName="pageEdit" text="   编辑   ">
-      <group objectName="group #3" text="分组 #3">
+    <page objectName="pageEdit" title="   编辑   " shortcut="E">
+      <group objectName="group #3" title="分组 #3">
         <checkBox objectName="check #1" text=" 输出端" checked="true" />
         <comboBox objectName="test #3" text=" 测试 #3" >
           <item objectName="comboBox #1" text="Item 1" />

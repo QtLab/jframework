@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Package>
-  <Name>com.smartsoft.xxx</Name>
+  <Name>com.smartsoft.jframe.config</Name>
   <DisplayName>xxx</DisplayName>
   <Description>xxx</Description>
   <Version>1.0.0</Version>

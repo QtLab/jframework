@@ -464,7 +464,7 @@ bool JMainWindow::createRibbonPage(const QDomElement &emRibbon, const QString &c
          emPage = emPage.nextSiblingElement("page")) {
         //
         const QString objectName = emPage.attribute("objectName");
-        const QString text = emPage.attribute("text");
+        const QString title = emPage.attribute("title");
         //
         QtRibbon::RibbonPage *ribbonPage = 0;
         QMutableHashIterator<QString, QHash<QString, QObject *> > iterHash(q_hashObject);
@@ -478,7 +478,7 @@ bool JMainWindow::createRibbonPage(const QDomElement &emRibbon, const QString &c
                     break;  // found out
                 } else if (iterHash.key() == componentName) {
                     // create
-                    ribbonPage = q_frameWnd->ribbonBar()->addPage(text);
+                    ribbonPage = q_frameWnd->ribbonBar()->addPage(title);
                     if (ribbonPage) {
                         ribbonPage->setObjectName(objectName);
                         // set domain of object
@@ -503,7 +503,7 @@ bool JMainWindow::createRibbonPage(const QDomElement &emRibbon, const QString &c
         //
         if (!ribbonPage) {
             // create
-            ribbonPage = q_frameWnd->ribbonBar()->addPage(text);
+            ribbonPage = q_frameWnd->ribbonBar()->addPage(title);
             if (ribbonPage) {
                 ribbonPage->setObjectName(objectName);
                 // set domain of object
@@ -516,6 +516,13 @@ bool JMainWindow::createRibbonPage(const QDomElement &emRibbon, const QString &c
                 return 0;       // create failure
             }
         }
+
+        //
+        ribbonPage->setVisible(QVariant(emPage.attribute("visible", "true")).toBool());
+        ribbonPage->setToolTip(emPage.attribute("tooltip"));
+        ribbonPage->setContextPage(parseContextColor(emPage.attribute("contextColor")));
+        ribbonPage->setContextTitle(emPage.attribute("contextTitle"));
+        ribbonPage->setShortcutEnabled(QVariant(emPage.attribute("shortcutEabled", "true")).toBool());
 
         //
         if (!createRibbinGroup(emPage, ribbonPage, componentName)) {
@@ -539,7 +546,7 @@ bool JMainWindow::createRibbinGroup(const QDomElement &emPage, QtRibbon::RibbonP
          emGroup = emGroup.nextSiblingElement("group")) {
         //
         const QString objectName = emGroup.attribute("objectName");
-        const QString text = emGroup.attribute("text");
+        const QString text = emGroup.attribute("title");
         //
         QtRibbon::RibbonGroup *ribbonGroup = 0;
         QMutableHashIterator<QString, QHash<QString, QObject *> > iterHash(q_hashObject);
@@ -591,6 +598,11 @@ bool JMainWindow::createRibbinGroup(const QDomElement &emPage, QtRibbon::RibbonP
                 return 0;       // create failure
             }
         }
+
+        //
+        ribbonGroup->setVisible(QVariant(emGroup.attribute("visible", "true")).toBool());
+        //ribbonGroup->setControlsGrouping();
+
         //
         if (!createRibbinItem(emGroup, ribbonGroup, componentName)) {
             // create failure
@@ -982,4 +994,27 @@ bool JMainWindow::checkObjectName(const QDomElement &element)
     }
 
     return false;
+}
+
+QtRibbon::ContextColor JMainWindow::parseContextColor(const QString &text)
+{
+    if (text == "none") {
+        return QtRibbon::ContextColorNone;
+    } else if (text == "green") {
+        return QtRibbon::ContextColorGreen;
+    } else if (text == "blue") {
+        return QtRibbon::ContextColorBlue;
+    } else if (text == "red") {
+        return QtRibbon::ContextColorRed;
+    } else if (text == "yellow") {
+        return QtRibbon::ContextColorYellow;
+    } else if (text == "cyan") {
+        return QtRibbon::ContextColorCyan;
+    } else if (text == "purple") {
+        return QtRibbon::ContextColorPurple;
+    } else if (text == "orange") {
+        return QtRibbon::ContextColorOrange;
+    } else {
+        return QtRibbon::ContextColorNone;
+    }
 }

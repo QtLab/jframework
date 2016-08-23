@@ -135,6 +135,9 @@ private:
 
     bool checkObjectName(const QDomElement &element);
 
+    //
+    QtRibbon::ContextColor parseContextColor(const QString &text);
+
 private:
     JAttempter *q_attempter;
     JFrameWnd *q_frameWnd;
