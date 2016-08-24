@@ -4,6 +4,7 @@
 #include <QObject>
 #include "../../jframe_core.h"
 #include <qmetatype.h>
+#include <map>
 
 //
 typedef std::pair<std::string, JMsgSinkCb> pair_id_cb;

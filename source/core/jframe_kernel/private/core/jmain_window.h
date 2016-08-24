@@ -175,7 +175,7 @@ T *JMainWindow::createHashObject(const QString &componentName, const QString &ob
                 }
             } else {
                 iterObject.value()->deleteLater();  // destory old object
-                object = new T();
+                object = new T(0);
                 iterHash.value().insert(objectName, object);
             }
 #else
@@ -185,12 +185,12 @@ T *JMainWindow::createHashObject(const QString &componentName, const QString &ob
             return 0;   // ignore
 #endif
         } else {
-            object = new T();
+            object = new T(0);
             iterHash.value().insert(objectName, object);
         }
     } else {
         QHash<QString, QObject *> hash;
-        object = new T();
+        object = new T(0);
         hash.insert(objectName, object);
         q_hashObject.insert(componentName, hash);
     }
