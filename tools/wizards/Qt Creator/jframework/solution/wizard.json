@@ -1,0 +1,79 @@
+{
+    "version": 1,
+    "supportedProjectTypes": ["Qt4ProjectManager.Qt4Project"],
+    "id": "B.JFramework.Project",
+    "category": "Z.JFramework",
+    "trDescription": "Creates a project containing a single main.cpp file with a stub implementation.\n\nPreselects a desktop Qt for building the application if available.",
+    "trDisplayName": "Create Solution",
+    "trDisplayCategory": "JFramework Project",
+    "icon": "console.png",
+    "featuresRequired": ["QtSupport.Wizards.FeatureQt"],
+    "enabled": "%{JS: [ %{Plugins} ].indexOf('QmakeProjectManager') >= 0}",
+
+    "options": [
+        { "key": "ProFileName", "value": "%{JS: Util.fileName('%{ProjectDirectory}/%{ProjectName}', 'pro')}" },
+        { "key": "IsTopLevelProject", "value": "%{JS: !'%{Exists:ProjectExplorer.Profile.Ids}' }" },
+        { "key": "MainCppName", "value": "%{JS: 'main.' + Util.preferredSuffix('text/x-c++src') }" },
+        { "key": "ProjectDir", "value": "./" }
+    ],
+
+    "pages": [{
+        "trDisplayName": "Project Location",
+        "trShortTitle": "Location",
+        "typeId": "Project",
+        "data": { "trDescription": "This wizard creates a simple Qt-based console application." }
+    }, {
+        "trDisplayName": "Kit Selection",
+        "trShortTitle": "Kits",
+        "typeId": "Kits",
+        "enabled": "%{IsTopLevelProject}",
+        "data": { "projectFilePath": "%{ProFileName}" }
+    }, {
+        "trDisplayName": "Project Management",
+        "trShortTitle": "Summary",
+        "typeId": "Summary"
+    }],
+    "generators": [{
+        "typeId": "File",
+        "data": [{
+            "source": "component",
+            "target": "component"
+        }, {
+            "source": "config",
+            "target": "config"
+        }, {
+            "source": "docs",
+            "target": "docs"
+        }, {
+            "source": "include",
+            "target": "include"
+        }, {
+            "source": "lib",
+            "target": "lib"
+        }, {
+            "source": "setup",
+            "target": "setup"
+        }, {
+            "source": "source",
+            "target": "source"
+        }]
+    }, {
+        "typeId": "File",
+        "data": [{
+            "source": "jframework.pro",
+            "target": "%{ProFileName}",
+            "openAsProject": true
+        }, {
+            "source": "bin/jframework.dll",
+            "target": "bin/jframework.dll"
+        }, {
+            "source": "%{ProjectDir}/source/framework/application/main.cpp",
+            "target": "%{ProjectDir}/source/framework/application/main.cpp",
+            "openInEditor": true
+        }, {
+            "source": "./git.ignore",
+            "target": ".gitignore",
+            "condition": "%{JS: ( %{IsTopLevelProject} && '%{VersionControl}' === 'G.Git' )}"
+        }]
+    }]
+}

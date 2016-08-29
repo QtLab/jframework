@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<jframe>
+  <component name="jcom_login" desc="登录管理组件" load="0" stay="1" dir="@FrameDir@/component/jframe" />
+  <component name="jcom_layout" desc="框架布局组件" load="0" stay="1" dir="@FrameDir@/component/jframe" />
+  <component name="com_demo0" desc="demo1组件" load="0" dir="@ThisDir@/component" />
+  <component name="com_demo0" desc="demo2组件" load="0" dir="@ThisDir@/component" />
+  <component name="com_demo0" desc="demo3组件" load="0" dir="@ThisDir@/component" />
+  <component name="com_demo0" desc="demo4组件" load="0" dir="@ThisDir@/component" type="mfc" />
+  <component name="com_demo0" desc="demo5组件" load="0" dir="@ThisDir@/component" type="mfc" />
+</jframe>

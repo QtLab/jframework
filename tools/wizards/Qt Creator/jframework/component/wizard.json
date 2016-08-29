@@ -1,0 +1,324 @@
+{
+    "version": 1,
+    "supportedProjectTypes": ["Qt4ProjectManager.Qt4Project"],
+    "id": "A.JFramework.Component",
+    "category": "Z.JFramework",
+    "trDescription": "Create a project containing a single main.cpp file with a stub implementation.\n\nPreselects a desktop Qt for building the application if available.",
+    "trDisplayName": "Create Component",
+    "trDisplayCategory": "JFramework Project",
+    "icon": "console.png",
+    "featuresRequired": ["QtSupport.Wizards.FeatureQt"],
+    "enabled": "%{JS: [ %{Plugins} ].indexOf('QmakeProjectManager') >= 0}",
+
+    "options": [
+        { "key": "ProFileName", "value": "%{JS: Util.fileName('%{ProjectDirectory}/%{ProjectName}', 'pro')}" },
+        { "key": "IsTopLevelProject", "value": "%{JS: !'%{Exists:ProjectExplorer.Profile.Ids}' }" },
+        { "key": "MainCppName", "value": "%{JS: '%{ProFileName}.' + Util.preferredSuffix('text/x-c++src') }" },
+        { "key": "ComponentName", "value": "%{ComponentNameEdit}" },
+        { "key": "ComponentDesc", "value": "%{ComponentDescEdit}" },
+        { "key": "TargetPath", "value": "%{Path}" },
+        { "key": "HdrPath", "value": "%{Path}/%{HdrFileName}" },
+        { "key": "SrcPath", "value": "%{Path}/%{SrcFileName}" },
+        { "key": "ComponentClass", "value": "%{JS: Cpp.className('%{ComponentClassEdit}')}" },
+        { "key": "UiClassName", "value": "%{JS: Cpp.className('%{UiClass}')}" },
+        { "key": "UiClassBase", "value": "%{JS: ( '%{UiBaseCB}' === '' ) ? '%{UiBaseEdit}' : '%{UiBaseCB}'}" }
+    ],
+
+    "pages": [{
+        "trDisplayName": "Project Location",
+        "trShortTitle": "Location",
+        "typeId": "Project"
+    }, {
+        "trDisplayName": "Select Required Modules",
+        "trShortTitle": "Modules",
+        "typeId": "Fields",
+        "data": [{
+            "name": "LabelDesc",
+            "type": "Label",
+            "span": true,
+            "data": {
+                "wordWrap": true,
+                "trText": "Select the modules you want to extends in yout component. The recommanded modules for this project are selected by default"
+            }
+        }, {
+            "name": "Spacer1",
+            "type": "Spacer",
+            "data": { "size": 12 }
+        }, {
+            "name": "ComponentNameEdit",
+            "trDisplayName": "Name of Component:",
+            "type": "LineEdit",
+            "mandatory": true,
+            "data": {
+                "trText": "%{ProjectName}",
+                "trDisabledText": "%{ProjectName}"
+            }
+        }, {
+            "name": "ComponentDescEdit",
+            "trDisplayName": "Desc of Component:",
+            "type": "LineEdit",
+            "mandatory": true,
+            "data": {
+                "trText": "%{ProjectName}",
+                "trDisabledText": "%{ProjectName}"
+            }
+        }, {
+            "name": "Spacer2",
+            "type": "Spacer",
+            "data": { "size": 12 }
+        }, {
+            "name": "IncludeCheckLoginUser",
+            "trDisplayName": "Check the login user",
+            "type": "CheckBox",
+            "data": {
+                "checkedValue": "true",
+                "uncheckedValue": "",
+                "checked": "false"
+            }
+        }, {
+            "name": "IncludeDynamicLayout",
+            "trDisplayName": "Include Dynamic Layout",
+            "type": "CheckBox",
+            "data": {
+                "checkedValue": "true",
+                "uncheckedValue": "",
+                "checked": "true"
+            }
+        }, {
+            "name": "Spacer3",
+            "type": "Spacer",
+            "data": { "size": 12 }
+        }, {
+            "name": "IncludeIJComponentUi",
+            "trDisplayName": "Include IJComponentUi",
+            "type": "CheckBox",
+            "data": {
+                "checkedValue": "IJComponentUi",
+                "uncheckedValue": "",
+                "checked": "true"
+            }
+        }, {
+            "name": "IncludeIJCommandSink",
+            "trDisplayName": "Include IJCommandSink",
+            "type": "CheckBox",
+            "data": {
+                "checkedValue": "IJCommandSink",
+                "uncheckedValue": "",
+                "checked": "false"
+            }
+        }, {
+            "name": "IncludeIJMessageSink",
+            "trDisplayName": "Include IJMessageSink",
+            "type": "CheckBox",
+            "data": {
+                "checkedValue": "IJMessageSink",
+                "uncheckedValue": "",
+                "checked": "false"
+            }
+        }, {
+            "name": "IncludeJObserver",
+            "trDisplayName": "Include JOberver",
+            "type": "CheckBox",
+            "data": {
+                "checkedValue": "JOberver",
+                "uncheckedValue": "",
+                "checked": "false"
+            }
+        }, {
+            "name": "Spacer31",
+            "type": "Spacer",
+            "data": { "size": 12 }
+        }, {
+            "name": "IncludeConfigFile",
+            "trDisplayName": "Include Config File",
+            "type": "CheckBox",
+            "data": {
+                "checkedValue": "true",
+                "uncheckedValue": "",
+                "checked": "true"
+            }
+        }]
+    }, {
+        "trDisplayName": "Component Class Information",
+        "trShortTitle": "Component Class",
+        "typeId": "Fields",
+        "data": [{
+            "name": "ComponentClassEdit",
+            "trDisplayName": "Component Class Name:",
+            "mandatory": true,
+            "type": "LineEdit",
+            "data": {
+                "trText": "%{ProjectName}",
+                "validator": "(?:(?:[a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*|)"
+            }
+        }, {
+            "name": "Spacer4",
+            "type": "Spacer",
+            "data": { "size": 12 }
+        }, {
+            "name": "HdrFileName",
+            "type": "LineEdit",
+            "trDisplayName": "Header file:",
+            "mandatory": true,
+            "data": { "trText": "%{JS: Cpp.classToFileName('%{ComponentClassEdit}', '%{JS: Util.preferredSuffix('text/x-c++hdr')}')}" }
+        }, {
+            "name": "SrcFileName",
+            "type": "LineEdit",
+            "trDisplayName": "Source file:",
+            "mandatory": true,
+            "data": { "trText": "%{JS: Cpp.classToFileName('%{ComponentClassEdit}', '%{JS: Util.preferredSuffix('text/x-c++src')}')}" }
+        }]
+    }, {
+        "trDisplayName": "Define Component UI class",
+        "trShortTitle": "Component UI",
+        "typeId": "Fields",
+        "data": [{
+            "name": "LabelDesc2",
+            "type": "Label",
+            "span": true,
+            "visible": "false",
+            "data": {
+                "wordWrap": true,
+                "trText": "Select the modules you want to extends in yout component. The recommanded modules for this project are selected by default"
+            }
+        }, {
+            "name": "Spacer5",
+            "type": "Spacer",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": { "size": 12 }
+        }, {
+            "name": "UiClass",
+            "trDisplayName": "Ui Class name:",
+            "mandatory": true,
+            "type": "LineEdit",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": {
+                "validator": "(?:(?:[a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*|)",
+                "trText": "%{ComponentClass}Ui"
+            }
+        }, {
+            "name": "UiBaseCB",
+            "trDisplayName": "Ui Base class:",
+            "type": "ComboBox",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": {
+                "items": [
+                    "QWidget", "QDialog", "QMainWindow",
+                    { "trKey": "<Custom>", "value": "" }
+                ]
+            }
+        }, {
+            "name": "UiBaseEdit",
+            "type": "LineEdit",
+            "enabled": "%{JS: '%{UiBaseCB}' === ''}",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "mandatory": false,
+            "data": {
+                "trText": "%{UiBaseCB}",
+                "trDisabledText": "%{UiBaseCB}"
+            }
+        }, {
+            "name": "Sp1",
+            "type": "Spacer",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": { "factor": 2 }
+        }, {
+            "name": "IncludeQWidget",
+            "trDisplayName": "Include QWidget",
+            "type": "CheckBox",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": {
+                "checkedValue": "QWidget",
+                "uncheckedValue": "",
+                "checked": "%{JS: '%{UiBaseCB}' === 'QWidget'}"
+            }
+        }, {
+            "name": "IncludeQDialog",
+            "trDisplayName": "Include QDialog",
+            "type": "CheckBox",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": {
+                "checkedValue": "QDialog",
+                "uncheckedValue": "",
+                "checked": "%{JS: '%{UiBaseCB}' === 'QDialog'}"
+            }
+        }, {
+            "name": "IncludeQMainWindow",
+            "trDisplayName": "Include QMainWindow",
+            "type": "CheckBox",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": {
+                "checkedValue": "QMainWindow",
+                "uncheckedValue": "",
+                "checked": "%{JS: '%{UiBaseCB}' === 'QMainWindow'}"
+            }
+        }, {
+            "name": "IncludeQSharedData",
+            "trDisplayName": "Include QSharedData",
+            "type": "CheckBox",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": {
+                "checkedValue": "QSharedData",
+                "uncheckedValue": "",
+                "checked": false
+            }
+        }, {
+            "name": "Space6",
+            "type": "Spacer",
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": { "size": 12 }
+        }, {
+            "name": "UiHdrFileName",
+            "type": "LineEdit",
+            "trDisplayName": "Ui Header file:",
+            "mandatory": true,
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": { "trText": "%{JS: Cpp.classToFileName('%{UiClass}', '%{JS: Util.preferredSuffix('text/x-c++hdr')}')}" }
+        }, {
+            "name": "UiSrcFileName",
+            "type": "LineEdit",
+            "trDisplayName": "Ui Source file:",
+            "mandatory": true,
+            "visible": "%{JS: '%{IncludeIJComponentUi}'}",
+            "data": { "trText": "%{JS: Cpp.classToFileName('%{UiClass}', '%{JS: Util.preferredSuffix('text/x-c++src')}')}" }
+        }]
+    }, {
+        "trDisplayName": "Project Management",
+        "trShortTitle": "Summary",
+        "typeId": "Summary"
+    }],
+    "generators": [{
+        "typeId": "File",
+        "data": [{
+            "source": "component.pro",
+            "target": "%{ProjectName}.pro",
+            "openAsProject": "true"
+        }, {
+            "source": "component.h",
+            "target": "%{HdrFileName}",
+            "options": [
+                { "key": "ComponentHeaderGuard", "value": "%{JS: Cpp.classToHeaderGuard('%{ComponentClassEdit}', '%{JS: Util.preferredSuffix('text/x-c++hdr')}')}" }
+            ]
+        }, {
+            "source": "component.cpp",
+            "target": "%{SrcFileName}",
+            "openInEditor": true
+        }, {
+            "source": "component.xml",
+            "target": "%{ProjectName}.xml",
+            "condition": "%{JS: '%{IncludeConfigFile}'}"
+        }, {
+            "source": "widget.h",
+            "target": "%{UiHdrFileName}",
+            "condition": "%{JS: '%{IncludeIJComponentUi}'}",
+            "options": [
+                { "key": "UiHeaderGuard", "value": "%{JS: Cpp.classToHeaderGuard('%{UiClass}', '%{JS: Util.preferredSuffix('text/x-c++hdr')}')}" },
+                { "key": "isQObject", "value": "%{JS: [ 'QWidget', 'QDialog', 'QMainWindow'].indexOf('%{UiClassBase}') >= 0 }" }
+            ]
+        }, {
+            "source": "widget.cpp",
+            "target": "%{UiSrcFileName}",
+            "condition": "%{JS: '%{IncludeIJComponentUi}'}"
+        }]
+    }]
+}
