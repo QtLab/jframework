@@ -3,7 +3,7 @@
     "supportedProjectTypes": ["Qt4ProjectManager.Qt4Project"],
     "id": "B.JFramework.Project",
     "category": "Z.JFramework",
-    "trDescription": "Creates a project containing a single main.cpp file with a stub implementation.\n\nPreselects a desktop Qt for building the application if available.",
+    "trDescription": "Creates a solution containing full-version JFramework.\n\nPreselects a desktop Qt for building the application if available.",
     "trDisplayName": "Create Solution",
     "trDisplayCategory": "JFramework Project",
     "icon": "console.png",
@@ -21,7 +21,7 @@
         "trDisplayName": "Project Location",
         "trShortTitle": "Location",
         "typeId": "Project",
-        "data": { "trDescription": "This wizard creates a simple Qt-based console application." }
+        "data": { "trDescription": "This wizard creates a full-version JFramework Solution." }
     }, {
         "trDisplayName": "Kit Selection",
         "trShortTitle": "Kits",

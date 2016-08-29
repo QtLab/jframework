@@ -3,7 +3,7 @@
     "supportedProjectTypes": ["Qt4ProjectManager.Qt4Project"],
     "id": "A.JFramework.Component",
     "category": "Z.JFramework",
-    "trDescription": "Create a project containing a single main.cpp file with a stub implementation.\n\nPreselects a desktop Qt for building the application if available.",
+    "trDescription": "Creates a component project in the JFramework solution.\n\nPreselects a desktop Qt for building the application if available.",
     "trDisplayName": "Create Component",
     "trDisplayCategory": "JFramework Project",
     "icon": "console.png",
@@ -179,7 +179,7 @@
             "visible": "false",
             "data": {
                 "wordWrap": true,
-                "trText": "Select the modules you want to extends in yout component. The recommanded modules for this project are selected by default"
+                "trText": "The recommanded modules for this project are selected by default"
             }
         }, {
             "name": "Spacer5",
