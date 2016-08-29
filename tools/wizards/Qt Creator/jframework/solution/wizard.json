@@ -6,15 +6,14 @@
     "trDescription": "Creates a solution containing full-version JFramework.\n\nPreselects a desktop Qt for building the application if available.",
     "trDisplayName": "Create Solution",
     "trDisplayCategory": "JFramework Project",
-    "icon": "console.png",
+    "icon": "icon.png",
     "featuresRequired": ["QtSupport.Wizards.FeatureQt"],
     "enabled": "%{JS: [ %{Plugins} ].indexOf('QmakeProjectManager') >= 0}",
 
     "options": [
         { "key": "ProFileName", "value": "%{JS: Util.fileName('%{ProjectDirectory}/%{ProjectName}', 'pro')}" },
         { "key": "IsTopLevelProject", "value": "%{JS: !'%{Exists:ProjectExplorer.Profile.Ids}' }" },
-        { "key": "MainCppName", "value": "%{JS: 'main.' + Util.preferredSuffix('text/x-c++src') }" },
-        { "key": "ProjectDir", "value": "./" }
+        { "key": "MainCppName", "value": "%{JS: 'main.' + Util.preferredSuffix('text/x-c++src') }" }
     ],
 
     "pages": [{
@@ -56,22 +55,19 @@
         }, {
             "source": "source",
             "target": "source"
-        }]
-    }, {
-        "typeId": "File",
-        "data": [{
+        }, {
             "source": "jframework.pro",
             "target": "%{ProFileName}",
             "openAsProject": true
         }, {
-            "source": "bin/jframework.dll",
-            "target": "bin/jframework.dll"
+            "source": "bin/jframeworkdir.dll",
+            "target": "bin/jframeworkdir.dll"
         }, {
-            "source": "%{ProjectDir}/source/framework/application/main.cpp",
-            "target": "%{ProjectDir}/source/framework/application/main.cpp",
+            "source": "source/framework/application/main.cpp",
+            "target": "source/framework/application/main.cpp",
             "openInEditor": true
         }, {
-            "source": "./git.ignore",
+            "source": "git.ignore",
             "target": ".gitignore",
             "condition": "%{JS: ( %{IsTopLevelProject} && '%{VersionControl}' === 'G.Git' )}"
         }]

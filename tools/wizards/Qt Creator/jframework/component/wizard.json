@@ -6,7 +6,7 @@
     "trDescription": "Creates a component project in the JFramework solution.\n\nPreselects a desktop Qt for building the application if available.",
     "trDisplayName": "Create Component",
     "trDisplayCategory": "JFramework Project",
-    "icon": "console.png",
+    "icon": "icon.png",
     "featuresRequired": ["QtSupport.Wizards.FeatureQt"],
     "enabled": "%{JS: [ %{Plugins} ].indexOf('QmakeProjectManager') >= 0}",
 
@@ -282,6 +282,12 @@
             "visible": "%{JS: '%{IncludeIJComponentUi}'}",
             "data": { "trText": "%{JS: Cpp.classToFileName('%{UiClass}', '%{JS: Util.preferredSuffix('text/x-c++src')}')}" }
         }]
+    }, {
+        "trDisplayName": "Kit Selection",
+        "trShortTitle": "Kits",
+        "typeId": "Kits",
+        "enabled": "false",
+        "data": { "projectFilePath": "%{ProFileName}" }
     }, {
         "trDisplayName": "Project Management",
         "trShortTitle": "Summary",
