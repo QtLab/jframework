@@ -24,7 +24,7 @@ rem ----- xxx -----
 
 :pack
 
-xcopy "%jframe_dir%\include\*.*" "%~dp0..data\jframe\include\" /s /y
+xcopy "%jframe_dir%\include\*.*" "%~dp0..\data\jframe\include\" /s /y
 xcopy "%jframe_dir%\lib\*.lib" "%~dp0..\data\jframe\lib\" /s /y
 xcopy "%jframe_dir%\lib\*.pdb" "%~dp0..\data\jframe\lib\" /s /y
 

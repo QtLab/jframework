@@ -1,12 +1,12 @@
 @echo off
 
-echo -------------------------
+echo ----------------------------------------
 echo %~dp0
-echo -------------------------
+echo ----------------------------------------
 
 call "%~dp0pack.cmd" "false"
 
-rem ----- remove setup -----
+rem ----- remove setup.exe -----
 
 if exist "%~dp0setup.exe" (
     del -f "%~dp0setup.exe"

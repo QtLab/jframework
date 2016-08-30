@@ -1,11 +1,13 @@
 @echo off
 
+echo ---------------------------------------------------------
+echo %~dp0
+echo ---------------------------------------------------------
+
 rem ----- 设置变量 -----
 
 % 框架路径 %
-cd ..\
-set jframe_dir="%cd%\jframe"
-cd %~dp0
+set "jframe_dir=%JFRAME_DIR%"
 % smartkits路径 %
 set smartkits_dir="%SMARTKITS_DIR%"
 % Qt SDK 路径 %
@@ -14,10 +16,26 @@ set qt_dir="%QTDIR%"
 set "pack_flag=%1"
 if not defined pack_flag set pack_flag="true"
 
-rem ----- call package.cmd -----
+rem ----- check variables -----
 
-% ... %
-cd %~dp0packages
+if not defined jframe_dir (
+    echo jframe_dir is invalid, will quit.
+    goto exit
+)
+
+if not defined qt_dir (
+    echo qt_dir is invalid, will quit.
+    goto exit
+)
+
+rem ----- copy extern packages -----
+
+% ... copy wizards packages ... %
+
+if %pack_flag% == "true" (
+    xcopy "%jframe_dir%\tools\wizards\qtcreator\setup\packages\*" "%~dp0packages\" /s /y
+)
+rem ----- call package.cmd -----
 
 % ... %
 for /f "tokens=*" %%a in ('dir /s/b/a-d "package.cmd"') do (
@@ -25,11 +43,15 @@ for /f "tokens=*" %%a in ('dir /s/b/a-d "package.cmd"') do (
 )
 
 % ... %
-cd %~dp0
 
 rem ----- generate setup -----
 if %pack_flag% == "true" (
-    binarycreator.exe -c "%~dp0config/config.xml" -p "%~dp0packages" setup.exe
+    echo ...s
+    echo ...
+    echo ======================================================
+    echo Now it's packing to generate setup.exe. Please wait...
+    binarycreator.exe --offline-only -c "%~dp0config/config.xml" -p "%~dp0packages" setup.exe
+    echo packing finished.
 
     pause
 )

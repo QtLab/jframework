@@ -376,7 +376,7 @@ bool JAttempter::loadAllComponent()
         }
         JComponentConfig componentConfig;
         // name
-        componentConfig.componentName = emComponent.attribute("name").trimmed();
+        componentConfig.componentName = emComponent.attribute("name").toUtf8().trimmed();
         if (componentConfig.componentName.isEmpty()) {
             continue;   // 无效
         }
@@ -385,12 +385,12 @@ bool JAttempter::loadAllComponent()
             continue;   // 已加载
         }
         // desc
-        componentConfig.componentDesc = emComponent.attribute("desc").trimmed();
+        componentConfig.componentDesc = emComponent.attribute("desc").toUtf8().trimmed();
         if (componentConfig.componentDesc.isEmpty()) {
             continue;   // 无效
         }
         // dir
-        QString componentDir = emComponent.attribute("dir").trimmed();
+        QString componentDir = emComponent.attribute("dir").toUtf8().trimmed();
         if (componentDir.isEmpty()) {
             componentDir = QString::fromStdString(jframeFacade()->thisDirPath()).append("/component");
         } else {
@@ -402,7 +402,7 @@ bool JAttempter::loadAllComponent()
         // stay
         componentConfig.stay = QVariant(emComponent.attribute("stay", "false")).toBool();
         // type
-        componentConfig.componentType = emComponent.attribute("type").trimmed();
+        componentConfig.componentType = emComponent.attribute("type").toUtf8().trimmed();
         //
         if (componentConfig.componentType == "mfc") {
             const QString msg = QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "

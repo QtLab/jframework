@@ -35,7 +35,7 @@ qt_dir_old=$qt_dir
 if [ $qt_ver = '4.8.7' ]; then
     qt_dir=/usr/lib/x86_64-linux-gnu
 elif [ $qt_ver = '4.8.4' ]; then
-    qt_dir=/usr/lib/
+    qt_dir=/usr/lib
 else
     exit 0
 fi
@@ -120,6 +120,7 @@ cp -f -r "${qt_dir}/plugins/platforms/" "${jframe_dir}/bin/3rdpart/Qt/plugins/"
 fi
 
 ##
+cp -f -r "${qt_dir}/plugins/codecs/" "${jframe_dir}/bin/3rdpart/Qt/plugins/"
 cp -f -r "${qt_dir}/plugins/iconengines/" "${jframe_dir}/bin/3rdpart/Qt/plugins/"
 cp -f -r "${qt_dir}/plugins/imageformats/" "${jframe_dir}/bin/3rdpart/Qt/plugins/"
 cp -f -r "${qt_dir}/plugins/sqldrivers/" "${jframe_dir}/bin/3rdpart/Qt/plugins/"

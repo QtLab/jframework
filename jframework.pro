@@ -12,6 +12,10 @@ SUBDIRS += \
 
 include($$PWD/config/config.pri)
 
-OTHER_FILES += \
-    $$PWD/syncjframe.cmd \
-    $$PWD/syncjframe.sh
+win32 {
+    OTHER_FILES += \
+        $$PWD/syncjframe.cmd
+} else:unix:{
+    OTHER_FILES += \
+        $$PWD/syncjframe.sh
+}
