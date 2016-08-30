@@ -73,7 +73,7 @@ protected:
 private:
     IJAttempter *q_attempter;
 @if '%{IncludeIJComponentUi}'
-    TestWidget1 *q_ui;
+    %{UiClassName} *q_ui;
 @endif
 };
 

@@ -286,7 +286,7 @@
         "trDisplayName": "Kit Selection",
         "trShortTitle": "Kits",
         "typeId": "Kits",
-        "enabled": "false",
+        "enabled": "%{IsTopLevelProject}",
         "data": { "projectFilePath": "%{ProFileName}" }
     }, {
         "trDisplayName": "Project Management",
