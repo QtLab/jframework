@@ -17,7 +17,7 @@
 #include <assert.h>
 #include <map>
 #include <list>
-#include "jframe/jframe_facade.h"
+#include "core/jframe_facade.h"
 
 // export from jframeworkdir library
 J_EXTERN_C J_EXTERN const char* appDirPath();

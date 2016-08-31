@@ -18,8 +18,8 @@ if not exist "%jframe_dir%\bin\3rdpart\" (
     mkdir "%jframe_dir%\bin\3rdpart\"
 )
 
-if not exist "%jframe_dir%\bin\jframe\" (
-    mkdir "%jframe_dir%\bin\jframe\"
+if not exist "%jframe_dir%\bin\core\" (
+    mkdir "%jframe_dir%\bin\core\"
 )
 
 if not exist "%jframe_dir%\bin\3rdpart\Qt\plugins\" (
@@ -48,34 +48,34 @@ copy "%jframe_dir%\lib\3rdpart\tinyxml%debug_suffix%*.dll" "%jframe_dir%\bin\3rd
 
 rem -----
 
-if exist "%jframe_dir%\lib\jframe\jframeworkdir.dll" (
+if exist "%jframe_dir%\lib\core\jframeworkdir.dll" (
     echo copy jframeworkdir
-    copy "%jframe_dir%\lib\jframe\jframeworkdir.dll" "%jframe_dir%\bin\"
-    copy "%jframe_dir%\lib\jframe\jframeworkdir.pdb" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\core\jframeworkdir.dll" "%jframe_dir%\bin\"
+    copy "%jframe_dir%\lib\core\jframeworkdir.pdb" "%jframe_dir%\bin\"
 )
 
-if exist "%jframe_dir%\lib\jframe\jframeworkenv.dll" (
+if exist "%jframe_dir%\lib\core\jframeworkenv.dll" (
     echo copy jframeworkenv
-    copy "%jframe_dir%\lib\jframe\jframeworkenv.dll" "%jframe_dir%\bin\jframe\"
-    copy "%jframe_dir%\lib\jframe\jframeworkenv.pdb" "%jframe_dir%\bin\jframe\"
+    copy "%jframe_dir%\lib\core\jframeworkenv.dll" "%jframe_dir%\bin\core\"
+    copy "%jframe_dir%\lib\core\jframeworkenv.pdb" "%jframe_dir%\bin\core\"
 )
 
 rem -----
 
-if exist "%jframe_dir%\lib\jframe\jframe_factory%debug_suffix%.dll" (
+if exist "%jframe_dir%\lib\core\jframe_factory%debug_suffix%.dll" (
     echo copy jframe_factory
-    copy "%jframe_dir%\lib\jframe\jframe_factory%debug_suffix%.dll" "%jframe_dir%\bin\jframe\"
-    copy "%jframe_dir%\lib\jframe\jframe_factory%debug_suffix%.pdb" "%jframe_dir%\bin\jframe\"
+    copy "%jframe_dir%\lib\core\jframe_factory%debug_suffix%.dll" "%jframe_dir%\bin\core\"
+    copy "%jframe_dir%\lib\core\jframe_factory%debug_suffix%.pdb" "%jframe_dir%\bin\core\"
 )
 
-if exist "%jframe_dir%\lib\jframe\jframe_kernel%debug_suffix%.dll" (
+if exist "%jframe_dir%\lib\core\jframe_kernel%debug_suffix%.dll" (
     echo copy jframe_kernel
-    copy "%jframe_dir%\lib\jframe\jframe_kernel%debug_suffix%.dll" "%jframe_dir%\bin\jframe\"
-    copy "%jframe_dir%\lib\jframe\jframe_kernel%debug_suffix%.pdb" "%jframe_dir%\bin\jframe\"
+    copy "%jframe_dir%\lib\core\jframe_kernel%debug_suffix%.dll" "%jframe_dir%\bin\core\"
+    copy "%jframe_dir%\lib\core\jframe_kernel%debug_suffix%.pdb" "%jframe_dir%\bin\core\"
 )
 
-if exist "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.dll" (
+if exist "%jframe_dir%\lib\core\jframe_facade%debug_suffix%.dll" (
     echo copy jframe_facade
-    copy "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.dll" "%jframe_dir%\bin\jframe\"
-    copy "%jframe_dir%\lib\jframe\jframe_facade%debug_suffix%.pdb" "%jframe_dir%\bin\jframe\"
+    copy "%jframe_dir%\lib\core\jframe_facade%debug_suffix%.dll" "%jframe_dir%\bin\core\"
+    copy "%jframe_dir%\lib\core\jframe_facade%debug_suffix%.pdb" "%jframe_dir%\bin\core\"
 )

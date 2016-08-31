@@ -5,7 +5,7 @@
 #include <sstream>
 #endif
 
-#include "jframe/jframe_facade.h"
+#include "core/jframe_facade.h"
 #include <assert.h>
 
 /**

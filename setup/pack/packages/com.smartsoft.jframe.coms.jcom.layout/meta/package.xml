@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package>
+  <Name>com.smartsoft.jframe.coms.jcom.layout</Name>
+  <DisplayName>jcom_layout</DisplayName>
+  <Description>框架布局组件</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2016-08-11</ReleaseDate>
+  <Script>installscript.js</Script>
+  <SortingPriority>3</SortingPriority>
+</Package>

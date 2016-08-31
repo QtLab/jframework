@@ -20,8 +20,8 @@ if [ ! -f "${jframe_dir}/bin/3rdpart/Qt/plugins/" ]; then
     mkdir -p "${jframe_dir}/bin/3rdpart/Qt/plugins/";
 fi
 
-if [ ! -f "${jframe_dir}/bin/jframe/" ]; then
-    mkdir -p "${jframe_dir}/bin/jframe/";
+if [ ! -f "${jframe_dir}/bin/core/" ]; then
+    mkdir -p "${jframe_dir}/bin/core/";
 fi
 
 # --------------------
@@ -154,32 +154,32 @@ cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so.1.0.0" "${jframe_dir}/bin/3rdpart
 
 # --------------------
 
-cp -f "${jframe_dir}/lib/jframe/libjframeworkdir.so" "${jframe_dir}/bin/"
-cp -f "${jframe_dir}/lib/jframe/libjframeworkdir.so.1" "${jframe_dir}/bin/"
-cp -f "${jframe_dir}/lib/jframe/libjframeworkdir.so.1.0" "${jframe_dir}/bin/"
-cp -f "${jframe_dir}/lib/jframe/libjframeworkdir.so.1.0.0" "${jframe_dir}/bin/"
+cp -f "${jframe_dir}/lib/core/libjframeworkdir.so" "${jframe_dir}/bin/"
+cp -f "${jframe_dir}/lib/core/libjframeworkdir.so.1" "${jframe_dir}/bin/"
+cp -f "${jframe_dir}/lib/core/libjframeworkdir.so.1.0" "${jframe_dir}/bin/"
+cp -f "${jframe_dir}/lib/core/libjframeworkdir.so.1.0.0" "${jframe_dir}/bin/"
 
-cp -f "${jframe_dir}/lib/jframe/libjframeworkenv.so" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframeworkenv.so.1" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframeworkenv.so.1.0" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframeworkenv.so.1.0.0" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/core/libjframeworkenv.so" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframeworkenv.so.1" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframeworkenv.so.1.0" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframeworkenv.so.1.0.0" "${jframe_dir}/bin/core/"
 
 # --------------------
 
-cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1.0" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_facade.so.1.0.0" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/core/libjframe_facade.so" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_facade.so.1" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_facade.so.1.0" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_facade.so.1.0.0" "${jframe_dir}/bin/core/"
 
-cp -f "${jframe_dir}/lib/jframe/libjframe_factory.so" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_factory.so.1" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_factory.so.1.0" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_factory.so.1.0.0" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/core/libjframe_factory.so" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_factory.so.1" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_factory.so.1.0" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_factory.so.1.0.0" "${jframe_dir}/bin/core/"
 
-cp -f "${jframe_dir}/lib/jframe/libjframe_kernel.so" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_kernel.so.1" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_kernel.so.1.0" "${jframe_dir}/bin/jframe/"
-cp -f "${jframe_dir}/lib/jframe/libjframe_kernel.so.1.0.0" "${jframe_dir}/bin/jframe/"
+cp -f "${jframe_dir}/lib/core/libjframe_kernel.so" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_kernel.so.1" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_kernel.so.1.0" "${jframe_dir}/bin/core/"
+cp -f "${jframe_dir}/lib/core/libjframe_kernel.so.1.0.0" "${jframe_dir}/bin/core/"
 
 # --------------------
 

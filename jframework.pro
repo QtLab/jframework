@@ -10,6 +10,11 @@ CONFIG += ordered
 SUBDIRS += \
     source
 
+win32 {
+    SUBDIRS += \
+        setup
+}
+
 include($$PWD/config/config.pri)
 
 win32 {

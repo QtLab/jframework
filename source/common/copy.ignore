@@ -1,5 +1,6 @@
 3rdparty
 private
+Resources
 stdafx.h
 precomp.h
 _p.h

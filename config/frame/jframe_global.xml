@@ -6,7 +6,7 @@
         <item path="3rdpart" />
         <item path="3rdpart/BCGCBPro" />
         <item path="3rdpart/Qt" />
-        <item path="jframe" />
+        <item path="core" />
       </path>
       <path base="@ThisDir@" type="append">
       </path>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package>
+  <Name>com.smartsoft.jframe.framework.jframeworkenv</Name>
+  <DisplayName>jframeworkenv</DisplayName>
+  <Description>框架运行环境管理器</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2016-08-11</ReleaseDate>
+  <Script>installscript.js</Script>
+  <SortingPriority>1</SortingPriority>
+</Package>

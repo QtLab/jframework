@@ -58,7 +58,7 @@ linux-g++ {
 ##################################################
 
 contains(DEFINES, PRO_CORE) {
-    DESTDIR = $${jframe_root}/lib/jframe
+    DESTDIR = $${jframe_root}/lib/core
 
     ##
     win32:CONFIG += build_all
@@ -99,36 +99,36 @@ contains(DEFINES, PRO_COMPONENT) {
 INCLUDEPATH += \
     $${jframe_root}/include \
     $${jframe_root}/include/3rdpart \
-    $${jframe_root}/include/jframe
+    $${jframe_root}/include/core
 
 DEPENDPATH += \
     $${jframe_root}/include \
     $${jframe_root}/include/3rdpart \
-    $${jframe_root}/include/jframe
+    $${jframe_root}/include/core
 
 contains(DEFINES, JFRAME_FACADE_LIB):!contains(DEFINES, JFRAME_FACADE_BUILD) {
     ## import jframe_facade library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_facaded
-    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_facade
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_facade
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_facaded
+    else:unix:LIBS += -L$${jframe_root}/lib/core -ljframe_facade
 }
 
 contains(DEFINES, JFRAME_FACTORY_LIB):!contains(DEFINES, JFRAME_FACTORY_BUILD) {
     ## import jframe_factory library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_factory
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_factoryd
-    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_factory
-    INCLUDEPATH += $${jframe_root}/include/jframe/factory
-    DEPENDPATH += $${jframe_root}/include/jframe/factory
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_factory
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_factoryd
+    else:unix:LIBS += -L$${jframe_root}/lib/core -ljframe_factory
+    INCLUDEPATH += $${jframe_root}/include/core/factory
+    DEPENDPATH += $${jframe_root}/include/core/factory
 }
 
 contains(DEFINES, JFRAME_KERNEL_LIB):!contains(DEFINES, JFRAME_KERNEL_BUILD) {
     ## import jframe_layout library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframe_kerneld
-    else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframe_kernel
-    INCLUDEPATH += $${jframe_root}/include/jframe/kernel
-    DEPENDPATH += $${jframe_root}/include/jframe/kernel
+    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_kernel
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_kerneld
+    else:unix:LIBS += -L$${jframe_root}/lib/core -ljframe_kernel
+    INCLUDEPATH += $${jframe_root}/include/core/kernel
+    DEPENDPATH += $${jframe_root}/include/core/kernel
 }
 
 contains(DEFINES, TINYXML_LIB):!contains(DEFINES, TINYXML_BUILD) {

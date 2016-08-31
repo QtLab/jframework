@@ -13,7 +13,7 @@
 
 #include "tinyxml.h"
 #include <assert.h>
-#include "jframe/jframe_facade.h"
+#include "core/jframe_facade.h"
 
 /**
  * @brief appDirPath : 获取 application 所在路径（不包含文件名称）
@@ -334,7 +334,7 @@ J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
     /// 加载 jframeworkenv 模块
 
     // 生成 jframeworkenv 全路径
-    const std::string frameworkenvFilePath = _frameDirPath + "/bin/jframe/"
+    const std::string frameworkenvFilePath = _frameDirPath + "/bin/core/"
             + std::string(libraryPrefix()) + "jframeworkenv"
             + std::string(librarySuffix(false));
 
@@ -354,7 +354,7 @@ J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
     /// 加载 frame_facade 模块
 
     // 生成 frame_facade 全路径
-    const std::string frameFacadeFilePath = _frameDirPath + "/bin/jframe/"
+    const std::string frameFacadeFilePath = _frameDirPath + "/bin/core/"
             + std::string(libraryPrefix()) + "jframe_facade"
             + std::string(librarySuffix(config == 1));
 

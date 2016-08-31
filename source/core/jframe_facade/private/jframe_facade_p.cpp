@@ -463,7 +463,7 @@ IJUnknown *JFrameFacade::loadFrameInterface(const std::string &moduleName)
     typedef IJUnknown* (*FuncCreateInstance)();
 
     // 获取导出接口
-    const QString filePath = QString::fromStdString(frameDirPath() + "/bin/jframe/"
+    const QString filePath = QString::fromStdString(frameDirPath() + "/bin/core/"
                                                     + dynamicPrefix() + moduleName + dynamicSuffix());
     FuncCreateInstance fCreateInstance =
             (FuncCreateInstance)QLibrary::resolve(filePath, "CreateInstance");
@@ -484,7 +484,7 @@ void JFrameFacade::releaseFrameInterface(const std::string &moduleName)
     typedef void (*FuncReleaseInstance)();
 
     // 获取导出接口
-    const QString filePath = QString::fromStdString(frameDirPath() + "/bin/jframe/"
+    const QString filePath = QString::fromStdString(frameDirPath() + "/bin/core/"
                                                     + dynamicPrefix() + moduleName + dynamicSuffix());
     FuncReleaseInstance fReleaseInstance =
             (FuncReleaseInstance)QLibrary::resolve(filePath, "ReleaseInstance");

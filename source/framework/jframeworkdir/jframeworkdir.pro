@@ -12,7 +12,7 @@ CONFIG -= qt
 jframe_root = $$PWD/../../..
 
 TEMPLATE = lib
-DESTDIR = $${jframe_root}/lib/jframe
+DESTDIR = $${jframe_root}/lib/core
 
 ##
 TARGET = jframeworkdir

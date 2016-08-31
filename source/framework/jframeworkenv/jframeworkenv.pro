@@ -12,7 +12,7 @@ CONFIG -= qt
 jframe_root = $$PWD/../../..
 
 TEMPLATE = lib
-DESTDIR = $${jframe_root}/lib/jframe
+DESTDIR = $${jframe_root}/lib/core
 
 ##
 TARGET = jframeworkenv
@@ -95,9 +95,9 @@ linux-g++ {
 INCLUDEPATH += $${jframe_root}/include
 
 ## import jframeworkdir library
-win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframeworkdir
-else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/jframe -ljframeworkdir
-else:unix:LIBS += -L$${jframe_root}/lib/jframe -ljframeworkdir
+win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframeworkdir
+else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframeworkdir
+else:unix:LIBS += -L$${jframe_root}/lib/core -ljframeworkdir
 
 ###############################################################
 # global commands
