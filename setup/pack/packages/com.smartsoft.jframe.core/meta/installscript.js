@@ -25,7 +25,7 @@ Component.prototype.installationFinished = function() {
 
 Component.prototype.createOperationsForArchive = function(archive) {
     //
-    component.addOperation("Extract", archive, "@TargetDir@/jframe/component")
+    component.addOperation("Extract", archive, "@TargetDir@/bin")
 }
 
 Component.prototype.installationFinished = function() {

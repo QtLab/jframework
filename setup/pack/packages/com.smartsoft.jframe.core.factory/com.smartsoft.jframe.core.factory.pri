@@ -44,3 +44,4 @@ com.smartsoft.jframe.core.factory.input = INPUT
 com.smartsoft.jframe.core.factory.output = com.smartsoft.jframe.core.factory
 com.smartsoft.jframe.core.factory.commands = $$commands
 com.smartsoft.jframe.core.factory.CONFIG += target_predeps no_link combine
+QMAKE_EXTRA_COMPILERS += com.smartsoft.jframe.core.factory

@@ -78,3 +78,4 @@ target/
 *.VC.db
 *.VC.opendb
 *.autosave
+.DS_Store

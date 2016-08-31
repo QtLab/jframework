@@ -44,5 +44,4 @@ com.smartsoft.jframe.3rdpart.input = INPUT
 com.smartsoft.jframe.3rdpart.output = com.smartsoft.jframe.3rdpart
 com.smartsoft.jframe.3rdpart.commands = $$commands
 com.smartsoft.jframe.3rdpart.CONFIG += target_predeps no_link combine
-
 QMAKE_EXTRA_COMPILERS += com.smartsoft.jframe.3rdpart

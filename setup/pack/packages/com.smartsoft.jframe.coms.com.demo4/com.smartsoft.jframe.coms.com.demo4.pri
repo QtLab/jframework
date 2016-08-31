@@ -15,7 +15,7 @@ contains(DEFINES, PACKAGE) {
         dstdir = "$$PWD/data/com_demo4/"
         win32{
             srcdir = $$replace(srcdir, /, \\)
-            srcfiles += com_demo4?.dll com_demo4?.xml
+            srcfiles += com_demo4?.dll com_demo4*.xml
             dstdir = $$replace(dstdir, /, \\)
         } else:unix {
             srcfiles += libcom_demo4.so*

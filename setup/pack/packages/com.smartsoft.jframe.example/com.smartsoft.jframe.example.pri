@@ -9,7 +9,7 @@ commands += && echo ----- $$PWD
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
-    srcdir = "$$jframe_dir/lib/core/"
+    srcdir = "$$jframe_dir/bin/"
     exists("$$srcdir") {
         dstdir = "$$PWD/data/bin/"
         srcfiles =
@@ -18,7 +18,7 @@ contains(DEFINES, PACKAGE) {
             dstdir = $$replace(dstdir, /, \\)
             srcfiles += application*.exe
         } else:unix {
-            srcfiles += application?
+            srcfiles += application
         }
         !exists("$$dstdir") {
             commands += && $(MKDIR) "$$dstdir"

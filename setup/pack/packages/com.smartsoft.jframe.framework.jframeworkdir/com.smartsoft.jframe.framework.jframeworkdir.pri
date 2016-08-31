@@ -16,7 +16,7 @@ contains(DEFINES, PACKAGE) {
         win32{
             srcdir = $$replace(srcdir, /, \\)
             dstdir = $$replace(dstdir, /, \\)
-            srcfiles += jframeworkdir?.dll
+            srcfiles += jframeworkdir*.dll
         } else:unix {
             srcfiles += libjframeworkdir.so*
         }

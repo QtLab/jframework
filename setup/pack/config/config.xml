@@ -6,5 +6,5 @@
   <Publisher>smartsoft</Publisher>
   <StartMenuDir>Smartsoft Software</StartMenuDir>
   <TargetDir>@HomeDir@/@Publisher@/@Name@/@Version@</TargetDir>
-  <MaintenanceToolName>@Name@Uninstall</MaintenanceToolName>
+  <MaintenanceToolName>Uninstall</MaintenanceToolName>
 </Installer>

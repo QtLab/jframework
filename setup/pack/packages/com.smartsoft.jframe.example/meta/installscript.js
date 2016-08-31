@@ -19,6 +19,7 @@ Component.prototype.createOperatioins = function() {
     }
 }
 
-Component.prototype.createOperatioinsForArchive = function(archive) {
-    component.addOperation("Extract", archive, "@TargetDir@")
+Component.prototype.createOperationsForArchive = function(archive) {
+    //
+    component.addOperation("Extract", archive, "@TargetDir@/jframe")
 }

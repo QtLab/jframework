@@ -27,7 +27,7 @@ contains(DEFINES, PACKAGE) {
         }
     }
     # --- lib - 3rdpart
-    srcdir = "$$jframe_dir/bin/3rdpart/"
+    srcdir = "$$jframe_dir/lib/3rdpart/"
     exists("$$srcdir") {
         dstdir = "$$PWD/data/jframe/lib/3rdpart/"
         srcfiles =
@@ -59,7 +59,7 @@ contains(DEFINES, PACKAGE) {
         }
     }
     # --- lib - core
-    srcdir = "$$jframe_dir/bin/core/"
+    srcdir = "$$jframe_dir/lib/core/"
     exists("$$srcdir") {
         dstdir = "$$PWD/data/jframe/lib/core/"
         srcfiles =
