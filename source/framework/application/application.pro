@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-this_dir = $$PWD/../../..
+THIS_DIR = $$PWD/../../..
 
 QT     -= core gui
 CONFIG -= app_bundle
@@ -12,7 +12,7 @@ CONFIG -= app_bundle
 #CONFIG += console
 TEMPLATE = app
 
-DESTDIR = $$this_dir/bin
+DESTDIR = $$THIS_DIR/bin
 
 ##
 win32:{
@@ -51,7 +51,7 @@ QMAKE_TARGET_COMPANY = "Smartsoft"
 QMAKE_TARGET_DESCRIPTION = "jframework"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2016 Smartsoft Inc."
 
-win32:RC_ICONS = $$this_dir/config/resource/app.ico
+win32:RC_ICONS = $$THIS_DIR/config/resource/app.ico
 
 VER_MAJ = 1
 VER_MIN = 0
@@ -93,7 +93,7 @@ linux-g++ {
 # import libraries
 ###############################################################
 
-INCLUDEPATH += $$(jframe_dir)/include
+INCLUDEPATH += $$(JFRAME_DIR)/include
 
 ###############################################################
 # global commands

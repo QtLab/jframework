@@ -3,9 +3,9 @@
 #-------------------------------------------------
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD &
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {

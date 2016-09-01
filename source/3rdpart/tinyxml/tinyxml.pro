@@ -2,14 +2,14 @@
 # Project created by QtCreator 2016-07-18T18:18:11
 #-------------------------------------------------
 
-jframe_root = $$PWD/../../..
+THIS_DIR = $$PWD/../../..
 
 QT -= core gui
 CONFIG -= qt
 CONFIG -= app_bundle
 TEMPLATE = lib
 
-DESTDIR = $${jframe_root}/lib/3rdpart
+DESTDIR = $$THIS_DIR/lib/3rdpart
 
 DEFINES += \
     PRO_3RDPART \
@@ -73,19 +73,19 @@ win32|unix: {
     commands += echo --- console - $$TARGET --- &
 
     excludefile = $$PWD/copy.ignore
-    !exists("$$excludefile"):excludefile = "$${jframe_root}/source/common/copy.ignore"
+    !exists("$$excludefile"):excludefile = "$$THIS_DIR/source/common/copy.ignore"
     !exists("$$excludefile"):error("$$excludefile" is not exists!)
     win32:excludefile = $$replace(excludefile, /, \\)
 
     ## copy files
-    dstdir = $${jframe_root}/include/3rdpart/tinyxml
+    dstdir = $$THIS_DIR/include/3rdpart/tinyxml
     win32:dstdir = $$replace(dstdir, /, \\)
     !exists("$$dstdir"):commands += $(MKDIR) "\"$$dstdir\"" &
     win32:srcdir = $$PWD/*.h
     unix:srcdir = $$PWD/
     win32:srcdir = $$replace(srcdir, /, \\)
     win32:commands += $(COPY_DIR) "\"$$srcdir\"" "\"$$dstdir\"" /exclude:"$$excludefile" &
-    unix:commands += "\"$$jframe_root/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "*.h" &
+    unix:commands += "\"$$THIS_DIR/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "*.h" &
 
     QMAKE_POST_LINK += $$commands
 }

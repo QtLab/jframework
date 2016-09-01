@@ -3,9 +3,9 @@
 #-------------------------------------------------
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD &
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
@@ -19,15 +19,15 @@ contains(DEFINES, PACKAGE) {
             dstdir = $$replace(dstdir, /, \\)
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "\"$$dstdir\""
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "\"$$srcdir$$srcfile\"" "\"$$dstdir\""
-            unix:commands += && "\"$$jframe_dir/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
     # --- bin/jframeworkdir
-    srcdir = "$$jframe_dir/bin/"
+    srcdir = "$$jframe_dir/lib/core/"
     exists("$$srcdir") {
         dstdir = "$$PWD/data/jframework/solution/bin/"
         srcfiles =
@@ -39,10 +39,10 @@ contains(DEFINES, PACKAGE) {
             srcfiles += libjframeworkdir.so*
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "\"$$dstdir\""
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            commands += && $(COPY_FILE) "\"$$srcdir$$srcfile\"" "\"$$dstdir\""
+            commands += $(COPY_FILE) "$$srcdir$$srcfile" "$$dstdir" &
         }
     }
     # --- config
@@ -55,11 +55,11 @@ contains(DEFINES, PACKAGE) {
             dstdir = $$replace(dstdir, /, \\)
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "\"$$dstdir\""
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "\"$$srcdir$$srcfile\"" "\"$$dstdir\""
-            unix:commands += && "\"$$jframe_dir/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
     # --- source/common
@@ -72,11 +72,11 @@ contains(DEFINES, PACKAGE) {
             dstdir = $$replace(dstdir, /, \\)
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "\"$$dstdir\""
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "\"$$srcdir$$srcfile\"" "\"$$dstdir\""
-            unix:commands += && "\"$$jframe_dir/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
     # --- source/framework/application
@@ -90,17 +90,17 @@ contains(DEFINES, PACKAGE) {
         }
         srcfiles += application.pro main.cpp
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "\"$$dstdir\""
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            commands += && $(COPY_FILE) "\"$$srcdir$$srcfile\"" "\"$$dstdir\""
+            commands += $(COPY_FILE) "$$srcdir$$srcfile" "$$dstdir" &
         }
     }
 } else {
     dstdir = "$$PWD/data/jframework/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
-        commands += && $$RM_DIR "\"$$dstdir\""
+        commands += $$RM_DIR "$$dstdir" &
     }
 }
 

@@ -9,10 +9,10 @@ CONFIG -= app_bundle
 CONFIG -= qt
 #CONFIG += console
 
-jframe_root = $$PWD/../../..
+THIS_DIR = $$PWD/../../..
 
 TEMPLATE = lib
-DESTDIR = $${jframe_root}/lib/core
+DESTDIR = $$THIS_DIR/lib/core
 
 ##
 TARGET = jframeworkenv
@@ -36,8 +36,8 @@ SOURCES += \
 }
 
 # tinyxml
-include($${jframe_root}/source/3rdpart/tinyxml/src.pri)
-INCLUDEPATH += $${jframe_root}/source/3rdpart/tinyxml
+include($$THIS_DIR/source/3rdpart/tinyxml/src.pri)
+INCLUDEPATH += $$THIS_DIR/source/3rdpart/tinyxml
 
 #
 OTHER_FILES += \
@@ -50,7 +50,7 @@ QMAKE_TARGET_COMPANY = "Smartsoft"
 QMAKE_TARGET_DESCRIPTION = "jframeworkld"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2016 Smartsoft Inc."
 
-win32:RC_ICONS = $${jframe_root}/config/resource/app.ico
+win32:RC_ICONS = $$THIS_DIR/config/resource/app.ico
 
 #VER_MAJ = 1
 #VER_MIN = 0
@@ -92,12 +92,12 @@ linux-g++ {
 # import libraries
 ###############################################################
 
-INCLUDEPATH += $${jframe_root}/include
+INCLUDEPATH += $$(JFRAME_DIR)/include
 
 ## import jframeworkdir library
-win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframeworkdir
-else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframeworkdir
-else:unix:LIBS += -L$${jframe_root}/lib/core -ljframeworkdir
+win32:CONFIG(release, debug|release):LIBS += -L$$THIS_DIR/lib/core -ljframeworkdir
+else:win32:CONFIG(debug, debug|release):LIBS += -L$$THIS_DIR/lib/core -ljframeworkdir
+else:unix:LIBS += -L$$THIS_DIR/lib/core -ljframeworkdir
 
 ###############################################################
 # global commands
