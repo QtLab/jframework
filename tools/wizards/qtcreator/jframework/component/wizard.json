@@ -117,10 +117,10 @@
             }
         }, {
             "name": "IncludeJObserver",
-            "trDisplayName": "Include JOberver",
+            "trDisplayName": "Include JObserver",
             "type": "CheckBox",
             "data": {
-                "checkedValue": "JOberver",
+                "checkedValue": "JObserver",
                 "uncheckedValue": "",
                 "checked": "false"
             }

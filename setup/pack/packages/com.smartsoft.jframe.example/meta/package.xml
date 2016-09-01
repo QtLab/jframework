@@ -6,5 +6,6 @@
   <Version>1.0.0</Version>
   <ReleaseDate>2016-08-11</ReleaseDate>
   <Script>installscript.js</Script>
-  <SortingPriority>3</SortingPriority>
+  <SortingPriority>2</SortingPriority>
+  <Dependencies>com.smartsoft.jframe.example.config, com.smartsoft.jframe.coms, com.smartsoft.jframe.coms.com.demo1, com.smartsoft.jframe.coms.com.demo2, com.smartsoft.jframe.coms.com.demo3, com.smartsoft.jframe.coms.com.demo4, com.smartsoft.jframe.coms.com.demo5, com.smartsoft.jframe.framework.jframeworkdir</Dependencies>
 </Package>

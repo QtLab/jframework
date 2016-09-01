@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Package>
   <Name>com.smartsoft.jframe.lib</Name>
-  <DisplayName>框架开发库</DisplayName>
+  <DisplayName>Develop</DisplayName>
   <Description>框架开发库</Description>
   <Version>1.0.0</Version>
   <ReleaseDate>2016-08-11</ReleaseDate>

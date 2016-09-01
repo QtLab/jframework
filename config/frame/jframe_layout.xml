@@ -1,28 +1,28 @@
 <?xml version='1.0' encoding='utf-8'?>
-<jframe systemEditable="true" userName="****" system="system #1" seatEditable="true">
+<jframe userName="****" systemEditable="true" seatEditable="true" system="system #1">
   <config>
     <switch remember="true"/>
-    <splitter opacity="0.5" opaqueResize="true" width="8" color="#444"/>
+    <splitter width="8" opaqueResize="true" color="#444" opacity="0.5"/>
     <dock/>
-    <busyIndicator model="true" image="" duration="2000" visible="true"/>
+    <busyIndicator duration="2000" visible="true" model="true" image=""/>
   </config>
   <system module="module #1" name="system #1">
     <seat-module>
-      <item seat="seat #1" module="module #1"/>
+      <item module="module #1" seat="seat #1"/>
     </seat-module>
     <module submodule="" name="module #1">
       <layout>
         <view>
-          <horizontal opaqueResize="false" scales="1.7:2.9" collapsibile="0:true;1:true">
+          <horizontal collapsibile="0:true;1:true" opaqueResize="false" scales="1.7:2.9">
             <component id="com_demo1"/>
-            <vertical opaqueResize="false" scales="1.6:1.8" collapsibile="0:true;1:true">
+            <vertical collapsibile="0:true;1:true" opaqueResize="false" scales="1.6:1.8">
               <component id="com_demo2"/>
               <component id="com_demo3"/>
             </vertical>
           </horizontal>
         </view>
         <popup>
-          <component id="com_demo4" load="false"/>
+          <component load="false" id="com_demo4"/>
         </popup>
       </layout>
     </module>
@@ -35,7 +35,7 @@
           </horizontal>
         </view>
         <popup>
-          <component id="com_demo4" load="false"/>
+          <component load="false" id="com_demo4"/>
         </popup>
       </layout>
       <module submodule="module #4" name="module #3">
@@ -47,22 +47,22 @@
             </horizontal>
           </view>
           <popup>
-            <component id="com_demo4" load="false"/>
+            <component load="false" id="com_demo4"/>
           </popup>
         </layout>
         <module submodule="" name="module #4">
           <layout>
             <view>
-              <horizontal opacity="0.7" opaqueResize="false" collapsible="0:false;1:false" width="4" scales="1.6:3.3">
+              <horizontal width="4" collapsible="0:false;1:false" opaqueResize="false" scales="1.6:3.3" opacity="0.7">
                 <component id="com_demo4"/>
-                <vertical opacity="0.7" opaqueResize="false" width="4" scales="1.4:1.5">
+                <vertical width="4" opaqueResize="false" scales="1.4:1.5" opacity="0.7">
                   <component id="com_demo1"/>
                   <component id="com_demo5"/>
                 </vertical>
               </horizontal>
             </view>
             <popup>
-              <component id="com_demo4" load="false"/>
+              <component load="false" id="com_demo4"/>
             </popup>
           </layout>
         </module>
@@ -79,7 +79,7 @@
           </horizontal>
         </view>
         <popup>
-          <component id="com_demo4" load="false"/>
+          <component load="false" id="com_demo4"/>
         </popup>
       </layout>
     </module>
@@ -93,7 +93,7 @@
           </horizontal>
         </view>
         <popup>
-          <component id="com_demo4" load="false"/>
+          <component load="false" id="com_demo4"/>
         </popup>
       </layout>
     </module>

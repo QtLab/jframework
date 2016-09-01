@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 DEFINES += \\
     PRO_COMPONENT
 
-include($${this_dir}/source/common/build.pri)
+include($$this_dir/source/common/build.pri)
 
 TARGET = $$qtLibraryTarget(%{ProjectName})
 
@@ -40,19 +40,15 @@ exists($$PWD/%{ProjectName}.xml) {
 #-------------------------------------------------
 
 win32|unix: {
-    win32:copyCommand = @echo off
-    unix:copyCommand = @echo
-    copyCommand += && echo --- console - %{ProjectName} ---
+    commands += echo --- console - %{ProjectName} --- &
 
     ## copy files
-    dstdir = $${this_dir}/component/%{ProjectName}
+    dstdir = $$this_dir/component/%{ProjectName}/
     win32:dstdir = $$replace(dstdir, /, \\\\)
-    !exists("$$dstdir"):copyCommand += && $(MKDIR) "$$dstdir"
+    !exists("$$dstdir"):commands += $(MKDIR) "\\"$$dstdir\\"" &
     srcfile = $$PWD/%{ProjectName}.xml
     win32:srcfile = $$replace(srcfile, /, \\\\)
-    exists("$$srcfile"):copyCommand += && $(COPY_FILE) "$$srcfile" "$$dstdir"
+    exists("$$srcfile"):commands += $(COPY_FILE) "\\"$$srcfile\\"" "\\"$$dstdir\\"" &
 
-    deployment.commands = $$copyCommand
-    first.depends = $(first) deployment
-    QMAKE_EXTRA_TARGETS += first deployment
+    QMAKE_POST_LINK += $$commands
 }

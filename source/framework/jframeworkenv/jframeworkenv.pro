@@ -104,9 +104,7 @@ else:unix:LIBS += -L$${jframe_root}/lib/core -ljframeworkdir
 ###############################################################
 
 win32|unix: {
-    win32:copyCommand = @echo off
-    unix:copyCommand = @echo
-    copyCommand += && echo --- console - $$TARGET ---
+    commands += echo --- console - $$TARGET --- &
 
     ## copy files
 
@@ -114,7 +112,5 @@ win32|unix: {
     dstdir = $$DESTDIR/
     win32:dstdir = $$replace(dstdir, /, \\)
 
-    deployment.commands = $$copyCommand
-    first.depends = $(first) deployment
-    QMAKE_EXTRA_TARGETS += first deployment
+    QMAKE_POST_LINK += $$commands
 }

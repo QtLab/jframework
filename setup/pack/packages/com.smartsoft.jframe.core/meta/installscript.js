@@ -2,7 +2,7 @@ function Component() {
     installer.installationFinished.connect(this, Component.prototype.installationFinished)
 }
 
-Component.prototype.installationFinished = function() {
+Component.prototype.createOperations = function() {
     // Call default implementation to actually install application.
     component.createOperations()
 
@@ -13,7 +13,7 @@ Component.prototype.installationFinished = function() {
             "GlobalConfig",
             "HKEY_CURRENT_USER\\Software\\@Publisher@\\@Name@\\@Version@",
             "InstallPath",
-            "@TargetDir@\\jframe"
+            "@TargetDir@\\jframework"
         )
     } else if (systemInfo.productType === "unix") {
         //
@@ -25,7 +25,7 @@ Component.prototype.installationFinished = function() {
 
 Component.prototype.createOperationsForArchive = function(archive) {
     //
-    component.addOperation("Extract", archive, "@TargetDir@/bin")
+    component.addOperation("Extract", archive, "@TargetDir@/jframework")
 }
 
 Component.prototype.installationFinished = function() {

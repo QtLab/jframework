@@ -8,12 +8,9 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    source
-
-win32 {
-    SUBDIRS += \
-        setup
-}
+    source \
+    setup \
+    tools/wizards
 
 include($$PWD/config/config.pri)
 

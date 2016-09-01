@@ -11,15 +11,15 @@ Component.prototype.createOperatioins = function() {
         //
         component.addOperation(
             "CreateShortcut",
-            "@TargetDir@/jframe/bin/application.exe",
+            "@TargetDir@/jframework/bin/application.exe",
             "@StartMenuDir@/application.lnk",
-            "workingDirectory=@TargetDir@/jframe/bin/",
-            "iconPath=@TargetDir@/jframe/bin/application.exe",
+            "workingDirectory=@TargetDir@/jframework/bin/",
+            "iconPath=@TargetDir@/jframework/bin/application.exe",
             "iconId=0")
     }
 }
 
 Component.prototype.createOperationsForArchive = function(archive) {
     //
-    component.addOperation("Extract", archive, "@TargetDir@/jframe")
+    component.addOperation("Extract", archive, "@TargetDir@/jframework")
 }

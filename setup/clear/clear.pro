@@ -28,7 +28,7 @@ commands += && echo ----- $$PWD --- remove $$INSTALLER -----
 dstdir = "$$jframe_dir/setup/pack/bin/"
 exists("$$dsrdir") {
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += && $$RM_DIR "$${dstdir}"
+    commands += && $$RM_DIR "\"$$dstdir\""
 }
 
 INPUT = $$PWD/README

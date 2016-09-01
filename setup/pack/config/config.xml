@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-  <Name>jframework</Name>
+  <Name>JFramework</Name>
   <Version>1.0.0</Version>
   <Title>JFramework框架</Title>
-  <Publisher>smartsoft</Publisher>
+  <Publisher>Smartsoft</Publisher>
   <StartMenuDir>Smartsoft Software</StartMenuDir>
   <TargetDir>@HomeDir@/@Publisher@/@Name@/@Version@</TargetDir>
   <MaintenanceToolName>Uninstall</MaintenanceToolName>

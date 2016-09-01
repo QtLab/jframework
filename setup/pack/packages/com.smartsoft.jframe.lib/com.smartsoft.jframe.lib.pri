@@ -12,7 +12,7 @@ contains(DEFINES, PACKAGE) {
     # --- include
     srcdir = "$$jframe_dir/include/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/jframe/include/"
+        dstdir = "$$PWD/data/jframework/include/"
         srcfiles = *.h *.hh
         win32 {
             srcdir = $$replace(srcdir, /, \\)
@@ -29,17 +29,17 @@ contains(DEFINES, PACKAGE) {
     # --- lib - 3rdpart
     srcdir = "$$jframe_dir/lib/3rdpart/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/jframe/lib/3rdpart/"
+        dstdir = "$$PWD/data/jframework/lib/3rdpart/"
         srcfiles =
         win32{
             srcdir = $$replace(srcdir, /, \\)
             dstdir = $$replace(dstdir, /, \\)
             srcfiles += \
-                jwt?.dll jwt?.lib jwt?.pdb \
-                log4cpp?.dll log4cpp?.lib log4cpp?.pdb \
-                qtribbon?.dll qtribbon?.lib qtribbon?.pdb \
-                qtwinmigrate?.dll qtwinmigrate?.lib qtwinmigrate?.pdb \
-                tinyxml?.dll tinyxml?.lib tinyxml?.pdb
+                jwt*.dll jwt*.lib jwt*.pdb \
+                log4cpp*.dll log4cpp*.lib log4cpp*.pdb \
+                qtribbon*.dll qtribbon*.lib qtribbon*.pdb \
+                qtwinmigrate*.dll qtwinmigrate*.lib qtwinmigrate*.pdb \
+                tinyxml*.dll tinyxml*.lib tinyxml*.pdb
         } else:unix {
             srcfiles += \
                 libjwt*.so* \
@@ -61,15 +61,15 @@ contains(DEFINES, PACKAGE) {
     # --- lib - core
     srcdir = "$$jframe_dir/lib/core/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/jframe/lib/core/"
+        dstdir = "$$PWD/data/jframework/lib/core/"
         srcfiles =
         win32{
             srcdir = $$replace(srcdir, /, \\)
             dstdir = $$replace(dstdir, /, \\)
             srcfiles += \
-                jframe_facade?.dll jframe_facade?.lib jframe_facade?.pdb \
-                jframe_factory?.dll jframe_factory?.lib jframe_factory?.pdb \
-                jframe_kernel?.dll jframe_kernel?.lib jframe_kernel?.pdb
+                jframe_facade*.dll jframe_facade*.lib jframe_facade*.pdb \
+                jframe_factory*.dll jframe_factory*.lib jframe_factory*.pdb \
+                jframe_kernel*.dll jframe_kernel*.lib jframe_kernel*.pdb
         } else:unix {
             srcfiles += \
                 libjframe_facade*.so* \
@@ -87,7 +87,7 @@ contains(DEFINES, PACKAGE) {
         }
     }
 } else {
-    dstdir = "$$PWD/data/jframe/"
+    dstdir = "$$PWD/data/jframework/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
         commands += && $$RM_DIR "$$dstdir"

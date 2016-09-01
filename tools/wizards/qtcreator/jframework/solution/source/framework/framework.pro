@@ -9,5 +9,5 @@ CONFIG += ordered
 
 jframe_root = $$PWD/../..
 
-SUBDIRS += \\
+SUBDIRS += \
     application

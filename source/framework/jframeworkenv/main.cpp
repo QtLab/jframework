@@ -19,6 +19,10 @@
 #include <list>
 #include "core/jframe_facade.h"
 
+#ifdef _MSC_VER
+#pragma warning(disable : 4996)
+#endif
+
 // export from jframeworkdir library
 J_EXTERN_C J_EXTERN const char* appDirPath();
 J_EXTERN_C J_EXTERN const char* thisDirPath();

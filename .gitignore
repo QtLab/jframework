@@ -65,6 +65,7 @@ target/
 /ipch
 /.vs
 /.vscode/.BROWSE.*
+/.vscode
 *.pro.user*
 *.user
 *.ncb

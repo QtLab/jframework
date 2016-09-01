@@ -31,13 +31,13 @@ commands += && echo ----- $$PWD --- generate $$INSTALLER -----
 !exists("$$PWD/bin/") {
     dstdir = "$$PWD/bin/"
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += && $(MKDIR) "$$dstdir"
+    commands += && $(MKDIR) "\"$$dstdir\""
 }
 
 #-------------------------------------------------
-commands += && echo generating ${QMAKE_FILE_OUT} file...please wait...
-commands += && binarycreator --offline-only -c $$PWD/config/config.xml -p \
-    $$PWD/packages "$$PWD/bin/${QMAKE_FILE_OUT}"
+commands += && echo generating $$INSTALLER file...please wait...
+commands += && binarycreator --offline-only -c "\"$$PWD/config/config.xml\"" -p \
+    "\"$$PWD/packages\"" "\"$$PWD/bin/$$INSTALLER\""
 
 #-------------------------------------------------
 INPUT = $$PWD/config/config.xml $$PWD/packages

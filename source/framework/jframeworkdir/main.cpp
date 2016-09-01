@@ -240,7 +240,7 @@ J_EXTERN_C J_ATTR_EXPORT const char* frameDirPath()
         std::stringstream key;
 #ifdef _MSC_VER
         // 生成注册表键
-        key << "Software\\JFramework\\" << version;
+        key << "Software\\Smartsoft\\JFramework\\" << version << "\\";
 
         // 查询键值 InstallPath
         HKEY hKey = NULL;

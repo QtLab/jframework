@@ -44,6 +44,12 @@ private:
 {
 
 }
+
+%{UiClassName}::~%{UiClassName}()
+{
+
+}
+
 @if '%{IncludeQSharedData}'
 
 %{UiClassName}::%{UiClassName}(const %{UiClassName} &rhs) : data(rhs.data)

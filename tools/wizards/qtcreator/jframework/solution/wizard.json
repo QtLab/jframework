@@ -35,37 +35,22 @@
     "generators": [{
         "typeId": "File",
         "data": [{
-            "source": "component",
-            "target": "component"
+            "source": "bin",
+            "target": "bin",
+            "isBinary": true
         }, {
             "source": "config",
-            "target": "config"
-        }, {
-            "source": "docs",
-            "target": "docs"
-        }, {
-            "source": "include",
-            "target": "include"
-        }, {
-            "source": "lib",
-            "target": "lib"
-        }, {
-            "source": "setup",
-            "target": "setup"
+            "target": "config",
+            "isBinary": true
         }, {
             "source": "source",
-            "target": "source"
+            "target": "source",
+            "isBinary": true
         }, {
             "source": "jframework.pro",
             "target": "%{ProFileName}",
+            "isBinary": true,
             "openAsProject": true
-        }, {
-            "source": "bin/jframeworkdir.dll",
-            "target": "bin/jframeworkdir.dll"
-        }, {
-            "source": "source/framework/application/main.cpp",
-            "target": "source/framework/application/main.cpp",
-            "openInEditor": true
         }, {
             "source": "git.ignore",
             "target": ".gitignore",

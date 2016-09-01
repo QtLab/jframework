@@ -8,6 +8,8 @@ TEMPLATE = lib
 ## fixed on Windowx XP
 #win32:QMAKE_LFLAGS_WINDOW = /SUBSYSTEM:WINDOW,5.02
 
+jframe_dir = $$(JFRAME_DIR)
+
 ##################################################
 # creating a precompiled header file (only supported
 # on some platforms (Windows - all MSVC project types,
@@ -58,7 +60,7 @@ linux-g++ {
 ##################################################
 
 contains(DEFINES, PRO_CORE) {
-    DESTDIR = $${jframe_root}/lib/core
+    DESTDIR = $$this_dir/lib/core
 
     ##
     win32:CONFIG += build_all
@@ -78,10 +80,10 @@ contains(DEFINES, PRO_COMPONENT) {
     ##
     contains(DEFINES, JFRAME_COMPONENT) {
         ##
-        DESTDIR = $${jframe_root}/component/jframe/$$TARGET
+        DESTDIR = $$this_dir/component/jframe/$$TARGET
     } else {
         ##
-        DESTDIR = $${jframe_root}/component/$$TARGET
+        DESTDIR = $$this_dir/component/$$TARGET
     }
 
     !contains(DEFINES, NO_JFRAME_LIBS) {
@@ -97,84 +99,90 @@ contains(DEFINES, PRO_COMPONENT) {
 ##################################################
 
 INCLUDEPATH += \
-    $${jframe_root}/include \
-    $${jframe_root}/include/3rdpart \
-    $${jframe_root}/include/core
+    $$this_dir/include \
+    $$this_dir/include/3rdpart \
+    $$this_dir/include/core \
+    $$jframe_dir/include \
+    $$jframe_dir/include/3rdpart \
+    $$jframe_dir/include/core
 
 DEPENDPATH += \
-    $${jframe_root}/include \
-    $${jframe_root}/include/3rdpart \
-    $${jframe_root}/include/core
+    $$this_dir/include \
+    $$this_dir/include/3rdpart \
+    $$this_dir/include/core \
+    $$jframe_dir/include \
+    $$jframe_dir/include/3rdpart \
+    $$jframe_dir/include/core
 
 contains(DEFINES, JFRAME_FACADE_LIB):!contains(DEFINES, JFRAME_FACADE_BUILD) {
     ## import jframe_facade library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_facade
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_facaded
-    else:unix:LIBS += -L$${jframe_root}/lib/core -ljframe_facade
+    win32:CONFIG(release, debug|release):LIBS += -L$$jframe_dir/lib/core -ljframe_facade
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$jframe_dir/lib/core -ljframe_facaded
+    else:unix:LIBS += -L$$jframe_dir/lib/core -ljframe_facade
 }
 
 contains(DEFINES, JFRAME_FACTORY_LIB):!contains(DEFINES, JFRAME_FACTORY_BUILD) {
     ## import jframe_factory library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_factory
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_factoryd
-    else:unix:LIBS += -L$${jframe_root}/lib/core -ljframe_factory
-    INCLUDEPATH += $${jframe_root}/include/core/factory
-    DEPENDPATH += $${jframe_root}/include/core/factory
+    win32:CONFIG(release, debug|release):LIBS += -L$$jframe_dir/lib/core -ljframe_factory
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$jframe_dir/lib/core -ljframe_factoryd
+    else:unix:LIBS += -L$$jframe_dir/lib/core -ljframe_factory
+    INCLUDEPATH += $$jframe_dir/include/core/factory
+    DEPENDPATH += $$jframe_dir/include/core/factory
 }
 
 contains(DEFINES, JFRAME_KERNEL_LIB):!contains(DEFINES, JFRAME_KERNEL_BUILD) {
     ## import jframe_layout library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_kernel
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/core -ljframe_kerneld
-    else:unix:LIBS += -L$${jframe_root}/lib/core -ljframe_kernel
-    INCLUDEPATH += $${jframe_root}/include/core/kernel
-    DEPENDPATH += $${jframe_root}/include/core/kernel
+    win32:CONFIG(release, debug|release):LIBS += -L$$jframe_dir/lib/core -ljframe_kernel
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$jframe_dir/lib/core -ljframe_kerneld
+    else:unix:LIBS += -L$$jframe_dir/lib/core -ljframe_kernel
+    INCLUDEPATH += $$jframe_dir/include/core/kernel
+    DEPENDPATH += $$jframe_dir/include/core/kernel
 }
 
 contains(DEFINES, TINYXML_LIB):!contains(DEFINES, TINYXML_BUILD) {
     ## import tinyxml library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxml
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxmld
-    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -ltinyxml
-    INCLUDEPATH += $${jframe_root}/include/3rdpart/tinyxml
-    DEPENDPATH += $${jframe_root}/include/3rdpart/tinyxml
+    win32:CONFIG(release, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -ltinyxml
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -ltinyxmld
+    else:unix:LIBS += -L$$jframe_dir/lib/3rdpart -ltinyxml
+    INCLUDEPATH += $$jframe_dir/include/3rdpart/tinyxml
+    DEPENDPATH += $$jframe_dir/include/3rdpart/tinyxml
 }
 
 contains(DEFINES, QTWINMIGRATE_LIB):!contains(DEFINES, QTWINMIGRATE_BUILD) {
     ## import qtwinmigrate library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrate
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrated
-    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -lqtwinmigrate
-    INCLUDEPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
-    DEPENDPATH += $${jframe_root}/include/3rdpart/qtwinmigrate
+    win32:CONFIG(release, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -lqtwinmigrate
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -lqtwinmigrated
+    else:unix:LIBS += -L$$jframe_dir/lib/3rdpart -lqtwinmigrate
+    INCLUDEPATH += $$jframe_dir/include/3rdpart/qtwinmigrate
+    DEPENDPATH += $$jframe_dir/include/3rdpart/qtwinmigrate
     win32:DEFINES += _AFXDLL
 }
 
 contains(DEFINES, QTRIBBON_LIB):!contains(DEFINES, QTRIBBON_BUILD) {
     ## import qtribbon library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbon
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbond
-    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -lqtribbon
-    INCLUDEPATH += $${jframe_root}/include/3rdpart/qtribbon
-    DEPENDPATH += $${jframe_root}/include/3rdpart/qtribbon
+    win32:CONFIG(release, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -lqtribbon
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -lqtribbond
+    else:unix:LIBS += -L$$jframe_dir/lib/3rdpart -lqtribbon
+    INCLUDEPATH += $$jframe_dir/include/3rdpart/qtribbon
+    DEPENDPATH += $$jframe_dir/include/3rdpart/qtribbon
 }
 
 contains(DEFINES, LOG4CPP_LIB):!contains(DEFINES, LOG4CPP_BUILD) {
     ## import log4cpp library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -llog4cpp
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -llog4cppd
-    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -llog4cpp
-    INCLUDEPATH += $${jframe_root}/include/3rdpart/log4cpp
-    DEPENDPATH += $${jframe_root}/include/3rdpart/log4cpp
+    win32:CONFIG(release, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -llog4cpp
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -llog4cppd
+    else:unix:LIBS += -L$$jframe_dir/lib/3rdpart -llog4cpp
+    INCLUDEPATH += $$jframe_dir/include/3rdpart/log4cpp
+    DEPENDPATH += $$jframe_dir/include/3rdpart/log4cpp
 }
 
 contains(DEFINES, JWT_LIB):!contains(DEFINES, JWT_BUILD) {
     ## import jwt library
-    win32:CONFIG(release, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ljwt
-    else:win32:CONFIG(debug, debug|release):LIBS += -L$${jframe_root}/lib/3rdpart -ljwtd
-    else:unix:LIBS += -L$${jframe_root}/lib/3rdpart -ljwt
-    INCLUDEPATH += $${jframe_root}/include/3rdpart/jwt
-    DEPENDPATH += $${jframe_root}/include/3rdpart/jwt
+    win32:CONFIG(release, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -ljwt
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$jframe_dir/lib/3rdpart -ljwtd
+    else:unix:LIBS += -L$$jframe_dir/lib/3rdpart -ljwt
+    INCLUDEPATH += $$jframe_dir/include/3rdpart/jwt
+    DEPENDPATH += $$jframe_dir/include/3rdpart/jwt
 }
 
 contains(DEFINES, BCG_LIB):!contains(DEFINES, BCG_BUILD) {

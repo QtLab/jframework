@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-jframe_root = $$PWD/../../..
+this_dir = $$PWD/../../..
 
 QT     -= core gui
 CONFIG -= app_bundle
@@ -12,7 +12,7 @@ CONFIG -= app_bundle
 #CONFIG += console
 TEMPLATE = app
 
-DESTDIR = $${jframe_root}/bin
+DESTDIR = $$this_dir/bin
 
 ##
 win32:{
@@ -51,7 +51,7 @@ QMAKE_TARGET_COMPANY = "Smartsoft"
 QMAKE_TARGET_DESCRIPTION = "jframework"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2016 Smartsoft Inc."
 
-win32:RC_ICONS = $${jframe_root}/config/resource/app.ico
+win32:RC_ICONS = $$this_dir/config/resource/app.ico
 
 VER_MAJ = 1
 VER_MIN = 0
@@ -93,36 +93,23 @@ linux-g++ {
 # import libraries
 ###############################################################
 
-INCLUDEPATH += $${jframe_root}/include
+INCLUDEPATH += $$(jframe_dir)/include
 
 ###############################################################
 # global commands
 ###############################################################
 
 win32|unix: {
-    win32:copyCommand = @echo off
-    unix:copyCommand = @echo
-    copyCommand += && echo --- console - $$TARGET ---
+    commands += echo --- console - $$TARGET --- &
 
     ## copy files
 
     ## remove files
     dstdir = $$DESTDIR/
     win32:dstdir = $$replace(dstdir, /, \\)
-    exists("$${dstdir}$${TARGET}.exp"):copyCommand += && $(DEL_FILE) "$${dstdir}$${TARGET}.exp"
-    exists("$${dstdir}$${TARGET}.ilk"):copyCommand += && $(DEL_FILE) "$${dstdir}$${TARGET}.ilk"
-    exists("$${dstdir}$${TARGET}.lib"):copyCommand += && $(DEL_FILE) "$${dstdir}$${TARGET}.lib"
-    #exists("$${dstdir}$${TARGET}.pdb"):copyCommand += && $(DEL_FILE) "$${dstdir}$${TARGET}.pdb"
+    exists("\"$${dstdir}application*.exp\""):commands += $(DEL_FILE) "\"$${dstdir}application*.exp\"" &
+    exists("\"$${dstdir}application*.ilk\""):commands += $(DEL_FILE) "\"$${dstdir}application*.ilk\"" &
+    exists("\"$${dstdir}application*.lib\""):commands += $(DEL_FILE) "\"$${dstdir}application*.lib\"" &
 
-    deployment.commands = $$copyCommand
-    first.depends = $(first) deployment
-    QMAKE_EXTRA_TARGETS += first deployment
-
-    ##
-    win32:CONFIG(debug, debug|release):debug_suffix=d
-    else:win32:debug_suffix=
-
-    ##
-    win32:system($${jframe_root}\\syncjframe.cmd $$QT_MAJOR_VERSION $$debug_suffix)
-    unix:system($${jframe_root}/syncjframe.sh $$QT_MAJOR_VERSION $$QT_MINOR_VERSION $$QT_VERSION $$debug_suffix)
+    QMAKE_POST_LINK += $$commands
 }

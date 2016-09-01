@@ -39,19 +39,15 @@ exists($$PWD/jcom_login.xml) {
 #-------------------------------------------------
 
 win32|unix: {
-    win32:copyCommand = @echo off
-    unix:copyCommand = @echo
-    copyCommand += && echo --- console - $$TARGET ---
+    commands += echo --- console - $$TARGET --- &
 
     ## copy files
     dstdir = $${jframe_root}/component/jframe/jcom_login
     win32:dstdir = $$replace(dstdir, /, \\)
-    !exists("$$dstdir"):copyCommand += && $(MKDIR) "$$dstdir"
+    !exists("$$dstdir"):commands += $(MKDIR) "\"$$dstdir\"" &
     srcfile = $$PWD/jcom_login.xml
     win32:srcfile = $$replace(srcfile, /, \\)
-    exists("$$srcfile"):copyCommand += && $(COPY_FILE) "$$srcfile" "$$dstdir"
+    exists("$$srcfile"):commands += $(COPY_FILE) "\"$$srcfile\"" "\"$$dstdir\"" &
 
-    deployment.commands = $$copyCommand
-    first.depends = $(first) deployment
-    QMAKE_EXTRA_TARGETS += first deployment
+    QMAKE_POST_LINK += $$commands
 }

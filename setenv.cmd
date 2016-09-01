@@ -7,7 +7,7 @@ rem   variables
 rem ****************************************
 
 % 项目目录 %
-set "JFRAME_DIR=%cd%"
+set "JFRAME_DIR=%~dp0"
 
 rem 设置环境变量
 

@@ -12,7 +12,7 @@ Component.prototype.createOperations = function() {
         component.addOperation(
             "EnvironmentVariable",
             "JFRAME_DIR",
-            "@TargetDir@\\jframe")
+            "@TargetDir@\\jframework")
     }
 }
 
