@@ -3,9 +3,9 @@
 #-------------------------------------------------
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD &
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
@@ -19,11 +19,11 @@ contains(DEFINES, PACKAGE) {
             dstdir = $$replace(dstdir, /, \\)
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "$$dstdir"
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir"
-            unix:commands += && "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
     # --- lib - 3rdpart
@@ -49,12 +49,12 @@ contains(DEFINES, PACKAGE) {
                 libtinyxml*.so*
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "$$dstdir"
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
             srcfile = "$$srcdir$$srcfile"
             exists("$$srcfile") {
-                commands += && $(COPY_FILE) "$$srcfile" "$$dstdir"
+                commands += $(COPY_FILE) "$$srcfile" "$$dstdir" &
             }
         }
     }
@@ -77,12 +77,12 @@ contains(DEFINES, PACKAGE) {
                 libjframe_kernel*.so*
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "$$dstdir"
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
             srcfile = "$$srcdir$$srcfile"
             exists("$$srcfile") {
-                commands += && $(COPY_FILE) "$$srcfile" "$$dstdir"
+                commands += $(COPY_FILE) "$$srcfile" "$$dstdir" &
             }
         }
     }
@@ -90,7 +90,7 @@ contains(DEFINES, PACKAGE) {
     dstdir = "$$PWD/data/jframework/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
-        commands += && $$RM_DIR "$$dstdir"
+        commands += $$RM_DIR "$$dstdir" &
     }
 }
 

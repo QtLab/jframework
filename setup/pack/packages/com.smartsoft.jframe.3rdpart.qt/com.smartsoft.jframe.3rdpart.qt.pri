@@ -3,9 +3,9 @@
 #-------------------------------------------------
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD &
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
@@ -20,18 +20,18 @@ contains(DEFINES, PACKAGE) {
             srcfiles = *.so*
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "$$dstdir"
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir"
-            unix:commands += && "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
 } else {
     dstdir = "$$PWD/data/Qt/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
-        commands += && $$RM_DIR "$$dstdir"
+        commands += $$RM_DIR "$$dstdir" &
     }
 }
 

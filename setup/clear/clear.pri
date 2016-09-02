@@ -5,32 +5,32 @@
 #-------------------------------------------------
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD --- clear.pri
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD --- clear.pri &
 
 #-------------------------------------------------
 dstdir = "$$jframe_dir/setup/pack/packages/com.smartsoft.jframe.wizards/"
 exists("$$dstdir") {
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += && $$RM_DIR "\"$$dstdir\""
+    commands += $$RM_DIR "$$dstdir" &
 }
 dstdir = "$$jframe_dir/setup/pack/packages/com.smartsoft.jframe.wizards.qtcreator/"
 exists("$$dstdir") {
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += && $$RM_DIR "\"$$dstdir\""
+    commands += $$RM_DIR "$$dstdir" &
 }
 dstdir = "$$jframe_dir/setup/pack/packages/com.smartsoft.jframe.wizards.visualstudio/"
 exists("$$dstdir") {
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += && $$RM_DIR "\"$$dstdir\""
+    commands += $$RM_DIR "$$dstdir" &
 }
 
 #-------------------------------------------------
 dstdir = "$$jframe_dir/setup/pack/bin/"
 exists("$$dstdir") {
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += && $$RM_DIR "$$dstdir"
+    commands += $$RM_DIR "$$dstdir" &
 }
 
 #-------------------------------------------------

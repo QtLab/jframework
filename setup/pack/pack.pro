@@ -8,14 +8,14 @@ TEMPLATE = aux
 INSTALLER = setup
 
 #-------------------------------------------------
-jframe_dir = $$absolute_path($$PWD/../..)    #
+jframe_dir = $$PWD/../..    #
 win32:jframe_dir = $$replace(jframe_dir, /, \\)
 
 DEFINES += PACKAGE          # pack/clear flag
 
 #-------------------------------------------------
 win32:RM_DIR = rd /s /q
-unix:RM_DIR = $(DEL_DIR)
+unix:RM_DIR = rm -rf
 
 #-------------------------------------------------
 include($$PWD/pack.pri)
@@ -24,20 +24,22 @@ include($$PWD/pack.pri)
 include($$PWD/packages/packages.pri)
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD --- generate $$INSTALLER -----
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD --- generate $$INSTALLER ----- &
 
 !exists("$$PWD/bin/") {
     dstdir = "$$PWD/bin/"
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += && $(MKDIR) "\"$$dstdir\""
+    commands += $(MKDIR) "$$dstdir" &
 }
 
 #-------------------------------------------------
-commands += && echo generating $$INSTALLER file...please wait...
-commands += && binarycreator --offline-only -c "\"$$PWD/config/config.xml\"" -p \
-    "\"$$PWD/packages\"" "\"$$PWD/bin/$$INSTALLER\""
+win32:QTIFW_DIR =
+unix:QTIFW_DIR = /opt/Qt/QtIFW2.0.3/bin/
+commands += echo generating $$INSTALLER file...please wait... &
+commands += $${QTIFW_DIR}binarycreator --offline-only -c "$$PWD/config/config.xml" -p \
+    "$$PWD/packages" "$$PWD/bin/$$INSTALLER" &
 
 #-------------------------------------------------
 INPUT = $$PWD/config/config.xml $$PWD/packages

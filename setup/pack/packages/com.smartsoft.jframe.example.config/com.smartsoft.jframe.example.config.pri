@@ -3,9 +3,9 @@
 #-------------------------------------------------
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD &
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
@@ -20,11 +20,11 @@ contains(DEFINES, PACKAGE) {
         }
         srcfiles += *.*
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "$$dstdir"
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir"
-            unix:commands += && "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
     # --- resource
@@ -38,11 +38,11 @@ contains(DEFINES, PACKAGE) {
         }
         srcfiles += *.*
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "$$dstdir"
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir"
-            unix:commands += && "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
     # --- WorkMode_Test1
@@ -56,11 +56,11 @@ contains(DEFINES, PACKAGE) {
         }
         srcfiles += *.*
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "$$dstdir"
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir"
-            unix:commands += && "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
     # --- WorkMode_Test2
@@ -74,18 +74,18 @@ contains(DEFINES, PACKAGE) {
         }
         srcfiles += *.*
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "$$dstdir"
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += && $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir"
-            unix:commands += && "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile"
+            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
         }
     }
 } else {
     dstdir = "$$PWD/data/config/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
-        commands += && $$RM_DIR "$$dstdir"
+        commands += $$RM_DIR "$$dstdir" &
     }
 }
 

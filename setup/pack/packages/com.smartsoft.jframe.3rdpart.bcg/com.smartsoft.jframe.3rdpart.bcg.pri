@@ -3,9 +3,9 @@
 #-------------------------------------------------
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD &
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
@@ -19,12 +19,12 @@ contains(DEFINES, PACKAGE) {
             srcfiles += BCGPStyle*.dll
         }
         !exists("$$dstdir") {
-            commands += && $(MKDIR) "\"$$dstdir\""
+            commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
             srcfile = "$$srcdir$$srcfile"
             exists("$$srcfile") {
-                commands += && $(COPY_FILE) "\"$$srcfile\"" "\"$$dstdir\""
+                commands += $(COPY_FILE) "$$srcfile" "$$dstdir" &
             }
         }
     }
@@ -32,7 +32,7 @@ contains(DEFINES, PACKAGE) {
     dstdir = "$$PWD/data/BCGCBPro/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
-        commands += && $$RM_DIR "\"$$dstdir\""
+        commands += $$RM_DIR "$$dstdir" &
     }
 }
 

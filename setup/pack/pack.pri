@@ -5,12 +5,12 @@
 #-------------------------------------------------
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD &
 
 #-------------------------------------------------
-commands += && echo : copy wizards packages
+commands += echo : copy wizards packages &
 
 # --- com.smartsoft.jframe.wizards
 srcdir = "$$jframe_dir/tools/wizards/qtcreator/setup/pack/packages/com.smartsoft.jframe.wizards/"
@@ -22,11 +22,11 @@ exists("$$srcdir") {
         dstdir = $$replace(dstdir, /, \\)
     }
     !exists("$$dstdir") {
-        commands += && $(MKDIR) "\"$$dstdir\""
+        commands += $(MKDIR) "$$dstdir" &
     }
     for (srcfile, srcfiles) {
-        win32:commands += && $(COPY_DIR) "\"$$srcdir$$srcfile\"" "\"$$dstdir\""
-        unix:commands += && "\"$$jframe_dir/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "$$srcfile"
+        win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+        unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
     }
 }
 
@@ -40,11 +40,11 @@ exists("$$srcdir") {
         dstdir = $$replace(dstdir, /, \\)
     }
     !exists("$$dstdir") {
-        commands += && $(MKDIR) "\"$$dstdir\""
+        commands += $(MKDIR) "$$dstdir" &
     }
     for (srcfile, srcfiles) {
-        win32:commands += && $(COPY_DIR) "\"$$srcdir$$srcfile\"" "\"$$dstdir\""
-        unix:commands += && "\"$$jframe_dir/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "$$srcfile"
+        win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+        unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
     }
 }
 
@@ -58,18 +58,18 @@ exists("$$srcdir") {
         dstdir = $$replace(dstdir, /, \\)
     }
     !exists("$$dstdir") {
-        commands += && $(MKDIR) "\"$$dstdir\""
+        commands += $(MKDIR) "$$dstdir" &
     }
     for (srcfile, srcfiles) {
-        win32:commands += && $(COPY_DIR) "\"$$srcdir$$srcfile\"" "\"$$dstdir\""
-        unix:commands += && "\"$$jframe_dir/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "$$srcfile"
+        win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+        unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
     }
 }
 
 #-------------------------------------------------
 INPUT =
 pack.input = INPUT
-pack.output = pack
+pack.output = pack.0
 pack.commands = $$commands
 pack.CONFIG += target_predeps no_link combine
 QMAKE_EXTRA_COMPILERS += pack

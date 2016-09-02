@@ -8,12 +8,12 @@ TEMPLATE = aux
 INSTALLER = setup
 
 #-------------------------------------------------
-jframe_dir = $$absolute_path($$PWD/../..)    #
+jframe_dir = $$PWD/../..    #
 win32:jframe_dir = $$replace(jframe_dir, /, \\)
 
 #-------------------------------------------------
 win32:RM_DIR = rd /s /q
-unix:RM_DIR = $(DEL_DIR)
+unix:RM_DIR = rm -rf
 
 #-------------------------------------------------
 include($$PWD/../pack/packages/packages.pri)
@@ -22,18 +22,18 @@ include($$PWD/../pack/packages/packages.pri)
 include($$PWD/clear.pri)
 
 #-------------------------------------------------
-win32:commands = @echo off
-unix:commands = @echo
-commands += && echo ----- $$PWD --- remove $$INSTALLER -----
+win32:commands = @echo off &
+unix:commands =
+commands += echo ----- $$PWD --- remove $$INSTALLER ----- &
 dstdir = "$$jframe_dir/setup/pack/bin/"
 exists("$$dsrdir") {
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += && $$RM_DIR "\"$$dstdir\""
+    commands += $$RM_DIR "$$dstdir" &
 }
 
 INPUT = $$PWD/README
 clear.input = INPUT
-clear.output = $$INSTALLER
+clear.output = clear.0
 clear.commands = $$commands
 clear.CONFIG += target_predeps no_link combine
 

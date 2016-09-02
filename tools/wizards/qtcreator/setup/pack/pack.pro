@@ -15,7 +15,7 @@ DEFINES += PACKAGE          # pack/clear flag
 
 #-------------------------------------------------
 win32:RM_DIR = rd /s /q
-unix:RM_DIR = $(DEL_DIR)
+unix:RM_DIR = rm -rf
 
 #-------------------------------------------------
 include($$PWD/pack.pri)
@@ -31,15 +31,15 @@ commands += echo ----- $$PWD --- generate $$INSTALLER ----- &
 !exists("$$PWD/bin/") {
     dstdir = "$$PWD/bin/"
     win32:dstdir = $$replace(dstdir, /, \\)
-    commands += $(MKDIR) "\"$$dstdir\"" &
+    commands += $(MKDIR) "$$dstdir" &
 }
 
 #-------------------------------------------------
 win32:QTIFW_DIR =
 unix:QTIFW_DIR = /opt/Qt/QtIFW2.0.3/bin/
 commands += echo generating $$INSTALLER file...please wait... &
-commands += $${QTIFW_DIR}binarycreator --offline-only -c "\"$$PWD/config/config.xml\"" -p \
-    "\"$$PWD/packages\"" "\"$$PWD/bin/$$INSTALLER\"" &
+commands += $${QTIFW_DIR}binarycreator --offline-only -c "$$PWD/config/config.xml" -p \
+    "$$PWD/packages" "$$PWD/bin/$$INSTALLER" &
 
 #-------------------------------------------------
 INPUT = $$PWD/config/config.xml $$PWD/packages
