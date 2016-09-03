@@ -15,11 +15,12 @@ contains(DEFINES, PACKAGE) {
         dstdir = "$$PWD/data/com_demo2/"
         win32{
             srcdir = $$replace(srcdir, /, \\)
-            srcfiles += com_demo2*.dll com_demo2*.xml
+            srcfiles += com_demo2*.dll
             dstdir = $$replace(dstdir, /, \\)
         } else:unix {
             srcfiles += libcom_demo2.so*
         }
+        srcfiles += com_demo2*.xml
         !exists("$$dstdir") {
             commands += $(MKDIR) "$$dstdir" &
         }

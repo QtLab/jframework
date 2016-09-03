@@ -16,7 +16,7 @@ commands += echo : copy wizards packages &
 srcdir = "$$jframe_dir/tools/wizards/qtcreator/setup/pack/packages/com.smartsoft.jframe.wizards/"
 exists("$$srcdir") {
     dstdir = "$$PWD/packages/com.smartsoft.jframe.wizards/"
-    srcfiles = *
+    srcfiles = *.*
     win32 {
         srcdir = $$replace(srcdir, /, \\)
         dstdir = $$replace(dstdir, /, \\)
@@ -34,7 +34,7 @@ exists("$$srcdir") {
 srcdir = "$$jframe_dir/tools/wizards/qtcreator/setup/pack/packages/com.smartsoft.jframe.wizards.qtcreator/"
 exists("$$srcdir") {
     dstdir = "$$PWD/packages/com.smartsoft.jframe.wizards.qtcreator/"
-    srcfiles = *
+    srcfiles = *.*
     win32 {
         srcdir = $$replace(srcdir, /, \\)
         dstdir = $$replace(dstdir, /, \\)
@@ -52,7 +52,7 @@ exists("$$srcdir") {
 srcdir = "$$jframe_dir/tools/wizards/qtcreator/setup/pack/packages/com.smartsoft.jframe.wizards.visualstudio/"
 exists("$$srcdir") {
     dstdir = "$$PWD/packages/com.smartsoft.jframe.wizards.visualstudio/"
-    srcfiles = *
+    srcfiles = *.*
     win32 {
         srcdir = $$replace(srcdir, /, \\)
         dstdir = $$replace(dstdir, /, \\)

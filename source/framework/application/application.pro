@@ -100,6 +100,8 @@ INCLUDEPATH += $$(JFRAME_DIR)/include
 ###############################################################
 
 win32|unix: {
+    win32:commands = @echo off &
+    unix:commands =
     commands += echo --- console - $$TARGET --- &
 
     ## copy files
@@ -107,9 +109,12 @@ win32|unix: {
     ## remove files
     dstdir = $$DESTDIR/
     win32:dstdir = $$replace(dstdir, /, \\)
-    exists("\"$${dstdir}application*.exp\""):commands += $(DEL_FILE) "\"$${dstdir}application*.exp\"" &
-    exists("\"$${dstdir}application*.ilk\""):commands += $(DEL_FILE) "\"$${dstdir}application*.ilk\"" &
-    exists("\"$${dstdir}application*.lib\""):commands += $(DEL_FILE) "\"$${dstdir}application*.lib\"" &
+    exists("$${dstdir}application*.exp"):commands += $(DEL_FILE) "$${dstdir}application*.exp" &
+    exists("$${dstdir}application*.ilk"):commands += $(DEL_FILE) "$${dstdir}application*.ilk" &
+    exists("$${dstdir}application*.lib"):commands += $(DEL_FILE) "$${dstdir}application*.lib" &
+
+    #
+    exists($$PWD/application.pri):include($$PWD/application.pri)
 
     QMAKE_POST_LINK += $$commands
 }

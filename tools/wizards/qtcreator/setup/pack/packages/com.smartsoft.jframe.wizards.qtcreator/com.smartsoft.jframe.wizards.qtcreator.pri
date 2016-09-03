@@ -22,8 +22,7 @@ contains(DEFINES, PACKAGE) {
             commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
-            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
+            commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
         }
     }
     # --- bin/jframeworkdir
@@ -58,8 +57,7 @@ contains(DEFINES, PACKAGE) {
             commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
-            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
+             commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
         }
     }
     # --- source/common
@@ -75,8 +73,7 @@ contains(DEFINES, PACKAGE) {
             commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
-            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
+            commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
         }
     }
     # --- source/framework/application

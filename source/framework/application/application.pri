@@ -5,5 +5,5 @@
 #-------------------------------------------------
 
 ##
-win32:commands += "\"$${jframe_root}\\syncjframe.cmd\"" $$QT_MAJOR_VERSION $$debug_suffix &
-unix:commands += "\"$${jframe_root}/syncjframe.sh\"" $$QT_MAJOR_VERSION $$QT_MINOR_VERSION $$QT_VERSION $$debug_suffix &
+win32:commands += "$$THIS_DIR\\syncjframe.cmd" $$QT_MAJOR_VERSION $$debug_suffix &
+unix:commands += "$$THIS_DIR/syncjframe.sh" $$QT_MAJOR_VERSION $$QT_MINOR_VERSION $$QT_VERSION $$debug_suffix &

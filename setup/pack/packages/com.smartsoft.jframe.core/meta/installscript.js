@@ -6,20 +6,21 @@ Component.prototype.createOperations = function() {
     // Call default implementation to actually install application.
     component.createOperations()
 
-    // 
-    if (systemInfo.productType === "windows") {
+    try {
+        // 
+        if (systemInfo.productType === "windows") {
+            //
+            component.addOperation(
+                "GlobalConfig",
+                "HKEY_CURRENT_USER\\Software\\@Publisher@\\@Name@\\@Version@",
+                "InstallPath",
+                "@TargetDir@\\jframework"
+            )
+        } else if (systemInfo.productType === "neokylin") {
         //
-        component.addOperation(
-            "GlobalConfig",
-            "HKEY_CURRENT_USER\\Software\\@Publisher@\\@Name@\\@Version@",
-            "InstallPath",
-            "@TargetDir@\\jframework"
-        )
-    } else if (systemInfo.productType === "unix") {
-        //
-        component.addOperation(
-            ""
-        )
+        }
+    } catch (e) {
+        console.log(e)
     }
 }
 
@@ -34,8 +35,8 @@ Component.prototype.installationFinished = function() {
             if (systemInfo.productType === "windows") {
                 //
                 console.log("***** !!!!!!")
-            } else {
-                console.log("not supported!")
+            } else if (systemInfo.productType === "neokylin") {
+                console.log(systemInfo.productType);
             }
         }
     } catch (e) {

@@ -6,6 +6,7 @@
 
 TEMPLATE = aux
 INSTALLER = setup
+CONFIG += console ordered
 
 #-------------------------------------------------
 jframe_dir = $$PWD/../..    #
@@ -38,7 +39,7 @@ commands += echo ----- $$PWD --- generate $$INSTALLER ----- &
 win32:QTIFW_DIR =
 unix:QTIFW_DIR = /opt/Qt/QtIFW2.0.3/bin/
 commands += echo generating $$INSTALLER file...please wait... &
-commands += $${QTIFW_DIR}binarycreator --offline-only -c "$$PWD/config/config.xml" -p \
+commands += $${QTIFW_DIR}binarycreator --verbose --offline-only -c "$$PWD/config/config.xml" -p \
     "$$PWD/packages" "$$PWD/bin/$$INSTALLER" &
 
 #-------------------------------------------------
@@ -46,5 +47,5 @@ INPUT = $$PWD/config/config.xml $$PWD/packages
 setup.input = INPUT
 setup.output = $$INSTALLER
 setup.commands = $$commands
-setup.CONFIG += target_predeps no_link combine
+setup.CONFIG += target_predeps combine no_link
 QMAKE_EXTRA_COMPILERS += setup

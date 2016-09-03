@@ -13,7 +13,7 @@ contains(DEFINES, PACKAGE) {
     srcdir = "$$jframe_dir/include/"
     exists("$$srcdir") {
         dstdir = "$$PWD/data/jframework/include/"
-        srcfiles = *.h *.hh
+        srcfiles = *
         win32 {
             srcdir = $$replace(srcdir, /, \\)
             dstdir = $$replace(dstdir, /, \\)
@@ -22,8 +22,7 @@ contains(DEFINES, PACKAGE) {
             commands += $(MKDIR) "$$dstdir" &
         }
         for (srcfile, srcfiles) {
-            win32:commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
-            unix:commands += "$$jframe_dir/tools/xcopy.py" "$$srcdir" "$$dstdir" "$$srcfile" &
+            commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
         }
     }
     # --- lib - 3rdpart

@@ -6,6 +6,7 @@
 
 TEMPLATE = aux
 INSTALLER = setup
+CONFIG += console
 
 #-------------------------------------------------
 jframe_dir = $$absolute_path($$PWD/../../../../..)    #
@@ -33,7 +34,7 @@ exists("$$dsrdir") {
 
 INPUT = $$PWD/README
 clear.input = INPUT
-clear.output = $$INSTALLER
+clear.output = clear.0
 clear.commands = $$commands
 clear.CONFIG += target_predeps no_link combine
 

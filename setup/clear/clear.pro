@@ -6,6 +6,7 @@
 
 TEMPLATE = aux
 INSTALLER = setup
+CONFIG += console
 
 #-------------------------------------------------
 jframe_dir = $$PWD/../..    #

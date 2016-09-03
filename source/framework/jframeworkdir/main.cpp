@@ -265,7 +265,10 @@ J_EXTERN_C J_ATTR_EXPORT const char* frameDirPath()
             }
         }
 #elif defined(__unix__)
-        //
+        const char* sTemp = getenv("JFRAME_DIR");
+        if (sTemp) {
+            _path = sTemp;
+        }
 #else
 #pragma message("not supported!")
 #endif
