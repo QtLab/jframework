@@ -3,7 +3,7 @@
 
 #include "jframe_facade.h"
 
-// 接口描述
+/** IJFrameFactory 接口描述 */
 #define VER_IJFrameFactory J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameFactory J_IID_INTERFACE(IJFrameFactory)
 
@@ -14,33 +14,33 @@ class IJFrameFactory : public IJUnknown
 {
 public:
     /**
-     * @brief ~IJFrameFactory : 析构函数
+     * @brief 析构函数
      */
     virtual ~IJFrameFactory() {}
 
     /**
-     * @brief interfaceIdentity : 获取接口标识
-     * @return : 接口标识
+     * @brief 获取接口标识
+     * @return 接口标识
      */
     virtual std::string interfaceIdentity() const { return IID_IJFrameFactory; }
 
     /**
-     * @brief interfaceVersion : 获取接口版本
-     * @return : 接口版本
+     * @brief 获取接口版本
+     * @return 接口版本
      */
     virtual unsigned int interfaceVersion() const { return VER_IJFrameFactory; }
 
     /**
-     * @brief createFactory : 创建指定对象实例
+     * @brief 创建指定对象实例
      * @param iid : 接口标识
      * @param ver : 接口版本
-     * @return : 对象实例
+     * @return 对象实例
      */
     virtual void* createFactory(const std::string &iid, unsigned int ver) = 0;
 
     /**
-     * @brief releaseFactory : 销毁创建的对象实例
-     * @param iface : 对象实例
+     * @brief 销毁创建的对象实例
+     * @param [in] iface : 对象实例
      * @param iid : 接口标识
      * @param ver : 接口版本
      */
@@ -69,8 +69,8 @@ public:
 #endif
 
 /**
- * @brief jframeFactory : 获取框架工厂系统单实例
- * @return : 框架工厂系统单实例
+ * @brief 获取框架工厂系统单实例
+ * @return 框架工厂系统单实例
  */
 JFRAME_FACTORY_EXPORT IJFrameFactory* jframeFactory();
 

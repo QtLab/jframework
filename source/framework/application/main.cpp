@@ -16,7 +16,7 @@ J_EXTERN_C J_ATTR_EXPORT const char* appDirPath()
 {
     static std::string _path = "";
     if (_path.empty()) {
-#ifdef __unix__
+#ifdef __unix_
         std::stringstream ss;
         ss << "/proc/" << getpid() << "/exe";
 #endif

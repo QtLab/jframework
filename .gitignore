@@ -66,6 +66,7 @@ target/
 /.vs
 /.vscode/.BROWSE.*
 /.vscode
+/docs/html
 *.pro.user*
 *.user
 *.ncb

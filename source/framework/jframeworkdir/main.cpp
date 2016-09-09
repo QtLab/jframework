@@ -377,3 +377,29 @@ J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
 
     return jframeFacade;
 }
+
+/**
+ * \brief Obtain current list of path
+ *
+ * \param [out] paths a pointer to an array of strings
+ * \param [out] count indicating the count of path.
+ *
+ * \note
+ * This function will allocate memory for path array. So caller must free the array, but should not free each item.
+ *
+ * \return #API_RESULT_CODE indicating whether this call success or failed.
+ *
+ * \par Sample code:
+ * \code
+ *    char **path = NULL;
+ *    int count = 0;
+ *    test_get_paths(&path, &count);
+ *    // use the path
+ *    free(path);
+ *    path = NULL;
+ * \endcode
+ */
+int test_get_paths(char ***paths, int *count)
+{
+    return 0;
+}
