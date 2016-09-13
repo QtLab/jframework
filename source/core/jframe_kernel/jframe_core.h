@@ -20,7 +20,7 @@ public:
 
     /**
      * @brief 接收命令消息
-     * @param [in] sender :命令发起者（type: QObject *）
+     * @param [in] sender : 命令发起者（type: QObject *）
      * @param domain : 命令发起者所属域名 [componentName#...]
      * @param objectName : 发起者对象名称
      * @param eventType : 信号、事件类型
