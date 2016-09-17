@@ -749,14 +749,11 @@ bool JFrameFacade::loadTextCodecConfig()
     TiXmlDocument document(data->frameGlobalPath);
     if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
         Q_ASSERT_X(false, "Warning",
-                   QStringLiteral("配置文件打\"%1\"开失败，即将退出软件！\n"
-                                  "错误标识：%2\n"
-                                  "错误描述：%3\n"
-                                  "错误位置：[%4, %5]")
+                   QStringLiteral("配置文件打\"%1\"开失败，即将退出软件！\n错误标识：%2\n错误描述：%3\n错误位置：[%4, %5]")
                    .arg(QString::fromStdString(data->frameGlobalPath))
                    .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
                    .arg(document.ErrorRow()).arg(document.ErrorCol())
-                   .toUtf8().data());
+                   .toUtf8().constData());
         return false;
     }
 

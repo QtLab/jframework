@@ -12,16 +12,22 @@ public:
     JNotifierPrivate(JNotifier &notifier) :
         currObs(0),
         currOffset(0),
-        imm(notifier)
+        imm(notifier),
+        dbus(notifier)
     {
-
+        //
+        dbus.init();
     }
 
 private:
     JObserver* currObs;
     int currOffset;
     map_observer_info mapObs;
-    JNotifierImm imm;
+    JImmNotify imm;
+    JDBusNotify dbus;
+#ifdef QT_DBUS_LIB
+    //QDBusInterface dbusIface;
+#endif
 };
 
 // - class Jnotifier -
@@ -145,9 +151,14 @@ void JNotifier::postMessage(const std::string &id, const std::string &info, JLPA
     QtConcurrent::run(JNotifier::task, this, JNotifyMsg(0, id, 0, lParam, info));
 }
 
-INotifierImm &JNotifier::imm()
+IImmNotify &JNotifier::imm()
 {
     return d->imm;
+}
+
+IDBusNotify &JNotifier::dbus()
+{
+    return d->dbus;
 }
 
 INotifier &JNotifier::beginGroup(JObserver *obs, int offset)
@@ -302,10 +313,40 @@ void JNotifier::immPostMessage(JObserver *obs, const std::string &id, const std:
     QtConcurrent::run(JNotifier::task, this, JNotifyMsg(obs, id, 0, lParam, info));
 }
 
-// - class JNotifierImm -
+// - class JImmNotify -
 
-JNotifierImm::JNotifierImm(JNotifier &notifier) :
+JImmNotify::JImmNotify(JNotifier &notifier) :
     q_notifier(notifier)
 {
 
+}
+
+// - class JDBusNotify -
+
+JDBusNotify::JDBusNotify(JNotifier &notifier)
+    : q_notifier(notifier)
+{
+
+}
+
+bool JDBusNotify::init()
+{
+    bool result = true;
+
+#ifdef QT_DBUS_LIB
+    //
+    if (!QDBusConnection::sessionBus().isConnected()) {
+        qDebug() << "Cannot connect to the D-Bus session bus.\n"
+                    "To start it, run:\n"
+                    "\teval `dbus-launch --auto-syntax`\n";
+        return false;
+    }
+#endif
+
+    return result;
+}
+
+bool JDBusNotify::isConnected()
+{
+    return false;
 }

@@ -16,7 +16,7 @@ typedef long long JLPARAM;
 typedef long long JLRESULT;
 #endif
 
-/** 接口描述 */
+/** JObserver 接口描述 */
 #define VER_JObserver J_INTERFACE_VERSION(1, 0)
 #define IID_JObserver J_IID_INTERFACE(JObserver)
 
@@ -61,13 +61,14 @@ public:
 };
 
 /** 观察者回调函数类型定义 */
-typedef JLRESULT (JObserver::*jobserver_cb)(const std::string &, JWPARAM, JLPARAM);
+typedef JLRESULT (JObserver::*jobserver_cb)(const std::string &id, JWPARAM wParam, JLPARAM lParam);
 
-/** 接口描述 */
+/** INotifier 接口描述 */
 #define VER_INotifier J_INTERFACE_VERSION(1, 0)
 #define IID_INotifier J_IID_INTERFACE(INotifier)
 
-class INotifierImm;
+class IImmNotify;
+class IDBusNotify;
 
 /**
  * @brief 消息分发器接口定义
@@ -181,7 +182,13 @@ public:
      * @brief 获取端到端消息分发接口
      * @return 端到端消息分发接口
      */
-    virtual INotifierImm& imm() = 0;
+    virtual IImmNotify& imm() = 0;
+
+    /**
+     * @brief 获取 D-BUS 进程间通信接口
+     * @return D-BUS 进程间通信接口
+     */
+    virtual IDBusNotify& dbus() = 0;
 
 protected:
     /**
@@ -211,20 +218,20 @@ protected:
     virtual INotifier& append(const std::string &id, jobserver_cb cb) = 0;
 };
 
-/** 接口描述 */
+/** INotifierImm 接口描述 */
 #define VER_INotifierImm J_INTERFACE_VERSION(1, 0)
 #define IID_INotifierImm J_IID_INTERFACE(INotifierImm)
 
 /**
  * @brief 端到端（直接发送给指定观察者）分发消息接口定义
  */
-class INotifierImm
+class IImmNotify
 {
 public:
     /**
      * @brief 析构函数
      */
-    virtual ~INotifierImm() {}
+    virtual ~IImmNotify() {}
 
     /**
      * @brief 发送消息（同步，端到端）
@@ -281,6 +288,55 @@ public:
      * @param lParam : 参数2
      */
     virtual void postMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam = 0) = 0;
+};
+
+class QObject;
+
+/**
+ * @brief 基于D-BUS的通信接口定义
+ */
+class IDBusNotify
+{
+public:
+    /**
+     * @brief 析构函数
+     */
+    virtual ~IDBusNotify() {}
+
+    /**
+     * @brief isConnected
+     * @return
+     */
+    virtual bool isConnected() = 0;
+#if 0   //TODO
+    /**
+     * @brief ...
+     * @param path : ...
+     * @param iface : ...
+     * @param buffer : ...
+     * @param size : ...
+     * @return ...
+     */
+    virtual bool sendData(const std::string &path, const std::string &iface,
+                          const char* buffer, size_t size) = 0;
+
+    /**
+     * @brief ...
+     * @param path : ...
+     * @param iface : ...
+     * @param buffer : ...
+     * @param size : ...
+     */
+    virtual void postData(const std::string &path, const std::string &iface,
+                          const char* buffer, size_t size) = 0;
+
+    //
+    virtual std::string &service() = 0;
+
+    virtual std::string path() = 0;
+
+    virtual std::string iface() = 0;
+#endif
 };
 
 //

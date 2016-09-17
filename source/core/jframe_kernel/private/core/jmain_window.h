@@ -163,8 +163,7 @@ T *JMainWindow::createHashObject(const QString &componentName, const QString &ob
         QHash<QString, QObject *>::iterator iterObject =
                 iterHash.value().find(objectName);
         if (iterObject != iterHash.value().end()) {
-            qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]!"
-                                         " ignore it!")
+            qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]! ignore it!")
                           .arg(componentName).arg(objectName);
 #if 0
             // replace

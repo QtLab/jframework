@@ -6,7 +6,7 @@ THIS_DIR = $$PWD/../../..
 
 QT += gui concurrent
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets dbus
 
 DEFINES += \
     PRO_CORE \

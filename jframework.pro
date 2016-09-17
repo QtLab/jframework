@@ -8,7 +8,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    docs \
+#    docs \
     source \
     setup \
     tools/wizards

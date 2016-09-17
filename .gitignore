@@ -81,3 +81,4 @@ target/
 *.VC.opendb
 *.autosave
 .DS_Store
+Thumbs.db

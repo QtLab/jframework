@@ -211,9 +211,8 @@ bool JMainWindow::createComponentUi(IJComponent *component, const std::string &f
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("组件配置文件\"%1\"解析失败！\n"
-                                            "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列号：%4）")
+        const QString text =
+                QStringLiteral("组件配置文件\"%1\"解析失败！\n错误描述：%2\n错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameWnd, QStringLiteral("警告"), text);
@@ -484,8 +483,7 @@ bool JMainWindow::createRibbonPage(const QDomElement &emRibbon, const QString &c
                         // set domain of object
                         ribbonPage->setProperty("domain", componentName);
                         //
-                        qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]!"
-                                                     " destory and replace it!")
+                        qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]! destory and replace it!")
                                       .arg(componentName).arg(objectName);
                         // destory old object
                         iterObject.value()->deleteLater();
@@ -566,8 +564,7 @@ bool JMainWindow::createRibbinGroup(const QDomElement &emPage, QtRibbon::RibbonP
                         // set domain of object
                         ribbonGroup->setProperty("domain", componentName);
                         //
-                        qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]!"
-                                                     " destory and replace it!")
+                        qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]! destory and replace it!")
                                       .arg(componentName).arg(objectName);
                         // destory old object
                         iterObject.value()->deleteLater();
@@ -965,8 +962,7 @@ bool JMainWindow::insertHashObject(const QString &componentName, const QString &
         QHash<QString, QObject *>::iterator iterObject =
                 iterHash.value().find(objectName);
         if (iterObject != iterHash.value().end()) {
-            qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]!"
-                                         " replace it!")
+            qWarning() << QStringLiteral("objectName[%1] has been exists in component[%2]! replace it!")
                           .arg(componentName).arg(objectName);
 #if 1
             // destroy old object

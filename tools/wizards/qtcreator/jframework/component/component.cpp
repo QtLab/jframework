@@ -176,7 +176,10 @@ bool %{ComponentClass}::messageSink(IJComponent *sender, const std::string &id, 
 }
 
 @endif
+@if '%{IncludeJObserver}'
 std::string %{ComponentClass}::observerId() const
 {
     return componentName();
 }
+
+@endif

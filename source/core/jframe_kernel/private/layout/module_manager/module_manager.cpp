@@ -518,7 +518,7 @@ bool ModuleManager::switchSystem(const std::string &system, JLPARAM lParam)
     }
 
     // 处理系统切换业务
-    bool result = false;    // 暂不支持在线切换系统，即不允许在廉运行期间动态切换系统
+    bool result = false;    // 暂不支持在线切换系统，即不允许在运行期间动态切换系统
     if (!result) {
         return false;       // 系统切换失败
     }

@@ -283,12 +283,6 @@
             "data": { "trText": "%{JS: Cpp.classToFileName('%{UiClass}', '%{JS: Util.preferredSuffix('text/x-c++src')}')}" }
         }]
     }, {
-        "trDisplayName": "Kit Selection",
-        "trShortTitle": "Kits",
-        "typeId": "Kits",
-        "enabled": "%{IsTopLevelProject}",
-        "data": { "projectFilePath": "%{ProFileName}" }
-    }, {
         "trDisplayName": "Project Management",
         "trShortTitle": "Summary",
         "typeId": "Summary"

@@ -5,6 +5,8 @@
 QT += core
 TEMPLATE = lib
 
+greaterThan(QT_MAJOR_VERSION, 4): CONFIG += c++11
+
 ## fixed on Windowx XP
 #win32:QMAKE_LFLAGS_WINDOW = /SUBSYSTEM:WINDOW,5.02
 

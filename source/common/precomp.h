@@ -29,6 +29,10 @@
 #include <QtConcurrent>
 #endif
 
+#ifdef QT_DBUS_LIB
+#include <QtDBus>
+#endif
+
 #if (QT_VERSION < 0x050000)
 
 #include <QtDeclarative/QtDeclarative>

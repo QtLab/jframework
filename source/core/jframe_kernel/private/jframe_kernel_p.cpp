@@ -260,10 +260,7 @@ bool JFrameKernel::loadConfig()
     TiXmlDocument document(jframeFacade()->frameGlobalPath());
     if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
         Q_ASSERT_X(false, "Warning",
-                   QStringLiteral("框架全局配置配置文件打\"%1\"开失败！\n"
-                                  "错误标识：%2\n"
-                                  "错误描述：%3\n"
-                                  "错误位置：[%4, %5]")
+                   QStringLiteral("框架全局配置配置文件打\"%1\"开失败！\n错误标识：%2\n错误描述：%3\n错误位置：[%4, %5]")
                    .arg(QString::fromStdString(jframeFacade()->frameGlobalPath()))
                    .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
                    .arg(document.ErrorRow()).arg(document.ErrorCol())

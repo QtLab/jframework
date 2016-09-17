@@ -1,21 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
-<jframe system="system #1" seatEditable="true" systemEditable="true" userName="****">
+<jframe seatEditable="true" systemEditable="true" system="system #1" userName="****">
   <config>
     <switch remember="true"/>
-    <splitter color="#444" opaqueResize="true" opacity="0.5" width="8"/>
+    <splitter opaqueResize="true" opacity="0.5" width="8" color="#444"/>
     <dock/>
-    <busyIndicator duration="2000" model="true" visible="true" image=""/>
+    <busyIndicator model="true" duration="2000" visible="true" image=""/>
   </config>
   <system module="module #1" name="system #1">
     <seat-module>
-      <item seat="seat #1" module="module #1"/>
+      <item module="module #1" seat="seat #1"/>
     </seat-module>
     <module name="module #1" submodule="">
       <layout>
         <view>
-          <horizontal opaqueResize="false" scales="0.72:3.9" collapsibile="0:true;1:true">
+          <horizontal opaqueResize="false" collapsibile="0:true;1:true" scales="1.8:2.8">
             <component id="com_demo1"/>
-            <vertical opaqueResize="false" scales="3.2:0.17" collapsibile="0:true;1:true">
+            <vertical opaqueResize="false" collapsibile="0:true;1:true" scales="1.8:1.5">
               <component id="com_demo2"/>
               <component id="com_demo3"/>
             </vertical>
@@ -53,9 +53,9 @@
         <module name="module #4" submodule="">
           <layout>
             <view>
-              <horizontal opaqueResize="false" collapsible="0:false;1:false" scales="1.6:3.3" opacity="0.7" width="4">
+              <horizontal opaqueResize="false" opacity="0.7" collapsible="0:false;1:false" width="4" scales="1.6:3.3">
                 <component id="com_demo4"/>
-                <vertical opaqueResize="false" scales="1.4:1.5" opacity="0.7" width="4">
+                <vertical opaqueResize="false" opacity="0.7" width="4" scales="1.4:1.5">
                   <component id="com_demo1"/>
                   <component id="com_demo5"/>
                 </vertical>
@@ -100,7 +100,7 @@
   </system>
   <!-- 以下为框架默认配置，请谨慎修改 -->
   <!-- list属性值：为[用户管理]、[系统管理]、[模块管理]、[权限管理]的组合 -->
-  <system module="权限管理" name="管理员系统" list="用户管理|系统管理|模块管理|权限管理">
+  <system list="用户管理|系统管理|模块管理|权限管理" module="权限管理" name="管理员系统">
     <module name="权限管理" submodule="">
       <layout>
         <view>

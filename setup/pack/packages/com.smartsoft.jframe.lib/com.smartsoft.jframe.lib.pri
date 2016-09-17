@@ -38,7 +38,8 @@ contains(DEFINES, PACKAGE) {
                 log4cpp*.dll log4cpp*.lib log4cpp*.pdb \
                 qtribbon*.dll qtribbon*.lib qtribbon*.pdb \
                 qtwinmigrate*.dll qtwinmigrate*.lib qtwinmigrate*.pdb \
-                tinyxml*.dll tinyxml*.lib tinyxml*.pdb
+                tinyxml*.dll tinyxml*.lib tinyxml*.pdb \
+                BCGCBPRO*u*.dll BCGCBPRO*u*.lib BCGCBPRO*u*.pdb
         } else:unix {
             srcfiles += \
                 libjwt*.so* \

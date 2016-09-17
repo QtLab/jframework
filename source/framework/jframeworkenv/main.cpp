@@ -130,7 +130,25 @@ bool loadConfig()
 
     //
     std::string sVal;
-    std::string paths = std::string(frameDirPath()).append("/bin");
+
+    // 设置环境变量
+    std::string paths;
+#ifdef _MSC_VER
+    const char* envPath = getenv("PATH");
+    if (envPath) {
+        paths = std::string(envPath);
+    }
+#elif defined(__unix__)
+    const char* envPath = getenv("PATH");
+    if (envPath) {
+        paths = std::string(envPath);
+    }
+#else
+#pragma message("Not supported!")
+#endif
+
+    //
+    paths.append(std::string(frameDirPath()).append("/bin"));
 
     // 寻找全局变量配置->path节点
     for (TiXmlElement *emPath = emGlobal->FirstChildElement("path");
@@ -193,17 +211,9 @@ bool loadConfig()
 
     // 设置环境变量
 #ifdef _MSC_VER
-    const char* envPath = getenv("PATH");
-    if (envPath) {
-        paths = std::string(envPath) + envSeparator() + paths;
-    }
     paths = "PATH=" + paths;
     putenv(paths.c_str());
 #elif defined(__unix__)
-    const char* envPath = getenv("PATH");
-    if (envPath) {
-        paths = std::string(envPath) + envSeparator() + paths;
-    }
     paths = "PATH:" + paths;
     putenv(const_cast<char *>(paths.c_str()));
 #else

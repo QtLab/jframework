@@ -253,9 +253,8 @@ bool JAttempter::loadConfig()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("框架全局配置文件\"%1\"解析失败！\n"
-                                            "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列号：%4）")
+        const QString text =
+                QStringLiteral("框架全局配置文件\"%1\"解析失败！\n错误描述：%2\n错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(reinterpret_cast<QWidget *>(q_mainWindow->mainWidget()),
@@ -347,9 +346,8 @@ bool JAttempter::loadAllComponent()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("框架组件配置文件\"%1\"解析失败！\n"
-                                            "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列号：%4）")
+        const QString text =
+                QStringLiteral("框架组件配置文件\"%1\"解析失败！\n错误描述：%2\n错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning((reinterpret_cast<QWidget *>(q_mainWindow->mainWidget())),
@@ -405,11 +403,11 @@ bool JAttempter::loadAllComponent()
         componentConfig.componentType = emComponent.attribute("type").toUtf8().trimmed();
         //
         if (componentConfig.componentType == "mfc") {
-            const QString msg = QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "
-                                               "组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
-                                .arg(componentConfig.componentDir)
-                                .arg(componentConfig.componentName)
-                                .arg(componentConfig.componentDesc);
+            const QString msg =
+                    QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) 组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
+                    .arg(componentConfig.componentDir)
+                    .arg(componentConfig.componentName)
+                    .arg(componentConfig.componentDesc);
 #ifdef _AFXDLL
             if (!AfxGetApp()) {
                 jframeLogWarning(msg.toLocal8Bit().data());
@@ -464,11 +462,11 @@ bool JAttempter::loadComponent(JComponentConfig &componentConfig)
     }
     // 组件类型检测
     if (component->componentType() == "mfc") {
-        const QString msg = QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) "
-                                           "组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
-                            .arg(componentConfig.componentDir)
-                            .arg(componentConfig.componentName)
-                            .arg(componentConfig.componentDesc);
+        const QString msg =
+                QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) 组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
+                .arg(componentConfig.componentDir)
+                .arg(componentConfig.componentName)
+                .arg(componentConfig.componentDesc);
 #ifdef _AFXDLL
         if (!AfxGetApp()) {
             jframeLogWarning(msg.toLocal8Bit().data());

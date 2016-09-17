@@ -73,6 +73,12 @@ if [ $qt_ver = '5.7.0' ]; then
     cp -f "${qt_dir}/lib/libicui18n.so.56.1" "${jframe_dir}/bin/3rdpart/Qt/"
     cp -f "${qt_dir}/lib/libicuuc.so.56" "${jframe_dir}/bin/3rdpart/Qt/"
     cp -f "${qt_dir}/lib/libicuuc.so.56.1" "${jframe_dir}/bin/3rdpart/Qt/"
+
+    cp -f "${qt_dir}/lib/libQt${qt_major_ver}DBus.so" "${jframe_dir}/bin/3rdpart/Qt/"
+    cp -f "${qt_dir}/lib/libQt${qt_major_ver}DBus.so.${qt_major_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+    cp -f "${qt_dir}/lib/libQt${qt_major_ver}DBus.so.${qt_major_ver}.${qt_minor_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+    cp -f "${qt_dir}/lib/libQt${qt_major_ver}DBus.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+
 else
     cp -f "${qt_dir}/lib/libicui18n.so.${qt_major_ver}${qt_minor_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
     cp -f "${qt_dir}/lib/libicuuc.so.${qt_major_ver}${qt_minor_ver}" "${jframe_dir}/bin/3rdpart/Qt/"

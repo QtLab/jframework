@@ -76,9 +76,8 @@ bool LayoutManager::updateLayout(const QString &section)
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("框架布局配置文件\"%1\"解析失败！\n"
-                                            "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列号：%4）")
+        const QString text =
+                QStringLiteral("框架布局配置文件\"%1\"解析失败！\n错误描述：%2\n错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
@@ -150,9 +149,8 @@ bool LayoutManager::loadLayoutConfig()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("框架布局配置文件\"%1\"解析失败！"
-                                            "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列号：%4）")
+        const QString text =
+                QStringLiteral("框架布局配置文件\"%1\"解析失败！\n错误描述：%2\n错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
@@ -250,9 +248,8 @@ bool LayoutManager::resetModuleElement()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("框架布局配置文件\"%1\"解析失败！\n"
-                                            "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列号：%4）")
+        const QString text =
+                QStringLiteral("框架布局配置文件\"%1\"解析失败！\n错误描述：%2\n错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);
@@ -1074,9 +1071,8 @@ bool LayoutManager::saveCurrentSplitterScales()
     int errorLine = 0, errorColumn = 0;
     QDomDocument document;
     if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
-        const QString text = QStringLiteral("框架布局配置文件\"%1\"解析失败！\n"
-                                            "错误描述：%2\n"
-                                            "错误位置：（行号：%3，列号：%4）")
+        const QString text =
+                QStringLiteral("框架布局配置文件\"%1\"解析失败！\n错误描述：%2\n错误位置：（行号：%3，列号：%4）")
                 .arg(file.fileName())
                 .arg(errorMsg).arg(errorLine).arg(errorColumn);
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), text);

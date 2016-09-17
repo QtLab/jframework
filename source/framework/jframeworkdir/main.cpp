@@ -322,7 +322,7 @@ J_EXTERN_C J_ATTR_EXPORT const char* librarySuffix(bool debug)
 }
 
 /**
- * @brief FrameFacadeInstace : ...
+ * @brief ...
  * @param config : 1, debug; other, release. valid for windows system
  * @return
  */
@@ -401,5 +401,7 @@ J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
  */
 int test_get_paths(char ***paths, int *count)
 {
+    (void)paths;
+    (void)count;
     return 0;
 }

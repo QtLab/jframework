@@ -51,8 +51,9 @@
 #endif
 
 #include <QtConfig>
+#include <qglobal.h>
 
-#if QT_VERSION_MAJOR < 5
+#if QT_VERSION < 0x050000
 
 #ifndef HWND_CAST
 #define HWND_CAST(wid) (wid)
@@ -337,7 +338,7 @@ QApplication *QMfcApp::instance(CWinApp *mfcApp)
     return new QMfcApp(mfcApp, mfc_argc, mfc_argv);
 }
 
-#if QT_VERSION_MAJOR < 5
+#if QT_VERSION < 0x050000
 static bool qmfc_eventFilter(void *message)
 {
     long result = 0;
@@ -397,7 +398,7 @@ QMfcApp::QMfcApp(CWinApp *mfcApp, int &argc, char **argv)
     : QApplication(argc, argv), idleCount(0), doIdle(FALSE)
 {
     mfc_app = mfcApp;
-#if QT_VERSION_MAJOR < 5
+#if QT_VERSION < 0x050000
     QAbstractEventDispatcher::instance()->setEventFilter(qmfc_eventFilter);
 #else
     QMFCNativeEventFilter *evtFilter = new QMFCNativeEventFilter;
@@ -517,7 +518,7 @@ bool QMfcApp::winEventFilter(MSG *msg, long *result)
 
     recursion = false;
 
-#if QT_VERSION_MAJOR < 5
+#if QT_VERSION < 0x050000
     return QApplication::winEventFilter(msg, result);
 #else
     Q_UNUSED(result);

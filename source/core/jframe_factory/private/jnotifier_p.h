@@ -102,7 +102,9 @@ public:
     JLRESULT sendMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam);
     void postMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam);
     void postMessage(const std::string &id, const std::string &info, JLPARAM lParam);
-    INotifierImm &imm();
+
+    IImmNotify &imm();
+    IDBusNotify &dbus();
 
 protected:
     INotifier &beginGroup(JObserver *obs, int offset);
@@ -134,17 +136,18 @@ private:
 
 private:
     JNotifierPrivate* d;
-    friend class JNotifierImm;
+    friend class JImmNotify;
 };
 
-// - class JNotifierImm -
-
-class JNotifierImm : public INotifierImm
+/**
+ * @brief IImmNotify 实现
+ */
+class JImmNotify : public IImmNotify
 {
 public:
-    explicit JNotifierImm(JNotifier &notifier);
+    explicit JImmNotify(JNotifier &notifier);
 
-    // INotifierImm interface
+    // IImmNotify interface
 public:
     inline JLRESULT sendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
     inline JLRESULT sendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
@@ -158,39 +161,57 @@ private:
 };
 
 inline
-JLRESULT JNotifierImm::sendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JImmNotify::sendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     return q_notifier.immSendMessage(obsid, id, wParam, lParam);
 }
 
 inline
-JLRESULT JNotifierImm::sendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JImmNotify::sendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     return q_notifier.immSendMessage(obs, id, wParam, lParam);
 }
 
 inline
-void JNotifierImm::postMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+void JImmNotify::postMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     return q_notifier.immPostMessage(obsid, id, wParam, lParam);
 }
 
 inline
-void JNotifierImm::postMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+void JImmNotify::postMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     return q_notifier.immPostMessage(obs, id, wParam, lParam);
 }
 
 inline
-void JNotifierImm::postMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam)
+void JImmNotify::postMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam)
 {
     return q_notifier.immPostMessage(obsid, id, info, lParam);
 }
 
 inline
-void JNotifierImm::postMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam)
+void JImmNotify::postMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam)
 {
     return q_notifier.immPostMessage(obs, id, info, lParam);
 }
+
+/**
+ * @brief IDBusNotify 实现
+ */
+class JDBusNotify : public IDBusNotify
+{
+public:
+    explicit JDBusNotify(JNotifier &notifier);
+
+    bool init();
+
+    // IDBusNotify interface
+public:
+    bool isConnected();
+
+private:
+    JNotifier &q_notifier;
+};
 
 #endif // JNOTIFIER_P_H

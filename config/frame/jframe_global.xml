@@ -30,10 +30,15 @@
     <language name="zh_CN" path="@FrameDir@/config/language">
     </language>
   </system>
-  <textCodec encoding="utf-8" >
+  <textCodec encoding="gbk" >
   </textCodec>
   <logging filePath="@ConfigDir@/frame/jframe_logging.conf" >
   </logging>
+  <dbus enabled="true" serviceName="com.smartsoft.jframe"
+    path="/com/smartsoft/jframe">
+  </dbus>
+  <ice>
+  </ice>
   <mainWindow windowTitle="框架测试程序"
     windowIcon="@ConfigDir@/resource/app.ico"
     windowTheme="Office2010Blue"

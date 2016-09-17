@@ -58,7 +58,7 @@ public:
     virtual void setConfig(const std::string &filePath) = 0;
 
     /**
-     * @brief logging : 输出一条日志
+     * @brief 输出一条日志
      * @param type : 消息类型
      * @param msg : 消息
      * @param where : 输出地（"all"、"file"、"console"）

@@ -40,6 +40,11 @@ xcopy "%qt_dir%\plugins\imageformats\*.dll" "%jframe_dir%\bin\3rdpart\Qt\plugins
 xcopy "%qt_dir%\plugins\sqldrivers\*.dll" "%jframe_dir%\bin\3rdpart\Qt\plugins\sqldrivers\" /s /q /y
 xcopy "%qt_dir%\plugins\platforms\*.dll" "%jframe_dir%\bin\3rdpart\Qt\plugins\platforms\" /s /q /y
 
+rem ---
+if "%qt_ver%" == "5.7.0" (
+    copy "%qt_dir%\bin\Qt?DBus%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\Qt\"
+)
+
 rem -----
 
 copy "%jframe_dir%\lib\3rdpart\jwt%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
