@@ -39,7 +39,7 @@
 #ifndef JLIBRARY_MODULE
 #define JLIBRARY_MODULE
 #endif
-#include "jframe/jframe_facade.h"
+#include "core/jframe_facade.h"
 #include "3rdpart/BCGCBPro/BCGCBProInc.h"
 
 

@@ -98,13 +98,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_AFXEXT;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QTWINMIGRATE_LIB;JWT_LIB;TINYXML_LIB;JFRAME_FACADE_LIB;JFRAME_FACTORY_LIB;JFRAME_KERNEL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(JFRAME_DIR)\include;$(JFRAME_DIR)\include\3rdpart;$(JFRAME_DIR)\include\jframe;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(JFRAME_DIR)\include;$(JFRAME_DIR)\include\3rdpart;$(JFRAME_DIR)\include\core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(JFRAME_DIR)\lib;$(JFRAME_DIR)\lib\3rdpart;$(JFRAME_DIR)\lib\jframe;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(JFRAME_DIR)\lib;$(JFRAME_DIR)\lib\3rdpart;$(JFRAME_DIR)\lib\core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
@@ -160,7 +160,7 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_AFXEXT;QT_DLL;QT_NO_DEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QTWINMIGRATE_LIB;JWT_LIB;TINYXML_LIB;JFRAME_FACADE_LIB;JFRAME_FACTORY_LIB;JFRAME_KERNEL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(JFRAME_DIR)\include;$(JFRAME_DIR)\include\3rdpart;$(JFRAME_DIR)\include\jframe;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;$(JFRAME_DIR)\include;$(JFRAME_DIR)\include\3rdpart;$(JFRAME_DIR)\include\core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -169,7 +169,7 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(JFRAME_DIR)\lib;$(JFRAME_DIR)\lib\3rdpart;$(JFRAME_DIR)\lib\jframe;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(JFRAME_DIR)\lib;$(JFRAME_DIR)\lib\3rdpart;$(JFRAME_DIR)\lib\core;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
