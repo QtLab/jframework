@@ -169,7 +169,7 @@
             "data": { "trText": "%{JS: Cpp.classToFileName('%{ComponentClassEdit}', '%{JS: Util.preferredSuffix('text/x-c++src')}')}" }
         }]
     }, {
-        "trDisplayName": "Define Component UI class",
+        "trDisplayName": "Define Component UI Class",
         "trShortTitle": "Component UI",
         "typeId": "Fields",
         "data": [{
