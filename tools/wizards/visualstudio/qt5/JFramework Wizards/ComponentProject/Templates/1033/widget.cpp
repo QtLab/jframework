@@ -1,4 +1,6 @@
-﻿#include "stdafx.h"
+﻿[!if INCLUDE_PRECOMPILED]
+#include "stdafx.h"
+[!endif]
 #include "[!output UI_HEADER_FILE_NAME]"
 
 [!if INCLUDE_QSHAREDDATA]

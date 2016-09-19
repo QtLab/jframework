@@ -368,8 +368,13 @@
     //
     function OnComponentClassNameChanged(input) {
         // 
-        HEADER_FILE_NAME.value = input.value.toLowerCase() + ".h";
-        SOURCE_FILE_NAME.value = input.value.toLowerCase() + ".cpp";
+        var includeLowerCaseFileNames = window.external.FindSymbol('INCLUDE_LOWERCASE_FILENAMES');
+        var fileName = input.value;
+        if (includeLowerCaseFileNames) {
+            fileName = fileName.toLowerCase();
+        }
+        HEADER_FILE_NAME.value = fileName + ".h";
+        SOURCE_FILE_NAME.value = fileName + ".cpp";
     }
 </script>
 <script language="JSCRIPT" id="INCLUDE_SCRIPT"></script>

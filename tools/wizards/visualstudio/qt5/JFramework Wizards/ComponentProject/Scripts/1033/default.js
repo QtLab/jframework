@@ -21,11 +21,11 @@ function OnFinish(selProj, selObj) {
         var includeIJMessageSink = wizard.FindSymbol("INCLUDE_IJMESSAGESINK");
         var includeJObserver = wizard.FindSymbol("INCLUDE_JOBSERVER");
         var includeConfigFile = wizard.FindSymbol("INCLUDE_CONFIG_FILE");
+        var includePrecompiled = wizard.FindSymbol("INCLUDE_PRECOMPILED");
         // component_class
         var componentClassName = wizard.FindSymbol("COMPONENT_CLASS_NAME");
         var headerFileName = wizard.FindSymbol("HEADER_FILE_NAME");
         var sourceFileName = wizard.FindSymbol("SOURCE_FILE_NAME");
-        var precompiled = true; //wizard.FindSymbol("PRECOMPILED");
         // component_ui
         var componentUiClassName = wizard.FindSymbol("COMPONENT_UI_CLASS_NAME");
         var uiBaseClassName = wizard.FindSymbol("UI_BASE_CLASS_NAME");
@@ -41,15 +41,8 @@ function OnFinish(selProj, selObj) {
         var defComponentUiHeader = uiHeaderFileName.toUpperCase().replace(regexp, "_");
         wizard.AddSymbol("COMPONENT_HEADER_GUARD", defComponentHeader);
         wizard.AddSymbol("COMPONENT_UI_HEADER_GUARD", defComponentUiHeader);
-        var index = 0;
-        try {
-            index = 0; //["QWidget", "QDialog", "QMainWindow"].indexOf("QMainWindow");
-        } catch (e) {
-            var msg = "name: " + e.name + "\n" +
-                "message: " + e.message + "\n" +
-                "description: " + e.description;
-            wizard.ReportError("??? => \n" + msg);
-        }
+
+        var index = 0; //["QWidget", "QDialog", "QMainWindow"].indexOf("QMainWindow");
         wizard.AddSymbol("BASECLASS_INSTANCEOF_QOBJECT", (index >= 0));
 
         wizard.AddSymbol("UI_BASE_CLASS_NAME_IS_EMPTY", uiBaseClassName === "");
@@ -58,17 +51,13 @@ function OnFinish(selProj, selObj) {
 
         //////////
 
-        try {
-            selProj = CreateProject(projectName, projectPath);
-            selProj.Object.Keyword = "Qt4VS";
-        } catch (e) {
-            var msg = "name: " + e.name + "\n" +
-                "message: " + e.message + "\n" +
-                "description: " + e.description;
-            wizard.ReportError("xxx => \n" + msg);
-        }
+        selProj = CreateProject(projectName, projectPath);
+        selProj.Object.Keyword = "Qt4VS";
 
-        AddCommonConfig(selProj, projectName);
+        AddCommonConfig(selProj, projectName, /*unicode*/ true);
+        AddSpecificConfig(selProj, projectName, projectPath);
+
+        SetCommonPchSettings(selProj);
 
         //
         SetupFilters(selProj);
@@ -79,15 +68,100 @@ function OnFinish(selProj, selObj) {
 
         SetCommonPchSettings(selProj);
 
-        try {
-            selProj.Object.Save();
-        } catch (e) {
-            var msg = "name: " + e.name + "\n" +
-                "message: " + e.message + "\n" +
-                "description: " + e.description;
-            wizard.ReportError("yyy => \n" + msg);
-        }
+        selProj.Object.Save();
 
+        SetAllConfigCharset(selProj, /*unicode*/ true);
+
+    } catch (e) {
+        var msg = "name: " + e.name + "\n" +
+            "message: " + e.message + "\n" +
+            "description: " + e.description;
+        wizard.ReportError("OnFinish => \n" + msg);
+        if (e.description.length != 0)
+            SetErrorInfo(e);
+        return e.number
+    }
+}
+
+function AddSpecificConfig(proj, strProjectName, strProjectPath) {
+    try {
+        var configs = proj.Object.Configurations;
+        for (var i = 1; i <= configs.Count; i++) {
+            var config = configs(i);
+            var bDebug = false;
+            if (-1 != config.Name.indexOf("Debug"))
+                bDebug = true;
+
+            // Default to unicode
+            config.CharacterSet = charSetUNICODE;
+            //
+            config.UseOfMFC = useMfcDynamic;
+
+            // ------------compilerTool--------------
+
+            var compilerTool = config.Tools("VCCLCompilerTool");
+
+            //
+            var additionalIncludeDirectories = compilerTool.AdditionalIncludeDirectories;
+            if (additionalIncludeDirectories != "") {
+                additionalIncludeDirectories += ";";
+            }
+            additionalIncludeDirectories += ";.\\GeneratedFiles";
+            additionalIncludeDirectories += ";.\\GeneratedFiles\\$(ConfigurationName)";
+            additionalIncludeDirectories += ";.";
+            additionalIncludeDirectories += ";$(QTDIR)\\include";
+            additionalIncludeDirectories += ";$(QTDIR)\\include\\QtCore";
+            additionalIncludeDirectories += ";$(QTDIR)\\include\\QtGui";
+            additionalIncludeDirectories += ";$(QTDIR)\\include\\QtWidgets";
+            additionalIncludeDirectories += ";$(JFRAME_DIR)\\include";
+            additionalIncludeDirectories += ";$(JFRAME_DIR)\\include\\3rdpart";
+            additionalIncludeDirectories += ";$(JFRAME_DIR)\\include\\core";
+            compilerTool.AdditionalIncludeDirectories = additionalIncludeDirectories;
+
+            //
+            var preProcDefines = compilerTool.PreprocessorDefinitions;
+            if (preProcDefines != "") {
+                preProcDefines += ";";
+            }
+
+            preProcDefines += GetPlatformDefine(config);
+            if (bDebug) {
+                preProcDefines += "_WINDOWS;_DEBUG";
+            } else {
+                preProcDefines += "_WINDOWS;NDEBUG";
+            }
+            preProcDefines += ";QT_CORE_LIB";
+            compilerTool.PreprocessorDefinitions = preProcDefines;
+
+            // ------------linkerTool--------------
+
+            var linkerTool = config.Tools("VCLinkerTool");
+
+            linkerTool.LinkIncremental = (bDebug ? linkIncrementalYes : linkIncrementalNo);
+
+            var bRibbon = wizard.FindSymbol("RIBBON_TOOLBAR");
+            var bTabbedMDI = wizard.FindSymbol("APP_TYPE_TABBED_MDI");
+            var bDBSupportHeaderOnly = wizard.FindSymbol("DB_SUPPORT_HEADER_ONLY");
+
+            var bOLEDB = wizard.FindSymbol("OLEDB");
+            var bSupportOLEDB = wizard.FindSymbol("DB_SUPPORT_OLEDB");
+            if (bOLEDB || (bDBSupportHeaderOnly && bSupportOLEDB)) {
+                linkerTool.AdditionalDependencies = "msdasc.lib";
+            }
+
+            var bODBC = wizard.FindSymbol("ODBC");
+            var bSupportODBC = wizard.FindSymbol("DB_SUPPORT_ODBC");
+            if (bODBC || (bDBSupportHeaderOnly && bSupportODBC)) {
+                linkerTool.AdditionalDependencies = "odbc32.lib";
+            }
+
+            // ------------resourceCompilerTool--------------
+
+            var resourceCompilerTool = config.Tools("VCResourceCompilerTool");
+            resourceCompilerTool.Culture = wizard.FindSymbol("LCID");
+            resourceCompilerTool.PreprocessorDefinitions = (bDebug ? "_DEBUG" : "NDEBUG");
+            resourceCompilerTool.AdditionalIncludeDirectories = "$(IntDir)";
+        } //for
     } catch (e) {
         var msg = "name: " + e.name + "\n" +
             "message: " + e.message + "\n" +

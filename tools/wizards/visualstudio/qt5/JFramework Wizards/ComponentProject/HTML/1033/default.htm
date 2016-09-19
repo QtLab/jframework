@@ -56,6 +56,8 @@
     <symbol name="INCLUDE_IJMESSAGESINK" type="checkbox" value="false"></symbol>
     <symbol name="INCLUDE_JOBSERVER" type="checkbox" value="false"></symbol>
     <symbol name="INCLUDE_CONFIG_FILE" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_LOWERCASE_FILENAMES" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_PRECOMPILED" type="checkbox" value="false"></symbol>
     <!-- component_class -->
     <symbol name="COMPONENT_CLASS_NAME" type="text" value=""></symbol>
     <symbol name="HEADER_FILE_NAME" type="text" value=""></symbol>
@@ -388,6 +390,8 @@
             window.external.AddSymbol("INCLUDE_DYNAMIC_LAYOUT", true);
             window.external.AddSymbol("INCLUDE_IJCOMPONENTUI", true);
             window.external.AddSymbol("INCLUDE_CONFIG_FILE", true);
+            window.external.AddSymbol("INCLUDE_LOWERCASE_FILENAMES", true);
+            window.external.AddSymbol("INCLUDE_PRECOMPILED", true);
             // component_class
             window.external.AddSymbol("COMPONENT_CLASS_NAME", className);
             window.external.AddSymbol("HEADER_FILE_NAME", className.toLowerCase() + ".h");

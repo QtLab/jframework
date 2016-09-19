@@ -270,6 +270,25 @@
                                         <label for="INCLUDE_CONFIG_FILE">Include Config File</label>
                                     </td>
                                 </tr>
+                                <tr colspan="3" valign="top" height="5">
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr valign="middle" height="24">
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <input type="checkbox" id="INCLUDE_LOWERCASE_FILENAMES" name="includeLowerCaseFileNames" onclick="OnLowerCaseChanged(this);">
+                                        <label for="INCLUDE_LOWERCASE_FILENAMES">Lower case file names</label>
+                                    </td>
+                                </tr>
+                                <tr valign="middle" height="24">
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        <input type="checkbox" id="INCLUDE_PRECOMPILED" name="includePrecompiled">
+                                        <label for="INCLUDE_PRECOMPILED">Precompiled header</label>
+                                    </td>
+                                </tr>
                                 <tr valign="top" colspan="3">
                                     <td>&nbsp;</td>
                                 </tr>
@@ -374,6 +393,31 @@
         InitControls();
     }
 
+    function UpdateFields() {
+        //
+        var regexp = /\s/g;
+        var projectName = window.external.FindSymbol('PROJECT_NAME').replace(regexp, "");
+        var className = UnderScoreCaseToCamelCase(projectName);
+        var uiClassName = className + "Ui";
+
+        //
+        if (window.external.dte.VCLanguageManager.ValidateIdentifier(projectName) &&
+            !window.external.dte.VCLanguageManager.IsReservedName(projectName)) {
+            var fileName = className;
+            var uiFileName = uiClassName;
+            if (INCLUDE_LOWERCASE_FILENAMES.checked) {
+                fileName = fileName.toLowerCase();
+                uiFileName = uiFileName.toLowerCase();
+            }
+            // component_class
+            window.external.AddSymbol("HEADER_FILE_NAME", fileName + ".h");
+            window.external.AddSymbol("SOURCE_FILE_NAME", fileName + ".cpp");
+            // component_ui
+            window.external.AddSymbol("UI_HEADER_FILE_NAME", uiFileName + ".h");
+            window.external.AddSymbol("UI_SOURCE_FILE_NAME", uiFileName + ".cpp");
+        }
+    }
+
     //
     function InitControls() {
         //
@@ -450,6 +494,25 @@
             linkComponentUi.style.display = "none";
         }
         */
+    }
+
+    //
+    function OnLowerCaseChanged(o) {
+        UpdateFields();
+    }
+
+    // 
+    function UnderScoreCaseToCamelCase(name) {
+        //
+        if ((typeof name) !== "string") {
+            return "";
+        }
+        //
+        var arr = name.split('_');
+        for (var i = 0; i < arr.length; ++i) {
+            arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].substring(1);
+        }
+        return arr.join('');
     }
 </script>
 <script language="JSCRIPT" id="INCLUDE_SCRIPT"></script>

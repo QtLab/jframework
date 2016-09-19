@@ -1,6 +1,9 @@
 
+[!if INCLUDE_PRECOMPILED]
 stdafx.h
 stdafx.cpp
+[!endif]
+
 component.h
 component.cpp
 
