@@ -1,7 +1,14 @@
+
 stdafx.h
 stdafx.cpp
 component.h
 component.cpp
+
+[!if INCLUDE_CONFIG_FILE]
 component.xml
+[!endif]
+
+[!if INCLUDE_IJCOMPONENTUI]
 widget.h
 widget.cpp
+[!endif]
