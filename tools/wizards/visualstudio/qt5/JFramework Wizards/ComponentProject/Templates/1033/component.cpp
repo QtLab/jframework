@@ -1,50 +1,50 @@
-﻿#include "precomp.h"
-#include "%{HdrFileName}"
-@if '%{IncludeIJComponentUi}'
-#include "%{UiHdrFileName}"
-@endif
+﻿#include "stdafx.h"
+#include "[!output HEADER_FILE_NAME]"
+[!if INCLUDE_IJCOMPONENTUI]
+#include "[!output UI_HEADER_FILE_NAME]"
+[!endif]
 
 //
 J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
 {
-@if '%{IncludeCheckLoginUser}'
+[!if INCLUDE_CHECK_LOGIN_USER]
     // 非管理员用户才能使用此组件
     if (jframeLogin()->loginManager()->isAdminUser()) {
         return 0;
     }
     
-@endif
+[!endif]
     return static_cast<IJComponent *>
-            (new %{ComponentClass}(reinterpret_cast<IJAttempter *>(attemper)));
+            (new [!output COMPONENT_CLASS_NAME](reinterpret_cast<IJAttempter *>(attemper)));
 }
 
-%{ComponentClass}::%{ComponentClass}(IJAttempter *attemper)
+[!output COMPONENT_CLASS_NAME]::[!output COMPONENT_CLASS_NAME](IJAttempter *attemper)
     : q_attempter(attemper)
-@if '%{IncludeIJComponentUi}'
+[!if INCLUDE_IJCOMPONENTUI]
     , q_ui(0)
-@endif
+[!endif]
 {
 
 }
 
-%{ComponentClass}::~%{ComponentClass}()
+[!output COMPONENT_CLASS_NAME]::~[!output COMPONENT_CLASS_NAME]()
 {
-@if '%{IncludeIJComponentUi}'
+[!if INCLUDE_IJCOMPONENTUI]
     if (q_ui) {
         q_ui->deleteLater();
         q_ui = 0;
     }
-@endif
+[!endif]
 }
 
-bool %{ComponentClass}::loadInterface()
+bool [!output COMPONENT_CLASS_NAME]::loadInterface()
 {
-@if !'%{IncludeDynamicLayout}' && '%{IncludeJObserver}'
+[!if !INCLUDE_DYNAMIC_LAYOUT && INCLUDE_JOBSERVER]
     // 订阅消息
     q_attempter->notifier().beginGroup(this)
             .endGroup();
 
-@endif
+[!endif]
     bool result = true;
 
     //TODO: Add your loading statements.
@@ -52,7 +52,7 @@ bool %{ComponentClass}::loadInterface()
     return result;
 }
 
-bool %{ComponentClass}::updateInterface()
+bool [!output COMPONENT_CLASS_NAME]::updateInterface()
 {
     bool result = true;
 
@@ -61,70 +61,70 @@ bool %{ComponentClass}::updateInterface()
     return result;
 }
 
-void %{ComponentClass}::releaseInterface()
+void [!output COMPONENT_CLASS_NAME]::releaseInterface()
 {
     //TODO: Add your release statements.
-@if !'%{IncludeDynamicLayout}' && '%{IncludeJObserver}'
+[!if !INCLUDE_DYNAMIC_LAYOUT && INCLUDE_JOBSERVER]
 
     // 取消订阅消息
     q_attempter->notifier().remove(this);
-@endif
+[!endif]
 }
 
-void* %{ComponentClass}::queryInterface(const std::string &iid, unsigned int ver)
+void* [!output COMPONENT_CLASS_NAME]::queryInterface(const std::string &iid, unsigned int ver)
 {
-@if '%{IncludeIJComponentUi}'
-    J_QUERY_INTERFACE(%{IncludeIJComponentUi}, iid, ver);
-@endif
-@if '%{IncludeIJCommandSink}'
-    J_QUERY_INTERFACE(%{IncludeIJCommandSink}, iid, ver);
-@endif
-@if '%{IncludeIJMessageSink}'
-    J_QUERY_INTERFACE(%{IncludeIJMessageSink}, iid, ver);
-@endif
-@if !'%{IncludeIJComponentUi}' || !'%{IncludeIJCommandSink}' || !'%{IncludeIJMessageSink}'
+[!if INCLUDE_IJCOMPONENTUI]
+    J_QUERY_INTERFACE(IJComponentUi, iid, ver);
+[!endif]
+[!if INCLUDE_IJCOMMANDSINK]
+    J_QUERY_INTERFACE(IJCommandSink, iid, ver);
+[!endif]
+[!if INCLUDE_IJMESSAGESINK]
+    J_QUERY_INTERFACE(IJMessageSink, iid, ver);
+[!endif]
+[!if !INCLUDE_IJCOMPONENTUI || !INCLUDE_IJCOMMANDSINK || !INCLUDE_IJMESSAGESINK]
     Q_UNUSED(iid);
     Q_UNUSED(ver);
-@endif
+[!endif]
 
     return 0;
 }
 
-std::string %{ComponentClass}::componentName() const
+std::string [!output COMPONENT_CLASS_NAME]::componentName() const
 {
-    return "%{ComponentName}";
+    return "[!output COMPONENT_NAME]";
 }
 
-std::string %{ComponentClass}::componentDesc() const
+std::string [!output COMPONENT_CLASS_NAME]::componentDesc() const
 {
-    return "%{ComponentDesc}";
+    return "[!output COMPONENT_DESC]";
 }
 
-@if '%{IncludeDynamicLayout}'
-void %{ComponentClass}::attach()
+[!if INCLUDE_DYNAMIC_LAYOUT]
+void [!output COMPONENT_CLASS_NAME]::attach()
 {
-@if  '%{IncludeJObserver}'
+[!if INCLUDE_JOBSERVER]
     // 订阅消息
     q_attempter->notifier().beginGroup(this)
             .endGroup();
 
-@endif
+[!endif]
     //TODO: Add your statements.
 }
 
-void %{ComponentClass}::detach()
+void [!output COMPONENT_CLASS_NAME]::detach()
 {
     //TODO: Add your statements.
 
-@if  '%{IncludeJObserver}'
+[!if INCLUDE_JOBSERVER]
     // 取消订阅消息
     q_attempter->notifier().remove(this);
-@endif
+[!endif]
 }
 
-@endif
-@if '%{IncludeIJComponentUi}'
-void *%{ComponentClass}::createWindow(void *parent, const std::string &objectName)
+[!endif]
+[!if INCLUDE_IJCOMPONENTUI]
+void *[!output COMPONENT_CLASS_NAME]::createWindow(void *parent, const std::string &objectName)
 {
     Q_UNUSED(parent);
     Q_UNUSED(objectName);
@@ -136,14 +136,14 @@ void *%{ComponentClass}::createWindow(void *parent, const std::string &objectNam
     }
 
     //
-    q_ui = new %{UiClassName}(*q_attempter);
+    q_ui = new [!output COMPONENT_UI_CLASS_NAME](*q_attempter);
 
     return qobject_cast<QWidget *>(q_ui);
 }
 
-@endif
-@if '%{IncludeIJCommandSink}'
-bool %{ComponentClass}::commandSink(void *sender, const std::string &domain, const std::string &objectName,
+[!endif]
+[!if INCLUDE_IJCOMMANDSINK]
+bool [!output COMPONENT_CLASS_NAME]::commandSink(void *sender, const std::string &domain, const std::string &objectName,
                            const std::string &eventType, void *data)
 {
     Q_UNUSED(domain);
@@ -161,9 +161,9 @@ bool %{ComponentClass}::commandSink(void *sender, const std::string &domain, con
     return false;
 }
 
-@endif
-@if '%{IncludeIJMessageSink}'
-bool %{ComponentClass}::messageSink(IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+[!endif]
+[!if INCLUDE_IJMESSAGESINK]
+bool [!output COMPONENT_CLASS_NAME]::messageSink(IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
     Q_UNUSED(sender);
     Q_UNUSED(id);
@@ -175,11 +175,11 @@ bool %{ComponentClass}::messageSink(IJComponent *sender, const std::string &id, 
     return false;
 }
 
-@endif
-@if '%{IncludeJObserver}'
-std::string %{ComponentClass}::observerId() const
+[!endif]
+[!if INCLUDE_JOBSERVER]
+std::string [!output COMPONENT_CLASS_NAME]::observerId() const
 {
     return componentName();
 }
 
-@endif
+[!endif]

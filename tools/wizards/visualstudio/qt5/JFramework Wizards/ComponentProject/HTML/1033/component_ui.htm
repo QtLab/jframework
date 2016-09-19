@@ -117,7 +117,7 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <div class="LINKSELECTED">
+                                <div class="LINKSELECTED" id="LINK_COMPONENT_UI">
                                     <span class="VERTLINE1">
                                             <img height="1" alt="" src="../../Images/spacer.gif" width="1" border="0">
                                         </span><span class="HORILINE1">
@@ -195,7 +195,7 @@
                                     <td>&nbsp;</td>
                                     <td>Ui Class name:&nbsp;&nbsp;</td>
                                     <td>
-                                        <input size="50%" type="text" id="UI_COMPONENT_CLASS_NAME" name="uiComponentClassName" />
+                                        <input size="50%" type="text" id="COMPONENT_UI_CLASS_NAME" name="componentUiClassName" onpropertychange="OnComponentUiClassNameChanged(this);" />
                                     </td>
                                 </tr>
                                 <tr valign="middle" height="24">
@@ -214,7 +214,7 @@
                                     <td>&nbsp;</td>
                                     <td>&nbsp;</td>
                                     <td>
-                                        <input size="50%" type="text" id="UI_BASE_CLASS_NAME" name="uiBaseClassName" style="ime-mode:disabled" onkeyup="OnBaseClassNameKeyUp(this);" />
+                                        <input size="50%" type="text" id="UI_BASE_CLASS_NAME" name="uiBaseClassName" disabled style="ime-mode:disabled" onkeyup="OnBaseClassNameKeyUp(this);" />
                                     </td>
                                 </tr>
                                 <tr valign="top" colspan="3" height="5">
@@ -302,16 +302,18 @@
                                 <tr>
                                     <td valign="middle" width="12" height="23">&nbsp;</td>
                                     <td valign="top" height="23">&nbsp;</td>
-                                    <td valign="middle" width="4" height="23">
-                                        &nbsp;
+                                    <td valign="middle" width="75" style="height: 23px">
+                                        <button class="BUTTONS" id="FinishBtn" accesskey="F" onclick="OnFinish(document);" type="button">
+                                            <u>F</u>inish</button>
                                     </td>
+                                    <td valign="middle" width="4" height="23">&nbsp;</td>
                                     <td valign="middle" width="75" height="23">
-                                        <button class="BUTTONS" id="BUTTON_CANCEL" name="buttonCancel" accesskey="C" onclick="window.external.Finish(document, 'cancel');" type="button">
+                                        <button class="BUTTONS" id="CancelBtn" accesskey="C" onclick="window.external.Finish(document, 'cancel');" type="button">
                                         <u>C</u>ancel</button>
                                     </td>
                                     <td valign="middle" width="4" height="23">&nbsp;</td>
                                     <td valign="middle" width="75" height="23">
-                                        <button class="BUTTONS" id="BUTTON_HELP" name="buttonHelp" disabled accesskey="H" onclick="window.external.OnHelp('vc.appwiz.custom.overview');" type="button">
+                                        <button class="BUTTONS" id="HelpBtn" disabled accesskey="H" onclick="window.external.OnHelp('vc.appwiz.custom.overview');" type="button">
                                         <u>H</u>elp</button>
                                     </td>
                                     <td valign="middle" width="12" height="23">&nbsp;</td>
@@ -334,24 +336,28 @@
 </html>
 
 <script language="JSCRIPT">
-    var QtEngine;
-    var tab_array = new Array();
-    tab_array[0] = Default;
-    tab_array[1] = modules;
-    tab_array[2] = component_class;
-    tab_array[3] = component_ui;
-    tab_array[4] = summary;
+    var tab_array = CreateTabArray();
+
+    //
+    function CreateTabArray() {
+        var arr = new Array();
+        var index = 0;
+        arr[index++] = Default;
+        arr[index++] = modules;
+        arr[index++] = component_class;
+        //
+        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
+        if (includeIJComponentUi == "undefined" || includeIJComponentUi) {
+            arr[index++] = component_ui;
+        }
+        arr[index] = summary;
+
+        return arr;
+    }
 
     // This is an example of a function which initializes the page
     //
     function InitDocument(document) {
-        try {
-            QtEngine = new ActiveXObject("Digia.Qt5ProjectEngine");
-        } catch (ex) {
-            window.external.ReportError("Cannot instantiate QtProjectEngine object!");
-            return false;
-        }
-
         if (window.external.FindSymbol('DOCUMENT_FIRST_LOAD')) {
             // This function sets the default symbols based
             // on the values specified in the SYMBOL tags above
@@ -370,15 +376,17 @@
     //
     function InitControls() {
         //
-        var className = window.external.FindSymbol("COMPONENT_CLASS_NAME");
-
-        //
-        OnBaseClassNameChanged(uiBaseClass);
-
-        //
-        uiComponentClassName.value = className + "Ui";
-        uiHeaderFileName.value = className.toLowerCase() + ".h";
-        uiSourceFileName.value = className.toLowerCase() + ".cpp";
+        /*
+        var linkComponentUi = document.getElementById('LINK_COMPONENT_UI');
+        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
+        if (includeIJComponentUi) {
+            linkComponentUi.style.visibility = "visible";
+            linkComponentUi.style.display = "";
+        } else {
+            linkComponentUi.style.visibility = "hidden";
+            linkComponentUi.style.display = "none";
+        } 
+        */
     }
 
     //
@@ -398,38 +406,34 @@
     }
 
     //
+    function OnFinish() {
+        if (!ValidateAndUpdate())
+            return;
+
+        OnWizFinish(document);
+    }
+
+    //
+    function OnComponentUiClassNameChanged(input) {
+        //
+        UI_HEADER_FILE_NAME.value = input.value.toLowerCase() + ".h";
+        UI_SOURCE_FILE_NAME.value = input.value.toLowerCase() + ".cpp";
+    }
+
+    //
     function OnBaseClassNameChanged(select) {
-        //
-        if (select.value === "Custom") {
-            uiBaseClassName.value = "";
-            uiBaseClassName.disabled = false;
-        } else {
-            uiBaseClassName.value = select.value;
-            uiBaseClassName.disabled = true;
-        }
-        //
-        if (select.value === "QWidget") {
-            includeQWidget.checked = true;
-            includeQDialog.checked = false;
-            includeQMainWindow.checked = false;
-        } else if (select.value === "QDialog") {
-            includeQWidget.checked = false;
-            includeQDialog.checked = true;
-            includeQMainWindow.checked = false;
-        } else if (select.value === "QMainWindow") {
-            includeQWidget.checked = false;
-            includeQDialog.checked = false;
-            includeQMainWindow.checked = true;
-        } else {
-            includeQWidget.checked = false;
-            includeQDialog.checked = false;
-            includeQMainWindow.checked = false;
-        }
+        // 
+        UI_BASE_CLASS_NAME.value = (select.value === "Custom" ? "" : select.value);
+        UI_BASE_CLASS_NAME.disabled = (select.value !== "Custom");
+        // 
+        INCLUDE_QWIDGET.checked = (select.value === "QWidget");
+        INCLUDE_QDIALOG.checked = (select.value === "QDialog");
+        INCLUDE_QMAINWINDOW.checked = (select.value === "QMainWindow");
     }
 
     //
     function OnBaseClassNameKeyUp(input) {
-        input.value = input.value.replace(/^(?:(?:[a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*|)/ig, '');
+        //input.value = input.value.replace(/^(?:(?:[a-zA-Z_][a-zA-Z_0-9]*::)*[a-zA-Z_][a-zA-Z_0-9]*|)/ig, '');
     }
 </script>
 <script language="JSCRIPT" id="INCLUDE_SCRIPT"></script>

@@ -8,6 +8,7 @@
     <!-- The SYMBOL tag is used to set the default values for the user-defined symbols.-->
     <!--  -->
     <symbol name="WIZARD_DIALOG_TITLE" type="text" value="JFramework Component Project Wizard"></symbol>
+    <!-- Qt Modules -->
     <symbol name="THREED_MODULE" type="checkbox" value="false"></symbol>
     <symbol name="AQCONTAINER_MODULE" type="checkbox" value="false"></symbol>
     <symbol name="AQSERVER_MODULE" type="checkbox" value="false"></symbol>
@@ -45,19 +46,29 @@
     <symbol name="WINDOWSEXTRAS_MODULE" type="checkbox" value="false"></symbol>
     <symbol name="XML_MODULE" type="checkbox" value="false"></symbol>
     <symbol name="XMLPATTERNS_MODULE" type="checkbox" value="false"></symbol>
-    <symbol name="CLASSNAME_TEXT" type="text" value=""></symbol>
-    <symbol name="HFILE_TEXT" type="text" value=""></symbol>
-    <symbol name="CPPFILE_TEXT" type="text" value=""></symbol>
-    <symbol name="UIFILE_TEXT" type="text" value=""></symbol>
-    <symbol name="QRCFILE_TEXT" type="text" value=""></symbol>
-    <symbol name="APP_TYPE_SUMMARY" type="text" value="JFramework Component Project"></symbol>
-    <!--<symbol name="COMPONENT_CLASS_NAME" type="text" value=""></symbol>-->
-    <symbol name="CLASSNAME_TEXT" type="text" value=""></symbol>
-    <symbol name="COMPONENT_HFILE_TEXT" type="text" value=""></symbol>
-    <symbol name="COMPONENT_CPPFILE_TEXT" type="text" value=""></symbol>
-    <symbol name="COMPONENT_XMLFILE_TEXT" type="text" value=""></symbol>
-    <symbol name="COMPONENT_UI_HFILE_TEXT" type="text" value=""></symbol>
-    <symbol name="COMPONENT_UI_CPPFILE_TEXT" type="text" value=""></symbol>
+    <!-- modules -->
+    <symbol name="COMPONENT_NAME" type="text" value=""></symbol>
+    <symbol name="COMPONENT_DESC" type="text" value=""></symbol>
+    <symbol name="INCLUDE_CHECK_LOGIN_USER" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_DYNAMIC_LAYOUT" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_IJCOMPONENTUI" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_IJCOMMANDSINK" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_IJMESSAGESINK" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_JOBSERVER" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_CONFIG_FILE" type="checkbox" value="false"></symbol>
+    <!-- component_class -->
+    <symbol name="COMPONENT_CLASS_NAME" type="text" value=""></symbol>
+    <symbol name="HEADER_FILE_NAME" type="text" value=""></symbol>
+    <symbol name="SOURCE_FILE_NAME" type="text" value=""></symbol>
+    <!-- component_ui -->
+    <symbol name="COMPONENT_UI_CLASS_NAME" type="text" value=""></symbol>
+    <symbol name="UI_BASE_CLASS_NAME" type="text" value=""></symbol>
+    <symbol name="INCLUDE_QWIDGET" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_QDIALOG" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_QMAINWINDOW" type="checkbox" value="false"></symbol>
+    <symbol name="INCLUDE_QSHAREDDATA" type="checkbox" value="false"></symbol>
+    <symbol name="UI_HEADER_FILE_NAME" type="text" value=""></symbol>
+    <symbol name="UI_SOURCE_FILE_NAME" type="text" value=""></symbol>
 </head>
 
 <body onkeypress="OnPress();" onkeydown="OnKey();" bottommargin="0" bgcolor="buttonface" leftmargin="0" topmargin="0" onload="InitDocument(document);" rightmargin="0">
@@ -181,7 +192,7 @@
                                             </tr>
                                         </table>
                                     </div>
-                                    <div class="LINK">
+                                    <div class="LINK" id="LINK_COMPONENT_UI">
                                         <table class="LINKTEXT" height="28" cellspacing="0" cellpadding="0" width="166" border="0" id="Table1">
                                             <tr valign="middle">
                                                 <td width="162">
@@ -286,15 +297,19 @@
                                             </tr>
                                             <tr>
                                                 <td valign="middle" width="12" style="height: 23px">&nbsp;</td>
-                                                <td valign="top" style="height: 23px">&nbsp;</td>
+                                                <td valign="top" height="23">&nbsp;</td>
+                                                <td valign="middle" width="75" style="height: 23px">
+                                                    <button class="BUTTONS" id="FinishBtn" accesskey="F" onclick="OnFinish(document);" type="button">
+                                                        <u>F</u>inish</button>
+                                                </td>
                                                 <td valign="middle" width="4" style="height: 23px">&nbsp;</td>
                                                 <td valign="middle" width="75" style="height: 23px">
-                                                    <button class="BUTTONS" id="BUTTON_CANCEL" name="buttonCancel" accesskey="C" onclick="window.external.Finish(document, 'cancel');" type="button">
+                                                    <button class="BUTTONS" id="CancelBtn" accesskey="C" onclick="window.external.Finish(document, 'cancel');" type="button">
                                                         <u>C</u>ancel</button>
                                                 </td>
                                                 <td valign="middle" width="4" style="height: 23px">&nbsp;</td>
                                                 <td valign="middle" width="75" style="height: 23px">
-                                                    <button class="BUTTONS" id="BUTTON_HELP" name="buttonHelp" disabled accesskey="H" onclick="window.external.OnHelp('vc.appwiz.custom.overview');" type="button">
+                                                    <button class="BUTTONS" id="HelpBtn" disabled accesskey="H" onclick="window.external.OnHelp('vc.appwiz.custom.overview');" type="button">
                                                         <u>H</u>elp</button>
                                                 </td>
                                                 <td valign="middle" width="12" style="height: 23px">&nbsp;</td>
@@ -316,12 +331,24 @@
 </html>
 
 <script language="JSCRIPT">
-    var tab_array = new Array();
-    tab_array[0] = Default;
-    tab_array[1] = modules;
-    tab_array[2] = component_class;
-    tab_array[3] = component_ui;
-    tab_array[4] = summary;
+    var tab_array = CreateTabArray();
+
+    //
+    function CreateTabArray() {
+        var arr = new Array();
+        var index = 0;
+        arr[index++] = Default;
+        arr[index++] = modules;
+        arr[index++] = component_class;
+        //
+        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
+        if (includeIJComponentUi == "undefined" || includeIJComponentUi) {
+            arr[index++] = component_ui;
+        }
+        arr[index] = summary;
+
+        return arr;
+    }
 
     // This is an example of a function which initializes the page
     //
@@ -347,10 +374,135 @@
 
     function UpdateFields() {
         //
+        var regexp = /\s/g;
+        var projectName = window.external.FindSymbol('PROJECT_NAME').replace(regexp, "");
+        var className = UnderScoreCaseToCamelCase(projectName);
+        var uiClassName = className + "Ui";
+
+        //
+        if (window.external.dte.VCLanguageManager.ValidateIdentifier(projectName) &&
+            !window.external.dte.VCLanguageManager.IsReservedName(projectName)) {
+            // modules
+            window.external.AddSymbol("COMPONENT_NAME", projectName); // fall back on myclass
+            window.external.AddSymbol("COMPONENT_DESC", projectName);
+            window.external.AddSymbol("INCLUDE_DYNAMIC_LAYOUT", true);
+            window.external.AddSymbol("INCLUDE_IJCOMPONENTUI", true);
+            window.external.AddSymbol("INCLUDE_CONFIG_FILE", true);
+            // component_class
+            window.external.AddSymbol("COMPONENT_CLASS_NAME", className);
+            window.external.AddSymbol("HEADER_FILE_NAME", className.toLowerCase() + ".h");
+            window.external.AddSymbol("SOURCE_FILE_NAME", className.toLowerCase() + ".cpp");
+            // component_ui
+            window.external.AddSymbol("COMPONENT_UI_CLASS_NAME", className + "Ui");
+            window.external.AddSymbol("UI_BASE_CLASS_NAME", "QWidget");
+            window.external.AddSymbol("INCLUDE_QWIDGET", true);
+            window.external.AddSymbol("UI_HEADER_FILE_NAME", uiClassName.toLowerCase() + ".h");
+            window.external.AddSymbol("UI_SOURCE_FILE_NAME", uiClassName.toLowerCase() + ".cpp");
+        }
     }
 
     function InitControls() {
         //
+        /*
+        var linkComponentUi = document.getElementById('LINK_COMPONENT_UI');
+        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
+        if (includeIJComponentUi) {
+            linkComponentUi.style.visibility = "visible";
+            linkComponentUi.style.display = "";
+        } else {
+            linkComponentUi.style.visibility = "hidden";
+            linkComponentUi.style.display = "none";
+        } 
+        */
+        //
+        var strModules = "";
+
+        // Essentials
+        if (window.external.FindSymbol('THREED_MODULE'))
+            strModules += "3D, ";
+        if (window.external.FindSymbol('CORE_MODULE'))
+            strModules += "Core, ";
+        if (window.external.FindSymbol('GUI_MODULE'))
+            strModules += "GUI, ";
+        if (window.external.FindSymbol('LOCATION_MODULE'))
+            strModules += "Location, ";
+        if (window.external.FindSymbol('MULTIMEDIA_MODULE'))
+            strModules += "Multimedia, ";
+        if (window.external.FindSymbol('MULTIMEDIAWIDGETS_MODULE'))
+            strModules += "Multimedia Widgets, ";
+        if (window.external.FindSymbol('NETWORK_MODULE'))
+            strModules += "Network, ";
+        if (window.external.FindSymbol('QML_MODULE'))
+            strModules += "Qml, ";
+        if (window.external.FindSymbol('QUICK_MODULE'))
+            strModules += "Quick, ";
+        if (window.external.FindSymbol('SQL_MODULE'))
+            strModules += "SQL, ";
+        if (window.external.FindSymbol('TEST_MODULE'))
+            strModules += "Test, ";
+        if (window.external.FindSymbol('WEBKIT_MODULE'))
+            strModules += "WebKit, ";
+
+        // Add-ons
+        // Active Qt better split to server and container
+        if (window.external.FindSymbol('AQSERVER_MODULE'))
+            strModules += "ActiveQt Server, ";
+        if (window.external.FindSymbol('AQCONTAINER_MODULE'))
+            strModules += "ActiveQt Container, ";
+
+        if (window.external.FindSymbol('BLUETOOTH_MODULE'))
+            strModules += "Bluetooth, ";
+        if (window.external.FindSymbol('CONCURRENT_MODULE'))
+            strModules += "Concurrent, ";
+        if (window.external.FindSymbol('DECLARATIVE_MODULE'))
+            strModules += "Declarative, ";
+        if (window.external.FindSymbol('ENGINIO_MODULE'))
+            strModules += "Enginio, ";
+        if (window.external.FindSymbol('HELP_MODULE'))
+            strModules += "Help, ";
+        if (window.external.FindSymbol('NFC_MODULE'))
+            strModules += "NFC, ";
+        if (window.external.FindSymbol('OPENGL_MODULE'))
+            strModules += "OpenGL, ";
+        if (window.external.FindSymbol('POSITIONING_MODULE'))
+            strModules += "Positioning, ";
+        if (window.external.FindSymbol('PRINTSUPPORT_MODULE'))
+            strModules += "Print Support, ";
+        if (window.external.FindSymbol('QUICKWIDGETS_MODULE'))
+            strModules += "Quick Widgets, ";
+        if (window.external.FindSymbol('SCRIPT_MODULE'))
+            strModules += "Script, ";
+        if (window.external.FindSymbol('SCRIPTTOOLS_MODULE'))
+            strModules += "Script Tools, ";
+        if (window.external.FindSymbol('SENSORS_MODULE'))
+            strModules += "Sensors, ";
+        if (window.external.FindSymbol('SERIALPORT_MODULE'))
+            strModules += "Serial Port, ";
+        if (window.external.FindSymbol('SVG_MODULE'))
+            strModules += "SVG, ";
+        if (window.external.FindSymbol('UITOOLS_MODULE'))
+            strModules += "UI Tools, ";
+        if (window.external.FindSymbol('WEBCHANNEL_MODULE'))
+            strModules += "Web Channel, ";
+        if (window.external.FindSymbol('WEBKITWIDGETS_MODULE'))
+            strModules += "Webkit Widgets, ";
+        if (window.external.FindSymbol('WEBSOCKETS_MODULE'))
+            strModules += "Web Sockets, ";
+        if (window.external.FindSymbol('WIDGETS_MODULE'))
+            strModules += "Widgets, ";
+        if (window.external.FindSymbol('WINDOWSEXTRAS_MODULE'))
+            strModules += "Windows Extras, ";
+        if (window.external.FindSymbol('XML_MODULE'))
+            strModules += "XML, ";
+        if (window.external.FindSymbol('XMLPATTERNS_MODULE'))
+            strModules += "XML Patterns, ";
+
+        if (strModules.length < 1)
+            strModules = "None selected";
+        else
+            strModules = strModules.slice(0, strModules.length - 2);
+
+        QTMODULES.innerText = strModules;
     }
 
     //
@@ -367,6 +519,28 @@
             return;
 
         window.external.Next(document, linkto);
+    }
+
+    //
+    function OnFinish() {
+        if (!ValidateAndUpdate())
+            return;
+
+        OnWizFinish(document);
+    }
+
+    // 
+    function UnderScoreCaseToCamelCase(name) {
+        //
+        if ((typeof name) !== "string") {
+            return "";
+        }
+        //
+        var arr = name.split('_');
+        for (var i = 0; i < arr.length; ++i) {
+            arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].substring(1);
+        }
+        return arr.join('');
     }
 </script>
 <script language="JSCRIPT" id="INCLUDE_SCRIPT"></script>

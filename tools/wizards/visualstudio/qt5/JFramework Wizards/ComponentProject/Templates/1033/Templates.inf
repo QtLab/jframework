@@ -1,0 +1,7 @@
+stdafx.h
+stdafx.cpp
+component.h
+component.cpp
+component.xml
+widget.h
+widget.cpp

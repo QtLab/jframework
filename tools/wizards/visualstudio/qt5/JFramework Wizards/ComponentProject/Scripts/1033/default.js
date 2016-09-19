@@ -1,5 +1,3 @@
-var QtEngine;
-
 function GetNameFromFile(strFile) {
     var nPos = strFile.lastIndexOf(".");
     return strFile.substr(0, nPos);
@@ -7,192 +5,136 @@ function GetNameFromFile(strFile) {
 
 function OnFinish(selProj, selObj) {
     try {
+        // vs
+        var projectPath = wizard.FindSymbol("PROJECT_PATH");
+        var projectName = wizard.FindSymbol("PROJECT_NAME");
+        var solutionName = wizard.FindSymbol("VS_SOLUTION_NAME");
+        var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
+        var exclusive = wizard.FindSymbol("CLOSE_SOLUTION");
+        // modules
+        var componentName = wizard.FindSymbol("COMPONENT_NAME");
+        var componentDesc = wizard.FindSymbol("COMPONENT_DESC");
+        var includeCheckLoginUser = wizard.FindSymbol("INCLUDE_CHECK_LOGIN_USER");
+        var includeDynamicLayout = wizard.FindSymbol("INCLUDE_DYNAMIC_LAYOUT");
+        var includeIJComponentUi = wizard.FindSymbol("INCLUDE_IJCOMPONENTUI");
+        var includeIJCommandSink = wizard.FindSymbol("INCLUDE_IJCOMMANDSINK");
+        var includeIJMessageSink = wizard.FindSymbol("INCLUDE_IJMESSAGESINK");
+        var includeJObserver = wizard.FindSymbol("INCLUDE_JOBSERVER");
+        var includeConfigFile = wizard.FindSymbol("INCLUDE_CONFIG_FILE");
+        // component_class
+        var componentClassName = wizard.FindSymbol("COMPONENT_CLASS_NAME");
+        var headerFileName = wizard.FindSymbol("HEADER_FILE_NAME");
+        var sourceFileName = wizard.FindSymbol("SOURCE_FILE_NAME");
+        var precompiled = true; //wizard.FindSymbol("PRECOMPILED");
+        // component_ui
+        var componentUiClassName = wizard.FindSymbol("COMPONENT_UI_CLASS_NAME");
+        var uiBaseClassName = wizard.FindSymbol("UI_BASE_CLASS_NAME");
+        var includeQWidget = wizard.FindSymbol("INCLUDE_QWIDGET");
+        var includeQDialog = wizard.FindSymbol("INCLUDE_QDIALOG");
+        var includeQMainWindow = wizard.FindSymbol("INCLUDE_QMAINWINDOW");
+        var uiHeaderFileName = wizard.FindSymbol("UI_HEADER_FILE_NAME");
+        var uiSourceFileName = wizard.FindSymbol("UI_SOURCE_FILE_NAME");
+
+        // 
+        var regexp = /\W/g;
+        var defComponentHeader = headerFileName.toUpperCase().replace(regexp, "_");
+        var defComponentUiHeader = uiHeaderFileName.toUpperCase().replace(regexp, "_");
+        wizard.AddSymbol("COMPONENT_HEADER_GUARD", defComponentHeader);
+        wizard.AddSymbol("COMPONENT_UI_HEADER_GUARD", defComponentUiHeader);
+        var index = 0;
         try {
-            QtEngine = new ActiveXObject("Digia.Qt5ProjectEngine");
-        } catch (ex) {
-            window.external.ReportError("Cannot instantiate QtProjectEngine object!");
-            return false;
+            index = 0; //["QWidget", "QDialog", "QMainWindow"].indexOf("QMainWindow");
+        } catch (e) {
+            var msg = "name: " + e.name + "\n" +
+                "message: " + e.message + "\n" +
+                "description: " + e.description;
+            wizard.ReportError("??? => \n" + msg);
         }
-        /*
-                var strProjectPath = wizard.FindSymbol('PROJECT_PATH');
-                var strProjectName = wizard.FindSymbol('PROJECT_NAME');
-                var strSolutionName = wizard.FindSymbol('VS_SOLUTION_NAME');
-                var strTemplatePath = wizard.FindSymbol('TEMPLATES_PATH') + "\\";
-                var bExclusive = wizard.FindSymbol("CLOSE_SOLUTION");
+        wizard.AddSymbol("BASECLASS_INSTANCEOF_QOBJECT", (index >= 0));
 
-                var vcfileTmp;
-                var fileTmp;
-                var strClass = wizard.FindSymbol('CLASSNAME_TEXT');
-                var strHeader = wizard.FindSymbol('HFILE_TEXT');
-                var strSource = wizard.FindSymbol('CPPFILE_TEXT');
-                var strForm = wizard.FindSymbol('UIFILE_TEXT');
-                var strQrc = wizard.FindSymbol('QRCFILE_TEXT');
-                var baseClassID = wizard.FindSymbol('BASECLASS_COMBO');
-                var appIcon = wizard.FindSymbol('APP_ICON');
-                var bPrecompiled = wizard.FindSymbol('PRECOMPILED_HEADERS');
-                var baseClass = "QMainWindow";
+        wizard.AddSymbol("UI_BASE_CLASS_NAME_IS_EMPTY", uiBaseClassName === "");
+        wizard.AddSymbol("UI_BASE_CLASS_IS_QOBJECT", uiBaseClassName === "QObject");
+        wizard.AddSymbol("UI_BASE_CLASS_INERITS_QWIDGET", uiBaseClassName === "QWidget" || uiBaseClassName === "QDialog" || uiBaseClassName === "QMainWindow");
 
-                if (baseClassID == 2)
-                    baseClass = "QWidget";
-                else if (baseClassID == 3)
-                    baseClass = "QDialog";
-                else {
-                    baseClassID = 1;
-                    baseClass = "QMainWindow";
-                }
+        //////////
 
-                var regexp = /\W/g;
-                var strDef = strHeader.toUpperCase().replace(regexp, "_");
+        try {
+            selProj = CreateProject(projectName, projectPath);
+            selProj.Object.Keyword = "Qt4VS";
+        } catch (e) {
+            var msg = "name: " + e.name + "\n" +
+                "message: " + e.message + "\n" +
+                "description: " + e.description;
+            wizard.ReportError("xxx => \n" + msg);
+        }
 
-                var strFormName = GetNameFromFile(strForm);
+        AddCommonConfig(selProj, projectName);
 
-                QtEngine.CreateApplicationProject(wizard.dte, strProjectName,
-                    strProjectPath, strSolutionName, bExclusive, bPrecompiled);
+        //
+        SetupFilters(selProj);
 
-                // add the selected modules to the project
-                AddModules();
+        SetResDlgFont();
 
-                var strHeaderInclude = strHeader;
-                if (bPrecompiled) {
-                    strHeaderInclude = "stdafx.h\"\n#include \"" + strHeader;
-                    fileTmp = QtEngine.CopyFileToProjectFolder(strTemplatePath + "stdafx.cpp", "stdafx.cpp");
-                    QtEngine.AddFileToProject(fileTmp, "QT_SOURCE_FILTER");
+        AddFilesToProjectWithInfFile(selProj, projectName);
 
-                    fileTmp = QtEngine.CopyFileToProjectFolder(strTemplatePath + "stdafx.h", "stdafx.h");
-                    QtEngine.AddFileToProject(fileTmp, "QT_HEADER_FILTER");
-                }
+        SetCommonPchSettings(selProj);
 
-                // main.cpp
-                fileTmp = QtEngine.CopyFileToProjectFolder(strTemplatePath + "main.cpp", "main.cpp");
-                QtEngine.ReplaceTokenInFile(fileTmp, "%INCLUDE%", strHeaderInclude);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%CLASS%", strClass);
-                QtEngine.AddFileToProject(fileTmp, "QT_SOURCE_FILTER");
+        try {
+            selProj.Object.Save();
+        } catch (e) {
+            var msg = "name: " + e.name + "\n" +
+                "message: " + e.message + "\n" +
+                "description: " + e.description;
+            wizard.ReportError("yyy => \n" + msg);
+        }
 
-                // mywidget.cpp
-                fileTmp = QtEngine.CopyFileToProjectFolder(strTemplatePath + "mywidget.cpp", strSource);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%INCLUDE%", strHeaderInclude);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%CLASS%", strClass);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%BASECLASS%", baseClass);
-                QtEngine.AddFileToProject(fileTmp, "QT_SOURCE_FILTER");
-
-                // mywidget.h
-                fileTmp = QtEngine.CopyFileToProjectFolder(strTemplatePath + "mywidget.h", strHeader);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%PRE_DEF%", strDef);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%CLASS%", strClass);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%UI_HDR%", "ui_" + strFormName + ".h");
-                QtEngine.ReplaceTokenInFile(fileTmp, "%BASECLASS%", baseClass);
-                vcfileTmp = QtEngine.AddFileToProject(fileTmp, "QT_HEADER_FILTER");
-
-                // widget.ui
-                fileTmp = QtEngine.CopyFileToProjectFolder(strTemplatePath + "widget.ui", strForm);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%CLASS%", strClass);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%BASECLASS%", baseClass);
-                QtEngine.ReplaceTokenInFile(fileTmp, "%QRC%", strQrc);
-                if (baseClassID == 1) {
-                    QtEngine.ReplaceTokenInFile(fileTmp, "%CENTRAL_WIDGET%",
-                        "\r\n  <widget class=\"QMenuBar\" name=\"menuBar\" />" +
-                        "\r\n  <widget class=\"QToolBar\" name=\"mainToolBar\" />" +
-                        "\r\n  <widget class=\"QWidget\" name=\"centralWidget\" />" +
-                        "\r\n  <widget class=\"QStatusBar\" name=\"statusBar\" />");
-                } else {
-                    QtEngine.ReplaceTokenInFile(fileTmp, "%CENTRAL_WIDGET%", "");
-                }
-                vcfileTmp = QtEngine.AddFileToProject(fileTmp, "QT_FORM_FILTER");
-
-                fileTmp = QtEngine.CreateQrcFile(strClass, strQrc);
-                vcfileTmp = QtEngine.AddFileToProject(fileTmp, "QT_RESOURCE_FILTER");
-
-                if (appIcon == 1) {
-                    QtEngine.AddApplicationIcon(strTemplatePath + "winapp.ico");
-                }
-        */
-        QtEngine.Finish();
     } catch (e) {
+        var msg = "name: " + e.name + "\n" +
+            "message: " + e.message + "\n" +
+            "description: " + e.description;
+        wizard.ReportError("OnFinish => \n" + msg);
         if (e.description.length != 0)
             SetErrorInfo(e);
         return e.number
     }
 }
 
-function AddModules() {
-    /*
-    // Essential modules
-    if (wizard.FindSymbol('THREED_MODULE'))
-        QtEngine.AddModule("Qt3D");
-    if (wizard.FindSymbol('CORE_MODULE'))
-        QtEngine.AddModule("QtCore");
-    if (wizard.FindSymbol('GUI_MODULE'))
-        QtEngine.AddModule("QtGui");
-    if (wizard.FindSymbol('LOCATION_MODULE'))
-        QtEngine.AddModule("QtLocation");
-    if (wizard.FindSymbol('MULTIMEDIA_MODULE'))
-        QtEngine.AddModule("QtMultimedia");
-    if (wizard.FindSymbol('MULTIMEDIAWIDGETS_MODULE'))
-        QtEngine.AddModule("QtMultimediaWidgets");
-    if (wizard.FindSymbol('NETWORK_MODULE'))
-        QtEngine.AddModule("QtNetwork");
-    if (wizard.FindSymbol('QML_MODULE'))
-        QtEngine.AddModule("QtQml");
-    if (wizard.FindSymbol('QUICK_MODULE'))
-        QtEngine.AddModule("QtQuick");
-    if (wizard.FindSymbol('SQL_MODULE'))
-        QtEngine.AddModule("QtSql");
-    if (wizard.FindSymbol('TEST_MODULE'))
-        QtEngine.AddModule("QtTest");
-    if (wizard.FindSymbol('WEBKIT_MODULE'))
-        QtEngine.AddModule("QtWebKit"); // ??
+function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
+    try {
+        var targetName = sourceName;
+        if (sourceName == "component.h") {
+            targetName = wizard.FindSymbol("HEADER_FILE_NAME");
+        } else if (sourceName == "component.cpp") {
+            targetName = wizard.FindSymbol("SOURCE_FILE_NAME");
+        } else if (sourceName == "component.xml") {
+            targetName = wizard.FindSymbol("COMPONENT_NAME") + ".xml";
+        } else if (sourceName == "widget.h") {
+            targetName = wizard.FindSymbol("UI_HEADER_FILE_NAME");
+        } else if (sourceName == "widget.cpp") {
+            targetName = wizard.FindSymbol("UI_SOURCE_FILE_NAME");
+        } else if (sourceName == "stdafx.h") {
+            targetName = "stdafx.h";
+        } else if (sourceName == "stdafx.cpp") {
+            targetName = "stdafx.cpp";
+        }
+        return targetName;
+    } catch (e) {
+        var msg = "name: " + e.name + "\n" +
+            "message: " + e.message + "\n" +
+            "description: " + e.description;
+        wizard.ReportError("GetTargetName => \n" + msg);
+        throw e;
+    }
+}
 
-    // Add-on modules
-    // Active Qt better split to server and container
-    if (wizard.FindSymbol('AQCONTAINER_MODULE'))
-        QtEngine.AddModule("QtAxContainer");
-    if (wizard.FindSymbol('AQSERVER_MODULE'))
-        QtEngine.AddModule("QtAxServer");
-    if (wizard.FindSymbol('BLUETOOTH_MODULE'))
-        QtEngine.AddModule("QtBluetooth");
-    if (wizard.FindSymbol('CONCURRENT_MODULE'))
-        QtEngine.AddModule("QtConcurrent");
-    if (wizard.FindSymbol('DECLARATIVE_MODULE'))
-        QtEngine.AddModule("QtDeclarative");
-    if (wizard.FindSymbol('ENGINIO_MODULE'))
-        QtEngine.AddModule("Enginio");
-    if (wizard.FindSymbol('HELP_MODULE'))
-        QtEngine.AddModule("QtHelp");
-    if (wizard.FindSymbol('NFC_MODULE'))
-        QtEngine.AddModule("QtNfc");
-    if (wizard.FindSymbol('OPENGL_MODULE'))
-        QtEngine.AddModule("QtOpenGL");
-    if (wizard.FindSymbol('POSITIONING_MODULE'))
-        QtEngine.AddModule("QtPositioning");
-    if (wizard.FindSymbol('PRINTSUPPORT_MODULE'))
-        QtEngine.AddModule("QtPrintSupport");
-    if (wizard.FindSymbol('QUICKWIDGETS_MODULE'))
-        QtEngine.AddModule("QtQuickWidgets");
-    if (wizard.FindSymbol('SCRIPT_MODULE'))
-        QtEngine.AddModule("QtScript");
-    if (wizard.FindSymbol('SCRIPTTOOLS_MODULE'))
-        QtEngine.AddModule("QtScriptTools");
-    if (wizard.FindSymbol('SENSORS_MODULE'))
-        QtEngine.AddModule("QtSensors");
-    if (wizard.FindSymbol('SERIALPORT_MODULE'))
-        QtEngine.AddModule("QtSerialPort");
-    if (wizard.FindSymbol('SVG_MODULE'))
-        QtEngine.AddModule("QtSvg");
-    if (wizard.FindSymbol('UITOOLS_MODULE'))
-        QtEngine.AddModule("QtUiTools");
-    if (wizard.FindSymbol('WEBCHANNEL_MODULE'))
-        QtEngine.AddModule("QtWebChannel");
-    if (wizard.FindSymbol('WEBKITWIDGETS_MODULE'))
-        QtEngine.AddModule("QtWebkitWidgets"); // ??
-    if (wizard.FindSymbol('WEBSOCKETS_MODULE'))
-        QtEngine.AddModule("QtWebSockets");
-    if (wizard.FindSymbol('WIDGETS_MODULE'))
-        QtEngine.AddModule("QtWidgets");
-    if (wizard.FindSymbol('WINDOWSEXTRAS_MODULE'))
-        QtEngine.AddModule("QtWinExtras");
-    if (wizard.FindSymbol('XML_MODULE'))
-        QtEngine.AddModule("QtXml");
-    if (wizard.FindSymbol('XMLPATTERNS_MODULE'))
-        QtEngine.AddModule("QtXmlPatterns");
-        */
+function SetFileProperties(projfile, fileName) {
+    if (fileName == "dllmain.cpp") {
+        var Configs = projfile.Object.FileConfigurations;
+        for (var i = 1; i <= Configs.Count; ++i) {
+            var Config = Configs(i);
+            var CLTool = Config.Tool;
+            CLTool.CompileAsManaged = 0; // Force no /CLR
+            CLTool.UsePrecompiledHeader = 0; // No pre-compiled headers			
+        }
+    }
 }

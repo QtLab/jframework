@@ -136,7 +136,7 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <div class="LINK">
+                                <div class="LINK" id="LINK_COMPONENT_UI">
                                     <table class="LINKTEXT" height="28" cellspacing="0" cellpadding="0" width="166" border="0" id="Table1">
                                         <tr valign="middle">
                                             <td width="162">
@@ -189,13 +189,13 @@
                             <table class="CONTENT" cellspacing="0" cellpadding="0" border="0">
                                 <colgroup>
                                     <col width="5" />
-                                    <col width="30%" />
+                                    <col width="35%" />
                                 </colgroup>
                                 <tr valign="middle" height="24">
                                     <td>&nbsp;</td>
                                     <td>Component Class Name:&nbsp;&nbsp;</td>
                                     <td>
-                                        <input size="50%" type="text" id="COMPONENT_CLASS_NAME" name="componentClassName" onpropertychange="OnComponentClassNameChanged();" />
+                                        <input size="50%" type="text" id="COMPONENT_CLASS_NAME" name="componentClassName" onpropertychange="OnComponentClassNameChanged(this);" />
                                     </td>
                                 </tr>
                                 <tr valign="top" colspan="3" height="5">
@@ -249,14 +249,18 @@
                                 <tr>
                                     <td valign="middle" width="12" height="23">&nbsp;</td>
                                     <td valign="top" height="23">&nbsp;</td>
+                                    <td valign="middle" width="75" style="height: 23px">
+                                        <button class="BUTTONS" id="FinishBtn" accesskey="F" onclick="OnFinish(document);" type="button">
+                                            <u>F</u>inish</button>
+                                    </td>
                                     <td valign="middle" width="4" height="23">&nbsp;</td>
                                     <td valign="middle" width="75" height="23">
-                                        <button class="BUTTONS" id="BUTTON_CANCEL" name="buttonCancel" accesskey="C" onclick="window.external.Finish(document, 'cancel');" type="button">
+                                        <button class="BUTTONS" id="CancelBtn" accesskey="C" onclick="window.external.Finish(document, 'cancel');" type="button">
                                         <u>C</u>ancel</button>
                                     </td>
                                     <td valign="middle" width="4" height="23">&nbsp;</td>
                                     <td valign="middle" width="75" height="23">
-                                        <button class="BUTTONS" id="BUTTON_HELP" name="buttonHelp" disabled accesskey="H" onclick="window.external.OnHelp('vc.appwiz.custom.overview');" type="button">
+                                        <button class="BUTTONS" id="HelpBtn" disabled accesskey="H" onclick="window.external.OnHelp('vc.appwiz.custom.overview');" type="button">
                                         <u>H</u>elp</button>
                                     </td>
                                     <td valign="middle" width="12" height="23">&nbsp;</td>
@@ -279,24 +283,28 @@
 </html>
 
 <script language="JSCRIPT">
-    var QtEngine;
-    var tab_array = new Array();
-    tab_array[0] = Default;
-    tab_array[1] = modules;
-    tab_array[2] = component_class;
-    tab_array[3] = component_ui;
-    tab_array[4] = summary;
+    var tab_array = CreateTabArray();
+
+    //
+    function CreateTabArray() {
+        var arr = new Array();
+        var index = 0;
+        arr[index++] = Default;
+        arr[index++] = modules;
+        arr[index++] = component_class;
+        //
+        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
+        if (includeIJComponentUi == "undefined" || includeIJComponentUi) {
+            arr[index++] = component_ui;
+        }
+        arr[index] = summary;
+
+        return arr;
+    }
 
     // This is an example of a function which initializes the page
     //
     function InitDocument(document) {
-        try {
-            QtEngine = new ActiveXObject("Digia.Qt5ProjectEngine");
-        } catch (ex) {
-            window.external.ReportError("Cannot instantiate QtProjectEngine object!");
-            return false;
-        }
-
         if (window.external.FindSymbol('DOCUMENT_FIRST_LOAD')) {
             // This function sets the default symbols based
             // on the values specified in the SYMBOL tags above
@@ -314,12 +322,17 @@
 
     function InitControls() {
         //
-        var className = window.external.FindSymbol("COMPONENT_CLASS_NAME");
-
-        //
-        componentClassName.value = className;
-        headerFileName.value = className.toLowerCase() + ".h";
-        sourceFileName.value = className.toLowerCase() + ".cpp";
+        /*
+        var linkComponentUi = document.getElementById('LINK_COMPONENT_UI');
+        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
+        if (includeIJComponentUi) {
+            linkComponentUi.style.visibility = "visible";
+            linkComponentUi.style.display = "";
+        } else {
+            linkComponentUi.style.visibility = "hidden";
+            linkComponentUi.style.display = "none";
+        } 
+        */
     }
 
     //
@@ -332,6 +345,12 @@
     // function will browse to the page specified
     //
     function Next(document, linkto) {
+        //
+        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
+        if (!includeIJComponentUi) {
+            //
+        }
+        //
         if (!ValidateAndUpdate())
             return;
 
@@ -339,10 +358,18 @@
     }
 
     //
-    function OnComponentClassNameChanged() {
-        //
-        headerFileName.value = componentClassName.value + ".h";
-        sourceFileName.value = componentClassName.value + ".cpp";
+    function OnFinish() {
+        if (!ValidateAndUpdate())
+            return;
+
+        OnWizFinish(document);
+    }
+
+    //
+    function OnComponentClassNameChanged(input) {
+        // 
+        HEADER_FILE_NAME.value = input.value.toLowerCase() + ".h";
+        SOURCE_FILE_NAME.value = input.value.toLowerCase() + ".cpp";
     }
 </script>
 <script language="JSCRIPT" id="INCLUDE_SCRIPT"></script>
