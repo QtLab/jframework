@@ -4,6 +4,12 @@ stdafx.h
 stdafx.cpp
 [!endif]
 
+targetver.h
+dllmain.cpp
+Resource.h
+component.rc
+res/component.rc2
+
 component.h
 component.cpp
 
