@@ -13,6 +13,17 @@ function UnderScoreCaseToCamelCase(name) {
 }
 
 //
+function UpdateDefaultSymbols() {
+    //
+    var projectPath = window.external.FindSymbol("PROJECT_PATH");
+    var projectName = window.external.FindSymbol("PROJECT_NAME");
+    var solutionPath = projectPath.substr(0, projectPath.length - projectName.length);
+    projectPath = solutionPath + "\\source\\component\\" + projectName;
+    window.external.AddSymbol("SOLUTION_PATH", solutionPath);
+    window.external.AddSymbol("PROJECT_PATH", projectPath);
+}
+
+//
 function CreateTabArray() {
     return [
         Default, //

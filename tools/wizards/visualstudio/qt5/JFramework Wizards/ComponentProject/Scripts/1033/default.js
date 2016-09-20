@@ -15,8 +15,7 @@ function OnFinish(selProj, selObj) {
         }
 
         // vs
-        var solutionPath = wizard.FindSymbol("VS_SOLUTION_PATH");
-        var solutionName = wizard.FindSymbol("VS_SOLUTION_LOCATION");
+        var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
         var projectPath = wizard.FindSymbol("PROJECT_PATH");
         var projectName = wizard.FindSymbol("PROJECT_NAME");
         var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
@@ -63,27 +62,13 @@ function OnFinish(selProj, selObj) {
         //////////
 
         selProj = CreateQtProject(projectName, projectPath);
-
-        //QtEngine.CreateLibraryProject(wizard.dte, projectName,
-        //    projectPath, solutionName, exclusive, false, includePrecompiled);
-
-        AddCommonConfig(selProj, projectName, /*unicode*/ true);
+        AddCommonConfig(selProj, projectName);
         AddSpecificConfig(selProj, projectName, projectPath);
-
         SetCommonPchSettings(selProj);
-
-        //
         SetupFilters(selProj);
-
         SetResDlgFont();
-
         AddFilesToProjectWithInfFile(selProj, projectName);
-
-        SetCommonPchSettings(selProj);
-
         selProj.Object.Save();
-
-        SetAllConfigCharset(selProj, /*unicode*/ true);
 
     } catch (e) {
         var msg = "name: " + e.name + "\n" +
@@ -101,42 +86,41 @@ Description: Creates a Qt project
 strProjectName: Project Name
 strProjectPath: The path that the project will be created in
 ******************************************************************************/
-function CreateQtProject(strProjectName, strProjectPath) {
+function CreateQtProject(projectName, projectPath) {
     try {
         var templatePath = wizard.FindSymbol("TEMPLATES_PATH");
-        var strProjTemplatePath = wizard.FindSymbol("PROJECT_TEMPLATE_PATH");
-        var strProjTemplate = templatePath + "\\default_140.vcxproj";
+        var projectTemplatePath = wizard.FindSymbol("PROJECT_TEMPLATE_PATH");
+        var projectTemplate = templatePath + "\\default_140.vcxproj";
+        var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
+        var solution = dte.Solution;
+        var solutionName = "";
 
-        var Solution = dte.Solution;
-        var strSolutionName = "";
         if (wizard.FindSymbol("CLOSE_SOLUTION")) {
-            Solution.Close();
-            strSolutionName = wizard.FindSymbol("VS_SOLUTION_NAME");
-            if (strSolutionName.length) {
-                var strSolutionPath = strProjectPath.substr(0, strProjectPath.length - strProjectName.length);
-                Solution.Create(strSolutionPath, strSolutionName);
+            solution.Close();
+            solutionName = wizard.FindSymbol("VS_SOLUTION_NAME");
+            if (solutionName.length) {
+                solution.Create(solutionPath, solutionName);
             }
         }
 
-        var strProjectNameWithExt = strProjectName + ".vcxproj";
-        var oTarget = wizard.FindSymbol("TARGET");
-        var oProj;
-        if (wizard.FindSymbol("WIZARD_TYPE") == vsWizardAddSubProject) // vsWizardAddSubProject
-        {
-            var prjItem = oTarget.AddFromTemplate(strProjTemplate, strProjectPath + "\\" + strProjectNameWithExt);
-            oProj = prjItem.SubProject;
+        var projectNameWithExt = projectName + ".vcxproj";
+        var target = wizard.FindSymbol("TARGET");
+        var project;
+        if (wizard.FindSymbol("WIZARD_TYPE") == vsWizardAddSubProject) { // vsWizardAddSubProject
+            var projectItem = target.AddFromTemplate(projectTemplate, projectPath + "\\" + projectNameWithExt);
+            project = projectItem.SubProject;
         } else {
-            oProj = oTarget.AddFromTemplate(strProjTemplate, strProjectPath, strProjectNameWithExt);
+            project = target.AddFromTemplate(projectTemplate, projectPath, projectNameWithExt);
         }
-        return oProj;
+        return project;
     } catch (e) {
         throw e;
     }
 }
 
-function AddSpecificConfig(proj, strProjectName, strProjectPath) {
+function AddSpecificConfig(project, projectName, projectPath) {
     try {
-        var configs = proj.Object.Configurations;
+        var configs = project.Object.Configurations;
         for (var i = 1; i <= configs.Count; i++) {
             var config = configs(i);
             var bDebug = false;
@@ -157,9 +141,9 @@ function AddSpecificConfig(proj, strProjectName, strProjectPath) {
             if (additionalIncludeDirectories != "") {
                 additionalIncludeDirectories += ";";
             }
-            additionalIncludeDirectories += ".\\GeneratedFiles";
-            additionalIncludeDirectories += ";.\\GeneratedFiles\\$(ConfigurationName)";
-            additionalIncludeDirectories += ";.";
+            //additionalIncludeDirectories += ".\\GeneratedFiles";
+            //additionalIncludeDirectories += ";.\\GeneratedFiles\\$(ConfigurationName)";
+            //additionalIncludeDirectories += ";.";
             additionalIncludeDirectories += ";$(QTDIR)\\include";
             additionalIncludeDirectories += ";$(QTDIR)\\include\\QtCore";
             additionalIncludeDirectories += ";$(QTDIR)\\include\\QtGui";
@@ -191,7 +175,6 @@ function AddSpecificConfig(proj, strProjectName, strProjectPath) {
             preProcDefines += ";JFRAME_FACADE_LIB";
             preProcDefines += ";JFRAME_FACTORY_LIB";
             preProcDefines += ";JFRAME_KERNEL_LIB";
-            preProcDefines += ";QT_WIDGETS_LIB";
             compilerTool.PreprocessorDefinitions = preProcDefines;
 
             // ------------linkerTool--------------
@@ -206,8 +189,7 @@ function AddSpecificConfig(proj, strProjectName, strProjectPath) {
             if (additionalLibraryDirectories != "") {
                 additionalLibraryDirectories += ";";
             }
-            additionalLibraryDirectories += "$(QTDIR)\\lib";
-            additionalLibraryDirectories += ";$(JFRAME_DIR)\\lib";
+            additionalLibraryDirectories += "$(JFRAME_DIR)\\lib";
             additionalLibraryDirectories += ";$(JFRAME_DIR)\\lib\\3rdpart";
             additionalLibraryDirectories += ";$(JFRAME_DIR)\\lib\\core";
             linkerTool.AdditionalLibraryDirectories = additionalLibraryDirectories;
@@ -215,18 +197,18 @@ function AddSpecificConfig(proj, strProjectName, strProjectPath) {
             //
             var additionalDependencies = linkerTool.AdditionalDependencies;
             if (additionalDependencies != "") {
-                additionalDependencies += "\r\n";
+                additionalDependencies += " ";
             }
             if (bDebug) {
                 additionalDependencies += "qtmaind.lib";
-                additionalDependencies += "\r\nQt5Cored.lib";
-                additionalDependencies += "\r\nQt5Guid.lib";
-                additionalDependencies += "\r\nQt5Widgetsd.lib";
+                additionalDependencies += " Qt5Cored.lib";
+                additionalDependencies += " Qt5Guid.lib";
+                additionalDependencies += " Qt5Widgetsd.lib";
             } else {
                 additionalDependencies += "qtmain.lib";
-                additionalDependencies += "\r\nQt5Core.lib";
-                additionalDependencies += "\r\nQt5Gui.lib";
-                additionalDependencies += "\r\nQt5Widgets.lib";
+                additionalDependencies += " Qt5Core.lib";
+                additionalDependencies += " Qt5Gui.lib";
+                additionalDependencies += " Qt5Widgets.lib";
             }
             linkerTool.AdditionalDependencies = additionalDependencies;
 
