@@ -140,7 +140,7 @@
                                     <table class="LINKTEXT" height="28" cellspacing="0" cellpadding="0" width="166" border="0" id="Table1">
                                         <tr valign="middle">
                                             <td width="162">
-                                                <span class="ACTIVELINK" id="component_ui" title="" onclick="Next(document, 'component_ui.htm');" tabindex="1">Component UI</span>
+                                                <span class="ACTIVELINK" id="component_ui" name="page_component_ui" title="" onclick="Next(document, 'component_ui.htm');" tabindex="1">Component UI</span>
                                             </td>
                                             <td width="4">
                                                 <img height="1" src="../../Images/spacer.gif" width="4">
@@ -281,30 +281,16 @@
 </body>
 
 </html>
-
+<script language="JSCRIPT" id="INCLUDE_SCRIPT"></script>
+<script language="JSCRIPT" id="INCLUDE_COMMON"></script>
+<script language="JSCRIPT" src="../../1033/common.js"></script>
 <script language="JSCRIPT">
     var tab_array = CreateTabArray();
-
-    //
-    function CreateTabArray() {
-        var arr = new Array();
-        var index = 0;
-        arr[index++] = Default;
-        arr[index++] = modules;
-        arr[index++] = component_class;
-        //
-        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
-        if (includeIJComponentUi == "undefined" || includeIJComponentUi) {
-            arr[index++] = component_ui;
-        }
-        arr[index] = summary;
-
-        return arr;
-    }
 
     // This is an example of a function which initializes the page
     //
     function InitDocument(document) {
+        //
         if (window.external.FindSymbol('DOCUMENT_FIRST_LOAD')) {
             // This function sets the default symbols based
             // on the values specified in the SYMBOL tags above
@@ -322,17 +308,7 @@
 
     function InitControls() {
         //
-        /*
-        var linkComponentUi = document.getElementById('LINK_COMPONENT_UI');
-        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
-        if (includeIJComponentUi) {
-            linkComponentUi.style.visibility = "visible";
-            linkComponentUi.style.display = "";
-        } else {
-            linkComponentUi.style.visibility = "hidden";
-            linkComponentUi.style.display = "none";
-        } 
-        */
+        SetPageComponentUiVisible();
     }
 
     //
@@ -345,11 +321,6 @@
     // function will browse to the page specified
     //
     function Next(document, linkto) {
-        //
-        var includeIJComponentUi = window.external.FindSymbol('INCLUDE_IJCOMPONENTUI');
-        if (!includeIJComponentUi) {
-            //
-        }
         //
         if (!ValidateAndUpdate())
             return;
@@ -376,41 +347,4 @@
         HEADER_FILE_NAME.value = fileName + ".h";
         SOURCE_FILE_NAME.value = fileName + ".cpp";
     }
-</script>
-<script language="JSCRIPT" id="INCLUDE_SCRIPT"></script>
-<script language="JSCRIPT" id="INCLUDE_COMMON"></script>
-<!--
-Common.js is a script file which contains the helper functions
-used by the wizards.  Include this line if you want to
-call these functions from your html scripts.
-//-->
-<script>
-    var strPath = window.external.FindSymbol("PRODUCT_INSTALLATION_DIR");
-    strPath += "VCWizards/";
-    strPath += window.external.GetHostLocale();
-
-    // verify if the locale folder really exists
-    var fso = new ActiveXObject("Scripting.FileSystemObject");
-    var found = fso.FolderExists(strPath)
-    if (found == false) {
-        strPath = window.external.FindSymbol("PRODUCT_INSTALLATION_DIR");
-        strPath += "VCWizards/";
-        var folder = fso.GetFolder(strPath);
-        for (subfolders = new Enumerator(folder.SubFolders); !subfolders.atEnd(); subfolders.moveNext()) {
-            for (files = new Enumerator(subfolders.item().files); !files.atEnd(); files.moveNext()) {
-                if (files.item().name.toLowerCase().localeCompare("common.js") == 0) {
-                    found = true;
-                    strPath += subfolders.item().name;
-                    break;
-                }
-            }
-            if (found == true)
-                break;
-        }
-    }
-
-    var strScriptPath = strPath + "/Script.js";
-    var strCommonPath = strPath + "/Common.js";
-    document.scripts("INCLUDE_SCRIPT").src = strScriptPath;
-    document.scripts("INCLUDE_COMMON").src = strCommonPath;
 </script>

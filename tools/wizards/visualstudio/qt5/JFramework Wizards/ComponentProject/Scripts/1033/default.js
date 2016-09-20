@@ -1,3 +1,5 @@
+var QtEngine;
+
 function GetNameFromFile(strFile) {
     var nPos = strFile.lastIndexOf(".");
     return strFile.substr(0, nPos);
@@ -5,10 +7,18 @@ function GetNameFromFile(strFile) {
 
 function OnFinish(selProj, selObj) {
     try {
+        try {
+            QtEngine = new ActiveXObject("Digia.Qt5ProjectEngine");
+        } catch (ex) {
+            wizard.ReportError("Cannot instantiate QtProjectEngine object!");
+            return false;
+        }
+
         // vs
+        var solutionPath = wizard.FindSymbol("VS_SOLUTION_PATH");
+        var solutionName = wizard.FindSymbol("VS_SOLUTION_LOCATION");
         var projectPath = wizard.FindSymbol("PROJECT_PATH");
         var projectName = wizard.FindSymbol("PROJECT_NAME");
-        var solutionName = wizard.FindSymbol("VS_SOLUTION_NAME");
         var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
         var exclusive = wizard.FindSymbol("CLOSE_SOLUTION");
         // modules
@@ -47,12 +57,23 @@ function OnFinish(selProj, selObj) {
 
         wizard.AddSymbol("UI_BASE_CLASS_NAME_IS_EMPTY", uiBaseClassName === "");
         wizard.AddSymbol("UI_BASE_CLASS_IS_QOBJECT", uiBaseClassName === "QObject");
-        wizard.AddSymbol("UI_BASE_CLASS_INERITS_QWIDGET", uiBaseClassName === "QWidget" || uiBaseClassName === "QDialog" || uiBaseClassName === "QMainWindow");
+        wizard.AddSymbol("UI_BASE_CLASS_INERITS_QWIDGET", uiBaseClassName === "QWidget" ||
+            uiBaseClassName === "QDialog" || uiBaseClassName === "QMainWindow");
 
         //////////
 
         selProj = CreateProject(projectName, projectPath);
         selProj.Object.Keyword = "Qt4VS";
+
+        //QtEngine.CreateLibraryProject(wizard.dte, projectName,
+        //    projectPath, solutionName, exclusive, false, includePrecompiled);
+
+        var msg = "engine => ";
+        for (item in QtEngine) {
+            msg += item + ", ";
+        }
+
+        //wizard.ReportError(msg + solutionPath);
 
         AddCommonConfig(selProj, projectName, /*unicode*/ true);
         AddSpecificConfig(selProj, projectName, projectPath);
