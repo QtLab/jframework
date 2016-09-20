@@ -10,8 +10,8 @@ Resource.h
 component.rc
 res/component.rc2
 
-component.h
-component.cpp
+OpenFile | component.h
+OpenFile | component.cpp
 
 [!if INCLUDE_CONFIG_FILE]
 component.xml
