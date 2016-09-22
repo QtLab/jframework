@@ -1,10 +1,10 @@
-ï»¿#ifndef JFRAME_LAYOUT_H
+#ifndef JFRAME_LAYOUT_H
 #define JFRAME_LAYOUT_H
 
 #include "jframe_kernel.h"
 #include <list>
 
-// æ¥å£æ ‡è¯†
+// ½Ó¿Ú±êÊ¶
 #define VER_IJFrameLayout J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameLayout J_IID_INTERFACE(IJFrameLayout)
 
@@ -20,76 +20,76 @@ class IJFrameLayout : public IJUnknown
 {
 public:
     /**
-     * @brief æ—¥å¿—ç±»å‹æšä¸¾
+     * @brief ÈÕÖ¾ÀàĞÍÃ¶¾Ù
      */
     enum LogType {
-        LogConsole,     /**< å°†æ—¥å¿—è¾“å‡ºåˆ°Outputç­‰ç»ˆç«¯ */
-        LogFile         /**< å°†æ—¥å¿—è¾“å‡ºåˆ°æ–‡ä»¶ä¸­ */
+        LogConsole,     /**< ½«ÈÕÖ¾Êä³öµ½OutputµÈÖÕ¶Ë */
+        LogFile         /**< ½«ÈÕÖ¾Êä³öµ½ÎÄ¼şÖĞ */
     };
 
     /**
-     * @brief ~IJFrameLayout : ææ„å‡½æ•°
+     * @brief ~IJFrameLayout : Îö¹¹º¯Êı
      */
     virtual ~IJFrameLayout() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_IJFrameLayout; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_IJFrameLayout; }
 
     /**
-     * @brief è·å–æ¡†æ¶ä¸»çª—å£
-     * @return æ¡†æ¶ä¸»çª—å£
+     * @brief »ñÈ¡¿ò¼ÜÖ÷´°¿Ú
+     * @return ¿ò¼ÜÖ÷´°¿Ú
      */
     virtual QWidget *mainWindow() = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶ä¸»è§†å›¾
-     * @return æ¡†æ¶ä¸»è§†å›¾
+     * @brief »ñÈ¡¿ò¼ÜÖ÷ÊÓÍ¼
+     * @return ¿ò¼ÜÖ÷ÊÓÍ¼
      */
     virtual QWidget *mainView() = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶æ¶ˆæ¯åˆ†å‘å™¨
-     * @return æ¡†æ¶æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief »ñÈ¡¿ò¼ÜÏûÏ¢·Ö·¢Æ÷
+     * @return ¿ò¼ÜÏûÏ¢·Ö·¢Æ÷
      */
     virtual INotifier &notifier() = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶è°ƒåº¦å™¨
-     * @return æ¡†æ¶è°ƒåº¦å™¨
+     * @brief »ñÈ¡¿ò¼Üµ÷¶ÈÆ÷
+     * @return ¿ò¼Üµ÷¶ÈÆ÷
      */
     virtual IJAttempter *attempter() = 0;
 
     /**
-     * @brief è®¾ç½®æ¡†æ¶é£æ ¼ä¸»é¢˜
-     * @param theme : ä¸»é¢˜åç§°
+     * @brief ÉèÖÃ¿ò¼Ü·ç¸ñÖ÷Ìâ
+     * @param theme : Ö÷ÌâÃû³Æ
      */
     virtual void setFrameTheme(const std::string &theme) = 0;
 
     /**
-     * @brief è·å–ç»„ä»¶çš„æƒé™ç­‰çº§
-     * @param componentName : ç»„ä»¶åç§°
-     * @return ç»„ä»¶æƒé™ç­‰çº§ã€‚æŸ¥çœ‹jframe_login.hä¸­çš„[PowerLevel]æšä¸¾å®šä¹‰
+     * @brief »ñÈ¡×é¼şµÄÈ¨ÏŞµÈ¼¶
+     * @param componentName : ×é¼şÃû³Æ
+     * @return ×é¼şÈ¨ÏŞµÈ¼¶¡£²é¿´jframe_login.hÖĞµÄ[PowerLevel]Ã¶¾Ù¶¨Òå
      */
     virtual int componentPowerLevel(const std::string &componentName) const = 0;
 
     /**
-     * @brief è·å–å½“å‰ç³»ç»Ÿåç§°
-     * @return å½“å‰ç³»ç»Ÿåç§°
+     * @brief »ñÈ¡µ±Ç°ÏµÍ³Ãû³Æ
+     * @return µ±Ç°ÏµÍ³Ãû³Æ
      */
     virtual std::string currentSystem() const = 0;
 
     /**
-     * @brief è·å–å½“å‰æ¨¡å¼åç§°
-     * @return å½“å‰æ¨¡å¼åç§°
+     * @brief »ñÈ¡µ±Ç°Ä£Ê½Ãû³Æ
+     * @return µ±Ç°Ä£Ê½Ãû³Æ
      */
     virtual std::string currentModule() const = 0;
 };

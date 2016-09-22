@@ -12,7 +12,7 @@ contains(DEFINES, PACKAGE) {
     # --- jframework - wizards
     srcdir = "$$jframe_dir/tools/wizards/qtcreator/jframework/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/jframework/"
+        dstdir = "$$PWD/data/wizards/"
         srcfiles = *
         win32 {
             srcdir = $$replace(srcdir, /, \\)
@@ -28,7 +28,7 @@ contains(DEFINES, PACKAGE) {
     # --- bin/jframeworkdir
     srcdir = "$$jframe_dir/lib/core/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/jframework/solution/bin/"
+        dstdir = "$$PWD/data/wizards/solution/bin/"
         srcfiles =
         win32 {
             srcdir = $$replace(srcdir, /, \\)
@@ -47,7 +47,7 @@ contains(DEFINES, PACKAGE) {
     # --- config
     srcdir = "$$jframe_dir/config/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/jframework/solution/config/"
+        dstdir = "$$PWD/data/wizards/solution/config/"
         srcfiles = *
         win32 {
             srcdir = $$replace(srcdir, /, \\)
@@ -63,7 +63,7 @@ contains(DEFINES, PACKAGE) {
     # --- source/common
     srcdir = "$$jframe_dir/source/common/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/jframework/solution/source/common/"
+        dstdir = "$$PWD/data/wizards/solution/source/common/"
         srcfiles = *
         win32 {
             srcdir = $$replace(srcdir, /, \\)
@@ -79,7 +79,7 @@ contains(DEFINES, PACKAGE) {
     # --- source/framework/application
     srcdir = "$$jframe_dir/source/framework/application/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/jframework/solution/source/framework/application/"
+        dstdir = "$$PWD/data/wizards/solution/source/framework/application/"
         srcfiles =
         win32 {
             srcdir = $$replace(srcdir, /, \\)
@@ -94,7 +94,7 @@ contains(DEFINES, PACKAGE) {
         }
     }
 } else {
-    dstdir = "$$PWD/data/jframework/"
+    dstdir = "$$PWD/data/wizards/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
         commands += $$RM_DIR "$$dstdir" &

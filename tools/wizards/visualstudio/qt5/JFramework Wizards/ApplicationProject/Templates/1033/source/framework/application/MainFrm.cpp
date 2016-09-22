@@ -3,7 +3,7 @@
 //
 
 #include "stdafx.h"
-#include "Application.h"
+#include "[!output PROJECT_NAME].h"
 
 #include "MainFrm.h"
 
@@ -37,22 +37,22 @@ CMainFrame::CMainFrame()
 
 BOOL CMainFrame::LoadFramework()
 {
-	IJFrameFacade *frameFacade = CApplicationApp::LoadFrameFacade();
+	IJFrameFacade *frameFacade = C[!output PROJECT_NAME]App::LoadFrameFacade();
 	if (frameFacade == NULL)
 	{
 		return FALSE;
 	}
 
-	// º”‘ÿøÚº‹
+	// Âä†ËΩΩÊ°ÜÊû∂
 	if (!frameFacade->loadFrame(0, 0, static_cast<CWinApp *>(&theApp))) {
 		frameFacade->exitFrame();
-		return FALSE;      // º”‘ÿ ß∞‹
+		return FALSE;      // Âä†ËΩΩÂ§±Ë¥•
 	}
 
 	// BCG Style
 	theApp.SetVisualTheme(CBCGPWinApp::BCGP_VISUAL_THEME_OFFICE_2010_BLUE);
 
-	// œ‘ æøÚº‹÷˜¥∞ø⁄
+	// ÊòæÁ§∫Ê°ÜÊû∂‰∏ªÁ™óÂè£
 	frameFacade->showFrame(true, true);
 
 	return TRUE;
@@ -81,10 +81,10 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
 #endif
-	// º”‘ÿøÚº‹
+	// Âä†ËΩΩÊ°ÜÊû∂
 	if (!LoadFramework())
 	{
-		return -1;		// º”‘ÿ ß∞‹
+		return -1;		// Âä†ËΩΩÂ§±Ë¥•
 	}
 
 	return 0;

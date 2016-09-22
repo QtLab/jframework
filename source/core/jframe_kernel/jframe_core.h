@@ -1,31 +1,31 @@
-ï»¿#ifndef JFRAME_CORE_H
+#ifndef JFRAME_CORE_H
 #define JFRAME_CORE_H
 
 #include "jframe_kernel.h"
 
-/** æ¥å£æ ‡è¯† */
+/** ½Ó¿Ú±êÊ¶ */
 #define VER_IJCommandSink J_INTERFACE_VERSION(1, 0)
 #define IID_IJCommandSink J_IID_INTERFACE(IJCommandSink)
 
 /**
- * @brief å‘½ä»¤æ¥æ”¶æ¥å£
+ * @brief ÃüÁî½ÓÊÕ½Ó¿Ú
  */
 class IJCommandSink
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJCommandSink() {}
 
     /**
-     * @brief æ¥æ”¶å‘½ä»¤æ¶ˆæ¯
-     * @param [in] sender : å‘½ä»¤å‘èµ·è€…ï¼ˆtype: QObject *ï¼‰
-     * @param domain : å‘½ä»¤å‘èµ·è€…æ‰€å±åŸŸå [componentName#...]
-     * @param objectName : å‘èµ·è€…å¯¹è±¡åç§°
-     * @param eventType : ä¿¡å·ã€äº‹ä»¶ç±»å‹
-     * @param [in,out] data : æ•°æ®ã€çŠ¶æ€ï¼ˆçœ‹ä½¿ç”¨æ‰‹å†Œè¯´æ˜ï¼‰
-     * @return æˆªæ–­æ ‡å¿—ï¼Œtrueï¼Œåœæ­¢ä¸‹ä¼ ï¼›falseï¼Œç»§ç»­ä¸‹ä¼ 
+     * @brief ½ÓÊÕÃüÁîÏûÏ¢
+     * @param [in] sender : ÃüÁî·¢ÆğÕß£¨type: QObject *£©
+     * @param domain : ÃüÁî·¢ÆğÕßËùÊôÓòÃû [componentName#...]
+     * @param objectName : ·¢ÆğÕß¶ÔÏóÃû³Æ
+     * @param eventType : ĞÅºÅ¡¢ÊÂ¼şÀàĞÍ
+     * @param [in,out] data : Êı¾İ¡¢×´Ì¬£¨¿´Ê¹ÓÃÊÖ²áËµÃ÷£©
+     * @return ½Ø¶Ï±êÖ¾£¬true£¬Í£Ö¹ÏÂ´«£»false£¬¼ÌĞøÏÂ´«
      */
     virtual bool commandSink(void *sender, const std::string &domain,
                              const std::string &objectName,
@@ -33,252 +33,252 @@ public:
                              void *data) = 0;
 };
 
-/** æ¥å£æ ‡è¯† */
+/** ½Ó¿Ú±êÊ¶ */
 #define VER_IJMessageSink J_INTERFACE_VERSION(1, 0)
 #define IID_IJMessageSink J_IID_INTERFACE(IJMessageSink)
 
 class IJComponent;
 
 /**
- * @brief æ¶ˆæ¯æ¥æ”¶æ¥å£
+ * @brief ÏûÏ¢½ÓÊÕ½Ó¿Ú
  */
 class IJMessageSink
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJMessageSink() {}
 
     /**
-     * @brief æ¥æ”¶æ¶ˆæ¯
-     * @param [in] sender : æ¶ˆæ¯å‘èµ·è€…
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
-     * @return æˆªæ–­æ ‡å¿—ã€‚trueï¼Œåœæ­¢ä¸‹ä¼ ï¼›falseï¼Œç»§ç»­ä¸‹ä¼ 
+     * @brief ½ÓÊÕÏûÏ¢
+     * @param [in] sender : ÏûÏ¢·¢ÆğÕß
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
+     * @return ½Ø¶Ï±êÖ¾¡£true£¬Í£Ö¹ÏÂ´«£»false£¬¼ÌĞøÏÂ´«
      */
     virtual bool messageSink(IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam) = 0;
 };
 
-/** æ¥å£æ ‡è¯† */
+/** ½Ó¿Ú±êÊ¶ */
 #define VER_IJComponent J_INTERFACE_VERSION(1, 0)
 #define IID_IJComponent J_IID_INTERFACE(IJComponent)
 
 /**
- * @brief ç»„ä»¶æ¥å£
+ * @brief ×é¼ş½Ó¿Ú
  */
 class IJComponent : public IJUnknown
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJComponent() {}
 
     /**
-     * @brief è·å–ç»„ä»¶åç§°
-     * @return ç»„ä»¶åç§°
+     * @brief »ñÈ¡×é¼şÃû³Æ
+     * @return ×é¼şÃû³Æ
      */
     virtual std::string componentName() const = 0;
 
     /**
-     * @brief è·å–ç»„ä»¶æè¿°
-     * @return ç»„ä»¶æè¿°
+     * @brief »ñÈ¡×é¼şÃèÊö
+     * @return ×é¼şÃèÊö
      */
     virtual std::string componentDesc() const = 0;
 
     /**
-     * @brief è·å–ç»„ä»¶ç±»å‹
-     * @return ç»„ä»¶ç±»å‹
+     * @brief »ñÈ¡×é¼şÀàĞÍ
+     * @return ×é¼şÀàĞÍ
      */
     virtual std::string componentType() const { return "<unknown>"; }
 
     /**
-     * @brief æŒ‚è½½ç»„ä»¶
+     * @brief ¹ÒÔØ×é¼ş
      */
     virtual void attach() {}
 
     /**
-     * @brief åˆ†ç¦»ç»„ä»¶
+     * @brief ·ÖÀë×é¼ş
      */
     virtual void detach() {}
 };
 
-/** æ¥å£æ ‡è¯† */
+/** ½Ó¿Ú±êÊ¶ */
 #define VER_IJComponentUi J_INTERFACE_VERSION(1, 0)
 #define IID_IJComponentUi J_IID_INTERFACE(IJComponentUi)
 
 /**
- * @brief ç»„ä»¶çª—å£æ¥å£
+ * @brief ×é¼ş´°¿Ú½Ó¿Ú
  */
 class IJComponentUi
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJComponentUi() {}
 
     /**
-     * @brief åˆ›å»ºçª—å£
-     * @param [in] parent : çˆ¶çª—å£
-     * @param objectName : ç›®æ ‡çª—å£åç§°
-     * @return ç›®æ ‡çª—å£
+     * @brief ´´½¨´°¿Ú
+     * @param [in] parent : ¸¸´°¿Ú
+     * @param objectName : Ä¿±ê´°¿ÚÃû³Æ
+     * @return Ä¿±ê´°¿Ú
      */
     virtual void *createWindow(void *parent, const std::string &objectName) = 0;
 };
 
-/** æ¥å£æ ‡è¯† */
+/** ½Ó¿Ú±êÊ¶ */
 #define VER_IJMainWindow J_INTERFACE_VERSION(1, 0)
 #define IID_IJMainWindow J_IID_INTERFACE(IJMainWindow)
 
 /**
- * @brief æ¡†æ¶ä¸»çª—å£æ¥å£
+ * @brief ¿ò¼ÜÖ÷´°¿Ú½Ó¿Ú
  */
 class IJMainWindow : public IJUnknown
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJMainWindow() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_IJMainWindow; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_IJMainWindow; }
 
     /**
-     * @brief å¸¸è§„åŒ–ä¸»çª—å£
+     * @brief ³£¹æ»¯Ö÷´°¿Ú
      */
     virtual void showNormal() = 0;
 
     /**
-     * @brief æœ€å°åŒ–ä¸»çª—å£
+     * @brief ×îĞ¡»¯Ö÷´°¿Ú
      */
     virtual void showMinimized() = 0;
 
     /**
-     * @brief æœ€å¤§åŒ–ä¸»çª—å£
+     * @brief ×î´ó»¯Ö÷´°¿Ú
      */
     virtual void showMaximized() = 0;
 
     /**
-     * @brief å…¨å±è¯ä¸»çª—å£
+     * @brief È«ÆÁ»°Ö÷´°¿Ú
      */
     virtual void showFullScreen() = 0;
 
     /**
-     * @brief å…³é—­ä¸»çª—å£
+     * @brief ¹Ø±ÕÖ÷´°¿Ú
      */
     virtual void closeWindow() = 0;
 
     /**
-     * @brief è®¾ç½®ä¸»çª—å£å¯è§æ€§
-     * @param visible : å¯è§æ€§æ ‡å¿—ã€‚trueï¼Œæ˜¾ç¤ºä¸»çª—å£ï¼›falseï¼Œéšè—ä¸»çª—å£
+     * @brief ÉèÖÃÖ÷´°¿Ú¿É¼ûĞÔ
+     * @param visible : ¿É¼ûĞÔ±êÖ¾¡£true£¬ÏÔÊ¾Ö÷´°¿Ú£»false£¬Òş²ØÖ÷´°¿Ú
      */
     virtual void setVisible(bool visible) = 0;
 
     /**
-     * @brief ç½®é¡¶ä¸»çª—å£
-     * @param stayOnTop : ç½®é¡¶æ ‡å¿—ã€‚trueï¼Œç½®é¡¶ï¼›falseï¼Œå–æ¶ˆç½®é¡¶
+     * @brief ÖÃ¶¥Ö÷´°¿Ú
+     * @param stayOnTop : ÖÃ¶¥±êÖ¾¡£true£¬ÖÃ¶¥£»false£¬È¡ÏûÖÃ¶¥
      */
     virtual void showStaysOnTop(bool stayOnTop) = 0;
 
     /**
-     * @brief æ”¹å˜ä¸»çª—å£å¤§å°
-     * @param width : å®½åº¦
-     * @param height : é«˜åº¦
+     * @brief ¸Ä±äÖ÷´°¿Ú´óĞ¡
+     * @param width : ¿í¶È
+     * @param height : ¸ß¶È
      */
     virtual void resize(int width, int height) = 0;
 
     /**
-     * @brief æ¿€æ´»è§†å›¾
-     * @param viewName : è§†å›¾åç§°
+     * @brief ¼¤»îÊÓÍ¼
+     * @param viewName : ÊÓÍ¼Ãû³Æ
      */
     virtual void activeView(const std::string &viewName) = 0;
 
     /**
-     * @brief æ›´æ–°å¼€å§‹ç•Œé¢ä¿¡æ¯
-     * @param info : ä¿¡æ¯
+     * @brief ¸üĞÂ¿ªÊ¼½çÃæĞÅÏ¢
+     * @param info : ĞÅÏ¢
      */
     virtual void updateSplashInfo(const std::string &info) = 0;
 
     /**
-     * @brief åˆ›å»ºç»„ä»¶çª—å£
-     * @param [in] component : ç»„ä»¶
-     * @param filePath : ç»„ä»¶é…ç½®æ–‡ä»¶è·¯å¾„
-     * @return åˆ›å»ºçŠ¶æ€ã€‚trueï¼Œåˆ›å»ºæˆåŠŸï¼›falseï¼Œåˆ›å»ºå¤±è´¥
+     * @brief ´´½¨×é¼ş´°¿Ú
+     * @param [in] component : ×é¼ş
+     * @param filePath : ×é¼şÅäÖÃÎÄ¼şÂ·¾¶
+     * @return ´´½¨×´Ì¬¡£true£¬´´½¨³É¹¦£»false£¬´´½¨Ê§°Ü
      */
     virtual bool createComponentUi(IJComponent *component, const std::string &filePath) = 0;
 
     /**
-     * @brief è·å–ä¸»çª—å£
-     * @return ä¸»çª—å£
+     * @brief »ñÈ¡Ö÷´°¿Ú
+     * @return Ö÷´°¿Ú
      */
     virtual void *mainWidget() = 0;
 
     /**
-     * @brief è®¾ç½®æ¡†æ¶ä¸»é¢˜
-     * @param theme : ä¸»é¢˜åç§°
+     * @brief ÉèÖÃ¿ò¼ÜÖ÷Ìâ
+     * @param theme : Ö÷ÌâÃû³Æ
      */
     virtual void setTheme(const std::string &theme) = 0;
 
     /**
-     * @brief è·å–å·¥å…·æ ç±»å‹
-     * @return å·¥å…·æ ç±»å‹ã€‚1) "menuBar"; 2) "toolButton"; 3) "ribbonBar"
+     * @brief »ñÈ¡¹¤¾ßÀ¸ÀàĞÍ
+     * @return ¹¤¾ßÀ¸ÀàĞÍ¡£1) "menuBar"; 2) "toolButton"; 3) "ribbonBar"
      */
     virtual std::string toolBarType() const = 0;
 
     /**
-     * @brief è·å–è§†å›¾å¸ƒå±€ç±»å‹
-     * @return è§†å›¾å¸ƒå±€ç±»å‹ã€‚1) dynamic; 2) static
+     * @brief »ñÈ¡ÊÓÍ¼²¼¾ÖÀàĞÍ
+     * @return ÊÓÍ¼²¼¾ÖÀàĞÍ¡£1) dynamic; 2) static
      */
     virtual std::string layoutType() const = 0;
 
     /**
-     * @brief æŸ¥è¯¢æŒ‡å®šç»„ä»¶ä¸­çš„é…ç½®ç”Ÿæˆçš„å¯¹è±¡
-     * @param objectName : å¯¹è±¡åç§°
-     * @param componentName : ç»„ä»¶åç§° ï¼ˆç»„ä»¶åç§°ä¸ºç©ºå€¼æ—¶ï¼ŒæŸ¥æ‰¾æ‰€ç»„ä»¶ä¸­ç¬¬ä¸€ä¸ªå¯¹è±¡åç§°ä¸ºobjectNameçš„å¯¹è±¡ï¼‰
-     * @return å¯¹è±¡å®ä¾‹
+     * @brief ²éÑ¯Ö¸¶¨×é¼şÖĞµÄÅäÖÃÉú³ÉµÄ¶ÔÏó
+     * @param objectName : ¶ÔÏóÃû³Æ
+     * @param componentName : ×é¼şÃû³Æ £¨×é¼şÃû³ÆÎª¿ÕÖµÊ±£¬²éÕÒËù×é¼şÖĞµÚÒ»¸ö¶ÔÏóÃû³ÆÎªobjectNameµÄ¶ÔÏó£©
+     * @return ¶ÔÏóÊµÀı
      */
     virtual void *queryObject(const std::string &objectName, const std::string &componentName = "") = 0;
 
     /**
-     * @brief è·å–èœå•æ 
-     * @return èœå•æ 
+     * @brief »ñÈ¡²Ëµ¥À¸
+     * @return ²Ëµ¥À¸
      */
     virtual void *menuBar() = 0;
 
     /**
-     * @brief è·å– ribbon å·¥å…·æ¡
-     * @return ribbon å·¥å…·æ¡
+     * @brief »ñÈ¡ ribbon ¹¤¾ßÌõ
+     * @return ribbon ¹¤¾ßÌõ
      */
     virtual void *ribbonBar() = 0;
 
     /**
-     * @brief è·å–çŠ¶æ€æ 
-     * @return çŠ¶æ€æ 
+     * @brief »ñÈ¡×´Ì¬À¸
+     * @return ×´Ì¬À¸
      */
     virtual void *statusBar() = 0;
 };
 
-/** æ¥å£æ ‡è¯† */
+/** ½Ó¿Ú±êÊ¶ */
 #define VER_IJAttempter J_INTERFACE_VERSION(1, 0)
 #define IID_IJAttempter J_IID_INTERFACE(IJAttempter)
 
 //
 #ifndef J_MESSAGESINK_CALLBACK
 #define J_MESSAGESINK_CALLBACK
-/** æ¶ˆæ¯æ¥æ”¶æ¥å£å‡½æ•°å®šä¹‰ */
+/** ÏûÏ¢½ÓÊÕ½Ó¿Úº¯Êı¶¨Òå */
 typedef JLRESULT (IJComponent::*JMsgSinkCb)
 (IJComponent *sender, const std::string &id, JWPARAM wParam, JLPARAM lParam);
 #endif // !J_MESSAGESINK_CALLBACK
@@ -286,167 +286,167 @@ typedef JLRESULT (IJComponent::*JMsgSinkCb)
 class INotifier;
 
 /**
- * @brief æ¡†æ¶è°ƒåº¦å™¨æ¥å£
+ * @brief ¿ò¼Üµ÷¶ÈÆ÷½Ó¿Ú
  */
 class IJAttempter : public IJUnknown
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJAttempter() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_IJAttempter; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_IJAttempter; }
 
     /**
-     * @brief åŠ è½½ç»„ä»¶
-     * @return åŠ è½½çŠ¶æ€ã€‚trueï¼ŒåŠ è½½æˆåŠŸï¼›falseï¼ŒåŠ è½½å¤±è´¥
+     * @brief ¼ÓÔØ×é¼ş
+     * @return ¼ÓÔØ×´Ì¬¡£true£¬¼ÓÔØ³É¹¦£»false£¬¼ÓÔØÊ§°Ü
      */
     virtual bool loadComponent() = 0;
 
     /**
-     * @brief å¸è½½ç»„ä»¶
+     * @brief Ğ¶ÔØ×é¼ş
      */
     virtual void releaseComponent() = 0;
 
     /**
-     * @brief æŸ¥è¯¢ç»„ä»¶
-     * @param componentName : ç»„ä»¶åç§°
-     * @return ç»„ä»¶
+     * @brief ²éÑ¯×é¼ş
+     * @param componentName : ×é¼şÃû³Æ
+     * @return ×é¼ş
      */
     virtual IJComponent *queryComponent(const std::string &componentName) = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶ä¸»çª—å£æ¥å£
-     * @return æ¡†æ¶ä¸»çª—å£æ¥å£
+     * @brief »ñÈ¡¿ò¼ÜÖ÷´°¿Ú½Ó¿Ú
+     * @return ¿ò¼ÜÖ÷´°¿Ú½Ó¿Ú
      */
     virtual IJMainWindow *mainWindow() = 0;
 
     /**
-     * @brief æŸ¥è¯¢æ¥å£
-     * @param componentName : ç»„ä»¶åç§°
-     * @param iid : æ¥å£æ ‡è¯†
-     * @param ver : æ¥å£ç‰ˆæœ¬
-     * @return æŸ¥è¯¢æ¥å£å®ä¾‹
+     * @brief ²éÑ¯½Ó¿Ú
+     * @param componentName : ×é¼şÃû³Æ
+     * @param iid : ½Ó¿Ú±êÊ¶
+     * @param ver : ½Ó¿Ú°æ±¾
+     * @return ²éÑ¯½Ó¿ÚÊµÀı
      */
     virtual void *queryInterface(const std::string &componentName, const std::string &iid, unsigned int ver) = 0;
 
     /**
-     * @brief è·å–æ‰€æœ‰ç»„ä»¶
-     * @return æ‰€æœ‰ç»„ä»¶
+     * @brief »ñÈ¡ËùÓĞ×é¼ş
+     * @return ËùÓĞ×é¼ş
      */
     virtual std::list<IJComponent *> allComponents() const = 0;
 
     /**
-     * @brief è·å–å½“å‰å·¥ä½œæ¨¡å¼æ ‡è¯†
-     * @return å½“å‰å·¥ä½œæ¨¡å¼æ ‡è¯†
+     * @brief »ñÈ¡µ±Ç°¹¤×÷Ä£Ê½±êÊ¶
+     * @return µ±Ç°¹¤×÷Ä£Ê½±êÊ¶
      */
     virtual int currentWorkModeId() const = 0;
 
     /**
-     * @brief è·å–å½“å‰å·¥ä½œæ¨¡å¼åç§°
-     * @return å½“å‰å·¥ä½œæ¨¡å¼åç§°
+     * @brief »ñÈ¡µ±Ç°¹¤×÷Ä£Ê½Ãû³Æ
+     * @return µ±Ç°¹¤×÷Ä£Ê½Ãû³Æ
      */
     virtual std::string currentWorkModeName() const = 0;
 
     /**
-     * @brief è·å–å½“å‰å·¥ä½œæ¨¡å¼é…ç½®æ–‡ä»¶å¤¹åç§°
-     * @return å½“å‰å·¥ä½œæ¨¡å¼é…ç½®æ–‡ä»¶å¤¹åç§°
+     * @brief »ñÈ¡µ±Ç°¹¤×÷Ä£Ê½ÅäÖÃÎÄ¼ş¼ĞÃû³Æ
+     * @return µ±Ç°¹¤×÷Ä£Ê½ÅäÖÃÎÄ¼ş¼ĞÃû³Æ
      */
     virtual std::string currentWorkModeConfigDirName() const = 0;
 
     /**
-     * @brief è·å–æ¶ˆæ¯åˆ†å‘å™¨
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief »ñÈ¡ÏûÏ¢·Ö·¢Æ÷
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     virtual INotifier &notifier() = 0;
 
     /**
-     * @brief å¼€å§‹æ¶ˆæ¯è®¢é˜…ç»„
-     * @param [in] component : ç»„ä»¶å®ä¾‹
-     * @return è°ƒåº¦å™¨å¼•ç”¨
+     * @brief ¿ªÊ¼ÏûÏ¢¶©ÔÄ×é
+     * @param [in] component : ×é¼şÊµÀı
+     * @return µ÷¶ÈÆ÷ÒıÓÃ
      */
     template<typename T> IJAttempter &beginGroup(T *component);
 
     /**
-     * @brief ç»“æŸæ¶ˆæ¯è®¢é˜…ç»„
+     * @brief ½áÊøÏûÏ¢¶©ÔÄ×é
      */
     virtual void endGroup() = 0;
 
     /**
-     * @brief è®¢é˜…ç»„ä»¶æ¶ˆæ¯ï¼ˆå¯é€‰ï¼šç›´æ¥ç»‘å®šidå¯¹åº”çš„å“åº”å‡½æ•°ï¼‰
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param [in] cb : æ¶ˆæ¯æ ‡è¯†å¯¹åº”çš„å“åº”å‡½æ•°
-     * @return è°ƒåº¦å™¨å¼•ç”¨
+     * @brief ¶©ÔÄ×é¼şÏûÏ¢£¨¿ÉÑ¡£ºÖ±½Ó°ó¶¨id¶ÔÓ¦µÄÏìÓ¦º¯Êı£©
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param [in] cb : ÏûÏ¢±êÊ¶¶ÔÓ¦µÄÏìÓ¦º¯Êı
+     * @return µ÷¶ÈÆ÷ÒıÓÃ
      */
     template<typename T>
     IJAttempter &subMessage(const std::string &id, JLRESULT (T::*cb)
                             (IJComponent *, const std::string &, JWPARAM, JLPARAM) = 0);
 
     /**
-     * @brief å–æ¶ˆè®¢é˜…ç»„ä»¶æ¶ˆæ¯
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @return è°ƒåº¦å™¨å¼•ç”¨
+     * @brief È¡Ïû¶©ÔÄ×é¼şÏûÏ¢
+     * @param id : ÏûÏ¢±êÊ¶
+     * @return µ÷¶ÈÆ÷ÒıÓÃ
      */
     virtual IJAttempter &unsubMessage(const std::string &id) = 0;
 
     /**
-     * @brief å–æ¶ˆè®¢é˜…æ¶ˆæ¯
-     * @param [in] component : ç»„ä»¶å®ä¾‹
+     * @brief È¡Ïû¶©ÔÄÏûÏ¢
+     * @param [in] component : ×é¼şÊµÀı
      */
     virtual void unsubMessage(IJComponent *component) = 0;
 
     /**
-     * @brief å‘é€ç»„ä»¶æ¶ˆæ¯ï¼ˆåŒæ­¥ï¼‰
-     * @param [in] component : ç»„ä»¶
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
-     * @return æ‰§è¡Œç»“æœ
+     * @brief ·¢ËÍ×é¼şÏûÏ¢£¨Í¬²½£©
+     * @param [in] component : ×é¼ş
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
+     * @return Ö´ĞĞ½á¹û
      */
     virtual JLRESULT sendMessage(IJComponent *component, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€ç»„ä»¶æ¶ˆæ¯ï¼ˆå¼‚æ­¥ï¼‰
-     * @param [in] component : ç»„ä»¶
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
+     * @brief ·¢ËÍ×é¼şÏûÏ¢£¨Òì²½£©
+     * @param [in] component : ×é¼ş
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
      */
     virtual void postMessage(IJComponent *component, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€ç»„ä»¶æ¶ˆæ¯ï¼ˆå¼‚æ­¥ï¼‰
-     * @param [in] component : ç»„ä»¶
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param msg : æ¶ˆæ¯ä¿¡æ¯
+     * @brief ·¢ËÍ×é¼şÏûÏ¢£¨Òì²½£©
+     * @param [in] component : ×é¼ş
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param msg : ÏûÏ¢ĞÅÏ¢
      */
     virtual void postMessage(IJComponent *component, const std::string &id, const std::string &msg) = 0;
 
 protected:
     /**
-     * @brief å¼€å§‹æ¶ˆæ¯è®¢é˜…ç»„
-     * @param [in] component : ç»„ä»¶å®ä¾‹
+     * @brief ¿ªÊ¼ÏûÏ¢¶©ÔÄ×é
+     * @param [in] component : ×é¼şÊµÀı
      * @param offset : reinterpret_cast<IJComponent *>(this) - static_cast<IJComponent *>(this)
-     * @return è°ƒåº¦å™¨å¼•ç”¨
+     * @return µ÷¶ÈÆ÷ÒıÓÃ
      */
     virtual IJAttempter &beginGroup(IJComponent *component, int offset) = 0;
 
     /**
-     * @brief è®¢é˜…æ¶ˆæ¯
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param [in] cb : æ¶ˆæ¯å“åº”å‡½æ•°åœ°å€
-     * @return è°ƒåº¦å™¨å¼•ç”¨
+     * @brief ¶©ÔÄÏûÏ¢
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param [in] cb : ÏûÏ¢ÏìÓ¦º¯ÊıµØÖ·
+     * @return µ÷¶ÈÆ÷ÒıÓÃ
      */
     virtual IJAttempter &subMessage(const std::string &id, JMsgSinkCb cb) = 0;
 };
@@ -473,47 +473,47 @@ IJAttempter &IJAttempter::subMessage(const std::string &id, JLRESULT (T::*cb)
     return subMessage(id, static_cast<JMsgSinkCb>(cb));
 }
 
-/** æ¥å£æ ‡è¯† */
+/** ½Ó¿Ú±êÊ¶ */
 #define VER_IJFrameCore J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameCore J_IID_INTERFACE(IJFrameCore)
 
 /**
- * @brief æ¡†æ¶æ ¸å¿ƒç³»ç»Ÿæ¥å£
+ * @brief ¿ò¼ÜºËĞÄÏµÍ³½Ó¿Ú
  */
 class IJFrameCore : public IJUnknown
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJFrameCore() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_IJFrameCore; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_IJFrameCore; }
 
     /**
-     * @brief è·å–æ¡†æ¶è°ƒåº¦å™¨
-     * @return æ¡†æ¶è°ƒåº¦å™¨
+     * @brief »ñÈ¡¿ò¼Üµ÷¶ÈÆ÷
+     * @return ¿ò¼Üµ÷¶ÈÆ÷
      */
     virtual IJAttempter *attempter() = 0;
 };
 
-/** è·å–åˆå§‹åŒ–ç»„ä»¶å¯¼å‡ºå‡½æ•°æ¥å£å®šä¹‰ */
+/** »ñÈ¡³õÊ¼»¯×é¼şµ¼³öº¯Êı½Ó¿Ú¶¨Òå */
 typedef bool (J_ATTR_CDECL *FuncInitComponent)(void);
 
-/** åˆ›å»ºè°ƒåº¦å™¨å®ä¾‹å¯¼å‡ºå‡½æ•°æ¥å£å®šä¹‰ */
+/** ´´½¨µ÷¶ÈÆ÷ÊµÀıµ¼³öº¯Êı½Ó¿Ú¶¨Òå */
 typedef void *(J_ATTR_CDECL *FuncCreateAttempter)(void);
 
-/** åˆ›å»ºç»„ä»¶å®ä¾‹å¯¼å‡ºå‡½æ•°æ¥å£å®šä¹‰ */
+/** ´´½¨×é¼şÊµÀıµ¼³öº¯Êı½Ó¿Ú¶¨Òå */
 typedef void *(J_ATTR_CDECL *FuncCreateComponent)(IJAttempter *attempter);
 
 #endif // JFRAME_CORE_H

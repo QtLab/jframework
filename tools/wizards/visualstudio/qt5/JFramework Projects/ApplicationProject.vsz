@@ -1,0 +1,5 @@
+VSWIZARD 7.0
+Wizard=VsWizard.VsWizardEngine.14.0
+Param="WIZARD_NAME = ApplicationProject"
+Param="ABSOLUTE_PATH = C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\VCWizards\JFramework Wizards\ApplicationProject"
+Param="FALLBACK_LCID = 1033"

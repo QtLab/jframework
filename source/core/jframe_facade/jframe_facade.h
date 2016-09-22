@@ -4,49 +4,49 @@
 #include <string>
 #include <list>
 
-// æ¡†æ¶äº§å“ç‰ˆæœ¬
-#define JFRAME_MAJOR_VERSION 4      /**< æ¡†æ¶ä¸»ç‰ˆæœ¬å· */
-#define JFRAME_MINOR_VERSION 0      /**< æ¡†æ¶æ¬¡ç‰ˆæœ¬å· */
-#define JFRAME_PATCH_VERSION 0      /**< æ¡†æ¶è¡¥ä¸ç‰ˆæœ¬å· */
-#define JFRAME_BUILD_VERSION 0      /**< æ¡†æ¶ç¼–è¯‘ç‰ˆæœ¬å· */
+// ¿ò¼Ü²úÆ·°æ±¾
+#define JFRAME_MAJOR_VERSION 4      /**< ¿ò¼ÜÖ÷°æ±¾ºÅ */
+#define JFRAME_MINOR_VERSION 0      /**< ¿ò¼Ü´Î°æ±¾ºÅ */
+#define JFRAME_PATCH_VERSION 0      /**< ¿ò¼Ü²¹¶¡°æ±¾ºÅ */
+#define JFRAME_BUILD_VERSION 0      /**< ¿ò¼Ü±àÒë°æ±¾ºÅ */
 
 /**
- * @brief è·å–ä¸»ç‰ˆæœ¬
- * @param ver : æ¡†æ¶ç‰ˆæœ¬å·
- * @return intç±»å‹å€¼
+ * @brief »ñÈ¡Ö÷°æ±¾
+ * @param ver : ¿ò¼Ü°æ±¾ºÅ
+ * @return intÀàĞÍÖµ
  */
 #define J_MAJOR_VERSION(ver) \
     ((((unsigned int)(ver)) & 0xff000000) >> 24)
 
 /**
- * @brief è·å–æ¬¡ç‰ˆæœ¬
- * @param ver : æ¡†æ¶ç‰ˆæœ¬å·
- * @return intç±»å‹å€¼
+ * @brief »ñÈ¡´Î°æ±¾
+ * @param ver : ¿ò¼Ü°æ±¾ºÅ
+ * @return intÀàĞÍÖµ
  */
 #define J_MINOR_VERSION(ver) \
     ((((unsigned int)(ver)) & 0x00ff0000) >> 16)
 
 /**
- * @brief è·å–è¡¥ä¸ç‰ˆæœ¬
- * @param ver : æ¡†æ¶ç‰ˆæœ¬å·
- * @return intç±»å‹å€¼
+ * @brief »ñÈ¡²¹¶¡°æ±¾
+ * @param ver : ¿ò¼Ü°æ±¾ºÅ
+ * @return intÀàĞÍÖµ
  */
 #define J_PATCH_VERSION(ver) \
     ((((unsigned int)(ver)) & 0x0000ff00) >> 8)
 
 /**
- * @brief è·å–å†…éƒ¨ç‰ˆæœ¬
- * @param ver : æ¡†æ¶ç‰ˆæœ¬å·
- * @return intç±»å‹å€¼
+ * @brief »ñÈ¡ÄÚ²¿°æ±¾
+ * @param ver : ¿ò¼Ü°æ±¾ºÅ
+ * @return intÀàĞÍÖµ
  */
 #define J_BUILD_VERSION(ver) \
     (((unsigned int)(ver)) & 0x000000ff)
 
 /**
- * @brief ç”Ÿæˆæ¥å£ç‰ˆæœ¬
- * @param major : ä¸»ç‰ˆæœ¬å·
- * @param minor : æ¬¡ç‰ˆæœ¬å·
- * @return intç±»å‹å€¼
+ * @brief Éú³É½Ó¿Ú°æ±¾
+ * @param major : Ö÷°æ±¾ºÅ
+ * @param minor : ´Î°æ±¾ºÅ
+ * @return intÀàĞÍÖµ
  */
 #define J_INTERFACE_VERSION(major, minor) \
     ((((unsigned int)(JFRAME_MAJOR_VERSION)) << 24) | \
@@ -54,11 +54,11 @@
     ((  unsigned int)(minor)  << 8))
 
 /**
- * @brief ç”Ÿæˆè¿›ç¨‹ç‰ˆæœ¬
- * @param major : ä¸»ç‰ˆæœ¬å·
- * @param minor : æ¬¡ç‰ˆæœ¬å·
- * @param patch : ä¿®è®¢ç‰ˆæœ¬å·
- * @return intç±»å‹å€¼
+ * @brief Éú³É½ø³Ì°æ±¾
+ * @param major : Ö÷°æ±¾ºÅ
+ * @param minor : ´Î°æ±¾ºÅ
+ * @param patch : ĞŞ¶©°æ±¾ºÅ
+ * @return intÀàĞÍÖµ
  */
 #define J_PROCESS_VERSION(major, minor, patch) \
     ((((unsigned int)(JFRAME_MAJOR_VERSION)) << 24) | \
@@ -68,40 +68,40 @@
 
 #ifndef J_IID_INTERFACE
 /**
- * @brief æ¥å£æ ‡è¯†å®šä¹‰
- * @param interface : æ¥å£åç§°
- * @return char*ç±»å‹å€¼
+ * @brief ½Ó¿Ú±êÊ¶¶¨Òå
+ * @param interface : ½Ó¿ÚÃû³Æ
+ * @return char*ÀàĞÍÖµ
  */
 #define J_IID_INTERFACE(interface)  "IID" # interface
 #endif
 
 /**
- * @brief æ¥å£æ ‡è¯†åˆ¤å®š
- * @param interface : æ¥å£åç§°
- * @param iid : æ¥å£æ ‡è¯†
- * @param ver : æ¥å£ç‰ˆæœ¬
- * @return boolç±»å‹å€¼
+ * @brief ½Ó¿Ú±êÊ¶ÅĞ¶¨
+ * @param interface : ½Ó¿ÚÃû³Æ
+ * @param iid : ½Ó¿Ú±êÊ¶
+ * @param ver : ½Ó¿Ú°æ±¾
+ * @return boolÀàĞÍÖµ
  */
 #define J_IS_INSTANCEOF(interface, iid, ver) \
     (((iid) == IID_ ## interface) \
     && ((ver) == VER_ ## interface))
 
 /**
- * @brief æ¥å£å¯¹è±¡æ ‡è¯†åˆ¤å®š
- * @param interface : æ¥å£åç§°
- * @param iid : æ¥å£æ ‡è¯†
- * @param ver : æ¥å£ç‰ˆæœ¬
- * @return boolç±»å‹å€¼
+ * @brief ½Ó¿Ú¶ÔÏó±êÊ¶ÅĞ¶¨
+ * @param interface : ½Ó¿ÚÃû³Æ
+ * @param iid : ½Ó¿Ú±êÊ¶
+ * @param ver : ½Ó¿Ú°æ±¾
+ * @return boolÀàĞÍÖµ
  */
 #define J_IS_INTERFACEOF(interface, iid, ver) \
     (((iid) == (interface)->interfaceIdentity()) \
     && ((ver) == (interface)->interfaceVersion()))
 
 /**
- * @brief åœ¨å½“å‰æ¥å£å­å¯¹è±¡ä¸­æŸ¥è¯¢æ¥å£
- * @param interface : æ¥å£åç§°
- * @param iid : æ¥å£æ ‡è¯†
- * @param ver : æ¥å£ç‰ˆæœ¬
+ * @brief ÔÚµ±Ç°½Ó¿Ú×Ó¶ÔÏóÖĞ²éÑ¯½Ó¿Ú
+ * @param interface : ½Ó¿ÚÃû³Æ
+ * @param iid : ½Ó¿Ú±êÊ¶
+ * @param ver : ½Ó¿Ú°æ±¾
  */
 #define J_QUERY_INTERFACE(interface, iid, ver) \
     do { \
@@ -110,10 +110,10 @@
     } while(0)
 
 /**
- * @brief åœ¨ç»™å®šæ¥å£å­å¯¹è±¡ä¸­æŸ¥è¯¢æ¥å£
- * @param interface : æ¥å£åç§°
- * @param iid : æ¥å£æ ‡è¯†
- * @param ver : æ¥å£ç‰ˆæœ¬
+ * @brief ÔÚ¸ø¶¨½Ó¿Ú×Ó¶ÔÏóÖĞ²éÑ¯½Ó¿Ú
+ * @param interface : ½Ó¿ÚÃû³Æ
+ * @param iid : ½Ó¿Ú±êÊ¶
+ * @param ver : ½Ó¿Ú°æ±¾
  */
 #define J_QUERY_IJUNKNOWN(interface, iid, ver) \
     do { \
@@ -122,11 +122,11 @@
     } while(0)
 
 /**
- * @brief æŸ¥è¯¢æˆå‘˜å¯¹è±¡å®ä¾‹
- * @param interface : æ¥å£åç§°
- * @param iid : æ¥å£æ ‡è¯†
- * @param ver : æ¥å£ç‰ˆæœ¬
- * @param object : æˆå‘˜å¯¹è±¡
+ * @brief ²éÑ¯³ÉÔ±¶ÔÏóÊµÀı
+ * @param interface : ½Ó¿ÚÃû³Æ
+ * @param iid : ½Ó¿Ú±êÊ¶
+ * @param ver : ½Ó¿Ú°æ±¾
+ * @param object : ³ÉÔ±¶ÔÏó
  */
 #define J_QUERY_MEMBER_OBJECT(interface, iid, ver, object) \
     do { \
@@ -137,24 +137,24 @@
     } while(0)
 
 /**
- * @brief å½“å‰æ¥å£æŸ¥è¯¢
- * @param interface : æ¥å£åç§°
+ * @brief µ±Ç°½Ó¿Ú²éÑ¯
+ * @param interface : ½Ó¿ÚÃû³Æ
  */
 #define J_QUERY_THIS_INTERFACE(interface) \
     ((interface *)queryInterface(IID_ ## interface, VER_ ## interface))
 
 /**
- * @brief ç»™å¯¹è±¡å¼•ç”¨æŸ¥è¯¢
- * @param object : æŸ¥è¯¢å¯¹è±¡
- * @param interface : æ¥å£åç§°
+ * @brief ¸ø¶ÔÏóÒıÓÃ²éÑ¯
+ * @param object : ²éÑ¯¶ÔÏó
+ * @param interface : ½Ó¿ÚÃû³Æ
  */
 #define J_QUERY_OBJECT_INTERFACE(object, interface) \
     ((interface *)object.queryInterface(IID_ ## interface, VER_ ## interface))
 
 /**
- * @brief ç»™å®šå¯¹è±¡æŒ‡é’ˆæŸ¥è¯¢
- * @param object : æŸ¥è¯¢å¯¹è±¡
- * @param interface : æ¥å£åç§°
+ * @brief ¸ø¶¨¶ÔÏóÖ¸Õë²éÑ¯
+ * @param object : ²éÑ¯¶ÔÏó
+ * @param interface : ½Ó¿ÚÃû³Æ
  */
 #define J_QUERY_POBJECT_INTERFACE(object, interface) \
     do { \
@@ -229,18 +229,18 @@ typedef long long JLRESULT;
 #endif
 
 #ifndef J_FRAME_THEME
-#define J_FRAME_THEME   /**< J_FRAME_THEME å® */
-#define J_FRAME_THEME_OFFICE_2007BLUE       J_TO_STRING(Office2007Blue)     /**< Office2007Blue é£æ ¼ */
-#define J_FRAME_THEME_OFFICE_2007BLACK      J_TO_STRING(Office2007Black)    /**< Office2007Black é£æ ¼ */
-#define J_FRAME_THEME_OFFICE_2007SILVER     J_TO_STRING(Office2007Silver)   /**< Office2007Silver é£æ ¼ */
-#define J_FRAME_THEME_OFFICE_2007AQUA       J_TO_STRING(Office2007Aqua)     /**< Office2007Aqua é£æ ¼ */
-#define J_FRAME_THEME_WINDOWs7_SCENIC       J_TO_STRING(Windows7Scenic)     /**< Windows7Scenic é£æ ¼ */
-#define J_FRAME_THEME_OFFICE_2010SILVER     J_TO_STRING(Office2010Silver)   /**< Office2010Silver é£æ ¼ */
-#define J_FRAME_THEME_OFFICE_2010BLUE       J_TO_STRING(Office2010Blue)     /**< Office2010Blue é£æ ¼ */
-#define J_FRAME_THEME_OFFICE_2010BLACK      J_TO_STRING(Office2010Black)    /**< Office2010Black é£æ ¼ */
+#define J_FRAME_THEME   /**< J_FRAME_THEME ºê */
+#define J_FRAME_THEME_OFFICE_2007BLUE       J_TO_STRING(Office2007Blue)     /**< Office2007Blue ·ç¸ñ */
+#define J_FRAME_THEME_OFFICE_2007BLACK      J_TO_STRING(Office2007Black)    /**< Office2007Black ·ç¸ñ */
+#define J_FRAME_THEME_OFFICE_2007SILVER     J_TO_STRING(Office2007Silver)   /**< Office2007Silver ·ç¸ñ */
+#define J_FRAME_THEME_OFFICE_2007AQUA       J_TO_STRING(Office2007Aqua)     /**< Office2007Aqua ·ç¸ñ */
+#define J_FRAME_THEME_WINDOWs7_SCENIC       J_TO_STRING(Windows7Scenic)     /**< Windows7Scenic ·ç¸ñ */
+#define J_FRAME_THEME_OFFICE_2010SILVER     J_TO_STRING(Office2010Silver)   /**< Office2010Silver ·ç¸ñ */
+#define J_FRAME_THEME_OFFICE_2010BLUE       J_TO_STRING(Office2010Blue)     /**< Office2010Blue ·ç¸ñ */
+#define J_FRAME_THEME_OFFICE_2010BLACK      J_TO_STRING(Office2010Black)    /**< Office2010Black ·ç¸ñ */
 #endif // J_FRAME_THEME
 
-/** IJUnoknown æ¥å£æè¿° */
+/** IJUnoknown ½Ó¿ÚÃèÊö */
 #define VER_IJUnknown J_INTERFACE_VERSION(1, 0)
 #define IID_IJUnknown J_IID_INTERFACE(IJUnknown)
 
@@ -251,67 +251,67 @@ class IJUnknown
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJUnknown() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_IJUnknown; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_IJUnknown; }
 
     /**
-     * @brief æŸ¥è¯¢æ¥å£
-     * @param [in] iid : æ¥å£æ ‡è¯†
-     * @param [in] ver : æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£å®ä¾‹
+     * @brief ²éÑ¯½Ó¿Ú
+     * @param [in] iid : ½Ó¿Ú±êÊ¶
+     * @param [in] ver : ½Ó¿Ú°æ±¾
+     * @return ½Ó¿ÚÊµÀı
      */
     virtual void* queryInterface(const std::string &iid, unsigned int ver)
     { (void)iid; (void)ver; return 0; }
 
     /**
-     * @brief åŠ è½½æ¥å£
-     * @return trueï¼ŒåŠ è½½æˆåŠŸï¼›falseï¼ŒåŠ è½½å¤±è´¥
+     * @brief ¼ÓÔØ½Ó¿Ú
+     * @return true£¬¼ÓÔØ³É¹¦£»false£¬¼ÓÔØÊ§°Ü
      */
     virtual bool loadInterface() { return true; }
 
     /**
-     * @brief æ›´æ–°æ¥å£
-     * @return trueï¼Œæ›´æ–°æˆåŠŸï¼›falseï¼Œæ›´æ–°å¤±è´¥
+     * @brief ¸üĞÂ½Ó¿Ú
+     * @return true£¬¸üĞÂ³É¹¦£»false£¬¸üĞÂÊ§°Ü
      */
     virtual bool updateInterface() { return true; }
 
     /**
-     * @brief é‡Šæ”¾æ¥å£
+     * @brief ÊÍ·Å½Ó¿Ú
      */
     virtual void releaseInterface() {}
 
     /**
-     * @brief æŸ¥è¯¢invokeå‡½æ•°å†…éƒ¨æŒ‡ä»¤ä¿¡æ¯
-     * @return å†…éƒ¨æŒ‡ä»¤é›†
+     * @brief ²éÑ¯invokeº¯ÊıÄÚ²¿Ö¸ÁîĞÅÏ¢
+     * @return ÄÚ²¿Ö¸Áî¼¯
      */
     virtual std::list<std::string> queryMethod() const
     { return std::list<std::string>(); }
 
     /**
-     * @brief æ‰§è¡Œå‡½æ•°è°ƒç”¨
-     * @param [in] method : å†…éƒ¨å‡½æ•°åç§°
-     * @param [in] argc : å¯å˜å‚æ•°ä¸ªæ•°
-     * @param [in] ... : å¯å˜å‚æ•°
-     * @return è°ƒç”¨ç»“æœã€‚trueï¼Œè°ƒç”¨æˆåŠŸï¼›falseï¼Œè°ƒç”¨å¤±è´¥
+     * @brief Ö´ĞĞº¯Êıµ÷ÓÃ
+     * @param [in] method : ÄÚ²¿º¯ÊıÃû³Æ
+     * @param [in] argc : ¿É±ä²ÎÊı¸öÊı
+     * @param [in] ... : ¿É±ä²ÎÊı
+     * @return µ÷ÓÃ½á¹û¡£true£¬µ÷ÓÃ³É¹¦£»false£¬µ÷ÓÃÊ§°Ü
      */
     virtual bool invokeMethod(const std::string &method, int argc = 0, ...)
     { (void)method; (void)argc; return false; }
 };
 
-// æ¥å£æ ‡è¯†
+// ½Ó¿Ú±êÊ¶
 #define VER_IJFrameFacade J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameFacade J_IID_INTERFACE(IJFrameFacade)
 
@@ -322,147 +322,147 @@ class IJFrameFacade : public IJUnknown
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJFrameFacade() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_IJFrameFacade; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_IJFrameFacade; }
 
     /**
-     * @brief è·å–è½¯ä»¶å®ä½“è·¯å¾„
-     * @return è½¯ä»¶å®ä½“è·¯å¾„
+     * @brief »ñÈ¡Èí¼şÊµÌåÂ·¾¶
+     * @return Èí¼şÊµÌåÂ·¾¶
      */
     virtual std::string appDirPath() const = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶é…ç½®æ–‡ä»¶å¤¹è·¯å¾„
-     * @return æ¡†æ¶é…ç½®æ–‡ä»¶å¤¹è·¯å¾„
+     * @brief »ñÈ¡¿ò¼ÜÅäÖÃÎÄ¼ş¼ĞÂ·¾¶
+     * @return ¿ò¼ÜÅäÖÃÎÄ¼ş¼ĞÂ·¾¶
      */
     virtual std::string configDirPath() const = 0;
 
     /**
-     * @brief è·å–è½¯ä»¶å®ä½“éƒ¨ç½²è·¯å¾„ï¼ˆapplicationå¯æ‰§è¡Œæ–‡ä»¶ä¸Šä¸€çº§è·¯å¾„ï¼‰
-     * @return æ¡†æ¶éƒ¨ç½²è·¯å¾„
+     * @brief »ñÈ¡Èí¼şÊµÌå²¿ÊğÂ·¾¶£¨application¿ÉÖ´ĞĞÎÄ¼şÉÏÒ»¼¶Â·¾¶£©
+     * @return ¿ò¼Ü²¿ÊğÂ·¾¶
      */
     virtual std::string thisDirPath() const = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶è·¯å¾„
-     * @return æ¡†æ¶è·¯å¾„
+     * @brief »ñÈ¡¿ò¼ÜÂ·¾¶
+     * @return ¿ò¼ÜÂ·¾¶
      */
     virtual std::string frameDirPath() const = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶å…¨å±€é…ç½®æ–‡ä»¶è·¯å¾„
-     * @return æ¡†æ¶å…¨å±€é…ç½®æ–‡ä»¶è·¯å¾„
+     * @brief »ñÈ¡¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼şÂ·¾¶
+     * @return ¿ò¼ÜÈ«¾ÖÅäÖÃÎÄ¼şÂ·¾¶
      */
     virtual std::string frameGlobalPath() const = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶è·¯å¾„
-     * @return æ¡†æ¶å¸ƒå±€é…ç½®æ–‡ä»¶è·¯å¾„
+     * @brief »ñÈ¡¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼şÂ·¾¶
+     * @return ¿ò¼Ü²¼¾ÖÅäÖÃÎÄ¼şÂ·¾¶
      */
     virtual std::string frameLayoutPath() const = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶ç‰ˆæœ¬
-     * @return æ¡†æ¶ç‰ˆæœ¬ã€‚ä¸ºç©ºæ—¶è¡¨ç¤ºè·å–å¤±è´¥
+     * @brief »ñÈ¡¿ò¼Ü°æ±¾
+     * @return ¿ò¼Ü°æ±¾¡£Îª¿ÕÊ±±íÊ¾»ñÈ¡Ê§°Ü
      */
     virtual std::string frameVersion() const = 0;
 
     /**
-     * @brief è·å–æ¡†æ¶ç‰ˆæœ¬
-     * @param [out] major : ä¸»ç‰ˆæœ¬å·
-     * @param [out] minor : æ¬¡ç‰ˆæœ¬å·
-     * @param [out] patch : è¡¥ä¸ç‰ˆæœ¬å·
-     * @return trueï¼Œè·å–æˆåŠŸï¼›falseï¼Œè·å–å¤±è´¥
+     * @brief »ñÈ¡¿ò¼Ü°æ±¾
+     * @param [out] major : Ö÷°æ±¾ºÅ
+     * @param [out] minor : ´Î°æ±¾ºÅ
+     * @param [out] patch : ²¹¶¡°æ±¾ºÅ
+     * @return true£¬»ñÈ¡³É¹¦£»false£¬»ñÈ¡Ê§°Ü
      */
     virtual bool frameVersion(int &major, int &minor, int &patch) const = 0;
 
     /**
-     * @brief åŠ è½½æ¡†æ¶
-     * @param argc : å‚æ•°ä¸ªæ•°
-     * @param [in] argv : å‚æ•°åˆ—è¡¨
-     * @param [in] app : å¤–éƒ¨appå®ä½“ï¼ˆå¦‚MFCæ¡†æ¶çš„CWinApp*ï¼‰
-     * @return æ‰§è¡Œç»“æœã€‚trueï¼ŒåŠ è½½æˆåŠŸï¼›falseï¼ŒåŠ è½½å¤±è´¥
+     * @brief ¼ÓÔØ¿ò¼Ü
+     * @param argc : ²ÎÊı¸öÊı
+     * @param [in] argv : ²ÎÊıÁĞ±í
+     * @param [in] app : Íâ²¿appÊµÌå£¨ÈçMFC¿ò¼ÜµÄCWinApp*£©
+     * @return Ö´ĞĞ½á¹û¡£true£¬¼ÓÔØ³É¹¦£»false£¬¼ÓÔØÊ§°Ü
      */
     virtual bool loadFrame(int argc = 0, char** argv = 0, void *app = 0) = 0;
 
     /**
-     * @brief æ˜¾ç¤º/éšè—æ¡†æ¶ä¸»çª—å£
-     * @param show : æ˜¾ç¤ºæ ‡å¿—ã€‚trueï¼Œæ˜¾ç¤ºï¼›falseï¼Œéšè—
-     * @param maximized : æœ€å¤§åŒ–æ ‡å¿—ã€‚trueï¼Œæœ€å¤§åŒ–ï¼›falseï¼Œæ­£å¸¸
+     * @brief ÏÔÊ¾/Òş²Ø¿ò¼ÜÖ÷´°¿Ú
+     * @param show : ÏÔÊ¾±êÖ¾¡£true£¬ÏÔÊ¾£»false£¬Òş²Ø
+     * @param maximized : ×î´ó»¯±êÖ¾¡£true£¬×î´ó»¯£»false£¬Õı³£
      */
     virtual void showFrame(bool show = true, bool maximized = true) = 0;
 
     /**
-     * @brief é€€å‡ºæ¡†æ¶ï¼ˆå¸¦æç¤ºï¼‰
+     * @brief ÍË³ö¿ò¼Ü£¨´øÌáÊ¾£©
      */
     virtual void tryExitFrame() = 0;
 
     /**
-     * @brief é€€å‡ºæ¡†æ¶
+     * @brief ÍË³ö¿ò¼Ü
      */
     virtual void exitFrame() = 0;
 
     /**
-     * @brief é‡å¯æ¡†æ¶
-     * @param [in] arguments : å‚æ•°åˆ—è¡¨
+     * @brief ÖØÆô¿ò¼Ü
+     * @param [in] arguments : ²ÎÊıÁĞ±í
      */
     virtual void restartFrame(const std::list<std::string> &arguments) = 0;
 
     /**
-     * @brief æ‰§è¡Œç™»å½•ç•Œé¢æ˜¾ç¤º
-     * @return æ‰§è¡Œç»“æœã€‚trueï¼Œç™»å½•æˆåŠŸï¼›falseï¼Œç™»å½•å¤±è´¥
+     * @brief Ö´ĞĞµÇÂ¼½çÃæÏÔÊ¾
+     * @return Ö´ĞĞ½á¹û¡£true£¬µÇÂ¼³É¹¦£»false£¬µÇÂ¼Ê§°Ü
      */
     virtual bool loginFrame() = 0;
 
     /**
-     * @brief æ³¨é”€ç™»å½•æ¡†æ¶
-     * @return æ‰§è¡Œç»“æœã€‚trueï¼Œæ³¨é”€æˆåŠŸï¼›falseï¼Œæ³¨é”€å¤±è´¥
+     * @brief ×¢ÏúµÇÂ¼¿ò¼Ü
+     * @return Ö´ĞĞ½á¹û¡£true£¬×¢Ïú³É¹¦£»false£¬×¢ÏúÊ§°Ü
      */
     virtual bool logoutFrame() = 0;
 
     /**
-     * @brief è·å–ç¯å¢ƒå˜é‡å€¼
-     * @param [in] name : ç¯å¢ƒå˜é‡åç§°
-     * @return ç¯å¢ƒå˜é‡å€¼
+     * @brief »ñÈ¡»·¾³±äÁ¿Öµ
+     * @param [in] name : »·¾³±äÁ¿Ãû³Æ
+     * @return »·¾³±äÁ¿Öµ
      */
     virtual std::string getEnvValue(const std::string &name) const = 0;
 
     /**
-     * @brief åœ¨MFCçš„theAppç±»ä¸­è°ƒç”¨ï¼ˆtheAppç±»çš„Runå‡½æ•°ï¼Œå®ç°Qtæ¶ˆæ¯å¾ªç¯è°ƒåº¦ï¼‰
-     * @param [in] mfcApp : CWinAppç±»å‹å®ä¾‹ï¼Œå³theApp
-     * @return Qtç¯å¢ƒé€€å‡ºç 
+     * @brief ÔÚMFCµÄtheAppÀàÖĞµ÷ÓÃ£¨theAppÀàµÄRunº¯Êı£¬ÊµÏÖQtÏûÏ¢Ñ­»·µ÷¶È£©
+     * @param [in] mfcApp : CWinAppÀàĞÍÊµÀı£¬¼´theApp
+     * @return Qt»·¾³ÍË³öÂë
      */
     virtual int runQApp(void *mfcApp = 0) = 0;
 
     /**
-     * @brief è·å–çª—å£å®ä¾‹çš„å¥æŸ„
-     * @param [in] window : ç›®æ ‡çª—å£å®ä¾‹ï¼ˆCWndç±»å‹ã€QWidgetç±»å‹ï¼‰
-     * @param [in] winType : ç›®æ ‡çª—å£ç±»å‹ã€‚1ï¼‰"QWidget"ï¼›2ï¼‰"CWnd"
-     * @return ç›®æ ‡çª—å£çª—å£å¥æŸ„ï¼ˆHWNDï¼‰
+     * @brief »ñÈ¡´°¿ÚÊµÀıµÄ¾ä±ú
+     * @param [in] window : Ä¿±ê´°¿ÚÊµÀı£¨CWndÀàĞÍ¡¢QWidgetÀàĞÍ£©
+     * @param [in] winType : Ä¿±ê´°¿ÚÀàĞÍ¡£1£©"QWidget"£»2£©"CWnd"
+     * @return Ä¿±ê´°¿Ú´°¿Ú¾ä±ú£¨HWND£©
      */
     virtual long windowHandle(void *window, const std::string &winType) = 0;
 
     /**
-     * @brief è·å–è½¯ä»¶ç³»ç»Ÿè¯­è¨€
-     * @return è½¯ä»¶ç³»ç»Ÿè¯­è¨€
+     * @brief »ñÈ¡Èí¼şÏµÍ³ÓïÑÔ
+     * @return Èí¼şÏµÍ³ÓïÑÔ
      */
     virtual std::string language() const = 0;
 };
 
-/** è·å–æ¡†æ¶é—¨é¢å•å®ä¾‹å¯¼å‡ºå‡½æ•°ç±»å‹å®šä¹‰ */
+/** »ñÈ¡¿ò¼ÜÃÅÃæµ¥ÊµÀıµ¼³öº¯ÊıÀàĞÍ¶¨Òå */
 typedef IJUnknown *(J_ATTR_CDECL *FuncFrameFacadeInst)(void);
 
 ///
@@ -487,12 +487,12 @@ typedef IJUnknown *(J_ATTR_CDECL *FuncFrameFacadeInst)(void);
 #endif
 
 /**
- * @brief jframeFacade : è·å–æ¡†æ¶é—¨é¢ç³»ç»Ÿå•å®ä¾‹
- * @return æ¡†æ¶é—¨é¢ç³»ç»Ÿå•å®ä¾‹
+ * @brief jframeFacade : »ñÈ¡¿ò¼ÜÃÅÃæÏµÍ³µ¥ÊµÀı
+ * @return ¿ò¼ÜÃÅÃæÏµÍ³µ¥ÊµÀı
  */
 JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 
-// æ¡†æ¶ - æ—¥å¿—
+// ¿ò¼Ü - ÈÕÖ¾
 
 #ifdef JFRAME_FACADE_LIB
 
@@ -505,7 +505,7 @@ JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 #endif
 #endif
 
-/** è¾“å‡ºæ—¥å¿—ï¼ˆtype: char*; msg, char*; where, char*ï¼‰ */
+/** Êä³öÈÕÖ¾£¨type: char*; msg, char*; where, char*£© */
 #define jframeLog(type, msg, where) \
     jframeFacade()->invokeMethod("log", 6, type, msg, where, __FILENAME__, __LINE__, __FUNCTION__)
 
@@ -561,15 +561,15 @@ JFRAME_FACADE_EXPORT IJFrameFacade* jframeFacade();
 #endif
 
 /**
- * @brief é“¾æ¥åº“åŠ è½½ç®¡ç†ç±»
+ * @brief Á´½Ó¿â¼ÓÔØ¹ÜÀíÀà
  */
 template<typename T> class JLibraryT
 {
 public:
     /**
-     * @brief JLibraryT : æ„é€ å‡½æ•°
-     * @param filepath : åº“æ–‡ä»¶è·¯å¾„
-     * @param autoclose : è‡ªåŠ¨é”€æ¯ã€‚trueï¼Œä½¿èƒ½ï¼›falseï¼Œç¦æ­¢
+     * @brief JLibraryT : ¹¹Ôìº¯Êı
+     * @param filepath : ¿âÎÄ¼şÂ·¾¶
+     * @param autoclose : ×Ô¶¯Ïú»Ù¡£true£¬Ê¹ÄÜ£»false£¬½ûÖ¹
      */
     explicit JLibraryT(const std::basic_string<T> &filepath, bool autoclose = true)
         : _handle(0)
@@ -587,8 +587,8 @@ public:
     }
 
     /**
-     * @brief load : åŠ è½½åº“
-     * @return åŠ è½½çŠ¶æ€ã€‚trueï¼ŒåŠ è½½æˆåŠŸï¼›falseï¼ŒåŠ è½½å¤±è´¥
+     * @brief load : ¼ÓÔØ¿â
+     * @return ¼ÓÔØ×´Ì¬¡£true£¬¼ÓÔØ³É¹¦£»false£¬¼ÓÔØÊ§°Ü
      */
     bool load()
     {
@@ -610,9 +610,9 @@ public:
     }
 
     /**
-     * @brief load : åŠ è½½åº“
-     * @param filepath : åº“æ–‡ä»¶è·¯å¾„
-     * @return åŠ è½½çŠ¶æ€ã€‚trueï¼ŒåŠ è½½æˆåŠŸï¼›falseï¼ŒåŠ è½½å¤±è´¥
+     * @brief load : ¼ÓÔØ¿â
+     * @param filepath : ¿âÎÄ¼şÂ·¾¶
+     * @return ¼ÓÔØ×´Ì¬¡£true£¬¼ÓÔØ³É¹¦£»false£¬¼ÓÔØÊ§°Ü
      */
     bool load(const std::basic_string<T> &filepath)
     {
@@ -622,7 +622,7 @@ public:
     }
 
     /**
-     * @brief unload : å¸è½½åº“
+     * @brief unload : Ğ¶ÔØ¿â
      */
     void unload()
     {
@@ -639,9 +639,9 @@ public:
     }
 
     /**
-     * @brief resolve : è·å–åº“ä¸­çš„æ–¹æ³•æ¥å£
-     * @param methodname : æ–¹æ³•æ¥å£åç§°
-     * @return æ–¹æ³•æ¥å£
+     * @brief resolve : »ñÈ¡¿âÖĞµÄ·½·¨½Ó¿Ú
+     * @param methodname : ·½·¨½Ó¿ÚÃû³Æ
+     * @return ·½·¨½Ó¿Ú
      */
     void *resolve(const std::basic_string<T> &methodname)
     {
@@ -649,7 +649,7 @@ public:
             return 0;   // failure
         }
 
-        // è·å–å¯¼å‡ºæ¥å£
+        // »ñÈ¡µ¼³ö½Ó¿Ú
 #ifdef _MSC_VER
         return GetProcAddress((HMODULE)_handle, methodname.c_str());
 #elif defined(__unix__)
@@ -661,10 +661,10 @@ public:
     }
 
     /**
-     * @brief resolve : è·å–åº“ä¸­çš„æ–¹æ³•æ¥å£
-     * @param filepath : åº“æ–‡ä»¶è·¯å¾„
-     * @param methodname : æ–¹æ³•æ¥å£åç§°
-     * @return æ–¹æ³•æ¥å£
+     * @brief resolve : »ñÈ¡¿âÖĞµÄ·½·¨½Ó¿Ú
+     * @param filepath : ¿âÎÄ¼şÂ·¾¶
+     * @param methodname : ·½·¨½Ó¿ÚÃû³Æ
+     * @return ·½·¨½Ó¿Ú
      */
     static void *resolve(const std::basic_string<T> &filepath, const std::basic_string<T> &methodname)
     {
@@ -679,7 +679,7 @@ private:
 };
 
 /**
- * @brief ç±»å‹å®šä¹‰
+ * @brief ÀàĞÍ¶¨Òå
  */
 typedef JLibraryT<char> JLibrary, JLibraryA;
 

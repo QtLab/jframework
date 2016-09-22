@@ -9,9 +9,28 @@ commands += echo ----- $$PWD &
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
-
+    # --- wizards - visualstudio
+    srcdir = "$$jframe_dir/tools/wizards/visualstudio/"
+    exists("$$srcdir") {
+        dstdir = "$$PWD/data/wizards/"
+        srcfiles = *
+        win32 {
+            srcdir = $$replace(srcdir, /, \\)
+            dstdir = $$replace(dstdir, /, \\)
+        }
+        !exists("$$dstdir") {
+            commands += $(MKDIR) "$$dstdir" &
+        }
+        for (srcfile, srcfiles) {
+            commands += $(COPY_DIR) "$$srcdir$$srcfile" "$$dstdir" &
+        }
+    }
 } else {
-
+    dstdir = "$$PWD/data/wizards/"
+    exists("$$dstdir") {
+        win32:dstdir = $$replace(dstdir, /, \\)
+        commands += $$RM_DIR "$$dstdir" &
+    }
 }
 
 #-------------------------------------------------

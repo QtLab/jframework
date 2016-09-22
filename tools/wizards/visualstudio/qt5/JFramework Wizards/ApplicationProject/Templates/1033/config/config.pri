@@ -8,5 +8,4 @@ OTHER_FILES += \
     $$PWD/frame/jframe_global.xml \
     $$PWD/frame/jframe_layout.xml \
     $$PWD/frame/jframe_logging.conf \
-    $$PWD/WorkMode_Test1/*.* \
-    $$PWD/WorkMode_Test2/*.*
+    $$PWD/workmode_1/*.*

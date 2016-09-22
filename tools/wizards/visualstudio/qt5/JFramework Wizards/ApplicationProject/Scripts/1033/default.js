@@ -1,4 +1,5 @@
 var QtEngine;
+var fso;
 
 function GetNameFromFile(strFile) {
     var nPos = strFile.lastIndexOf(".");
@@ -8,6 +9,7 @@ function GetNameFromFile(strFile) {
 function OnFinish(selProj, selObj) {
     try {
         try {
+            fso = new ActiveXObject("Scripting.FileSystemObject");
             QtEngine = new ActiveXObject("Digia.Qt5ProjectEngine");
         } catch (ex) {
             wizard.ReportError("Cannot instantiate QtProjectEngine object!");
@@ -28,13 +30,23 @@ function OnFinish(selProj, selObj) {
         //////////
 
         selProj = CreateQtProject(projectName, projectPath);
+
         AddCommonConfig(selProj, projectName);
         AddSpecificConfig(selProj, projectName, projectPath);
-        SetCommonPchSettings(selProj);
+
         SetupFilters(selProj);
+
         SetResDlgFont();
+
         AddFilesToProjectWithInfFile(selProj, projectName);
+        SetCommonPchSettings(selProj);
+
         selProj.Object.Save();
+
+        //////////
+
+        //
+        CopySolutionFiles(selProj);
 
     } catch (e) {
         var msg = "name: " + e.name + "\n" +
@@ -56,10 +68,16 @@ function CreateQtProject(projectName, projectPath) {
     try {
         var templatePath = wizard.FindSymbol("TEMPLATES_PATH");
         var projectTemplatePath = wizard.FindSymbol("PROJECT_TEMPLATE_PATH");
-        var projectTemplate = templatePath + "\\source\\framework\\application\\Application140.vcxproj";
+        var projectTemplateFile = templatePath + "\\source\\framework\\application\\";
         var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
         var solution = dte.Solution;
         var solutionName = "";
+
+        if (wizard.dte.version == "9.0") {
+            projectTemplateFile += "default_" + dte.version + ".vcproj";
+        } else {
+            projectTemplateFile += "default_" + dte.version + ".vcxproj";
+        }
 
         if (wizard.FindSymbol("CLOSE_SOLUTION")) {
             solution.Close();
@@ -73,10 +91,10 @@ function CreateQtProject(projectName, projectPath) {
         var target = wizard.FindSymbol("TARGET");
         var project;
         if (wizard.FindSymbol("WIZARD_TYPE") == vsWizardAddSubProject) { // vsWizardAddSubProject
-            var projectItem = target.AddFromTemplate(projectTemplate, projectPath + "\\" + projectNameWithExt);
+            var projectItem = target.AddFromTemplate(projectTemplateFile, projectPath + "\\" + projectNameWithExt);
             project = projectItem.SubProject;
         } else {
-            project = target.AddFromTemplate(projectTemplate, projectPath, projectNameWithExt);
+            project = target.AddFromTemplate(projectTemplateFile, projectPath, projectNameWithExt);
         }
         return project;
     } catch (e) {
@@ -105,22 +123,22 @@ function AddSpecificConfig(project, projectName, projectPath) {
             //
             var additionalIncludeDirectories = compilerTool.AdditionalIncludeDirectories;
             if (additionalIncludeDirectories != "") {
-                additionalIncludeDirectories += ";";
+                //additionalIncludeDirectories += ";";
             }
-            additionalIncludeDirectories += ";$(JFRAME_DIR)\\lib\\3rdpart";
+            //additionalIncludeDirectories += ";$(JFRAME_DIR)\\lib\\3rdpart";
             compilerTool.AdditionalIncludeDirectories = additionalIncludeDirectories;
 
             //
             var preProcDefines = compilerTool.PreprocessorDefinitions;
             if (preProcDefines != "") {
-                //
+                //preProcDefines += ";";
             }
             if (bDebug) {
                 //
             } else {
                 //
             }
-            preProcDefines += GetPlatformDefine(config);
+            //preProcDefines += GetPlatformDefine(config);
             //
             compilerTool.PreprocessorDefinitions = preProcDefines;
 
@@ -134,9 +152,9 @@ function AddSpecificConfig(project, projectName, projectPath) {
             // 
             var additionalLibraryDirectories = linkerTool.AdditionalLibraryDirectories;
             if (additionalLibraryDirectories != "") {
-                additionalLibraryDirectories += ";";
+                //additionalLibraryDirectories += ";";
             }
-            additionalLibraryDirectories += "$(JFRAME_DIR)\\lib\\3rdpart";
+            //additionalLibraryDirectories += "$(JFRAME_DIR)\\lib\\3rdpart";
             linkerTool.AdditionalLibraryDirectories = additionalLibraryDirectories;
 
             //
@@ -175,92 +193,92 @@ function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
         var solutionPath = wizard.FindSymbol('SOLUTION_PATH');
         var projectName = wizard.FindSymbol('PROJECT_NAME');
         // -- . --
-        if (sourceName == "jframework140.sln") {
-            targetName = solutionPath + "/" + wizard.FindSymbol("VS_SOLUTION_NAME") + ".sln";
+        if (sourceName == "jframework_14.0.sln") {
+            targetName = solutionPath + "" + wizard.FindSymbol("VS_SOLUTION_NAME") + "_140.sln";
         } else if (sourceName == "jframework.pro") {
-            targetName = solutionPath + "/" + wizard.FindSymbol("VS_SOLUTION_NAME") + ".pro";
+            targetName = solutionPath + "" + wizard.FindSymbol("VS_SOLUTION_NAME") + ".pro";
         }
         // -- bin --
         else if (sourceName == "bin/jframeworkdir.dll") {
-            targetName = solutionPath + "/bin/jframeworkdir.dll";
+            targetName = solutionPath + "bin/jframeworkdir.dll";
         }
         // -- config --
         else if (sourceName == "config/config.pri") {
-            targetName = solutionPath + "/config/config.pri";
+            targetName = solutionPath + "config/config.pri";
         }
         // -- config/frame --
         else if (sourceName == "config/frame/jframe_global.xml") {
-            targetName = solutionPath + "/config/frame/jframe_global.xm";
+            targetName = solutionPath + "config/frame/jframe_global.xml";
         } else if (sourceName == "config/frame/jframe_layout.xml") {
-            targetName = solutionPath + "/config/frame/jframe_layout.xm";
-        } else if (sourceName == "config/frame/jframe_logging.xml") {
-            targetName = solutionPath + "/config/frame/jframe_logging.xm";
+            targetName = solutionPath + "config/frame/jframe_layout.xml";
+        } else if (sourceName == "config/frame/jframe_logging.conf") {
+            targetName = solutionPath + "config/frame/jframe_logging.conf";
         }
         // -- config/resource --
         else if (sourceName == "config/resource/app.ico") {
-            targetName = solutionPath + "/config/resource/app.ico";
+            targetName = solutionPath + "config/resource/app.ico";
         } else if (sourceName == "config/resource/finish.png") {
-            targetName = solutionPath + "/config/resource/finish.png";
+            targetName = solutionPath + "config/resource/finish.png";
         } else if (sourceName == "config/resource/splash.png") {
-            targetName = solutionPath + "/config/resource/splash.png";
+            targetName = solutionPath + "config/resource/splash.png";
         }
         // -- config/workmode_1 --
         else if (sourceName == "config/workmode_1/jframe_component.xml") {
-            targetName = solutionPath + "/config/workmode_1/jframe_component.xml";
+            targetName = solutionPath + "config/workmode_1/jframe_component.xml";
         }
         // -- source -- 
         else if (sourceName == "source/source.pro") {
-            targetName = solutionPath + "/source/source.pro";
+            targetName = solutionPath + "source/source.pro";
         }
         // -- source/common --
         else if (sourceName == "source/common/build.pri") {
-            targetName = solutionPath + "/source/common/build.pri";
+            targetName = solutionPath + "source/common/build.pri";
         } else if (sourceName == "source/common/copy.ignore") {
-            targetName = solutionPath + "/source/common/copy.ignore";
+            targetName = solutionPath + "source/common/copy.ignore";
         } else if (sourceName == "source/common/precomp.h") {
-            targetName = solutionPath + "/source/common/precomp.h";
+            targetName = solutionPath + "source/common/precomp.h";
         }
         // -- source/component --
         else if (sourceName == "source/component/component.pro") {
-            targetName = solutionPath + "/source/component/component.pro";
+            targetName = solutionPath + "source/component/component.pro";
         }
         // -- source/framework --
         else if (sourceName == "source/framework/framework.pro") {
-            targetName = solutionPath + "/source/framework/framework.pro";
+            targetName = solutionPath + "source/framework/framework.pro";
         }
         // -- source/framework/application --
         else if (sourceName == "source/framework/application/res/Application.ico") {
-            targetName = "source/framework/" + projectName + "/res/" + projectName + ".ico";
+            targetName = "res/" + projectName + ".ico";
         } else if (sourceName == "source/framework/application/res/Application.rc2") {
-            targetName = "source/framework/" + projectName + "/res/" + projectName + ".rc2";
+            targetName = "res/" + projectName + ".rc2";
         } else if (sourceName == "source/framework/application/Application.cpp") {
-            targetName = "source/framework/" + projectName + "/" + projectName + ".cpp";
+            targetName = projectName + ".cpp";
         } else if (sourceName == "source/framework/application/Application.h") {
-            targetName = "source/framework/" + projectName + "/" + projectName + ".h";
+            targetName = projectName + ".h";
         } else if (sourceName == "source/framework/application/Application.pri") {
-            targetName = "source/framework/" + projectName + "/" + projectName + ".pri";
+            targetName = projectName + ".pri";
         } else if (sourceName == "source/framework/application/Application.pro") {
-            targetName = "source/framework/" + projectName + "/" + projectName + ".pro";
+            targetName = projectName + ".pro";
         } else if (sourceName == "source/framework/application/Application.rc") {
-            targetName = "source/framework/" + projectName + "/" + projectName + ".rc";
+            targetName = projectName + ".rc";
         } else if (sourceName == "source/framework/application/ChildView.cpp") {
-            targetName = "source/framework/" + projectName + "/ChildView.cpp";
+            targetName = "ChildView.cpp";
         } else if (sourceName == "source/framework/application/ChildView.h") {
-            targetName = "source/framework/" + projectName + "/ChildView.h";
+            targetName = "ChildView.h";
         } else if (sourceName == "source/framework/application/main.cpp") {
-            targetName = "source/framework/" + projectName + "/main.cpp";
+            targetName = "main.cpp";
         } else if (sourceName == "source/framework/application/MainFrm.cpp") {
-            targetName = "source/framework/" + projectName + "/MainFrm.cpp";
+            targetName = "MainFrm.cpp";
         } else if (sourceName == "source/framework/application/MainFrm.h") {
-            targetName = "source/framework/" + projectName + "/MainFrm.h";
+            targetName = "MainFrm.h";
         } else if (sourceName == "source/framework/application/Resource.h") {
-            targetName = "source/framework/" + projectName + "/Resource.h";
+            targetName = "Resource.h";
         } else if (sourceName == "source/framework/application/stdafx.cpp") {
-            targetName = "source/framework/" + projectName + "/stdafx.cpp";
+            targetName = "stdafx.cpp";
         } else if (sourceName == "source/framework/application/stdafx.h") {
-            targetName = "source/framework/" + projectName + "/stdafx.h";
+            targetName = "stdafx.h";
         } else if (sourceName == "source/framework/application/targetver.h") {
-            targetName = "source/framework/" + projectName + "/targetver.h";
+            targetName = "targetver.h";
         }
         return targetName;
     } catch (e) {
@@ -272,14 +290,97 @@ function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
     }
 }
 
+function CopySolutionFiles(selProj) {
+    // vs
+    var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
+    var solutionName = wizard.FindSymbol("VS_SOLUTION_NAME");
+    var projectPath = wizard.FindSymbol("PROJECT_PATH");
+    var projectName = wizard.FindSymbol("PROJECT_NAME");
+    var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
+    var exclusive = wizard.FindSymbol("CLOSE_SOLUTION");
+
+    try {
+        // -- 。 --
+        CopyFileWithTargetName("jframework.pro", templatePath, projectName);
+        // -- bin --
+        CopyFileWithTargetName("bin/jframeworkdir.dll", templatePath, projectName);
+        // -- config --
+        CopyFileWithTargetName("config/config.pri", templatePath, projectName);
+        // -- config/frame --
+        CopyFileWithTargetName("config/frame/jframe_global.xml", templatePath, projectName);
+        CopyFileWithTargetName("config/frame/jframe_layout.xml", templatePath, projectName);
+        CopyFileWithTargetName("config/frame/jframe_logging.conf", templatePath, projectName);
+        // -- config/resource --
+        CopyFileWithTargetName("config/resource/app.ico", templatePath, projectName);
+        CopyFileWithTargetName("config/resource/finish.png", templatePath, projectName);
+        CopyFileWithTargetName("config/resource/splash.png", templatePath, projectName);
+        // -- config/workmode_1 --
+        CopyFileWithTargetName("config/workmode_1/jframe_component.xml", templatePath, projectName);
+        // -- source --
+        CopyFileWithTargetName("source/source.pro", templatePath, projectName);
+        // -- source/comon --
+        CopyFileWithTargetName("source/common/build.pri", templatePath, projectName);
+        CopyFileWithTargetName("source/common/copy.ignore", templatePath, projectName);
+        CopyFileWithTargetName("source/common/precomp.h", templatePath, projectName);
+        // -- source/component --
+        CopyFileWithTargetName("source/component/component.pro", templatePath, projectName);
+        // -- source/framework --
+        CopyFileWithTargetName("source/framework/framework.pro", templatePath, projectName);
+        // -- source/application --
+        CopyFileWithTargetName("source/framework/application/Application.pri", templatePath, projectName);
+        CopyFileWithTargetName("source/framework/application/Application.pro", templatePath, projectName);
+        CopyFileWithTargetName("source/framework/application/main.cpp", templatePath, projectName);
+    } catch (e) {
+        var msg = "name: " + e.name + "\n" +
+            "message: " + e.message + "\n" +
+            "description: " + e.description;
+        wizard.ReportError("CopySolutionFiles => \n" + msg);
+        throw e;
+    }
+}
+
 function SetFileProperties(projfile, fileName) {
     if (fileName == "dllmain.cpp") {
-        var Configs = projfile.Object.FileConfigurations;
+        var Configs = projfi = le.Object.FileConfigurations;
         for (var i = 1; i <= Configs.Count; ++i) {
             var Config = Configs(i);
             var CLTool = Config.Tool;
             CLTool.CompileAsManaged = 0; // Force no /CLR
             CLTool.UsePrecompiledHeader = 0; // No pre-compiled headers			
         }
+    }
+}
+
+//
+function CopyFileWithTargetName(sourceName, sourceBase, projectName) {
+    var targetName = GetTargetName(sourceName, projectName);
+    if (targetName != "") {
+        CopyFile(sourceName, sourceBase, targetName);
+    }
+}
+
+//
+function CopyFile(sourceName, sourceBase, dest) {
+    sourceBase = sourceBase.replace(/\//g, '\\');
+    if (sourceBase.charAt(sourceBase.length - 1) != '\\') {
+        sourceBase += '\\';
+    }
+    sourceName = sourceName.replace(/\//g, '\\');
+    dest = dest.replace(/\//g, '\\');
+    try {
+        var destdir = dest;
+        var lastIndex = dest.lastIndexOf('\\');
+        if (lastIndex != -1) {
+            destdir = dest.substr(0, lastIndex).substring();
+        } else {
+            return false;
+        }
+        //
+        if (!fso.FolderExists(destdir)) {
+            fso.CreateFolder(destdir);
+        }
+        fso.CopyFile(sourceBase + sourceName, dest);
+    } catch (e) {
+        throw e;
     }
 }

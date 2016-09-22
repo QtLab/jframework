@@ -16,7 +16,8 @@ contains(DEFINES, PACKAGE) {
         win32 {
             srcdir = $$replace(srcdir, /, \\)
             dstdir = $$replace(dstdir, /, \\)
-            srcfiles += BCGPStyle*.dll \
+            srcfiles += \
+                BCGPStyle*.dll \
                 BCGCBPRO*u*.dll
         }
         !exists("$$dstdir") {

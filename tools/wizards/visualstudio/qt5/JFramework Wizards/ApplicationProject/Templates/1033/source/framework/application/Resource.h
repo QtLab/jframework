@@ -1,11 +1,11 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Application.rc
+// Used by [!output PROJECT_NAME].rc
 //
 #define IDD_ABOUTBOX				100
 #define IDP_OLE_INIT_FAILED			100
 #define IDR_MAINFRAME				128
-#define IDR_ApplicationTYPE				130
+#define IDR_[!output PROJECT_NAME]TYPE				130
 
 // Next default values for new objects
 //

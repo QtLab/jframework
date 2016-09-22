@@ -1,10 +1,10 @@
 
-// Application.cpp : Defines the class behaviors for the application.
+// [!output PROJECT_NAME].cpp : Defines the class behaviors for the application.
 //
 
 #include "stdafx.h"
 #include "afxwinappex.h"
-#include "Application.h"
+#include "[!output PROJECT_NAME].h"
 #include "MainFrm.h"
 
 
@@ -13,23 +13,23 @@
 #endif
 
 
-// CApplicationApp
+// C[!output PROJECT_NAME]App
 
-BEGIN_MESSAGE_MAP(CApplicationApp, CBCGPWinApp)
-	ON_COMMAND(ID_APP_ABOUT, &CApplicationApp::OnAppAbout)
+BEGIN_MESSAGE_MAP(C[!output PROJECT_NAME]App, CBCGPWinApp)
+	ON_COMMAND(ID_APP_ABOUT, &C[!output PROJECT_NAME]App::OnAppAbout)
 END_MESSAGE_MAP()
 
 
-// CApplicationApp construction
+// C[!output PROJECT_NAME]App construction
 
-CApplicationApp::CApplicationApp()
+C[!output PROJECT_NAME]App::C[!output PROJECT_NAME]App()
 {
 
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }
 
-CString CApplicationApp::ApplicationDirPath()
+CString C[!output PROJECT_NAME]App::ApplicationDirPath()
 {
 	static CString _path = _T("");
 	if (_path.IsEmpty())
@@ -53,31 +53,31 @@ CString CApplicationApp::ApplicationDirPath()
 	return _path;
 }
 
-IJFrameFacade * CApplicationApp::LoadFrameFacade()
+IJFrameFacade * C[!output PROJECT_NAME]App::LoadFrameFacade()
 {
-	// …˙≥…Œƒº˛¬∑æ∂
+	// ÁîüÊàêÊñá‰ª∂Ë∑ØÂæÑ
 	CString filePath = ApplicationDirPath();
 	filePath.Append(_T("\\jframeworkdir.dll"));
 
-	/// ªÒ»° FrameFacadeInstace µº≥ˆΩ”ø⁄
+	/// Ëé∑Âèñ FrameFacadeInstace ÂØºÂá∫Êé•Âè£
 
-	// º”‘ÿø‚Œƒº˛
+	// Âä†ËΩΩÂ∫ìÊñá‰ª∂
 	HMODULE hFrameworkDir = ::LoadLibrary(filePath.GetBuffer());
 	if (hFrameworkDir == NULL)
 	{
 		return NULL;
 	}
 
-	// ªÒ»° FrameFacadeInstance µº≥ˆΩ”ø⁄
+	// Ëé∑Âèñ FrameFacadeInstance ÂØºÂá∫Êé•Âè£
 	typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int);
 	FrameFacadeInstace frameFacadeInstace =
 		(FrameFacadeInstace)::GetProcAddress(hFrameworkDir, "FrameFacadeInstace");
 	if (frameFacadeInstace == NULL)
 	{
-		return NULL;	// ªÒ»°µº≥ˆΩ”ø⁄ ß∞‹
+		return NULL;	// Ëé∑ÂèñÂØºÂá∫Êé•Âè£Â§±Ë¥•
 	}
 
-	// ªÒ»° IJFrameFacade Ω”ø⁄ µ¿˝
+	// Ëé∑Âèñ IJFrameFacade Êé•Âè£ÂÆû‰æã
 	IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>
 		((IJUnknown *)(frameFacadeInstace(
 #ifdef _MSC_VER
@@ -90,20 +90,20 @@ IJFrameFacade * CApplicationApp::LoadFrameFacade()
 		)));
 	if (frameFacade == NULL)
 	{
-		return NULL;      // ªÒ»° µ¿˝ ß∞‹
+		return NULL;      // Ëé∑ÂèñÂÆû‰æãÂ§±Ë¥•
 	}
 
 	return frameFacade;
 }
 
-// The one and only CApplicationApp object
+// The one and only C[!output PROJECT_NAME]App object
 
-CApplicationApp theApp;
+C[!output PROJECT_NAME]App theApp;
 
 
-// CApplicationApp initialization
+// C[!output PROJECT_NAME]App initialization
 
-BOOL CApplicationApp::InitInstance()
+BOOL C[!output PROJECT_NAME]App::InitInstance()
 {
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
@@ -131,7 +131,7 @@ BOOL CApplicationApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
-	SetRegistryKey(_T("Smartsoft\\application-1"));
+	SetRegistryKey(_T("Smartsoft\\[!output PROJECT_NAME]"));
 
 	//
 	InitMouseManager();
@@ -175,9 +175,9 @@ BOOL CApplicationApp::InitInstance()
 }
 
 
-int CApplicationApp::Run()
+int C[!output PROJECT_NAME]App::Run()
 {
-#if 1	// Qtœ˚œ¢—≠ª∑
+#if 1	// Qt Ê∂àÊÅØÂæ™ÁéØ
 
 	//
 	IJFrameFacade *frameFacade = LoadFrameFacade();
@@ -191,7 +191,7 @@ int CApplicationApp::Run()
 	return CBCGPWinApp::Run();
 }
 
-int CApplicationApp::ExitInstance()
+int C[!output PROJECT_NAME]App::ExitInstance()
 {
 	//
 	BCGCBProCleanUp();
@@ -199,7 +199,7 @@ int CApplicationApp::ExitInstance()
 	return CBCGPWinApp::ExitInstance();
 }
 
-// CApplicationApp message handlers
+// C[!output PROJECT_NAME]App message handlers
 
 
 // CAboutDlg dialog used for App About
@@ -234,18 +234,18 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 END_MESSAGE_MAP()
 
 // App command to run the dialog
-void CApplicationApp::OnAppAbout()
+void C[!output PROJECT_NAME]App::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
 }
 
-BOOL CApplicationApp::LoadWindowPlacement(CRect& rectNormalPosition, int& nFflags, int& nShowCmd)
+BOOL C[!output PROJECT_NAME]App::LoadWindowPlacement(CRect& rectNormalPosition, int& nFflags, int& nShowCmd)
 {
 	return FALSE;
 }
 
-// CApplicationApp message handlers
+// C[!output PROJECT_NAME]App message handlers
 
 
 

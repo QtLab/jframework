@@ -1,9 +1,9 @@
-ï»¿#ifndef JNOTIFIER_H
+#ifndef JNOTIFIER_H
 #define JNOTIFIER_H
 
 #include "jframe_facade.h"
 
-// æ¶ˆæ¯åˆ†å‘å™¨
+// ÏûÏ¢·Ö·¢Æ÷
 
 //
 #ifdef _MSC_VER
@@ -16,54 +16,54 @@ typedef long long JLPARAM;
 typedef long long JLRESULT;
 #endif
 
-/** JObserver æ¥å£æè¿° */
+/** JObserver ½Ó¿ÚÃèÊö */
 #define VER_JObserver J_INTERFACE_VERSION(1, 0)
 #define IID_JObserver J_IID_INTERFACE(JObserver)
 
 /**
- * @brief è§‚å¯Ÿè€…æ¥å£å®šä¹‰
+ * @brief ¹Û²ìÕß½Ó¿Ú¶¨Òå
  */
 class JObserver
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~JObserver() {}
 
     /**
-     * @brief æ¶ˆæ¯å“åº”
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
-     * @return æ‰§è¡Œç»“æœ
+     * @brief ÏûÏ¢ÏìÓ¦
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
+     * @return Ö´ĞĞ½á¹û
      */
     virtual JLRESULT notifySink(const std::string &id, JWPARAM wParam, JLPARAM lParam)
     { (void)id; (void)wParam; (void)lParam; return 0; }
 
     /**
-     * @brief æ¶ˆæ¯å·²è®¢é˜…é€šçŸ¥
-     * @param id : æ¶ˆæ¯æ ‡è¯†
+     * @brief ÏûÏ¢ÒÑ¶©ÔÄÍ¨Öª
+     * @param id : ÏûÏ¢±êÊ¶
      */
     virtual void notifyAppended(const std::string &id) { (void)id; }
 
     /**
-     * @brief æ¶ˆæ¯å·²å–æ¶ˆè®¢é˜…é€šçŸ¥
-     * @param id : æ¶ˆæ¯æ ‡è¯†
+     * @brief ÏûÏ¢ÒÑÈ¡Ïû¶©ÔÄÍ¨Öª
+     * @param id : ÏûÏ¢±êÊ¶
      */
     virtual void notifyRemoved(const std::string &id) { (void)id; }
 
     /**
-     * @brief è·å–è§‚å¯Ÿè€…æ ‡è¯†
-     * @return è§‚å¯Ÿè€…æ ‡è¯†
+     * @brief »ñÈ¡¹Û²ìÕß±êÊ¶
+     * @return ¹Û²ìÕß±êÊ¶
      */
     virtual std::string observerId() const { return std::string(); }
 };
 
-/** è§‚å¯Ÿè€…å›è°ƒå‡½æ•°ç±»å‹å®šä¹‰ */
+/** ¹Û²ìÕß»Øµ÷º¯ÊıÀàĞÍ¶¨Òå */
 typedef JLRESULT (JObserver::*jobserver_cb)(const std::string &id, JWPARAM wParam, JLPARAM lParam);
 
-/** INotifier æ¥å£æè¿° */
+/** INotifier ½Ó¿ÚÃèÊö */
 #define VER_INotifier J_INTERFACE_VERSION(1, 0)
 #define IID_INotifier J_IID_INTERFACE(INotifier)
 
@@ -71,221 +71,221 @@ class IImmNotify;
 class IDBusNotify;
 
 /**
- * @brief æ¶ˆæ¯åˆ†å‘å™¨æ¥å£å®šä¹‰
+ * @brief ÏûÏ¢·Ö·¢Æ÷½Ó¿Ú¶¨Òå
  */
 class INotifier : public IJUnknown
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~INotifier() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_INotifier; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_INotifier; }
 
     /**
-     * @brief å¼€å§‹è®¢é˜…æ¶ˆæ¯ç»„
-     * @param [in] obs : è§‚å¯Ÿè€…
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief ¿ªÊ¼¶©ÔÄÏûÏ¢×é
+     * @param [in] obs : ¹Û²ìÕß
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     template<typename T> INotifier& beginGroup(T *obs);
 
     /**
-     * @brief ç»“æŸè®¢é˜…æ¶ˆæ¯ç»„
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief ½áÊø¶©ÔÄÏûÏ¢×é
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     virtual INotifier& endGroup() = 0;
 
     /**
-     * @brief è®¢é˜…æ¶ˆæ¯
-     * @param obs : è§‚å¯Ÿè€…
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param [in] cb : æ¶ˆæ¯å“åº”å‡½æ•°æ¥å£
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief ¶©ÔÄÏûÏ¢
+     * @param obs : ¹Û²ìÕß
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param [in] cb : ÏûÏ¢ÏìÓ¦º¯Êı½Ó¿Ú
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     template<typename T> INotifier& append(T *obs, const std::string &id,
                                            JLRESULT(T::*cb)(const std::string &, JWPARAM, JLPARAM));
 
     /**
-     * @brief è®¢é˜…æ¶ˆæ¯
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param [in] cb : æ¶ˆæ¯å“åº”å‡½æ•°æ¥å£
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief ¶©ÔÄÏûÏ¢
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param [in] cb : ÏûÏ¢ÏìÓ¦º¯Êı½Ó¿Ú
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     template<typename T> INotifier& append(const std::string &id,
                                            JLRESULT(T::*cb)(const std::string &, JWPARAM, JLPARAM));
 
     /**
-     * @brief å–æ¶ˆè®¢é˜…æ¶ˆæ¯
-     * @param [in] obs : è§‚å¯Ÿè€…
+     * @brief È¡Ïû¶©ÔÄÏûÏ¢
+     * @param [in] obs : ¹Û²ìÕß
      */
     virtual void remove(JObserver *obs) = 0;
 
     /**
-     * @brief å–æ¶ˆè®¢é˜…æ¶ˆæ¯
-     * @param [in] obs : è§‚å¯Ÿè€…
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief È¡Ïû¶©ÔÄÏûÏ¢
+     * @param [in] obs : ¹Û²ìÕß
+     * @param id : ÏûÏ¢±êÊ¶
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     virtual INotifier& remove(JObserver *obs, const std::string &id) = 0;
 
     /**
-     * @brief å–æ¶ˆè®¢é˜…æ¶ˆæ¯
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief È¡Ïû¶©ÔÄÏûÏ¢
+     * @param id : ÏûÏ¢±êÊ¶
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     virtual INotifier& remove(const std::string &id) = 0;
 
     /**
-     * @brief æ¸…ç©ºè®¢é˜…æ¶ˆæ¯
+     * @brief Çå¿Õ¶©ÔÄÏûÏ¢
      */
     virtual void clear() = 0;
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆåŒæ­¥ï¼Œå¹¿æ’­ï¼‰
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
-     * @return æ‰§è¡Œç»“æœ
+     * @brief ·¢ËÍÏûÏ¢£¨Í¬²½£¬¹ã²¥£©
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
+     * @return Ö´ĞĞ½á¹û
      */
     virtual JLRESULT sendMessage(const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆå¼‚æ­¥ï¼Œå¹¿æ’­ï¼‰
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
-     * @return æ‰§è¡Œç»“æœ
+     * @brief ·¢ËÍÏûÏ¢£¨Òì²½£¬¹ã²¥£©
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
+     * @return Ö´ĞĞ½á¹û
      */
     virtual void postMessage(const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆå¼‚æ­¥ï¼Œå¹¿æ’­ï¼‰
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param info : å‚æ•°1
-     * @param lParam : å‚æ•°2
-     * @return æ‰§è¡Œç»“æœ
+     * @brief ·¢ËÍÏûÏ¢£¨Òì²½£¬¹ã²¥£©
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param info : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
+     * @return Ö´ĞĞ½á¹û
      */
     virtual void postMessage(const std::string &id, const std::string &info, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief è·å–ç«¯åˆ°ç«¯æ¶ˆæ¯åˆ†å‘æ¥å£
-     * @return ç«¯åˆ°ç«¯æ¶ˆæ¯åˆ†å‘æ¥å£
+     * @brief »ñÈ¡¶Ëµ½¶ËÏûÏ¢·Ö·¢½Ó¿Ú
+     * @return ¶Ëµ½¶ËÏûÏ¢·Ö·¢½Ó¿Ú
      */
     virtual IImmNotify& imm() = 0;
 
     /**
-     * @brief è·å– D-BUS è¿›ç¨‹é—´é€šä¿¡æ¥å£
-     * @return D-BUS è¿›ç¨‹é—´é€šä¿¡æ¥å£
+     * @brief »ñÈ¡ D-BUS ½ø³Ì¼äÍ¨ĞÅ½Ó¿Ú
+     * @return D-BUS ½ø³Ì¼äÍ¨ĞÅ½Ó¿Ú
      */
     virtual IDBusNotify& dbus() = 0;
 
 protected:
     /**
-     * @brief å¼€å§‹è®¢é˜…æ¶ˆæ¯ç»„
-     * @param [in] obs : è§‚å¯Ÿè€…
-     * @param offset : æ¥å£åœ°å€å·®å€¼
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief ¿ªÊ¼¶©ÔÄÏûÏ¢×é
+     * @param [in] obs : ¹Û²ìÕß
+     * @param offset : ½Ó¿ÚµØÖ·²îÖµ
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     virtual INotifier& beginGroup(JObserver *obs, int offset = 0) = 0;
 
     /**
-     * @brief è®¢é˜…æ¶ˆæ¯
-     * @param [in] obs : è§‚å¯Ÿè€…
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param [in] cb : æ¶ˆæ¯å“åº”å‡½æ•°æ¥å£
-     * @param offset : æ¥å£åœ°å€å·®å€¼
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief ¶©ÔÄÏûÏ¢
+     * @param [in] obs : ¹Û²ìÕß
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param [in] cb : ÏûÏ¢ÏìÓ¦º¯Êı½Ó¿Ú
+     * @param offset : ½Ó¿ÚµØÖ·²îÖµ
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     virtual INotifier& append(JObserver* obs, const std::string &id, jobserver_cb cb, int offset) = 0;
 
     /**
-     * @brief è®¢é˜…æ¶ˆæ¯
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param [in] cb : æ¶ˆæ¯å“åº”å‡½æ•°æ¥å£
-     * @return æ¶ˆæ¯åˆ†å‘å™¨
+     * @brief ¶©ÔÄÏûÏ¢
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param [in] cb : ÏûÏ¢ÏìÓ¦º¯Êı½Ó¿Ú
+     * @return ÏûÏ¢·Ö·¢Æ÷
      */
     virtual INotifier& append(const std::string &id, jobserver_cb cb) = 0;
 };
 
-/** INotifierImm æ¥å£æè¿° */
+/** INotifierImm ½Ó¿ÚÃèÊö */
 #define VER_INotifierImm J_INTERFACE_VERSION(1, 0)
 #define IID_INotifierImm J_IID_INTERFACE(INotifierImm)
 
 /**
- * @brief ç«¯åˆ°ç«¯ï¼ˆç›´æ¥å‘é€ç»™æŒ‡å®šè§‚å¯Ÿè€…ï¼‰åˆ†å‘æ¶ˆæ¯æ¥å£å®šä¹‰
+ * @brief ¶Ëµ½¶Ë£¨Ö±½Ó·¢ËÍ¸øÖ¸¶¨¹Û²ìÕß£©·Ö·¢ÏûÏ¢½Ó¿Ú¶¨Òå
  */
 class IImmNotify
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IImmNotify() {}
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆåŒæ­¥ï¼Œç«¯åˆ°ç«¯ï¼‰
-     * @param [in] obsid : è§‚å¯Ÿè€…æ ‡è¯†
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
-     * @return æ‰§è¡Œç»“æœ
+     * @brief ·¢ËÍÏûÏ¢£¨Í¬²½£¬¶Ëµ½¶Ë£©
+     * @param [in] obsid : ¹Û²ìÕß±êÊ¶
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
+     * @return Ö´ĞĞ½á¹û
      */
     virtual JLRESULT sendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆåŒæ­¥ï¼Œç«¯åˆ°ç«¯ï¼‰
-     * @param [in] obs : è§‚å¯Ÿè€…
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
-     * @return æ‰§è¡Œç»“æœ
+     * @brief ·¢ËÍÏûÏ¢£¨Í¬²½£¬¶Ëµ½¶Ë£©
+     * @param [in] obs : ¹Û²ìÕß
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
+     * @return Ö´ĞĞ½á¹û
      */
     virtual JLRESULT sendMessage(JObserver *obs, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆå¼‚æ­¥ï¼Œç«¯åˆ°ç«¯ï¼‰
-     * @param obsid : è§‚å¯Ÿè€…æ ‡è¯†
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
+     * @brief ·¢ËÍÏûÏ¢£¨Òì²½£¬¶Ëµ½¶Ë£©
+     * @param obsid : ¹Û²ìÕß±êÊ¶
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
      */
     virtual void postMessage(const std::string &obsid, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆå¼‚æ­¥ï¼Œç«¯åˆ°ç«¯ï¼‰
-     * @param [in] obs : è§‚å¯Ÿè€…
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param wParam : å‚æ•°1
-     * @param lParam : å‚æ•°2
+     * @brief ·¢ËÍÏûÏ¢£¨Òì²½£¬¶Ëµ½¶Ë£©
+     * @param [in] obs : ¹Û²ìÕß
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param wParam : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
      */
     virtual void postMessage(JObserver *obs, const std::string &id, JWPARAM wParam = 0, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆå¼‚æ­¥ï¼Œç«¯åˆ°ç«¯ï¼‰
-     * @param [in] obsid : è§‚å¯Ÿè€…æ ‡è¯†
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param info : å‚æ•°1
-     * @param lParam : å‚æ•°2
+     * @brief ·¢ËÍÏûÏ¢£¨Òì²½£¬¶Ëµ½¶Ë£©
+     * @param [in] obsid : ¹Û²ìÕß±êÊ¶
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param info : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
      */
     virtual void postMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam = 0) = 0;
 
     /**
-     * @brief å‘é€æ¶ˆæ¯ï¼ˆå¼‚æ­¥ï¼Œç«¯åˆ°ç«¯ï¼‰
-     * @param [in] obs : è§‚å¯Ÿè€…
-     * @param id : æ¶ˆæ¯æ ‡è¯†
-     * @param info : å‚æ•°1
-     * @param lParam : å‚æ•°2
+     * @brief ·¢ËÍÏûÏ¢£¨Òì²½£¬¶Ëµ½¶Ë£©
+     * @param [in] obs : ¹Û²ìÕß
+     * @param id : ÏûÏ¢±êÊ¶
+     * @param info : ²ÎÊı1
+     * @param lParam : ²ÎÊı2
      */
     virtual void postMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam = 0) = 0;
 };
@@ -293,13 +293,13 @@ public:
 class QObject;
 
 /**
- * @brief åŸºäºD-BUSçš„é€šä¿¡æ¥å£å®šä¹‰
+ * @brief »ùÓÚD-BUSµÄÍ¨ĞÅ½Ó¿Ú¶¨Òå
  */
 class IDBusNotify
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IDBusNotify() {}
 
@@ -342,7 +342,7 @@ public:
 //
 #if defined(_MSC_VER)
 #pragma warning (push)
-#pragma warning (disable : 4407)    // åœ¨æŒ‡å‘æˆå‘˜è¡¨ç¤ºå½¢å¼çš„ä¸åŒæŒ‡é’ˆä¹‹é—´è¿›è¡Œè½¬æ¢ï¼Œç¼–è¯‘å™¨å¯èƒ½ç”Ÿæˆä¸æ­£ç¡®çš„ä»£ç 
+#pragma warning (disable : 4407)    // ÔÚÖ¸Ïò³ÉÔ±±íÊ¾ĞÎÊ½µÄ²»Í¬Ö¸ÕëÖ®¼ä½øĞĞ×ª»»£¬±àÒëÆ÷¿ÉÄÜÉú³É²»ÕıÈ·µÄ´úÂë
 #endif
 
 template<typename T>

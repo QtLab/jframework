@@ -10,6 +10,6 @@ CONFIG += ordered
 jframe_root = $$PWD/../..
 
 SUBDIRS += \
-    application \
+    [!output PROJECT_NAME] \
     jframeworkdir \
     jframeworkenv

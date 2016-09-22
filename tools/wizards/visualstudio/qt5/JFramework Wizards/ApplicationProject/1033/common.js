@@ -11,7 +11,6 @@ function UnderScoreCaseToCamelCase(name) {
     }
     return arr.join('');
 }
-
 //
 function UpdateDefaultSymbols() {
     //

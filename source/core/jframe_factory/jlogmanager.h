@@ -1,20 +1,20 @@
-ï»¿#ifndef JLOG_MANAGER_H
+#ifndef JLOG_MANAGER_H
 #define JLOG_MANAGER_H
 
 #include "jframe_facade.h"
 
-/** IJLogManager æ¥å£æè¿° */
+/** IJLogManager ½Ó¿ÚÃèÊö */
 #define VER_IJLogManager J_INTERFACE_VERSION(1, 0)
 #define IID_IJLogManager J_IID_INTERFACE(IJLogManager)
 
 /**
- * @brief æ—¥å¿—ç®¡ç†å™¨æ¥å£
+ * @brief ÈÕÖ¾¹ÜÀíÆ÷½Ó¿Ú
  */
 class IJLogManager : public IJUnknown
 {
 public:
     /**
-     * @brief æ¶ˆæ¯ç±»å‹
+     * @brief ÏûÏ¢ÀàĞÍ
      */
     enum MsgType {
         EmergeMsg,      /**< emerge */
@@ -29,41 +29,41 @@ public:
     };
 
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJLogManager() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_IJLogManager; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_IJLogManager; }
 
     /**
-     * @brief è·å–æ—¥å¿—é…ç½®æ–‡ä»¶è·¯å¾„
-     * @return æ—¥å¿—é…ç½®æ–‡ä»¶è·¯å¾„
+     * @brief »ñÈ¡ÈÕÖ¾ÅäÖÃÎÄ¼şÂ·¾¶
+     * @return ÈÕÖ¾ÅäÖÃÎÄ¼şÂ·¾¶
      */
     virtual std::string config() const = 0;
 
     /**
-     * @brief è®¾ç½®æ—¥å¿—é…ç½®æ–‡ä»¶
-     * @param filePath : æ—¥å¿—é…ç½®æ–‡ä»¶è·¯å¾„
+     * @brief ÉèÖÃÈÕÖ¾ÅäÖÃÎÄ¼ş
+     * @param filePath : ÈÕÖ¾ÅäÖÃÎÄ¼şÂ·¾¶
      */
     virtual void setConfig(const std::string &filePath) = 0;
 
     /**
-     * @brief è¾“å‡ºä¸€æ¡æ—¥å¿—
-     * @param type : æ¶ˆæ¯ç±»å‹
-     * @param msg : æ¶ˆæ¯
-     * @param where : è¾“å‡ºåœ°ï¼ˆ"all"ã€"file"ã€"console"ï¼‰
-     * @param argc : å¯å˜å‚æ•°ä¸ªæ•°
-     * @param ... : å¯å˜å‚æ•°åˆ—è¡¨
+     * @brief Êä³öÒ»ÌõÈÕÖ¾
+     * @param type : ÏûÏ¢ÀàĞÍ
+     * @param msg : ÏûÏ¢
+     * @param where : Êä³öµØ£¨"all"¡¢"file"¡¢"console"£©
+     * @param argc : ¿É±ä²ÎÊı¸öÊı
+     * @param ... : ¿É±ä²ÎÊıÁĞ±í
      */
     virtual void logging(MsgType type, const std::string &msg, const std::string &where, int argc, ...) = 0;
 };

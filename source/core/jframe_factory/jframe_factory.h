@@ -1,9 +1,9 @@
-ï»¿#ifndef JFRAME_FACTORY_H
+#ifndef JFRAME_FACTORY_H
 #define JFRAME_FACTORY_H
 
 #include "jframe_facade.h"
 
-/** IJFrameFactory æ¥å£æè¿° */
+/** IJFrameFactory ½Ó¿ÚÃèÊö */
 #define VER_IJFrameFactory J_INTERFACE_VERSION(1, 0)
 #define IID_IJFrameFactory J_IID_INTERFACE(IJFrameFactory)
 
@@ -14,35 +14,35 @@ class IJFrameFactory : public IJUnknown
 {
 public:
     /**
-     * @brief ææ„å‡½æ•°
+     * @brief Îö¹¹º¯Êı
      */
     virtual ~IJFrameFactory() {}
 
     /**
-     * @brief è·å–æ¥å£æ ‡è¯†
-     * @return æ¥å£æ ‡è¯†
+     * @brief »ñÈ¡½Ó¿Ú±êÊ¶
+     * @return ½Ó¿Ú±êÊ¶
      */
     virtual std::string interfaceIdentity() const { return IID_IJFrameFactory; }
 
     /**
-     * @brief è·å–æ¥å£ç‰ˆæœ¬
-     * @return æ¥å£ç‰ˆæœ¬
+     * @brief »ñÈ¡½Ó¿Ú°æ±¾
+     * @return ½Ó¿Ú°æ±¾
      */
     virtual unsigned int interfaceVersion() const { return VER_IJFrameFactory; }
 
     /**
-     * @brief åˆ›å»ºæŒ‡å®šå¯¹è±¡å®ä¾‹
-     * @param iid : æ¥å£æ ‡è¯†
-     * @param ver : æ¥å£ç‰ˆæœ¬
-     * @return å¯¹è±¡å®ä¾‹
+     * @brief ´´½¨Ö¸¶¨¶ÔÏóÊµÀı
+     * @param iid : ½Ó¿Ú±êÊ¶
+     * @param ver : ½Ó¿Ú°æ±¾
+     * @return ¶ÔÏóÊµÀı
      */
     virtual void* createFactory(const std::string &iid, unsigned int ver) = 0;
 
     /**
-     * @brief é”€æ¯åˆ›å»ºçš„å¯¹è±¡å®ä¾‹
-     * @param [in] iface : å¯¹è±¡å®ä¾‹
-     * @param iid : æ¥å£æ ‡è¯†
-     * @param ver : æ¥å£ç‰ˆæœ¬
+     * @brief Ïú»Ù´´½¨µÄ¶ÔÏóÊµÀı
+     * @param [in] iface : ¶ÔÏóÊµÀı
+     * @param iid : ½Ó¿Ú±êÊ¶
+     * @param ver : ½Ó¿Ú°æ±¾
      */
     virtual void releaseFactory(void *iface, const std::string &iid, unsigned int ver) = 0;
 };
@@ -69,8 +69,8 @@ public:
 #endif
 
 /**
- * @brief è·å–æ¡†æ¶å·¥å‚ç³»ç»Ÿå•å®ä¾‹
- * @return æ¡†æ¶å·¥å‚ç³»ç»Ÿå•å®ä¾‹
+ * @brief »ñÈ¡¿ò¼Ü¹¤³§ÏµÍ³µ¥ÊµÀı
+ * @return ¿ò¼Ü¹¤³§ÏµÍ³µ¥ÊµÀı
  */
 JFRAME_FACTORY_EXPORT IJFrameFactory* jframeFactory();
 

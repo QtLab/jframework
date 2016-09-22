@@ -78,7 +78,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)source\temp\$(Configuration)\framework\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IntDir>$(OutDir)\</IntDir>
+    <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -120,7 +120,7 @@
 mkdir "$(SolutionDir)bin\"
 )
 if not exist "$(SolutionDir)bin\BCGCBPro2210ud$(PlatformToolsetVersion).dll" (
-copy "$(SolutionDir)\lib\3rdpart\BCGCBPRO2210ud$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
+copy "$(JFRAME_DIR)\bin\3rdpart\BCGCBPro\BCGCBPRO2210ud$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -149,8 +149,8 @@ copy "$(SolutionDir)\lib\3rdpart\BCGCBPRO2210ud$(PlatformToolsetVersion)?.dll" "
       <Command>if not exist "$(SolutionDir)bin\" (
 mkdir "$(SolutionDir)bin\"
 )
-if not exist "$(SolutionDir)bin\BCGCBPro2210ud$(PlatformToolsetVersion).dll" (
-copy "$(SolutionDir)\lib\3rdpart\BCGCBPRO2210ud$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
+if not exist "$(SolutionDir)bin\BCGCBPro2210u$(PlatformToolsetVersion).dll" (
+copy "$(JFRAME_DIR)\bin\3rdpart\BCGCBPro\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -187,7 +187,7 @@ copy "$(SolutionDir)\lib\3rdpart\BCGCBPRO2210ud$(PlatformToolsetVersion)?.dll" "
 mkdir "$(SolutionDir)bin\"
 )
 if not exist "$(SolutionDir)bin\BCGCBPro2210u$(PlatformToolsetVersion).dll" (
-copy "$(SolutionDir)\lib\3rdpart\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
+copy "$(JFRAME_DIR)\bin\3rdpart\BCGCBPro\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -221,38 +221,10 @@ copy "$(SolutionDir)\lib\3rdpart\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$
 mkdir "$(SolutionDir)bin\"
 )
 if not exist "$(SolutionDir)bin\BCGCBPro2210u$(PlatformToolsetVersion).dll" (
-copy "$(SolutionDir)\lib\3rdpart\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
+copy "$(JFRAME_DIR)\bin\3rdpart\BCGCBPro\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="ChildView.h" />
-    <ClInclude Include="MainFrm.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="ChildView.cpp" />
-    <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Application.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\Application.rc2" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="res\Application.ico" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

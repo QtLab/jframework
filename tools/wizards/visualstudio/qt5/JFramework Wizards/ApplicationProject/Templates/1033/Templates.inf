@@ -1,41 +1,11 @@
 
-jframework140.sln
-jframework.pro
-
-CopyOnly | bin/jframeworkdir.dll
-
-config/config.pri
-
-config/frame/jframe_global.xml
-config/frame/jframe_layout.xml
-config/frame/jframe_logging.conf
-
-CopyOnly | config/resource/app.ico
-CopyOnly | config/resource/finish.png
-CopyOnly | config/resource/splash.png
-
-config/workmode_1/jframe_component.xml
-
-source/source.pro
-
-source/common/build.pri
-source/common/copy.ignore
-source/common/precomp.h
-
-source/component/component.pro
-
-source/framework/framework.pro
-
 CopyOnly | source/framework/application/res/Application.ico
 source/framework/application/res/Application.rc2
 source/framework/application/Application.cpp
 source/framework/application/Application.h
-source/framework/application/Application.pri
-source/framework/application/Application.pro
 source/framework/application/Application.rc
 source/framework/application/ChildView.cpp
 source/framework/application/ChildView.h
-source/framework/application/main.cpp
 OpenFile | source/framework/application/MainFrm.cpp
 source/framework/application/MainFrm.h
 source/framework/application/Resource.h

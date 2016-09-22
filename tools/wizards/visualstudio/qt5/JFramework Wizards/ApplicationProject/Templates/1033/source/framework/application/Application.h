@@ -1,5 +1,5 @@
 
-// Application.h : main header file for the Application application
+// [!output PROJECT_NAME].h : main header file for the Application application
 //
 #pragma once
 
@@ -10,16 +10,16 @@
 #include "resource.h"       // main symbols
 
 
-// CApplicationApp:
-// See Application.cpp for the implementation of this class
+// C[!output PROJECT_NAME]App:
+// See [!output PROJECT_NAME].cpp for the implementation of this class
 //
 
 class IJFrameFacade;
 
-class CApplicationApp : public CBCGPWinApp
+class C[!output PROJECT_NAME]App : public CBCGPWinApp
 {
 public:
-	CApplicationApp();
+	C[!output PROJECT_NAME]App();
 
 	//
 	static CString ApplicationDirPath();
@@ -41,4 +41,4 @@ protected:
 	virtual BOOL LoadWindowPlacement(CRect& rectNormalPosition, int& nFflags, int& nShowCmd);
 };
 
-extern CApplicationApp theApp;
+extern C[!output PROJECT_NAME]App theApp;

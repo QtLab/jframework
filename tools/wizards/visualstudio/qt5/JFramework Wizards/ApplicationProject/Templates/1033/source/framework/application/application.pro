@@ -17,13 +17,13 @@ DESTDIR = $$THIS_DIR/bin
 ##
 win32:{
     lessThan(QT_MAJOR_VERSION, 5):{
-        CONFIG(debug, debug|release):TARGET = applicationd
-        else:TARGET = application
+        CONFIG(debug, debug|release):TARGET = [!output PROJECT_NAME]d
+        else:TARGET = [!output PROJECT_NAME]
     } else {
-        TARGET = $$qtLibraryTarget(application)
+        TARGET = $$qtLibraryTarget([!output PROJECT_NAME])
     }
 } else {
-    TARGET = $$qtLibraryTarget(application)
+    TARGET = $$qtLibraryTarget([!output PROJECT_NAME])
 }
 
 ## use JLibrary class
@@ -48,7 +48,7 @@ OTHER_FILES += \
 #######################################################
 
 QMAKE_TARGET_COMPANY = "Smartsoft"
-QMAKE_TARGET_DESCRIPTION = "jframework"
+QMAKE_TARGET_DESCRIPTION = "[!output PROJECT_NAME] Instance"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2016 Smartsoft Inc."
 
 win32:RC_ICONS = $$THIS_DIR/config/resource/app.ico
@@ -109,12 +109,12 @@ win32|unix: {
     ## remove files
     dstdir = $$DESTDIR/
     win32:dstdir = $$replace(dstdir, /, \\)
-    exists("$${dstdir}application*.exp"):commands += $(DEL_FILE) "$${dstdir}application*.exp" &
-    exists("$${dstdir}application*.ilk"):commands += $(DEL_FILE) "$${dstdir}application*.ilk" &
-    exists("$${dstdir}application*.lib"):commands += $(DEL_FILE) "$${dstdir}application*.lib" &
+    exists("$${dstdir}[!output PROJECT_NAME]*.exp"):commands += $(DEL_FILE) "$${dstdir}[!output PROJECT_NAME]*.exp" &
+    exists("$${dstdir}[!output PROJECT_NAME]*.ilk"):commands += $(DEL_FILE) "$${dstdir}[!output PROJECT_NAME]*.ilk" &
+    exists("$${dstdir}[!output PROJECT_NAME]*.lib"):commands += $(DEL_FILE) "$${dstdir}[!output PROJECT_NAME]*.lib" &
 
     #
-    exists($$PWD/application.pri):include($$PWD/application.pri)
+    exists($$PWD/[!output PROJECT_NAME].pri):include($$PWD/[!output PROJECT_NAME].pri)
 
     QMAKE_POST_LINK += $$commands
 }

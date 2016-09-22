@@ -34,12 +34,12 @@ contains(DEFINES, PACKAGE) {
             srcdir = $$replace(srcdir, /, \\)
             dstdir = $$replace(dstdir, /, \\)
             srcfiles += \
-                jwt*.dll jwt*.lib jwt*.pdb \
-                log4cpp*.dll log4cpp*.lib log4cpp*.pdb \
-                qtribbon*.dll qtribbon*.lib qtribbon*.pdb \
-                qtwinmigrate*.dll qtwinmigrate*.lib qtwinmigrate*.pdb \
-                tinyxml*.dll tinyxml*.lib tinyxml*.pdb \
-                BCGCBPRO*u*.dll BCGCBPRO*u*.lib BCGCBPRO*u*.pdb
+                jwt*.lib \
+                log4cpp*.lib \
+                qtribbon*.lib \
+                qtwinmigrate*.lib \
+                tinyxml*.lib \
+                BCGCBPRO*u*.lib
         } else:unix {
             srcfiles += \
                 libjwt*.so* \
@@ -47,6 +47,53 @@ contains(DEFINES, PACKAGE) {
                 libqtribbon*.so* \
                 libqtwinmigrate*.so* \
                 libtinyxml*.so*
+        }
+        !exists("$$dstdir") {
+            commands += $(MKDIR) "$$dstdir" &
+        }
+        for (srcfile, srcfiles) {
+            srcfile = "$$srcdir$$srcfile"
+            exists("$$srcfile") {
+                commands += $(COPY_FILE) "$$srcfile" "$$dstdir" &
+            }
+        }
+    }
+
+    # --- lib - 3rdpart - pdb
+    srcdir = "$$jframe_dir/lib/3rdpart/"
+    exists("$$srcdir") {
+        dstdir = "$$PWD/data/jframework/bin/3rdpart/"
+        srcfiles =
+        win32{
+            srcdir = $$replace(srcdir, /, \\)
+            dstdir = $$replace(dstdir, /, \\)
+            srcfiles += \
+                jwt*.pdb \
+                log4cpp*.pdb \
+                qtribbon*.pdb \
+                qtwinmigrate*.pdb \
+                tinyxml*.pdb
+        }
+        !exists("$$dstdir") {
+            commands += $(MKDIR) "$$dstdir" &
+        }
+        for (srcfile, srcfiles) {
+            srcfile = "$$srcdir$$srcfile"
+            exists("$$srcfile") {
+                commands += $(COPY_FILE) "$$srcfile" "$$dstdir" &
+            }
+        }
+    }
+    # --- lib - 3rdpart - BCG - pdb
+    srcdir = "$$jframe_dir/lib/3rdpart/"
+    exists("$$srcdir") {
+        dstdir = "$$PWD/data/jframework/bin/3rdpart/BCGCBPro/"
+        srcfiles =
+        win32{
+            srcdir = $$replace(srcdir, /, \\)
+            dstdir = $$replace(dstdir, /, \\)
+            srcfiles += \
+                BCGCBPRO*u*.pdb
         }
         !exists("$$dstdir") {
             commands += $(MKDIR) "$$dstdir" &
@@ -67,14 +114,37 @@ contains(DEFINES, PACKAGE) {
             srcdir = $$replace(srcdir, /, \\)
             dstdir = $$replace(dstdir, /, \\)
             srcfiles += \
-                jframe_facade*.dll jframe_facade*.lib jframe_facade*.pdb \
-                jframe_factory*.dll jframe_factory*.lib jframe_factory*.pdb \
-                jframe_kernel*.dll jframe_kernel*.lib jframe_kernel*.pdb
+                jframe_facade*.lib \
+                jframe_factory*.lib \
+                jframe_kernel*.lib
         } else:unix {
             srcfiles += \
                 libjframe_facade*.so* \
                 libjframe_factory*.so* \
                 libjframe_kernel*.so*
+        }
+        !exists("$$dstdir") {
+            commands += $(MKDIR) "$$dstdir" &
+        }
+        for (srcfile, srcfiles) {
+            srcfile = "$$srcdir$$srcfile"
+            exists("$$srcfile") {
+                commands += $(COPY_FILE) "$$srcfile" "$$dstdir" &
+            }
+        }
+    }
+    # --- lib - core - pdb
+    srcdir = "$$jframe_dir/lib/core/"
+    exists("$$srcdir") {
+        dstdir = "$$PWD/data/jframework/lib/core/"
+        srcfiles =
+        win32{
+            srcdir = $$replace(srcdir, /, \\)
+            dstdir = $$replace(dstdir, /, \\)
+            srcfiles += \
+                jframe_facade*.pdb \
+                jframe_factory*.pdb \
+                frame_kernel*.pdb
         }
         !exists("$$dstdir") {
             commands += $(MKDIR) "$$dstdir" &
