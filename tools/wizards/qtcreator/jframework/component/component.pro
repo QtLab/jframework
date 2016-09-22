@@ -4,9 +4,11 @@
 
 THIS_DIR = $$PWD/../../..
 
+@if '%{IncludeIJComponentUi}'
 QT += gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+@endif
 
 DEFINES += \\
     PRO_COMPONENT
@@ -18,19 +20,25 @@ TARGET = $$qtLibraryTarget(%{ProjectName})
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \\
     $$PWD/%{HdrFileName} \\
+@if '%{IncludeIJComponentUi}'
     $$PWD/%{UiHdrFileName}
+@endif
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \\
     $$PWD/%{SrcFileName} \\
+@if '%{IncludeIJComponentUi}'
     $$PWD/%{UiSrcFileName}
+@endif
 
+@if '%{IncludeConfigFile}'
 #
 exists($$PWD/%{ProjectName}.xml) {
     OTHER_FILES += \\
         $$PWD/%{ProjectName}.xml
 }
 
+@endif
 #-------------------------------------------------
 # import libraries
 #-------------------------------------------------
@@ -46,9 +54,11 @@ win32|unix: {
     dstdir = $$THIS_DIR/component/%{ProjectName}/
     win32:dstdir = $$replace(dstdir, /, \\\\)
     !exists("$$dstdir"):commands += $(MKDIR) "\\"$$dstdir\\"" &
+@if '%{IncludeConfigFile}'
     srcfile = $$PWD/%{ProjectName}.xml
     win32:srcfile = $$replace(srcfile, /, \\\\)
     exists("$$srcfile"):commands += $(COPY_FILE) "\\"$$srcfile\\"" "\\"$$dstdir\\"" &
+@endif
 
     QMAKE_POST_LINK += $$commands
 }
