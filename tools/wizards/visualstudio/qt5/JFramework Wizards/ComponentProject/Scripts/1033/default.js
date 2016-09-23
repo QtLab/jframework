@@ -268,14 +268,14 @@ function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
     }
 }
 
-function SetFileProperties(projfile, fileName) {
-    if (fileName == "dllmain.cpp") {
-        var Configs = projfile.Object.FileConfigurations;
-        for (var i = 1; i <= Configs.Count; ++i) {
-            var Config = Configs(i);
-            var CLTool = Config.Tool;
-            CLTool.CompileAsManaged = 0; // Force no /CLR
-            CLTool.UsePrecompiledHeader = 0; // No pre-compiled headers			
+function SetFileProperties(projfile, sourceName) {
+    if (sourceName == "dllmain.cpp") {
+        var configs = projfile.Object.FileConfigurations;
+        for (var i = 1; i <= configs.Count; ++i) {
+            var config = configs(i);
+            var clTool = config.Tool;
+            clTool.CompileAsManaged = 0; // Force no /CLR
+            clTool.UsePrecompiledHeader = 0; // No pre-compiled headers			
         }
     }
 }

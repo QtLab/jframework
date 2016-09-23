@@ -1,9 +1,9 @@
 var QtEngine;
 var fso;
 
-function GetNameFromFile(strFile) {
-    var nPos = strFile.lastIndexOf(".");
-    return strFile.substr(0, nPos);
+function GetNameFromFile(fileName) {
+    var pos = fileName.lastIndexOf(".");
+    return fileName.substr(0, pos);
 }
 
 function OnFinish(selProj, selObj) {
@@ -17,15 +17,15 @@ function OnFinish(selProj, selObj) {
         }
 
         // vs
-        var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
-        var solutionName = wizard.FindSymbol("VS_SOLUTION_NAME");
+        //var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
+        //var solutionName = wizard.FindSymbol("VS_SOLUTION_NAME");
         var projectPath = wizard.FindSymbol("PROJECT_PATH");
         var projectName = wizard.FindSymbol("PROJECT_NAME");
-        var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
-        var exclusive = wizard.FindSymbol("CLOSE_SOLUTION");
+        var templatePath = wizard.FindSymbol("TEMPLATES_PATH");
+        //var exclusive = wizard.FindSymbol("CLOSE_SOLUTION");
         // modules
-        var applicationName = wizard.FindSymbol("APPLICATION_NAME");
-        var applicationClassName = wizard.FindSymbol("APPLICATION_CLASS_NAME");
+        //var applicationName = wizard.FindSymbol("APPLICATION_NAME");
+        //var applicationClassName = wizard.FindSymbol("APPLICATION_CLASS_NAME");
 
         //////////
 
@@ -40,19 +40,19 @@ function OnFinish(selProj, selObj) {
 
         AddFilesToProjectWithInfFile(selProj, projectName);
         SetCommonPchSettings(selProj);
-
         selProj.Object.Save();
+
+        //
+        CopyCustomFiles(selProj);
+        //
+        AddSolutionFolders();
 
         //////////
 
-        //
-        CopySolutionFiles(selProj);
-
     } catch (e) {
-        var msg = "name: " + e.name + "\n" +
-            "message: " + e.message + "\n" +
-            "description: " + e.description;
-        wizard.ReportError("OnFinish => \n" + msg);
+        //var msg = "name: " + e.name + "\n" +
+        //    "message: " + e.message + "\n";
+        //wizard.ReportError("OnFinish => \n" + msg);
         if (e.description.length != 0)
             SetErrorInfo(e);
         return e.number
@@ -67,16 +67,15 @@ strProjectPath: The path that the project will be created in
 function CreateQtProject(projectName, projectPath) {
     try {
         var templatePath = wizard.FindSymbol("TEMPLATES_PATH");
-        var projectTemplatePath = wizard.FindSymbol("PROJECT_TEMPLATE_PATH");
-        var projectTemplateFile = templatePath + "\\source\\framework\\application\\";
+        var projectTemplatePath = templatePath + "\\source\\framework\\application\\";
         var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
         var solution = dte.Solution;
         var solutionName = "";
 
-        if (wizard.dte.version == "9.0") {
-            projectTemplateFile += "default_" + dte.version + ".vcproj";
+        if (dte.version == "9.0") {
+            projectTemplatePath += "default_" + dte.version + ".vcproj";
         } else {
-            projectTemplateFile += "default_" + dte.version + ".vcxproj";
+            projectTemplatePath += "default_" + dte.version + ".vcxproj";
         }
 
         if (wizard.FindSymbol("CLOSE_SOLUTION")) {
@@ -86,20 +85,51 @@ function CreateQtProject(projectName, projectPath) {
                 solution.Create(solutionPath, solutionName);
             }
         }
-
+        //
         var projectNameWithExt = projectName + ".vcxproj";
         var target = wizard.FindSymbol("TARGET");
         var project;
         if (wizard.FindSymbol("WIZARD_TYPE") == vsWizardAddSubProject) { // vsWizardAddSubProject
-            var projectItem = target.AddFromTemplate(projectTemplateFile, projectPath + "\\" + projectNameWithExt);
+            var projectItem = target.AddFromTemplate(projectTemplatePath, projectPath + "\\" + projectNameWithExt);
             project = projectItem.SubProject;
         } else {
-            project = target.AddFromTemplate(projectTemplateFile, projectPath, projectNameWithExt);
+            // -- solution - framework folder --
+            var frameworkProj = solution.AddSolutionFolder("framework");
+            project = frameworkProj.Object.AddFromTemplate(projectTemplatePath, projectPath, projectNameWithExt);
         }
+        // 
         return project;
     } catch (e) {
+        if (e.description.length != 0)
+            SetErrorInfo(e);
         throw e;
     }
+}
+
+function AddSolutionFolders(templatePath, projectName) {
+    var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
+    var projectName = wizard.FindSymbol("PROJECT_NAME");
+    var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
+    var solution = dte.Solution;
+    /// ---------------------------------------
+    // -- config --
+    var configProjItem = solution.AddSolutionFolder("config");
+    // -- config/frame --
+    var frameProjItem = configProjItem.Object.AddSolutionFolder("frame");
+    // -- config/frame - files --
+    AddSolutionFile(frameProjItem, GetTargetName("config/frame/jframe_global.xml"), true);
+    AddSolutionFile(frameProjItem, GetTargetName("config/frame/jframe_layout.xml"), true);
+    AddSolutionFile(frameProjItem, GetTargetName("config/frame/jframe_logging.conf"), true);
+    // -- config/workmode_1 -- 
+    var workMode1ProjItem = configProjItem.Object.AddSolutionFolder("workmode_1");
+    AddSolutionFile(workMode1ProjItem, GetTargetName("config/workmode_1/jframe_component.xml"), true);
+    // -- 3rdpart --
+    var thirdPartProjItem = solution.AddSolutionFolder("3rdpart");
+    // -- core --
+    var coreProjItem = solution.AddSolutionFolder("core");
+    // -- component --
+    var componentProjItem = solution.AddSolutionFolder("component");
+    /// ---------------------------------------
 }
 
 function AddSpecificConfig(project, projectName, projectPath) {
@@ -177,10 +207,6 @@ function AddSpecificConfig(project, projectName, projectPath) {
             resourceCompilerTool.AdditionalIncludeDirectories = "$(IntDir)";
         } //for
     } catch (e) {
-        var msg = "name: " + e.name + "\n" +
-            "message: " + e.message + "\n" +
-            "description: " + e.description;
-        wizard.ReportError("OnFinish => \n" + msg);
         if (e.description.length != 0)
             SetErrorInfo(e);
         return e.number
@@ -193,9 +219,7 @@ function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
         var solutionPath = wizard.FindSymbol('SOLUTION_PATH');
         var projectName = wizard.FindSymbol('PROJECT_NAME');
         // -- . --
-        if (sourceName == "jframework_14.0.sln") {
-            targetName = solutionPath + "" + wizard.FindSymbol("VS_SOLUTION_NAME") + "_140.sln";
-        } else if (sourceName == "jframework.pro") {
+        if (sourceName == "jframework.pro") {
             targetName = solutionPath + "" + wizard.FindSymbol("VS_SOLUTION_NAME") + ".pro";
         }
         // -- bin --
@@ -290,7 +314,7 @@ function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
     }
 }
 
-function CopySolutionFiles(selProj) {
+function CopyCustomFiles(selProj) {
     // vs
     var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
     var solutionName = wizard.FindSymbol("VS_SOLUTION_NAME");
@@ -300,7 +324,7 @@ function CopySolutionFiles(selProj) {
     var exclusive = wizard.FindSymbol("CLOSE_SOLUTION");
 
     try {
-        // -- 。 --
+        // -- . --
         CopyFileWithTargetName("jframework.pro", templatePath, projectName);
         // -- bin --
         CopyFileWithTargetName("bin/jframeworkdir.dll", templatePath, projectName);
@@ -331,22 +355,27 @@ function CopySolutionFiles(selProj) {
         CopyFileWithTargetName("source/framework/application/Application.pro", templatePath, projectName);
         CopyFileWithTargetName("source/framework/application/main.cpp", templatePath, projectName);
     } catch (e) {
-        var msg = "name: " + e.name + "\n" +
-            "message: " + e.message + "\n" +
-            "description: " + e.description;
-        wizard.ReportError("CopySolutionFiles => \n" + msg);
+        if (e.description.length != 0)
+            SetErrorInfo(e);
         throw e;
     }
 }
 
-function SetFileProperties(projfile, fileName) {
-    if (fileName == "dllmain.cpp") {
-        var Configs = projfi = le.Object.FileConfigurations;
-        for (var i = 1; i <= Configs.Count; ++i) {
-            var Config = Configs(i);
-            var CLTool = Config.Tool;
-            CLTool.CompileAsManaged = 0; // Force no /CLR
-            CLTool.UsePrecompiledHeader = 0; // No pre-compiled headers			
+function AddSolutionFile(parentProj, fileName, bClose) {
+    var fileProjItem = parentProj.ProjectItems.AddFromFile(fileName);
+    if (bClose && fileProjItem) {
+        //fileProjItem.Object.Close();
+    }
+}
+
+function SetFileProperties(projfile, sourceName) {
+    if (sourceName == "dllmain.cpp") {
+        var configs = projfile.Object.FileConfigurations;
+        for (var i = 1; i <= configs.Count; ++i) {
+            var config = configs(i);
+            var clTool = config.Tool;
+            clTool.CompileAsManaged = 0; // Force no /CLR
+            clTool.UsePrecompiledHeader = 0; // No pre-compiled headers			
         }
     }
 }
@@ -381,6 +410,8 @@ function CopyFile(sourceName, sourceBase, dest) {
         }
         fso.CopyFile(sourceBase + sourceName, dest);
     } catch (e) {
+        if (e.description.length != 0)
+            SetErrorInfo(e);
         throw e;
     }
 }
