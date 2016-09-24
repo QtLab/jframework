@@ -21,11 +21,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 
 	if (dwReason == DLL_PROCESS_ATTACH)
 	{
-		#if defined(_DEBUG)
 		TRACE0("[!output COMPONENT_NAME]d.dll Initializing!\n");
-		#else
-		TRACE0("[!output COMPONENT_NAME].dll Initializing!\n");
-		#endif
 		
 		// Extension DLL one-time initialization
 		if (!AfxInitExtensionModule(_AfxExtModule, hInstance))
@@ -48,11 +44,7 @@ DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 	}
 	else if (dwReason == DLL_PROCESS_DETACH)
 	{
-		#if defined(_DEBUG)
 		TRACE0("[!output COMPONENT_NAME]d.dll Terminating!\n");
-		#else
-		TRACE0("[!output COMPONENT_NAME].dll Terminating!\n");
-		#endif
 
 		// Terminate the library before destructors are called
 		AfxTermExtensionModule(_AfxExtModule);
