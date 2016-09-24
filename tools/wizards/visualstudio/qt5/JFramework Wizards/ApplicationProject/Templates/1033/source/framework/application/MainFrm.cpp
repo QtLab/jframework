@@ -3,7 +3,7 @@
 //
 
 #include "stdafx.h"
-#include "[!output PROJECT_NAME].h"
+#include "[!output APP_NAME].h"
 
 #include "MainFrm.h"
 
@@ -37,7 +37,7 @@ CMainFrame::CMainFrame()
 
 BOOL CMainFrame::LoadFramework()
 {
-	IJFrameFacade *frameFacade = C[!output PROJECT_NAME]App::LoadFrameFacade();
+	IJFrameFacade *frameFacade = C[!output APP_CLASS_NAME]App::LoadFrameFacade();
 	if (frameFacade == NULL)
 	{
 		return FALSE;

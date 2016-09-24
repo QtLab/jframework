@@ -12,8 +12,8 @@
     <!-- JFramework -->
     <symbol name="BCG_MODULE" type="checkbox" value="true"></symbol>
     <!-- modules -->
-    <symbol name="APPLICATION_NAME" type="text" value=""></symbol>
-    <symbol name="APPLICATION_CLASS_NAME" type="text" value=""></symbol>
+    <symbol name="APP_NAME" type="text" value=""></symbol>
+    <symbol name="APP_CLASS_NAME" type="text" value=""></symbol>
     <symbol name="INCLUDE_PRECOMPILED" type="checkbox" value="true"></symbol>
 </head>
 
@@ -291,9 +291,9 @@
         if (window.external.dte.VCLanguageManager.ValidateIdentifier(friendlyProjectName) &&
             !window.external.dte.VCLanguageManager.IsReservedName(friendlyProjectName)) {
             // modules
-            window.external.AddSymbol("APPLICATION_NAME", friendlyProjectName);
+            window.external.AddSymbol("APP_NAME", friendlyProjectName);
             //
-            window.external.AddSymbol("APPLICATION_CLASS_NAME", UnderScoreCaseToCamelCase(friendlyProjectName));
+            window.external.AddSymbol("APP_CLASS_NAME", UnderScoreCaseToCamelCase(friendlyProjectName));
         }
     }
 

@@ -17,13 +17,13 @@ DESTDIR = $$THIS_DIR/bin
 ##
 win32:{
     lessThan(QT_MAJOR_VERSION, 5):{
-        CONFIG(debug, debug|release):TARGET = [!output PROJECT_NAME]d
-        else:TARGET = [!output PROJECT_NAME]
+        CONFIG(debug, debug|release):TARGET = [!output APP_NAME]d
+        else:TARGET = [!output APP_NAME]
     } else {
-        TARGET = $$qtLibraryTarget([!output PROJECT_NAME])
+        TARGET = $$qtLibraryTarget([!output APP_NAME])
     }
 } else {
-    TARGET = $$qtLibraryTarget([!output PROJECT_NAME])
+    TARGET = $$qtLibraryTarget([!output APP_NAME])
 }
 
 ## use JLibrary class
@@ -109,12 +109,12 @@ win32|unix: {
     ## remove files
     dstdir = $$DESTDIR/
     win32:dstdir = $$replace(dstdir, /, \\)
-    exists("$${dstdir}[!output PROJECT_NAME]*.exp"):commands += $(DEL_FILE) "$${dstdir}[!output PROJECT_NAME]*.exp" &
-    exists("$${dstdir}[!output PROJECT_NAME]*.ilk"):commands += $(DEL_FILE) "$${dstdir}[!output PROJECT_NAME]*.ilk" &
-    exists("$${dstdir}[!output PROJECT_NAME]*.lib"):commands += $(DEL_FILE) "$${dstdir}[!output PROJECT_NAME]*.lib" &
+    exists("$${dstdir}[!output APP_NAME]*.exp"):commands += $(DEL_FILE) "$${dstdir}[!output APP_NAME]*.exp" &
+    exists("$${dstdir}[!output APP_NAME]*.ilk"):commands += $(DEL_FILE) "$${dstdir}[!output APP_NAME]*.ilk" &
+    exists("$${dstdir}[!output APP_NAME]*.lib"):commands += $(DEL_FILE) "$${dstdir}[!output APP_NAME]*.lib" &
 
     #
-    exists($$PWD/[!output PROJECT_NAME].pri):include($$PWD/[!output PROJECT_NAME].pri)
+    exists($$PWD/[!output APP_NAME].pri):include($$PWD/[!output APP_NAME].pri)
 
     QMAKE_POST_LINK += $$commands
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -19,38 +19,39 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{14783F01-D40B-4C31-A410-7983AFEC28FC}</ProjectGuid>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <Keyword>Qt4VSv1.0</Keyword>
+    <ProjectGuid>{ECDB12B2-CA9C-47E6-B7BA-A76AFF03AF40}</ProjectGuid>
+    <RootNamespace>Application</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+    <ProjectName>application</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
@@ -74,43 +75,38 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)source\temp\$(Configuration)\component\$(ProjectName)\</OutDir>
+    <OutDir>$(SolutionDir)source\temp\$(Configuration)\framework\$(ProjectName)\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
     <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)source\temp\$(Configuration)\component\$(ProjectName)\</OutDir>
-    <TargetName>$(ProjectName)d</TargetName>
-    <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)source\temp\$(Configuration)\component\$(ProjectName)\</OutDir>
-    <IntDir>$(OutDir)</IntDir>
+    <OutDir>$(SolutionDir)source\temp\$(Configuration)\framework\$(ProjectName)\</OutDir>
+    <IntDir>$(OutDir)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)source\temp\$(Configuration)\component\$(ProjectName)\</OutDir>
-    <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(JFRAME_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(SolutionDir)bin\$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(JFRAME_DIR)\lib\3rdpart;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
@@ -119,13 +115,11 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>if not exist "$(SolutionDir)component\$(ProjectName)\" (
-mkdir "$(SolutionDir)component\$(ProjectName)\"
+      <Command>if not exist "$(SolutionDir)bin\" (
+mkdir "$(SolutionDir)bin\"
 )
-copy "$(TargetPath)" "$(SolutionDir)component\$(ProjectName)\"
-
-if exist "$(ProjectDir)$(ProjectName).xml" (
-copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
+if not exist "$(SolutionDir)bin\BCGCBPro2210ud$(PlatformToolsetVersion).dll" (
+copy "$(JFRAME_DIR)\bin\3rdpart\BCGCBPro\BCGCBPRO2210ud$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -134,17 +128,15 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WINDOWS;_DEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-       <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-   </ClCompile>
+    </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
@@ -153,13 +145,11 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-    <Command>if not exist "$(SolutionDir)component\$(ProjectName)\" (
-mkdir "$(SolutionDir)component\$(ProjectName)\"
+      <Command>if not exist "$(SolutionDir)bin\" (
+mkdir "$(SolutionDir)bin\"
 )
-copy "$(TargetPath)" "$(SolutionDir)component\$(ProjectName)\"
-
-if exist "$(ProjectDir)$(ProjectName).xml" (
-copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
+if not exist "$(SolutionDir)bin\BCGCBPro2210u$(PlatformToolsetVersion).dll" (
+copy "$(JFRAME_DIR)\bin\3rdpart\BCGCBPro\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -170,20 +160,20 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(JFRAME_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <ModuleDefinitionFile>
-      </ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(SolutionDir)bin\$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(JFRAME_DIR)\lib\3rdpart;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
@@ -192,13 +182,11 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>if not exist "$(SolutionDir)component\$(ProjectName)\" (
-mkdir "$(SolutionDir)component\$(ProjectName)\"
+      <Command>if not exist "$(SolutionDir)bin\" (
+mkdir "$(SolutionDir)bin\"
 )
-copy "$(TargetPath)" "$(SolutionDir)component\$(ProjectName)\"
-
-if exist "$(ProjectDir)$(ProjectName).xml" (
-copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
+if not exist "$(SolutionDir)bin\BCGCBPro2210u$(PlatformToolsetVersion).dll" (
+copy "$(JFRAME_DIR)\bin\3rdpart\BCGCBPro\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -209,19 +197,17 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_WINDOWS;NDEBUG;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </Midl>
     <ResourceCompile>
@@ -230,22 +216,15 @@ copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <PostBuildEvent>
-    <Command>if not exist "$(SolutionDir)component\$(ProjectName)\" (
-mkdir "$(SolutionDir)component\$(ProjectName)\"
+      <Command>if not exist "$(SolutionDir)bin\" (
+mkdir "$(SolutionDir)bin\"
 )
-copy "$(TargetPath)" "$(SolutionDir)component\$(ProjectName)\"
-
-if exist "$(ProjectDir)$(ProjectName).xml" (
-copy "$(ProjectDir)$(ProjectName).xml" "$(SolutionDir)component\$(ProjectName)\"
+if not exist "$(SolutionDir)bin\BCGCBPro2210u$(PlatformToolsetVersion).dll" (
+copy "$(JFRAME_DIR)\bin\3rdpart\BCGCBPro\BCGCBPRO2210u$(PlatformToolsetVersion)?.dll" "$(SolutionDir)bin\"
 )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="Qt" MocOptions="" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

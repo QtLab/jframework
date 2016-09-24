@@ -55,6 +55,11 @@ cp -f "${qt_dir}/libQtXml.so.${qt_major_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/libQtXml.so.${qt_major_ver}.${qt_minor_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/libQtXml.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
 
+cp -f "${qt_dir}/libQtSql.so" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/libQtSql.so.${qt_major_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/libQtSql.so.${qt_major_ver}.${qt_minor_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/libQtSql.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+
 cp -f "${qt_dir}/libQtDBus.so" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/libQtDBus.so.${qt_major_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/libQtDBus.so.${qt_major_ver}.${qt_minor_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
@@ -110,6 +115,11 @@ cp -f "${qt_dir}/lib/libQt${qt_major_ver}Xml.so" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/lib/libQt${qt_major_ver}Xml.so.${qt_major_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/lib/libQt${qt_major_ver}Xml.so.${qt_major_ver}.${qt_minor_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/lib/libQt${qt_major_ver}Xml.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+
+cp -f "${qt_dir}/lib/libQt${qt_major_ver}Sql.so" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_major_ver}Sql.so.${qt_major_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_major_ver}Sql.so.${qt_major_ver}.${qt_minor_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
+cp -f "${qt_dir}/lib/libQt${qt_major_ver}Sql.so.${qt_ver}" "${jframe_dir}/bin/3rdpart/Qt/"
 
 cp -f "${qt_dir}/lib/libQt${qt_major_ver}DBus.so" "${jframe_dir}/bin/3rdpart/Qt/"
 cp -f "${qt_dir}/lib/libQt${qt_major_ver}DBus.so.${qt_major_ver}" "${jframe_dir}/bin/3rdpart/Qt/"

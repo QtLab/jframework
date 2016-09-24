@@ -1,4 +1,5 @@
 var QtEngine;
+var fso;
 
 function GetNameFromFile(strFile) {
     var nPos = strFile.lastIndexOf(".");
@@ -8,6 +9,7 @@ function GetNameFromFile(strFile) {
 function OnFinish(selProj, selObj) {
     try {
         try {
+            fso = new ActiveXObject("Scripting.FileSystemObject");
             QtEngine = new ActiveXObject("Digia.Qt5ProjectEngine");
         } catch (ex) {
             wizard.ReportError("Cannot instantiate QtProjectEngine object!");
@@ -61,6 +63,19 @@ function OnFinish(selProj, selObj) {
 
         //////////
 
+        if (dte.version == "9.0") {
+            //
+        } else if (dte.version == "10.0") {
+            wizard.AddSymbol("TOOLS_VERSION", "4.0");
+        } else {
+            wizard.AddSymbol("TOOLS_VERSION", dte.version);
+        }
+
+        // platform version
+        wizard.AddSymbol("PLATFORM_TOOLSET", "v" + dte.version.replace(/\./g, ''));
+
+        //////////
+
         selProj = CreateQtProject(projectName, projectPath);
         AddCommonConfig(selProj, projectName);
         AddSpecificConfig(selProj, projectName, projectPath);
@@ -70,11 +85,13 @@ function OnFinish(selProj, selObj) {
         AddFilesToProjectWithInfFile(selProj, projectName);
         selProj.Object.Save();
 
+        //
+        AddSolutionFolders();
+
     } catch (e) {
-        var msg = "name: " + e.name + "\n" +
-            "message: " + e.message + "\n" +
-            "description: " + e.description;
-        wizard.ReportError("OnFinish => \n" + msg);
+        //var msg = "name: " + e.name + "\n" +
+        //    "description: " + e.description;
+        //wizard.ReportError("OnFinish => \n" + msg);
         if (e.description.length != 0)
             SetErrorInfo(e);
         return e.number
@@ -88,12 +105,19 @@ strProjectPath: The path that the project will be created in
 ******************************************************************************/
 function CreateQtProject(projectName, projectPath) {
     try {
-        var templatePath = wizard.FindSymbol("TEMPLATES_PATH");
-        var projectTemplatePath = wizard.FindSymbol("PROJECT_TEMPLATE_PATH");
-        var projectTemplate = templatePath + "\\default_140.vcxproj";
+        var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
+        var projectTemplatePath = templatePath;
         var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
         var solution = dte.Solution;
         var solutionName = "";
+        var projectFileSuffix = "";
+
+        // 
+        if (dte.version == "9.0") {
+            projectFileSuffix = ".vcproj";
+        } else {
+            projectFileSuffix = ".vcxproj";
+        }
 
         if (wizard.FindSymbol("CLOSE_SOLUTION")) {
             solution.Close();
@@ -102,19 +126,29 @@ function CreateQtProject(projectName, projectPath) {
                 solution.Create(solutionPath, solutionName);
             }
         }
-
-        var projectNameWithExt = projectName + ".vcxproj";
+        //
+        projectTemplatePath += "default" + dte.version.replace(/\./g, '') + projectFileSuffix;
+        var projectNameWithExt = projectName + projectFileSuffix;
         var target = wizard.FindSymbol("TARGET");
         var project;
         if (wizard.FindSymbol("WIZARD_TYPE") == vsWizardAddSubProject) { // vsWizardAddSubProject
-            var projectItem = target.AddFromTemplate(projectTemplate, projectPath + "\\" + projectNameWithExt);
+            var projectItem = target.AddFromTemplate(projectTemplatePath, projectPath + "\\" + projectNameWithExt);
             project = projectItem.SubProject;
         } else {
-            project = target.AddFromTemplate(projectTemplate, projectPath, projectNameWithExt);
+            project = target.AddFromTemplate(projectTemplatePath, projectPath, projectNameWithExt);
         }
         return project;
     } catch (e) {
         throw e;
+    }
+}
+
+function AddSolutionFolders() {
+    var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
+    var projectName = wizard.FindSymbol("PROJECT_NAME");
+    // remove folders
+    if (fso.FolderExists(solutionPath + projectName)) {
+        fso.DeleteFolder(solutionPath + projectName);
     }
 }
 
@@ -152,6 +186,14 @@ function AddSpecificConfig(project, projectName, projectPath) {
             additionalIncludeDirectories += ";$(JFRAME_DIR)\\include\\3rdpart";
             additionalIncludeDirectories += ";$(JFRAME_DIR)\\include\\core";
             compilerTool.AdditionalIncludeDirectories = additionalIncludeDirectories;
+
+            //
+            var additionalOptions = compilerTool.AdditionalOptions;
+            if (additionalOptions != "") {
+                additionalOptions += " ";
+            }
+            additionalOptions += "-Zm200";
+            compilerTool.AdditionalOptions = additionalOptions;
 
             //
             var preProcDefines = compilerTool.PreprocessorDefinitions;

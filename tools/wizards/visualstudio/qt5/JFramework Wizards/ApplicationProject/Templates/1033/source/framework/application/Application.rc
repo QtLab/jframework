@@ -53,7 +53,7 @@ BEGIN
     "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
     "LANGUAGE 9, 1\r\n"
     "#pragma code_page(1252)\r\n"
-    "#include ""res\\[!output PROJECT_NAME].rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""res\\[!output APP_NAME].rc2""  // non-Microsoft Visual C++ edited resources\r\n"
     "#include ""afxres.rc""         // Standard components\r\n"
     "#endif\r\n"
     "\0"
@@ -81,7 +81,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\[!output PROJECT_NAME].ico"
+IDR_MAINFRAME           ICON                    "res\\[!output APP_NAME].ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -108,7 +108,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About [!output PROJECT_NAME]...",       ID_APP_ABOUT
+        MENUITEM "&About [!output APP_NAME]...",       ID_APP_ABOUT
     END
 END
 
@@ -140,11 +140,11 @@ END
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 170, 62
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About [!output PROJECT_NAME]"
+CAPTION "About [!output APP_NAME]"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,21,20
-    LTEXT           "[!output PROJECT_NAME], Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
+    LTEXT           "[!output APP_NAME], Version 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2016",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
@@ -175,10 +175,10 @@ BEGIN
             VALUE "CompanyName", "Smartsoft"
             VALUE "FileDescription", "jframework application"
             VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "[!output PROJECT_NAME].exe"
+            VALUE "InternalName", "[!output APP_NAME].exe"
             VALUE "LegalCopyright", "JFramework (c) Smartsoft.  All rights reserved."
-            VALUE "OriginalFilename", "[!output PROJECT_NAME].exe"
-            VALUE "ProductName", "[!output PROJECT_NAME]"
+            VALUE "OriginalFilename", "[!output APP_NAME].exe"
+            VALUE "ProductName", "[!output APP_NAME]"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END
@@ -220,12 +220,12 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDR_MAINFRAME           "[!output PROJECT_NAME]"
+    IDR_MAINFRAME           "[!output APP_NAME]"
 END
 
 STRINGTABLE 
 BEGIN
-    AFX_IDS_APP_TITLE       "[!output PROJECT_NAME]"
+    AFX_IDS_APP_TITLE       "[!output APP_NAME]"
     AFX_IDS_IDLEMESSAGE     "Ready"
 END
 
@@ -310,7 +310,7 @@ END
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE 9, 1
 #pragma code_page(1252)
-#include "res\[!output PROJECT_NAME].rc2"  // non-Microsoft Visual C++ edited resources
+#include "res\[!output APP_NAME].rc2"  // non-Microsoft Visual C++ edited resources
 #include "afxres.rc"         // Standard components
 #endif
 

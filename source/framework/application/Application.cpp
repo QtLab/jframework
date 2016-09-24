@@ -47,7 +47,7 @@ CString CApplicationApp::ApplicationDirPath()
 			}
 		}
 
-		_path = _path.Left(_path.GetLength() - index);
+		_path = _path.Left(index);
 	}
 
 	return _path;
@@ -80,13 +80,11 @@ IJFrameFacade * CApplicationApp::LoadFrameFacade()
 	// 获取 IJFrameFacade 接口实例
 	IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>
 		((IJUnknown *)(frameFacadeInstace(
-#ifdef _MSC_VER
-#if defined(DEBUG) || defined(_DEBUG)
+#if defined(_DEBUG)
 			1
 #else
 			0
 #endif
-#endif  // _MSC_VER
 		)));
 	if (frameFacade == NULL)
 	{
@@ -131,10 +129,9 @@ BOOL CApplicationApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
-	SetRegistryKey(_T("Smartsoft\\application-1"));
+	SetRegistryKey(_T("Smartsoft"));
 
 	//
-	InitMouseManager();
 	InitKeyboardManager();
 	InitContextMenuManager();
 	InitTooltipManager();

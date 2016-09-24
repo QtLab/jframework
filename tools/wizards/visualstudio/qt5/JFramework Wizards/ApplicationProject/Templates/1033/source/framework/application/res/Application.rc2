@@ -1,5 +1,5 @@
 //
-// [!output PROJECT_NAME].RC2 - resources Microsoft Visual C++ does not edit directly
+// [!output APP_NAME].RC2 - resources Microsoft Visual C++ does not edit directly
 //
 
 #ifdef APSTUDIO_INVOKED

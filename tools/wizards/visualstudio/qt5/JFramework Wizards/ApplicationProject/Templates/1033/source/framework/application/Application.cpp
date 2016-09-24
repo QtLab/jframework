@@ -1,10 +1,10 @@
 
-// [!output PROJECT_NAME].cpp : Defines the class behaviors for the application.
+// [!output APP_NAME].cpp : Defines the class behaviors for the application.
 //
 
 #include "stdafx.h"
 #include "afxwinappex.h"
-#include "[!output PROJECT_NAME].h"
+#include "[!output APP_NAME].h"
 #include "MainFrm.h"
 
 
@@ -13,23 +13,23 @@
 #endif
 
 
-// C[!output PROJECT_NAME]App
+// C[!output APP_CLASS_NAME]App
 
-BEGIN_MESSAGE_MAP(C[!output PROJECT_NAME]App, CBCGPWinApp)
-	ON_COMMAND(ID_APP_ABOUT, &C[!output PROJECT_NAME]App::OnAppAbout)
+BEGIN_MESSAGE_MAP(C[!output APP_CLASS_NAME]App, CBCGPWinApp)
+	ON_COMMAND(ID_APP_ABOUT, &C[!output APP_CLASS_NAME]App::OnAppAbout)
 END_MESSAGE_MAP()
 
 
-// C[!output PROJECT_NAME]App construction
+// C[!output APP_CLASS_NAME]App construction
 
-C[!output PROJECT_NAME]App::C[!output PROJECT_NAME]App()
+C[!output APP_CLASS_NAME]App::C[!output APP_CLASS_NAME]App()
 {
 
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
 }
 
-CString C[!output PROJECT_NAME]App::ApplicationDirPath()
+CString C[!output APP_CLASS_NAME]App::ApplicationDirPath()
 {
 	static CString _path = _T("");
 	if (_path.IsEmpty())
@@ -47,13 +47,13 @@ CString C[!output PROJECT_NAME]App::ApplicationDirPath()
 			}
 		}
 
-		_path = _path.Left(_path.GetLength() - index);
+		_path = _path.Left(index);
 	}
 
 	return _path;
 }
 
-IJFrameFacade * C[!output PROJECT_NAME]App::LoadFrameFacade()
+IJFrameFacade * C[!output APP_CLASS_NAME]App::LoadFrameFacade()
 {
 	// 生成文件路径
 	CString filePath = ApplicationDirPath();
@@ -80,13 +80,11 @@ IJFrameFacade * C[!output PROJECT_NAME]App::LoadFrameFacade()
 	// 获取 IJFrameFacade 接口实例
 	IJFrameFacade *frameFacade = dynamic_cast<IJFrameFacade *>
 		((IJUnknown *)(frameFacadeInstace(
-#ifdef _MSC_VER
 #if defined(DEBUG) || defined(_DEBUG)
 			1
 #else
 			0
 #endif
-#endif  // _MSC_VER
 		)));
 	if (frameFacade == NULL)
 	{
@@ -96,14 +94,14 @@ IJFrameFacade * C[!output PROJECT_NAME]App::LoadFrameFacade()
 	return frameFacade;
 }
 
-// The one and only C[!output PROJECT_NAME]App object
+// The one and only C[!output APP_CLASS_NAME]App object
 
-C[!output PROJECT_NAME]App theApp;
+C[!output APP_CLASS_NAME]App theApp;
 
 
-// C[!output PROJECT_NAME]App initialization
+// C[!output APP_CLASS_NAME]App initialization
 
-BOOL C[!output PROJECT_NAME]App::InitInstance()
+BOOL C[!output APP_CLASS_NAME]App::InitInstance()
 {
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
@@ -131,10 +129,9 @@ BOOL C[!output PROJECT_NAME]App::InitInstance()
 	// Change the registry key under which our settings are stored
 	// TODO: You should modify this string to be something appropriate
 	// such as the name of your company or organization
-	SetRegistryKey(_T("Smartsoft\\[!output PROJECT_NAME]"));
+	SetRegistryKey(_T("Smartsoft"));
 
 	//
-	InitMouseManager();
 	InitKeyboardManager();
 	InitContextMenuManager();
 	InitTooltipManager();
@@ -154,7 +151,7 @@ BOOL C[!output PROJECT_NAME]App::InitInstance()
 	pFrame->LoadFrame(IDR_MAINFRAME,
 		WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL,
 		NULL);
-#if 0
+
 	// Parse command line for standard shell commands, DDE, file open
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
@@ -165,7 +162,7 @@ BOOL C[!output PROJECT_NAME]App::InitInstance()
 	m_nCmdShow = SW_HIDE;
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-#endif
+
 	// The one and only window has been initialized, so show and update it
 	//pFrame->ShowWindow(SW_SHOW);
 	pFrame->UpdateWindow();
@@ -175,7 +172,7 @@ BOOL C[!output PROJECT_NAME]App::InitInstance()
 }
 
 
-int C[!output PROJECT_NAME]App::Run()
+int C[!output APP_CLASS_NAME]App::Run()
 {
 #if 1	// Qt 消息循环
 
@@ -191,7 +188,7 @@ int C[!output PROJECT_NAME]App::Run()
 	return CBCGPWinApp::Run();
 }
 
-int C[!output PROJECT_NAME]App::ExitInstance()
+int C[!output APP_CLASS_NAME]App::ExitInstance()
 {
 	//
 	BCGCBProCleanUp();
@@ -199,7 +196,7 @@ int C[!output PROJECT_NAME]App::ExitInstance()
 	return CBCGPWinApp::ExitInstance();
 }
 
-// C[!output PROJECT_NAME]App message handlers
+// C[!output APP_CLASS_NAME]App message handlers
 
 
 // CAboutDlg dialog used for App About
@@ -234,18 +231,18 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
 END_MESSAGE_MAP()
 
 // App command to run the dialog
-void C[!output PROJECT_NAME]App::OnAppAbout()
+void C[!output APP_CLASS_NAME]App::OnAppAbout()
 {
 	CAboutDlg aboutDlg;
 	aboutDlg.DoModal();
 }
 
-BOOL C[!output PROJECT_NAME]App::LoadWindowPlacement(CRect& rectNormalPosition, int& nFflags, int& nShowCmd)
+BOOL C[!output APP_CLASS_NAME]App::LoadWindowPlacement(CRect& rectNormalPosition, int& nFflags, int& nShowCmd)
 {
 	return FALSE;
 }
 
-// C[!output PROJECT_NAME]App message handlers
+// C[!output APP_CLASS_NAME]App message handlers
 
 
 

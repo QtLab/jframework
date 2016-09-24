@@ -24,8 +24,21 @@ function OnFinish(selProj, selObj) {
         var templatePath = wizard.FindSymbol("TEMPLATES_PATH");
         //var exclusive = wizard.FindSymbol("CLOSE_SOLUTION");
         // modules
-        //var applicationName = wizard.FindSymbol("APPLICATION_NAME");
-        //var applicationClassName = wizard.FindSymbol("APPLICATION_CLASS_NAME");
+        //var appName = wizard.FindSymbol("APP_NAME");
+        //var appClassName = wizard.FindSymbol("APP_CLASS_NAME");
+
+        //////////
+
+        if (dte.version == "9.0") {
+            //
+        } else if (dte.version == "10.0") {
+            wizard.AddSymbol("TOOLS_VERSION", "4.0");
+        } else {
+            wizard.AddSymbol("TOOLS_VERSION", dte.version);
+        }
+
+        // platform version
+        wizard.AddSymbol("PLATFORM_TOOLSET", "v" + dte.version.replace(/\./g, ''));
 
         //////////
 
@@ -66,16 +79,18 @@ strProjectPath: The path that the project will be created in
 ******************************************************************************/
 function CreateQtProject(projectName, projectPath) {
     try {
-        var templatePath = wizard.FindSymbol("TEMPLATES_PATH");
-        var projectTemplatePath = templatePath + "\\source\\framework\\application\\";
+        var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
+        var projectTemplatePath = templatePath + "source\\framework\\application\\";
         var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
         var solution = dte.Solution;
         var solutionName = "";
+        var projectFileSuffix = "";
 
+        // 
         if (dte.version == "9.0") {
-            projectTemplatePath += "default_" + dte.version + ".vcproj";
+            projectFileSuffix = ".vcproj";
         } else {
-            projectTemplatePath += "default_" + dte.version + ".vcxproj";
+            projectFileSuffix = ".vcxproj";
         }
 
         if (wizard.FindSymbol("CLOSE_SOLUTION")) {
@@ -86,7 +101,8 @@ function CreateQtProject(projectName, projectPath) {
             }
         }
         //
-        var projectNameWithExt = projectName + ".vcxproj";
+        projectTemplatePath += "default" + dte.version.replace(/\./g, '') + projectFileSuffix;
+        var projectNameWithExt = projectName + projectFileSuffix;
         var target = wizard.FindSymbol("TARGET");
         var project;
         if (wizard.FindSymbol("WIZARD_TYPE") == vsWizardAddSubProject) { // vsWizardAddSubProject
@@ -106,7 +122,7 @@ function CreateQtProject(projectName, projectPath) {
     }
 }
 
-function AddSolutionFolders(templatePath, projectName) {
+function AddSolutionFolders() {
     var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
     var projectName = wizard.FindSymbol("PROJECT_NAME");
     var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
@@ -130,10 +146,19 @@ function AddSolutionFolders(templatePath, projectName) {
     // -- component --
     var componentProjItem = solution.AddSolutionFolder("component");
     /// ---------------------------------------
+
+    /// remove folders
+    if (fso.FolderExists(solutionPath + projectName)) {
+        fso.DeleteFolder(solutionPath + projectName);
+    }
 }
 
 function AddSpecificConfig(project, projectName, projectPath) {
     try {
+        //
+        //project.Object.ToolsVersion = wizard.FindSymbol("TOOLS_VERSION");
+        //project.Object.PlatformToolset = wizard.FindSymbol("PLATFORM_TOOLSET");
+        //
         var configs = project.Object.Configurations;
         for (var i = 1; i <= configs.Count; i++) {
             var config = configs(i);

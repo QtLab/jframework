@@ -14,3 +14,4 @@ source/framework/application/stdafx.cpp
 source/framework/application/stdafx.h
 [!endif]
 source/framework/application/targetver.h
+

@@ -3,7 +3,7 @@
 //
 
 #include "stdafx.h"
-#include "[!output PROJECT_NAME].h"
+#include "[!output APP_NAME].h"
 #include "ChildView.h"
 
 #ifdef _DEBUG

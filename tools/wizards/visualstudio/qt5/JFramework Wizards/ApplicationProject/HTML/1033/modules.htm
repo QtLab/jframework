@@ -171,7 +171,7 @@
                                     <td>&nbsp;</td>
                                     <td>Name of Application:&nbsp;&nbsp;</td>
                                     <td>
-                                        <input size="50%" type="text" id="APPLICATION_NAME" name="applicationName" placeholder="<name of component>" />
+                                        <input size="50%" disabled type="text" id="APP_NAME" name="appName" placeholder="<name of application>" />
                                     </td>
                                 </tr>
                                 <tr valign="top" colspan="3">
@@ -282,8 +282,8 @@
         var projectName = window.external.FindSymbol('PROJECT_NAME').replace(regexp, "");
         var friendlyProjectName = CreateSafeName(projectName);
 
-        // application name
-        var field = inputs.item("applicationName");
+        // appName name
+        var field = inputs.item("appName");
         if (!window.external.dte.VCLanguageManager.ValidateIdentifier(field.value) ||
             window.external.dte.VCLanguageManager.IsReservedName(field.value)) {
             window.external.ReportError("Not a valid application name!");
@@ -292,7 +292,7 @@
         }
 
         //
-        window.external.AddSymbol("APPLICATION_CLASS_NAME", UnderScoreCaseToCamelCase(friendlyProjectName));
+        window.external.AddSymbol("APP_CLASS_NAME", UnderScoreCaseToCamelCase(field.value));
 
         return true;
     }
