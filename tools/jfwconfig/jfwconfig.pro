@@ -8,17 +8,5 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-#    docs \
-    source \
-    setup \
-    tools
-
-include($$PWD/config/config.pri)
-
-win32 {
-    OTHER_FILES += \
-        $$PWD/syncjframe.cmd
-} else:unix:{
-    OTHER_FILES += \
-        $$PWD/syncjframe.sh
-}
+    jfwconfig_main \
+    jfwconfig_gui

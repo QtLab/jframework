@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/jfwconfiggui/qss">
+        <file alias="stylesheet_1.qss">qss/stylesheet_1.qss</file>
+    </qresource>
+    <qresource prefix="/jfwconfiggui/image">
+        <file alias="app_icon.png">image/app_icon.png</file>
+        <file alias="app_list.png">image/app_list.png</file>
+    </qresource>
+</RCC>

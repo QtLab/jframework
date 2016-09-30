@@ -460,6 +460,13 @@ public:
      * @return 软件系统语言
      */
     virtual std::string language() const = 0;
+
+    /**
+     * @brief 解析路径
+     * @param path : 给定路径
+     * @return 解析后的路径
+     */
+    virtual std::string parsePath(const std::string &path) const = 0;
 };
 
 /** 获取框架门面单实例导出函数类型定义 */

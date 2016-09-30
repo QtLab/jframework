@@ -31,6 +31,8 @@ ComDemo1::~ComDemo1()
 
 bool ComDemo1::loadInterface()
 {
+    //
+
     return true;
 }
 
@@ -38,7 +40,6 @@ bool ComDemo1::updateInterface()
 {
     bool result = true;
 
-    //
 
     return result;
 }
@@ -71,6 +72,7 @@ void ComDemo1::attach()
 {
     // 订阅消息
     q_attempter->notifier().beginGroup(this)
+            .append("helloworld", &ComDemo1::helloworld)
             .endGroup();
 }
 
@@ -132,4 +134,9 @@ bool ComDemo1::messageSink(IJComponent *sender, const std::string &id, JWPARAM w
 std::string ComDemo1::observerId() const
 {
     return componentName();
+}
+
+JLRESULT ComDemo1::helloworld(const std::string &id, JWPARAM wParam, JLPARAM lParam)
+{
+    return 0;
 }

@@ -54,6 +54,8 @@ public:
 
     std::string language() const;
 
+    std::string parsePath(const std::string &path) const;
+
 private:
      //
     bool loadFramePrivate(int argc, char** argv, void *app);
@@ -100,7 +102,7 @@ private:
     bool loadTextCodecConfig();
 
     //
-    bool loadFrameworkDirMethod();
+    bool loadFrameworkDirMethods();
 
 private:
     bool invokeLog(const std::string &method, int argc, va_list ap);

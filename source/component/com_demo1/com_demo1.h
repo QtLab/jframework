@@ -50,6 +50,7 @@ public:
     std::string observerId() const;
 
 protected:
+    JLRESULT helloworld(const std::string &id, JWPARAM wParam, JLPARAM lParam);
 
 private:
     IJAttempter *q_attempter;

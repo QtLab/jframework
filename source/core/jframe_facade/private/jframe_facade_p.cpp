@@ -421,6 +421,16 @@ std::string JFrameFacade::language() const
     return data->language;
 }
 
+std::string JFrameFacade::parsePath(const std::string &path) const
+{
+    QString temp = QString::fromStdString(path)
+            .replace("@AppDir@", QString::fromStdString(appDirPath()))
+            .replace("@ConfigDir@", QString::fromStdString(configDirPath()))
+            .replace("@ThisDir@", QString::fromStdString(thisDirPath()))
+            .replace("@FrameDir@", QString::fromStdString(frameDirPath()));
+    return temp.toStdString();
+}
+
 bool JFrameFacade::loadFramePrivate(int argc, char **argv, void *app)
 {
     //
@@ -783,8 +793,7 @@ bool JFrameFacade::loadTextCodecConfig()
     }
 
     // text codec
-    QTextCodec::setCodecForLocale(
-                QTextCodec::codecForName(codeForName.toUtf8()));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName(codeForName.toUtf8()));
 #if QT_VERSION < 0x050000
     QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
     QTextCodec::setCodecForTr(QTextCodec::codecForLocale());
@@ -793,13 +802,13 @@ bool JFrameFacade::loadTextCodecConfig()
     return true;
 }
 
-bool JFrameFacade::loadFrameworkDirMethod()
+bool JFrameFacade::loadFrameworkDirMethods()
 {
     bool result = true;
 
     //
     QLibrary lib(QString::fromStdString(std::string(_static_appDirPath()).append("/")
-                 .append(dynamicPrefix()).append("jframeworkdir").append(dynamicSuffix(false))));
+                                        .append(dynamicPrefix()).append("jframeworkdir").append(dynamicSuffix(false))));
     if (!lib.load()) {
         Q_ASSERT(false);
         return false;
@@ -991,7 +1000,7 @@ JFrameFacade::JFrameFacade()
     data = new JFrameFacadeData;
 
     // 加载 jframeworkdir 库接口
-    if (!loadFrameworkDirMethod()) {
+    if (!loadFrameworkDirMethods()) {
         Q_ASSERT(false);
     }
 

@@ -24,7 +24,7 @@
     <userName>****</userName>
     <password>****</password>
   </database>
-  <workMode id="1" name="Test1" dir="WorkMode_Test1" >
+  <workMode id="1" name="Test1" dir="@ThisDir@/config/WorkMode_Test1" >
   </workMode>
   <system>
     <language name="zh_CN" path="@FrameDir@/config/language">

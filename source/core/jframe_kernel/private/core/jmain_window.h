@@ -123,9 +123,6 @@ private:
     bool createMenuItem(const QDomElement &emItem, QMenu *menu, const QString &componentName);
 
     //
-    QString parsePath(const QString &src) const;
-
-    //
     bool insertHashObject(const QString &componentName, const QString &objectName, QObject *object);
 
     //

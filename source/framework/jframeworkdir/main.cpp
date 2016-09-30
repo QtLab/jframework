@@ -322,19 +322,17 @@ J_EXTERN_C J_ATTR_EXPORT const char* librarySuffix(bool debug)
 }
 
 /**
- * @brief ...
- * @param config : 1, debug; other, release. valid for windows system
+ * @brief LoadFrameworkEnv
+ * @param config
  * @return
  */
-J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
+J_EXTERN_C J_ATTR_EXPORT bool LoadFrameworkEnv(int config)
 {
     // 获取 jframework 部署路径
     const std::string _frameDirPath = frameDirPath();
     if (_frameDirPath.empty()) {
-        return 0;   // 路径无效
+        return false;   // 路径无效
     }
-
-    /// 加载 jframeworkenv 模块
 
     // 生成 jframeworkenv 全路径
     const std::string frameworkenvFilePath = _frameDirPath + "/bin/core/"
@@ -346,12 +344,33 @@ J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
     LoadFrameworkEnv loadFrameworkEnv = (LoadFrameworkEnv)
             JLibrary::resolve(frameworkenvFilePath, "LoadFrameworkEnv");
     if (!loadFrameworkEnv) {
-        return 0;   // 获取失败
+        return false;   // 获取失败
     }
 
     // 加载 jframeworkenv 模块
     if (!loadFrameworkEnv(config)) {
-        return 0;   // 加载失败
+        return false;   // 加载失败
+    }
+
+    return true;
+}
+
+/**
+ * @brief ...
+ * @param config : 1, debug; other, release. valid for windows system
+ * @return
+ */
+J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
+{
+    // 加载 jframeworkenv 模块
+    if (!LoadFrameworkEnv(config)) {
+        return 0;
+    }
+
+    // 获取 jframework 部署路径
+    const std::string _frameDirPath = frameDirPath();
+    if (_frameDirPath.empty()) {
+        return 0;   // 路径无效
     }
 
     /// 加载 frame_facade 模块

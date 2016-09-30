@@ -282,7 +282,7 @@ bool JAttempter::loadConfig()
     // name
     q_workModeName = emWorkMode.attribute("name").toStdString();
     // dir
-    q_workModeDir = emWorkMode.attribute("dir").toStdString();
+    q_workModeDir = jframeFacade()->parsePath(emWorkMode.attribute("dir").toStdString());
 
     return true;
 }
@@ -318,11 +318,11 @@ bool JAttempter::loadAllComponent()
 {
     //
     const std::string currentWorkModeConfigDirName = this->currentWorkModeConfigDirName();
-    std::string frameComponentPath = jframeFacade()->configDirPath();
+    std::string frameComponentPath;
     if (currentWorkModeConfigDirName.empty()) {
-        frameComponentPath.append("/frame");
+        frameComponentPath = jframeFacade()->configDirPath() + "/frame";
     } else {
-        frameComponentPath.append("/").append(currentWorkModeConfigDirName);
+        frameComponentPath = currentWorkModeConfigDirName;
     }
     frameComponentPath.append("/jframe_component.xml");
 
@@ -402,7 +402,7 @@ bool JAttempter::loadAllComponent()
         // type
         componentConfig.componentType = emComponent.attribute("type").toUtf8().trimmed();
         //
-        if (componentConfig.componentType == "mfc") {
+        if (componentConfig.componentType.toLower() == "mfc") {
             const QString msg =
                     QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) 组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
                     .arg(componentConfig.componentDir)
@@ -461,7 +461,9 @@ bool JAttempter::loadComponent(JComponentConfig &componentConfig)
         return false;   // 创建失败
     }
     // 组件类型检测
-    if (component->componentType() == "mfc") {
+    std::string componentType = component->componentType();
+    std::transform(componentType.begin(), componentType.end(), componentType.begin(), ::tolower);
+    if (componentType == "mfc") {
         const QString msg =
                 QStringLiteral("MFC类型组件未加载！(原因：非MFC框架) 组件信息：[路径: %1]；[名称: %2]；[描述: %3]")
                 .arg(componentConfig.componentDir)

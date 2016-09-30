@@ -30,12 +30,16 @@ TestWidget1::~TestWidget1()
 
 void TestWidget1::onButtonModeTestClicked()
 {
+#if 1
     const std::string currentModule = jframeLayout()->currentModule();
     if (currentModule == "module #1") {
         q_attempter.notifier().postMessage("j_switch_module", "module #2 >> module #3 >> module #4");
     } else {
         q_attempter.notifier().postMessage("j_switch_module", "module #1");
     }
+#else
+    q_attempter.notifier().postMessage("helloworld");
+#endif
 }
 
 void TestWidget1::onButtonCmdTestClicked()

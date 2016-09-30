@@ -690,7 +690,8 @@ bool JMainWindow::createRibbinItem(const QDomElement &emGroup, QtRibbon::RibbonG
                 label->setProperty("domain", componentName);
                 //
                 label->setParent(ribbonGroup);
-                label->setPixmap(QPixmap(parsePath(emItem.attribute("icon"))));
+                label->setPixmap(QPixmap(QString::fromStdString(jframeFacade()->parsePath(
+                                                                    emItem.attribute("icon").toStdString()))));
                 ribbonGroup->addWidget(label);
             }
         }
@@ -720,13 +721,13 @@ QAction* JMainWindow::createItemAction(const QDomElement &emItem, const QString 
     //
     action->setObjectName(objectName);
     action->setText(emItem.attribute("text"));
-    action->setIcon(QIcon(parsePath(emItem.attribute("icon"))));
+    action->setIcon(QIcon(QString::fromStdString(jframeFacade()
+                                                 ->parsePath(emItem.attribute("icon").toStdString()))));
     action->setShortcut(emItem.attribute("shortcut"));
     action->setCheckable(QVariant(emItem.attribute("checkable", "true")).toBool());
 
     //
-    QObject::connect(action, SIGNAL(triggered(bool)),
-                     q_frameWnd, SLOT(onActionTriggered(bool)));
+    QObject::connect(action, SIGNAL(triggered(bool)), q_frameWnd, SLOT(onActionTriggered(bool)));
 
     return action;
 }
@@ -757,7 +758,8 @@ QComboBox *JMainWindow::createItemComboBox(const QDomElement &emItem, const QStr
          !emComboBoxItem.isNull();
          emComboBoxItem = emComboBoxItem.nextSiblingElement("item")) {
         //
-        comboBox->addItem(QIcon(parsePath(emComboBoxItem.attribute("icon"))),
+        comboBox->addItem(QIcon(QString::fromStdString(jframeFacade()
+                                                       ->parsePath(emComboBoxItem.attribute("icon").toStdString()))),
                           emComboBoxItem.attribute("text"));
     }
 
@@ -861,7 +863,7 @@ QMenu *JMainWindow::createSubMenu(const QDomElement &emItem, QWidget *parentWidg
     //
     const QString objectName = emItem.attribute("objectName");
     const QString text = emItem.attribute("text");
-    const QString icon = parsePath(emItem.attribute("icon"));
+    const QString icon = QString::fromStdString(jframeFacade()->parsePath(emItem.attribute("icon").toStdString()));
 
     //
     QMenu *menu = 0;
@@ -936,15 +938,6 @@ bool JMainWindow::createMenuItem(const QDomElement &emItem, QMenu *menu, const Q
     }
 
     return true;
-}
-
-QString JMainWindow::parsePath(const QString &src) const
-{
-    return QString(src)
-            .replace("@AppDir", QString::fromStdString(jframeFacade()->appDirPath()))
-            .replace("@ConfigDir", QString::fromStdString(jframeFacade()->configDirPath()))
-            .replace("@ThisDir", QString::fromStdString(jframeFacade()->thisDirPath()))
-            .replace("@FrameDir", QString::fromStdString(jframeFacade()->frameDirPath()));
 }
 
 bool JMainWindow::insertHashObject(const QString &componentName, const QString &objectName, QObject *object)
