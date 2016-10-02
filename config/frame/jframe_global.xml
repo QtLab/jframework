@@ -1,22 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <jframe version="1.0.0">
   <envval>
     <global>
-      <path base="@FrameDir@/bin" type="prefix">
-        <item path="3rdpart" />
-        <item path="3rdpart/BCGCBPro" />
-        <item path="3rdpart/Qt" />
-        <item path="core" />
+      <path type="prefix" base="@FrameDir@/bin">
+        <item path="3rdpart"/>
+        <item path="3rdpart/BCGCBPro"/>
+        <item path="3rdpart/Qt"/>
+        <item path="core"/>
       </path>
-      <path base="@ThisDir@" type="append">
-      </path>
+      <path type="append" base="@ThisDir@"/>
     </global>
   </envval>
   <qtconf desc="qt.conf content">
     <paths>
-      <item key="Plugins" value="@FrameDir@/bin/3rdpart/Qt/plugins" />
-      <item key="Imports" value="@FrameDir@/bin/3rdpart/Qt/imports" />
-      <item key="Qml2Import" value="@FrameDir@/bin/3rdpart/Qt/qml" />
+      <item key="Plugins" value="@FrameDir@/bin/3rdpart/Qt/plugins"/>
+      <item key="Imports" value="@FrameDir@/bin/3rdpart/Qt/imports"/>
+      <item key="Qml2Import" value="@FrameDir@/bin/3rdpart/Qt/qml"/>
     </paths>
   </qtconf>
   <database>
@@ -24,43 +23,22 @@
     <userName>****</userName>
     <password>****</password>
   </database>
-  <workMode id="1" name="Test1" dir="@ThisDir@/config/WorkMode_Test1" >
-  </workMode>
+  <workMode dir="@ThisDir@/config/WorkMode_Test1" id="1" name="Test1"/>
   <system>
-    <language name="zh_CN" path="@FrameDir@/config/language">
-    </language>
+    <language path="@FrameDir@/config/language" name="zh_CN"/>
   </system>
-  <textCodec encoding="gbk" >
-  </textCodec>
-  <logging filePath="@ConfigDir@/frame/jframe_logging.conf" >
-  </logging>
-  <dbus enabled="true" serviceName="com.smartsoft.jframe"
-    path="/com/smartsoft/jframe">
-  </dbus>
-  <ice>
-  </ice>
-  <mainWindow windowTitle="框架测试程序"
-    windowIcon="@ConfigDir@/resource/app.ico"
-    windowTheme="Office2010Blue"
-    closeKilled="true"
-    systemFont="Microsoft Yahei, 9">
-    <splash fullScreen="false"
-      imageStart="@ConfigDir@/resource/splash.png"
-      imageFinish="@ConfigDir@/resource/finish.png"
-      font="Microsoft Yahei, 24, blue"
-      msgAlign="AlignHCenter|AlignBottom" >
-    </splash>
+  <textCodec encoding="utf-8"/>
+  <logging filePath="@ConfigDir@/frame/jframe_logging.conf"/>
+  <dbus serviceName="com.smartsoft.jframe" enabled="true" path="/com/smartsoft/jframe"/>
+  <ice/>
+  <mainWindow windowTheme="Office2010Blue" windowIcon="@ConfigDir@/resource/app.ico" closeKilled="true" windowTitle="框架测试程序" systemFont="Microsoft Yahei, 9">
+    <splash imageFinish="@ConfigDir@/resource/finish.png" imageStart="@ConfigDir@/resource/splash.png" font="Microsoft Yahei, 24, blue" fullScreen="false" msgAlign="AlignHCenter|AlignBottom"/>
     <toolBar type="ribbonBar">
-      <menuBar>
-      </menuBar>
-      <toolButton>
-      </toolButton>
-      <ribbonBar visible="true" minimized="false" >
-      </ribbonBar>
+      <menuBar/>
+      <toolButton/>
+      <ribbonBar minimized="false" visible="true"/>
     </toolBar>
-    <statusBar type="">
-    </statusBar>
-    <layout type="splitter" >
-    </layout>
+    <statusBar type=""/>
+    <layout type="splitter"/>
   </mainWindow>
 </jframe>

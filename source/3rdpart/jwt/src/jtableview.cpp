@@ -48,9 +48,9 @@ JTableView::JTableView(QWidget *parent)
 {
     Q_D(JTableView);
 
-    QTableView::setModel(new QStandardItemModel(this));
-
     d->init();
+
+    QTableView::setModel(d->sourceModel);
 
     // default properties
 #if QT_VERSION >= 0x050000

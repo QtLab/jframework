@@ -38,6 +38,9 @@ J_EXTERN_C Q_DECL_EXPORT int ExecGui(int argc, char **argv)
     app.setStyleSheet(file.readAll());
 
     //
+    app.setFont(QFont("microsoft yahei", 10));
+
+    //
     const QRect screenGeometry = app.desktop()->screenGeometry();
 
     //

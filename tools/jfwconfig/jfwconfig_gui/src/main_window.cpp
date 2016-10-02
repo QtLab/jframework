@@ -1,9 +1,9 @@
-#include "precomp.h"
+ï»¿#include "precomp.h"
 #include "main_window.h"
 #include "global/global_config_widget.h"
 #include "component/com_config_widget.h"
 #include "layout/layout_config_widget.h"
-#include "logging/logging_config_widget.h"
+#include "logging/logging_conf_widget.h"
 
 /**
  * @brief libraryPrefix
@@ -48,7 +48,7 @@ const char* librarySuffix(bool debug)
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle(QStringLiteral("JFWÈí¼şÅäÖÃÖúÊÖ"));
+    setWindowTitle(QStringLiteral("JFWè½¯ä»¶é…ç½®åŠ©æ‰‹"));
 
     q_centralWidget = new QWidget(this);
     setCentralWidget(q_centralWidget);
@@ -62,13 +62,14 @@ MainWindow::MainWindow(QWidget *parent)
     vertLayoutMain->addLayout(horiLayoutAppPath);
 
     QFormLayout *formLayoutAppPath = new QFormLayout();
+    formLayoutAppPath->setFormAlignment(Qt::AlignVCenter);
     horiLayoutAppPath->addLayout(formLayoutAppPath);
 
     q_editAppPath = new QLineEdit(q_centralWidget);
     q_editAppPath->setReadOnly(true);
-    formLayoutAppPath->addRow(QStringLiteral("Ä¿±êÈí¼şÂ·¾¶£º"), q_editAppPath);
+    formLayoutAppPath->addRow(QStringLiteral("ç›®æ ‡è½¯ä»¶è·¯å¾„ï¼š"), q_editAppPath);
 
-    QPushButton *buttonView = new QPushButton(QStringLiteral("ä¯ÀÀ"), q_centralWidget);
+    QPushButton *buttonView = new QPushButton(QStringLiteral("æµè§ˆ"), q_centralWidget);
     horiLayoutAppPath->addWidget(buttonView);
 
     QHBoxLayout *horiLayoutTop = new QHBoxLayout();
@@ -86,21 +87,21 @@ MainWindow::MainWindow(QWidget *parent)
     q_globalConfigWidget = new GlobalConfigWidget(q_centralWidget);
     q_comConfigWidget = new ComConfigWidget(q_centralWidget);
     q_layoutConfigWidget = new LayoutConfigWidget(q_centralWidget);
-    q_loggingConfigWidget = new LoggingConfigWidget(q_centralWidget);
+    q_loggingConfWidget = new LoggingConfWidget(q_centralWidget);
     q_stackedWidget->addWidget(q_globalConfigWidget);
     q_stackedWidget->addWidget(q_comConfigWidget);
     q_stackedWidget->addWidget(q_layoutConfigWidget);
-    q_stackedWidget->addWidget(q_loggingConfigWidget);
+    q_stackedWidget->addWidget(q_loggingConfWidget);
 
     //
     q_toolBarNav->addAction(QIcon(":/jfwconfiggui/image/app_icon.png"),
-                            QStringLiteral("È«¾ÖÅäÖÃ"), this, SLOT(onActionGlobalClicked()));
+                            QStringLiteral("å…¨å±€é…ç½®"), this, SLOT(onActionGlobalClicked()));
     q_toolBarNav->addAction(QIcon(":/jfwconfiggui/image/app_icon.png"),
-                            QStringLiteral("×é¼şÅäÖÃ"), this, SLOT(onActionComponentClicked()));
+                            QStringLiteral("ç»„ä»¶é…ç½®"), this, SLOT(onActionComponentClicked()));
     q_toolBarNav->addAction(QIcon(":/jfwconfiggui/image/app_icon.png"),
-                            QStringLiteral("²¼¾ÖÅäÖÃ"), this, SLOT(onActionLayoutClicked()));
+                            QStringLiteral("å¸ƒå±€é…ç½®"), this, SLOT(onActionLayoutClicked()));
     q_toolBarNav->addAction(QIcon(":/jfwconfiggui/image/app_icon.png"),
-                            QStringLiteral("ÈÕÖ¾ÅäÖÃ"), this, SLOT(onActionLoggingClicked()));
+                            QStringLiteral("æ—¥å¿—é…ç½®"), this, SLOT(onActionLoggingClicked()));
 
     //
     connect(q_stackedWidget, SIGNAL(currentChanged(int)), this, SLOT(onCurrentWidgetChanged(int)));
@@ -134,18 +135,21 @@ void MainWindow::onActionLoggingClicked()
 
 void MainWindow::onButtonViewClicked()
 {
-    const QString path = QFileDialog::getExistingDirectory(this, QStringLiteral("Èí¼şÂ·¾¶"));
+    QString path = QFileDialog::getExistingDirectory(this, QStringLiteral("è½¯ä»¶è·¯å¾„"));
     if (path.isEmpty()) {
         //
-        QMessageBox::warning(this, QStringLiteral("¾¯¸æ"), QStringLiteral("Â·¾¶ÎŞĞ§£¡"));
+        QMessageBox::warning(this, QStringLiteral("è­¦å‘Š"), QStringLiteral("è·¯å¾„æ— æ•ˆï¼"));
         return;
     }
 
     //
+    path.replace('\\', '/');
+
+    //
     if (!pathIsValid(path)) {
         //
-        QMessageBox::warning(this, QStringLiteral("¾¯¸æ"),
-                             QStringLiteral("²»ÊÇÓĞĞ§µÄ»ùÓÚjframework¿ò¼ÜµÄÑÜÉúÈí¼şÂ·¾¶£¡"));
+        QMessageBox::warning(this, QStringLiteral("è­¦å‘Š"),
+                             QStringLiteral("ä¸æ˜¯æœ‰æ•ˆçš„åŸºäºjframeworkæ¡†æ¶çš„è¡ç”Ÿè½¯ä»¶è·¯å¾„ï¼"));
         return;
     }
 

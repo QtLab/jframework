@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -9,7 +9,7 @@ class QStackedWidget;
 class GlobalConfigWidget;
 class ComConfigWidget;
 class LayoutConfigWidget;
-class LoggingConfigWidget;
+class LoggingConfWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -39,7 +39,7 @@ private:
     GlobalConfigWidget *q_globalConfigWidget;
     ComConfigWidget *q_comConfigWidget;
     LayoutConfigWidget *q_layoutConfigWidget;
-    LoggingConfigWidget *q_loggingConfigWidget;
+    LoggingConfWidget *q_loggingConfWidget;
 };
 
 #endif // MAINWINDOW_H

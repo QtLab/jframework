@@ -8,6 +8,7 @@
 JTableViewPrivate::JTableViewPrivate(JTableView *parent)
     : QObject(parent)
     , q_ptr(parent)
+    , sourceModel(0)
 {
 
 }
@@ -198,7 +199,8 @@ void JTableViewPrivate::init()
 {
     Q_Q(JTableView);
 
-    sourceModel = qobject_cast<QStandardItemModel *>(q->model());
+    //
+    sourceModel = new QStandardItemModel(q);
 
     // signals of view
     connect(q, SIGNAL(pressed(QModelIndex)),
@@ -238,5 +240,9 @@ QModelIndex JTableViewPrivate::mapToSource(const QModelIndex &index) const
 QStandardItem *JTableViewPrivate::modelItem(const QModelIndex &index) const
 {
     //Q_Q(const JTableView);
-    return sourceModel->item(index.row(), index.column());
+    if (sourceModel) {
+        return sourceModel->item(index.row(), index.column());
+    } else {
+        return 0;
+    }
 }
