@@ -13,6 +13,9 @@ signals:
 
 public slots:
     bool appDirChanged(const QString &path);
+
+private:
+    QString q_appDir;
 };
 
 #endif // LOGGINGCONFWIDGET_H

@@ -1,4 +1,4 @@
-#include "precomp.h"
+﻿#include "precomp.h"
 #include "layout_config_widget.h"
 
 LayoutConfigWidget::LayoutConfigWidget(QWidget *parent)
@@ -9,5 +9,8 @@ LayoutConfigWidget::LayoutConfigWidget(QWidget *parent)
 
 bool LayoutConfigWidget::appDirChanged(const QString &path)
 {
+    //
+    q_appDir = path;
+
     return true;
 }

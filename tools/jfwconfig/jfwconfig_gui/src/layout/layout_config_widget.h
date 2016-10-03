@@ -1,4 +1,4 @@
-#ifndef LAYOUTCONFIGWIDGET_H
+﻿#ifndef LAYOUTCONFIGWIDGET_H
 #define LAYOUTCONFIGWIDGET_H
 
 #include <QWidget>
@@ -15,7 +15,7 @@ public slots:
     bool appDirChanged(const QString &path);
 
 private:
-
+    QString q_appDir;
 };
 
 #endif // LAYOUTCONFIGWIDGET_H

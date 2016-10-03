@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <jframe version="1.0.0">
   <envval>
     <global>
@@ -31,8 +31,17 @@
   <logging filePath="@ConfigDir@/frame/jframe_logging.conf"/>
   <dbus serviceName="com.smartsoft.jframe" enabled="true" path="/com/smartsoft/jframe"/>
   <ice/>
-  <mainWindow windowTheme="Office2010Blue" windowIcon="@ConfigDir@/resource/app.ico" closeKilled="true" windowTitle="框架测试程序" systemFont="Microsoft Yahei, 9">
-    <splash imageFinish="@ConfigDir@/resource/finish.png" imageStart="@ConfigDir@/resource/splash.png" font="Microsoft Yahei, 24, blue" fullScreen="false" msgAlign="AlignHCenter|AlignBottom"/>
+  <mainWindow
+  windowTheme="Office2010Blue"
+  windowIcon="@ConfigDir@/resource/app.ico"
+  closeKilled="true"
+  windowTitle="框架测试程序"
+  systemFont="Microsoft Yahei, 9">
+    <splash imageFinish="@ConfigDir@/resource/finish.png"
+    imageStart="@ConfigDir@/resource/splash.png"
+    font="Microsoft Yahei, 24, blue"
+    fullScreen="false"
+    msgAlign="AlignHCenter|AlignBottom"/>
     <toolBar type="ribbonBar">
       <menuBar/>
       <toolButton/>

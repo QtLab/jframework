@@ -12,6 +12,7 @@ class QtConfConfigWidget;
 class DatabaseConfigWidget;
 class WorkModeConfigWidget;
 class LoggingConfigWidget;
+class MainWindowConfig;
 
 class GlobalConfigWidget : public QWidget
 {
@@ -39,6 +40,7 @@ private:
     DatabaseConfigWidget *q_databaseConfigWidget;
     WorkModeConfigWidget *q_workModeConfigWidget;
     LoggingConfigWidget *q_loggingConfigWidget;
+    MainWindowConfig *q_mainWindowConfig;
 };
 
 #endif // GLOBALCONFIGWIDGET_H

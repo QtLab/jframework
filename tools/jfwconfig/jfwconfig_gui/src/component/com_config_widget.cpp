@@ -229,6 +229,8 @@ void ComConfigWidget::onComponentModify(const QString &componentName,
 
 void ComConfigWidget::onTableUsrSectionMoved(int logicalIndex, int oldVisualIndex, int newVisualIndex)
 {
+    Q_UNUSED(oldVisualIndex);
+
     // 获取组件配置文件路径
     QString comConfigPath = componentConfigPath();
     if (comConfigPath.isEmpty()) {

@@ -6,6 +6,7 @@
 #include "database/database_config_widget.h"
 #include "workmode/workmode_config_widget.h"
 #include "logging/logging_config_widget.h"
+#include "mainwindow/mainwindow_config.h"
 
 GlobalConfigWidget::GlobalConfigWidget(QWidget *parent)
     : QWidget(parent)
@@ -29,12 +30,14 @@ GlobalConfigWidget::GlobalConfigWidget(QWidget *parent)
     q_databaseConfigWidget = new DatabaseConfigWidget(q_stackedWidget);
     q_workModeConfigWidget = new WorkModeConfigWidget(q_stackedWidget);
     q_loggingConfigWidget = new LoggingConfigWidget(q_stackedWidget);
+    q_mainWindowConfig = new MainWindowConfig(q_stackedWidget);
     q_stackedWidget->addWidget(q_generateConfigWidget);
     q_stackedWidget->addWidget(q_envvalConfigWidget);
     q_stackedWidget->addWidget(q_qtconfConfigWidget);
     q_stackedWidget->addWidget(q_databaseConfigWidget);
     q_stackedWidget->addWidget(q_workModeConfigWidget);
     q_stackedWidget->addWidget(q_loggingConfigWidget);
+    q_stackedWidget->addWidget(q_mainWindowConfig);
 
     //
     connect(q_treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
@@ -89,17 +92,6 @@ bool GlobalConfigWidget::appDirChanged(const QString &path)
 
     // 主窗口
     item = new QTreeWidgetItem(QStringList() << QStringLiteral("主窗口"));
-    {
-        //　工具栏
-        QTreeWidgetItem *itemChild = new QTreeWidgetItem(QStringList() << QStringLiteral("工具栏"));
-        item->addChild(itemChild);
-        //　状态栏
-        itemChild = new QTreeWidgetItem(QStringList() << QStringLiteral("状态栏"));
-        item->addChild(itemChild);
-        //　布局
-        itemChild = new QTreeWidgetItem(QStringList() << QStringLiteral("布局"));
-        item->addChild(itemChild);
-    }
     rootItem->addChild(item);
 
     //

@@ -18,7 +18,8 @@ SOURCES += \
     $$PWD/global/workmode/workmode_config_widget.cpp \
     $$PWD/global/logging/logging_config_widget.cpp \
     $$PWD/global/qtconf/qtconf_config_widget.cpp \
-    $$PWD/global/system/system_config_widget.cpp
+    $$PWD/global/system/system_config_widget.cpp \
+    $$PWD/global/mainwindow/mainwindow_config.cpp
 
 HEADERS += \
     $$PWD/main_window.h \
@@ -33,4 +34,5 @@ HEADERS += \
     $$PWD/global/workmode/workmode_config_widget.h \
     $$PWD/global/logging/logging_config_widget.h \
     $$PWD/global/qtconf/qtconf_config_widget.h \
-    $$PWD/global/system/system_config_widget.h
+    $$PWD/global/system/system_config_widget.h \
+    $$PWD/global/mainwindow/mainwindow_config.h

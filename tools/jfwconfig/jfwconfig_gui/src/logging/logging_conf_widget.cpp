@@ -9,5 +9,8 @@ LoggingConfWidget::LoggingConfWidget(QWidget *parent)
 
 bool LoggingConfWidget::appDirChanged(const QString &path)
 {
+    //
+    q_appDir = path;
+
     return true;
 }
