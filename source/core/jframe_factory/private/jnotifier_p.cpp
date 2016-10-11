@@ -2,6 +2,9 @@
 #include "jnotifier_p.h"
 #include "../jframe_factory.h"
 #include <QtConcurrentRun>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
+#include "jdbusnotify.h"
 
 // - class JNotifierPrivate -
 
@@ -9,25 +12,29 @@ class JNotifierPrivate
 {
     friend class JNotifier;
 public:
-    JNotifierPrivate(JNotifier &notifier) :
+    JNotifierPrivate(JNotifier *notifier) :
         currObs(0),
         currOffset(0),
-        imm(notifier),
-        dbus(notifier)
+        dbus(new JDBusNotify(*notifier, notifier)),
+        ice(*notifier)
+    {
+    }
+
+    ~JNotifierPrivate()
     {
         //
-        dbus.init();
+        if (dbus) {
+            dbus->deleteLater();
+        }
+        //
     }
 
 private:
     JObserver* currObs;
     int currOffset;
     map_observer_info mapObs;
-    JImmNotify imm;
-    JDBusNotify dbus;
-#ifdef QT_DBUS_LIB
-    //QDBusInterface dbusIface;
-#endif
+    JDBusNotify *dbus;
+    JIceNotify ice;
 };
 
 // - class Jnotifier -
@@ -35,7 +42,7 @@ private:
 JNotifier::JNotifier(QObject *parent) :
     QObject(parent)
 {
-    d = new JNotifierPrivate(*this);
+    d = new JNotifierPrivate(this);
 
     //
     qRegisterMetaType<JNotifyMsg>();
@@ -136,29 +143,45 @@ void JNotifier::clear()
     }
 }
 
-JLRESULT JNotifier::sendMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JNotifier::sendMessage(const std::string &domain, JWPARAM wParam, JLPARAM lParam)
 {
-    return dispense(0, id, wParam, lParam);
+    return dispense(0, domain, wParam, lParam);
 }
 
-void JNotifier::postMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam)
+JLRESULT JNotifier::sendMessage(JObserver *observer, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
-    QtConcurrent::run(JNotifier::task, this, JNotifyMsg(0, id, wParam, lParam, ""));
+    return dispense(observer, id, wParam, lParam);
 }
 
-void JNotifier::postMessage(const std::string &id, const std::string &info, JLPARAM lParam)
+void JNotifier::postMessage(const std::string &domain, JWPARAM wParam, JLPARAM lParam)
 {
-    QtConcurrent::run(JNotifier::task, this, JNotifyMsg(0, id, 0, lParam, info));
+    QtConcurrent::run(JNotifier::task, this, JNotifyMsg(0, domain, wParam, lParam, ""));
 }
 
-IImmNotify &JNotifier::imm()
+void JNotifier::postMessage(JObserver *observer, const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
-    return d->imm;
+    QtConcurrent::run(JNotifier::task, this, JNotifyMsg(observer, id, wParam, lParam, ""));
+}
+
+void JNotifier::postMessage(const std::string &domain, const std::string &info, JLPARAM lParam)
+{
+    QtConcurrent::run(JNotifier::task, this, JNotifyMsg(0, domain, 0, lParam, info));
+}
+
+void JNotifier::postMessage(JObserver *observer, const std::string &id,
+                            const std::string &info, JLPARAM lParam)
+{
+    QtConcurrent::run(JNotifier::task, this, JNotifyMsg(observer, id, 0, lParam, info));
 }
 
 IDBusNotify &JNotifier::dbus()
 {
-    return d->dbus;
+    return *d->dbus;
+}
+
+IIceNotify &JNotifier::ice()
+{
+    return d->ice;
 }
 
 INotifier &JNotifier::beginGroup(JObserver *obs, int offset)
@@ -211,26 +234,50 @@ INotifier &JNotifier::append(const std::string &id, jobserver_cb cb)
 void JNotifier::dispense(const JNotifyMsg &msg)
 {
     if (msg.info.empty()) {
-        dispense(msg.observer, msg.id, msg.wParam, msg.lParam);
+        dispense(msg.observer, msg.domain, msg.wParam, msg.lParam);
     } else {
-        dispense(msg.observer, msg.id, (JWPARAM)&msg.info, msg.lParam);
+        dispense(msg.observer, msg.domain, (JWPARAM)&msg.info, msg.lParam);
     }
 }
 
-JLRESULT JNotifier::dispense(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
+static std::string _trimmed(const std::string &str)
+{
+    std::string _str = str;
+    _str.erase(0, _str.find_first_not_of(' '));
+    _str.erase(_str.find_last_not_of(' ') + 1);
+    return _str;
+}
+
+JLRESULT JNotifier::dispense(JObserver *observer, const std::string &domain, JWPARAM wParam, JLPARAM lParam)
 {
     JLRESULT result = 0;
 
-    if (obs) {
-        map_observer_info::const_iterator citerMap = d->mapObs.find(obs);
+    if (observer) {
+        map_observer_info::const_iterator citerMap = d->mapObs.find(observer);
         if (citerMap != d->mapObs.end()) {
-            return dispense(citerMap->first, id, wParam, lParam, citerMap->second);
+            return dispense(observer, domain, wParam, lParam, citerMap->second);
         }
+        return -1;
+    }
+
+    int index = domain.find_last_of('@');
+    if (index >= 0) {
+        const std::string observerId = _trimmed(domain.substr(index + 1, domain.size() - index));
+        // find observer
+        map_observer_info::const_iterator citerMap = d->mapObs.begin();
+        for (; citerMap != d->mapObs.end(); ++citerMap) {
+            if (citerMap->first->observerId() == observerId) {
+                const std::string id = _trimmed(domain.substr(0, index));
+                return dispense(citerMap->first, id, wParam, lParam, citerMap->second);
+                break;
+            }
+        }
+        return -1;
     }
 
     map_observer_info::const_iterator citerMap = d->mapObs.begin();
     for (; citerMap != d->mapObs.end(); ++citerMap) {
-        result = dispense(citerMap->first, id, wParam, lParam, citerMap->second);
+        result = dispense(citerMap->first, domain, wParam, lParam, citerMap->second);
     }
 
     return result;
@@ -264,89 +311,15 @@ void JNotifier::task(JNotifier *receiver, JNotifyMsg msg)
     }
 }
 
-JLRESULT JNotifier::immSendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
-{
-    map_observer_info::const_iterator citerMap = d->mapObs.begin();
-    for (; citerMap != d->mapObs.end(); ++citerMap) {
-        if (citerMap->first->observerId() == obsid) {
-            return immSendMessage(citerMap->first, id, wParam, lParam);
-        }
-    }
+// - class JIceNotify -
 
-    return -1;
-}
-
-JLRESULT JNotifier::immSendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
-{
-    return dispense(obs, id, wParam, lParam);
-}
-
-void JNotifier::immPostMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
-{
-    map_observer_info::const_iterator citerMap = d->mapObs.begin();
-    for (; citerMap != d->mapObs.end(); ++citerMap) {
-        if (citerMap->first->observerId() == obsid) {
-            immPostMessage(citerMap->first, id, wParam, lParam);
-            break;
-        }
-    }
-}
-
-void JNotifier::immPostMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
-{
-    QtConcurrent::run(JNotifier::task, this, JNotifyMsg(obs, id, wParam, lParam, ""));
-}
-
-void JNotifier::immPostMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam)
-{
-    map_observer_info::const_iterator citerMap = d->mapObs.begin();
-    for (; citerMap != d->mapObs.end(); ++citerMap) {
-        if (citerMap->first->observerId() == obsid) {
-            immPostMessage(citerMap->first, id, info, lParam);
-            break;
-        }
-    }
-}
-
-void JNotifier::immPostMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam)
-{
-    QtConcurrent::run(JNotifier::task, this, JNotifyMsg(obs, id, 0, lParam, info));
-}
-
-// - class JImmNotify -
-
-JImmNotify::JImmNotify(JNotifier &notifier) :
-    q_notifier(notifier)
-{
-
-}
-
-// - class JDBusNotify -
-
-JDBusNotify::JDBusNotify(JNotifier &notifier)
+JIceNotify::JIceNotify(JNotifier &notifier)
     : q_notifier(notifier)
 {
 
 }
 
-bool JDBusNotify::init()
-{
-    bool result = true;
-
-#ifdef QT_DBUS_LIB
-    //
-    if (!QDBusConnection::sessionBus().isConnected()) {
-        qDebug() << "Cannot connect to the D-Bus session bus.\n"
-                    "To start it, run:\n"
-                    "\teval `dbus-launch --auto-syntax`\n";
-        return false;
-    }
-#endif
-
-    return result;
-}
-
-bool JDBusNotify::isConnected()
+bool JIceNotify::isConnected()
 {
     return false;
 }

@@ -9,13 +9,13 @@ TestWidget1::TestWidget1(IJAttempter &attempter, QWidget *parent)
 
     QPushButton *buttomModeTest = new QPushButton(QStringLiteral("模式切换测试"), this);
     buttomModeTest->setMaximumWidth(200);
-    vertLayoutMain->addWidget(buttomModeTest);
+    vertLayoutMain->addWidget(buttomModeTest, 0, Qt::AlignHCenter);
     QPushButton *buttomCmdTest = new QPushButton(QStringLiteral("组件命令测试"), this);
     buttomCmdTest->setMaximumWidth(200);
-    vertLayoutMain->addWidget(buttomCmdTest);
+    vertLayoutMain->addWidget(buttomCmdTest, 0, Qt::AlignHCenter);
     QPushButton *buttonMsgTest = new QPushButton(QStringLiteral("组件消息测试"), this);
     buttonMsgTest->setMaximumWidth(200);
-    vertLayoutMain->addWidget(buttonMsgTest);
+    vertLayoutMain->addWidget(buttonMsgTest, 0, Qt::AlignHCenter);
 
     //
     connect(buttomModeTest, SIGNAL(clicked(bool)), SLOT(onButtonModeTestClicked()));

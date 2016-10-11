@@ -105,7 +105,7 @@ bool JFrameKernel::loadInterface()
 
     // 启动默认系统
     if (result) {
-        frameLayout()->notifier().postMessage("j_load_default_system");
+        frameLayout()->notifier().postMessage("j_load_default_system @ jlayout.module_manager");
     }
 
     return true;

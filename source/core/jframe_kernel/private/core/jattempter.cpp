@@ -284,6 +284,34 @@ bool JAttempter::loadConfig()
     // dir
     q_workModeDir = jframeFacade()->parsePath(emWorkMode.attribute("dir").toStdString());
 
+    // 获取 dbus 节点
+    QDomElement emDBus = emRoot.firstChildElement("dbus");
+    if (!emDBus.isNull()) {
+        // enabled
+        if (QVariant(emDBus.attribute("enabled", false)).toBool()) {
+            // serviceName
+            const QString serviceName = emDBus.attribute("serviceName");
+            // path
+            //const QString path = emDBus.attribute("path");
+            bool result = q_notifier->dbus().initialize(
+                        serviceName.toStdString(),
+                        "/com/smartsoft/jframe/notify",
+                        "com.smartsoft.jframe.notify");
+            if (!result) {
+                // initialize failure
+            }
+        }
+    }
+
+    // 获取 ice 节点
+    QDomElement emIce = emRoot.firstChildElement("ice");
+    if (!emIce.isNull()) {
+        // enabled
+        if (QVariant(emIce.attribute("enabled", false)).toBool()) {
+            //
+        }
+    }
+
     return true;
 }
 

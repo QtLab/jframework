@@ -43,14 +43,14 @@ typedef std::map<JObserver*, observer_info> map_observer_info;
 struct JNotifyMsg
 {
     JObserver* observer;
-    std::string id;
+    std::string domain;
     JWPARAM wParam;
     JLPARAM lParam;
     std::string info;   // map to lParam
 
-    JNotifyMsg() : observer(0), id(""), wParam(0), lParam(0), info("") {}
-    JNotifyMsg(JObserver *observer, const std::string &id, JWPARAM wParam, JLPARAM lParam,
-               const std::string &info) : observer(observer), id(id), wParam(wParam),
+    JNotifyMsg() : observer(0), domain(""), wParam(0), lParam(0), info("") {}
+    JNotifyMsg(JObserver *observer, const std::string &domain, JWPARAM wParam, JLPARAM lParam,
+               const std::string &info) : observer(observer), domain(domain), wParam(wParam),
         lParam(lParam), info(info) {}
 
     JNotifyMsg(const JNotifyMsg &other)
@@ -63,7 +63,7 @@ struct JNotifyMsg
         }
 
         observer = other.observer;
-        id = other.id;
+        domain = other.domain;
         wParam = other.wParam;
         lParam = other.lParam;
         info = other.info;
@@ -99,12 +99,15 @@ public:
     INotifier &remove(JObserver *obs, const std::string &id);
     INotifier &remove(const std::string &id);
     void clear();
-    JLRESULT sendMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void postMessage(const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void postMessage(const std::string &id, const std::string &info, JLPARAM lParam);
+    JLRESULT sendMessage(const std::string &domain, JWPARAM wParam, JLPARAM lParam);
+    JLRESULT sendMessage(JObserver *observer, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    void postMessage(const std::string &domain, JWPARAM wParam, JLPARAM lParam);
+    void postMessage(JObserver *observer, const std::string &id, JWPARAM wParam, JLPARAM lParam);
+    void postMessage(const std::string &domain, const std::string &info, JLPARAM lParam);
+    void postMessage(JObserver *observer, const std::string &id, const std::string &info, JLPARAM lParam);
 
-    IImmNotify &imm();
     IDBusNotify &dbus();
+    IIceNotify &ice();
 
 protected:
     INotifier &beginGroup(JObserver *obs, int offset);
@@ -119,92 +122,30 @@ public Q_SLOTS:
 
 private:
     //
-    JLRESULT dispense(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    JLRESULT dispense(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam,
+    JLRESULT dispense(JObserver *observer, const std::string &domain, JWPARAM wParam, JLPARAM lParam);
+    JLRESULT dispense(JObserver *observer, const std::string &domain, JWPARAM wParam, JLPARAM lParam,
                       const observer_info &info);
 
     //
     static void task(JNotifier *receiver, JNotifyMsg msg);
 
-    //
-    JLRESULT immSendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    JLRESULT immSendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void immPostMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void immPostMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    void immPostMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam);
-    void immPostMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam);
+    // for IDBusNotify
+private:
+
+    // for IIceNotify
+private:
 
 private:
     JNotifierPrivate* d;
-    friend class JImmNotify;
 };
 
 /**
- * @brief IImmNotify 实现
+ * @brief IIceNotify 实现
  */
-class JImmNotify : public IImmNotify
+class JIceNotify : public IIceNotify
 {
 public:
-    explicit JImmNotify(JNotifier &notifier);
-
-    // IImmNotify interface
-public:
-    inline JLRESULT sendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    inline JLRESULT sendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    inline void postMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    inline void postMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam);
-    inline void postMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam);
-    inline void postMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam);
-
-private:
-    JNotifier& q_notifier;
-};
-
-inline
-JLRESULT JImmNotify::sendMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
-{
-    return q_notifier.immSendMessage(obsid, id, wParam, lParam);
-}
-
-inline
-JLRESULT JImmNotify::sendMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
-{
-    return q_notifier.immSendMessage(obs, id, wParam, lParam);
-}
-
-inline
-void JImmNotify::postMessage(const std::string &obsid, const std::string &id, JWPARAM wParam, JLPARAM lParam)
-{
-    return q_notifier.immPostMessage(obsid, id, wParam, lParam);
-}
-
-inline
-void JImmNotify::postMessage(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam)
-{
-    return q_notifier.immPostMessage(obs, id, wParam, lParam);
-}
-
-inline
-void JImmNotify::postMessage(const std::string &obsid, const std::string &id, const std::string &info, JLPARAM lParam)
-{
-    return q_notifier.immPostMessage(obsid, id, info, lParam);
-}
-
-inline
-void JImmNotify::postMessage(JObserver *obs, const std::string &id, const std::string &info, JLPARAM lParam)
-{
-    return q_notifier.immPostMessage(obs, id, info, lParam);
-}
-
-/**
- * @brief IDBusNotify 实现
- */
-class JDBusNotify : public IDBusNotify
-{
-public:
-    explicit JDBusNotify(JNotifier &notifier);
-
-    bool init();
+    explicit JIceNotify(JNotifier &notifier);
 
     // IDBusNotify interface
 public:

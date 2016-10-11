@@ -77,6 +77,18 @@ public:
     virtual ~IJComponent() {}
 
     /**
+     * @brief 获取接口标识
+     * @return 接口标识
+     */
+    virtual std::string interfaceIdentity() const { return IID_IJComponent; }
+
+    /**
+     * @brief 获取接口版本
+     * @return 接口版本
+     */
+    virtual unsigned int interfaceVersion() const { return VER_IJComponent; }
+
+    /**
      * @brief 获取组件名称
      * @return 组件名称
      */

@@ -97,10 +97,10 @@ bool FrameFilter::eventFilter(QObject *watched, QEvent *event)
                                                     QStringLiteral("取消"), 1);
             switch (result) {
             case 0:     // 注销（重启）
-                data->attempter.notifier().imm().postMessage("jlayout.notify_manager", "j_frame_restart");
+                data->attempter.notifier().postMessage("j_frame_restart @ jlayout.notify_manager");
                 break;
             case 1:     // 退出
-                data->attempter.notifier().imm().postMessage("jlayout.notify_manager", "j_frame_exit");
+                data->attempter.notifier().postMessage("j_frame_exit @ jlayout.notify_manager");
                 break;
             case 2:     // 取消
             default:    // 忽略

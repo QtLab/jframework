@@ -138,5 +138,17 @@ std::string ComDemo1::observerId() const
 
 JLRESULT ComDemo1::helloworld(const std::string &id, JWPARAM wParam, JLPARAM lParam)
 {
-    return 0;
+    Q_UNUSED(id);
+    Q_UNUSED(lParam);
+#if 1
+    std::string *str = (std::string *)wParam;
+    if (str == 0) {
+        return -1;
+    }
+
+    qDebug() << QString::fromStdString(*str);
+#else
+    qDebug() << *(QVariant *)wParam;
+#endif
+    return 10;
 }

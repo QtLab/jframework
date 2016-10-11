@@ -27,9 +27,9 @@
   <system>
     <language path="@FrameDir@/config/language" name="zh_CN"/>
   </system>
-  <textCodec encoding="utf-8"/>
+  <textCodec encoding="gbk"/>
   <logging filePath="@ConfigDir@/frame/jframe_logging.conf"/>
-  <dbus serviceName="com.smartsoft.jframe" enabled="true" path="/com/smartsoft/jframe"/>
+  <dbus serviceName="com.smartsoft.jframe1" enabled="true" path="/com/smartsoft/jframe"/>
   <ice/>
   <mainWindow
   windowTheme="Office2010Blue"

@@ -16,6 +16,7 @@ signals:
 
 public slots:
     void onButton1Clicked();
+    void onButton2Clicked();
 
 private:
     IJAttempter &q_attempter;

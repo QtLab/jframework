@@ -217,10 +217,28 @@
 typedef unsigned __int64 JWPARAM;
 typedef __int64 JLPARAM;
 typedef __int64 JLRESULT;
+typedef bool jbool;
+typedef char jchar;
+typedef unsigned char juchar;
+typedef short jshort;
+typedef unsigned short jushort;
+typedef int jint;
+typedef unsigned juint;
+typedef __int64 jlonglong;
+typedef unsigned __int64 julonglong;
 #else
 typedef unsigned long long JWPARAM;
 typedef long long JLPARAM;
 typedef long long JLRESULT;
+typedef bool jbool;
+typedef char jchar;
+typedef unsigned char juchar;
+typedef short jshort;
+typedef unsigned short jushort;
+typedef int jint;
+typedef unsigned juint;
+typedef long long jlonglong;
+typedef unsigned long long julonglong;
 #endif
 
 //

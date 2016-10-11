@@ -191,13 +191,13 @@ bool JFrameLayout::invokeMethod(const std::string &method, int argc, ...)
     // 退出框架（异步方式）
     else if (method == "frame_exit") {
         // 调用转入消息管理模块（异步消息）
-        notifier().imm().postMessage("jlayout.notify_manager", "j_frame_exit");
+        notifier().postMessage("j_frame_exit @ jlayout.notify_manager");
         result = true;
     }
     // 重启框架（异步方式）
     else if (method == "frame_restart") {
         // 调用转入消息管理模块（异步消息）
-        notifier().imm().postMessage("jlayout.notify_manager", "j_frame_restart");
+        notifier().postMessage("j_frame_restart @ jlayout.notify_manager");
         result = true;
     }
 
@@ -304,7 +304,7 @@ bool JFrameLayout::loadDefaultSystem()
     }
 
     // 异步方式启动默认设置系统
-    notifier().imm().postMessage("jlayout.module_manager", "j_load_default_system");
+    notifier().postMessage("j_load_default_system @ jlayout.module_manager");
 
     return true;
 }
