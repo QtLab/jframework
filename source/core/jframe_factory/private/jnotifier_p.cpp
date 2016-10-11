@@ -5,6 +5,7 @@
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
 #include "jdbusnotify.h"
+#include "jicenotify.h"
 
 // - class JNotifierPrivate -
 
@@ -16,7 +17,7 @@ public:
         currObs(0),
         currOffset(0),
         dbus(new JDBusNotify(*notifier, notifier)),
-        ice(*notifier)
+        ice(new JIceNotify(*notifier, notifier))
     {
     }
 
@@ -27,6 +28,9 @@ public:
             dbus->deleteLater();
         }
         //
+        if (ice) {
+            ice->deleteLater();
+        }
     }
 
 private:
@@ -34,7 +38,7 @@ private:
     int currOffset;
     map_observer_info mapObs;
     JDBusNotify *dbus;
-    JIceNotify ice;
+    JIceNotify *ice;
 };
 
 // - class Jnotifier -
@@ -181,7 +185,7 @@ IDBusNotify &JNotifier::dbus()
 
 IIceNotify &JNotifier::ice()
 {
-    return d->ice;
+    return *d->ice;
 }
 
 INotifier &JNotifier::beginGroup(JObserver *obs, int offset)
@@ -283,7 +287,8 @@ JLRESULT JNotifier::dispense(JObserver *observer, const std::string &domain, JWP
     return result;
 }
 
-JLRESULT JNotifier::dispense(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam, const observer_info &info)
+JLRESULT JNotifier::dispense(JObserver *obs, const std::string &id, JWPARAM wParam, JLPARAM lParam,
+                             const observer_info &info)
 {
     JLRESULT result = 0;
     const int offset = info.offset;
@@ -309,17 +314,4 @@ void JNotifier::task(JNotifier *receiver, JNotifyMsg msg)
     if (receiver) {
         Q_EMIT receiver->readyDispense(msg);
     }
-}
-
-// - class JIceNotify -
-
-JIceNotify::JIceNotify(JNotifier &notifier)
-    : q_notifier(notifier)
-{
-
-}
-
-bool JIceNotify::isConnected()
-{
-    return false;
 }

@@ -52,13 +52,14 @@ bool JDBusNotify::initialize(const std::string &service, const std::string &path
     //
     q_path = QString::fromStdString(path);
     q_interface = QString::fromStdString(iface);
-    //
+    // for single target
     result = QDBusConnection::sessionBus().registerObject(
                 q_path, q_interface, this, QDBusConnection::ExportAllSignals | QDBusConnection::ExportAllSlots);
     if (!result) {
         qDebug() << QDBusConnection::sessionBus().lastError();
         return false;   //
     }
+    // for broadcast
     result = QDBusConnection::sessionBus().connect(
                 QString(),
                 QString(),
@@ -192,12 +193,22 @@ int JDBusNotify::sendData(bool customType, const QString &domain, const QVariant
         return IDBusNotify::ConnectionInterfaceInvalid; // invalid
     }
     //
+    int result = IDBusNotify::CallSuccess;
+    //
     if (service == "*") {
         // broadcast
+        const QString defaultService = iface->service();
+        const QString baseService = sessionBus.baseService();
         QDBusReply<QStringList> services = iface->registeredServiceNames();
         QStringListIterator citer(services.value());
         while (citer.hasNext()) {
-            QDBusMessage msg = QDBusMessage::createMethodCall(citer.next(), q_path, q_interface, "recvData");
+            const QString &service = citer.next();
+            if (service == baseService) {
+                continue;   // internal service
+            } else if (service == defaultService) {
+                continue;   // default d-bus service
+            }
+            QDBusMessage msg = QDBusMessage::createMethodCall(service, q_path, q_interface, "recvData");
             if (msg.type() == QDBusMessage::InvalidMessage) {
                 continue;   // invalid
             }
@@ -214,8 +225,12 @@ int JDBusNotify::sendData(bool customType, const QString &domain, const QVariant
                 //
                 if (arguments.isEmpty()) {
                     continue;
-                } else if (arguments.first().toInt() == IDBusNotify::InterruptBroadCast) {
-                    break;
+                } else {
+                    result = arguments.first().toInt();
+                    if (result == IDBusNotify::InterruptBroadCast) {
+                        result = IDBusNotify::CallSuccess;
+                        break;
+                    }
                 }
             }
         }
@@ -235,12 +250,12 @@ int JDBusNotify::sendData(bool customType, const QString &domain, const QVariant
             if (arguments.isEmpty()) {
                 //
             } else {
-                return arguments.first().toInt();
+                result = arguments.first().toInt();
             }
         }
     }
 
-    return IDBusNotify::CallSuccess;
+    return result;
 }
 
 void JDBusNotify::postData(bool customType, const QString &domain, const QVariant &data)

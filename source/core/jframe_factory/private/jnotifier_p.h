@@ -129,30 +129,8 @@ private:
     //
     static void task(JNotifier *receiver, JNotifyMsg msg);
 
-    // for IDBusNotify
-private:
-
-    // for IIceNotify
-private:
-
 private:
     JNotifierPrivate* d;
-};
-
-/**
- * @brief IIceNotify 实现
- */
-class JIceNotify : public IIceNotify
-{
-public:
-    explicit JIceNotify(JNotifier &notifier);
-
-    // IDBusNotify interface
-public:
-    bool isConnected();
-
-private:
-    JNotifier &q_notifier;
 };
 
 #endif // JNOTIFIER_P_H

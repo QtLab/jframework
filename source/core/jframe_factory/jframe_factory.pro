@@ -27,7 +27,8 @@ HEADERS += \
     jnotifier.h \
     private/jlogmanager_p.h \
     private/jnotifier_p.h \
-    private/jdbusnotify.h
+    private/jdbusnotify.h \
+    private/jicenotify.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -35,7 +36,8 @@ SOURCES += \
     private/jframe_factory_p.cpp \
     private/jlogmanager_p.cpp \
     private/jnotifier_p.cpp \
-    private/jdbusnotify.cpp
+    private/jdbusnotify.cpp \
+    private/jicenotify.cpp
 
 ###############################################################
 # resource files

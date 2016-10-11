@@ -29,8 +29,10 @@
   </system>
   <textCodec encoding="gbk"/>
   <logging filePath="@ConfigDir@/frame/jframe_logging.conf"/>
-  <dbus serviceName="com.smartsoft.jframe1" enabled="true" path="/com/smartsoft/jframe"/>
-  <ice/>
+  <dbus serviceName="com.smartsoft.jframe1" enabled="true" path="/com/smartsoft/jframe/notify"/>
+  <ice enabled="true">
+    <server host="10.211.55.16" port="2000" />
+  </ice>
   <mainWindow
   windowTheme="Office2010Blue"
   windowIcon="@ConfigDir@/resource/app.ico"

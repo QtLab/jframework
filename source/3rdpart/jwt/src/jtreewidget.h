@@ -399,7 +399,7 @@ protected:
     virtual void performDrag();
 
 private:
-    // 地柜设置所有节点状态
+    // 递归设置所有节点状态
     void setItemState(QTreeWidgetItem *item, Qt::CheckState state);
 
 private:

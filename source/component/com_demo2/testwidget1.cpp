@@ -32,8 +32,14 @@ void TestWidget1::onButton1Clicked()
 
 void TestWidget1::onButton2Clicked()
 {
+#if 1
     int result = q_attempter.notifier().dbus().sendString(
-                "helloworld @ com_demo1 @ com.smartsoft.jframe1",
+                "helloworld @ com_demo1 @ *",
                 "hello,world");
     qDebug() << "result: " << result;
+#else
+    q_attempter.notifier().dbus().postString(
+                    "helloworld @ com_demo1 @ com.smartsoft.jframe1",
+                    "hello,world");
+#endif
 }
