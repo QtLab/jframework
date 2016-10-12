@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/jwt/qss"/>
+    <qresource prefix="/jwt/image"/>
+    <qresource prefix="/jwt/lang"/>
+</RCC>

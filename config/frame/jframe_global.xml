@@ -23,7 +23,7 @@
     <userName>****</userName>
     <password>****</password>
   </database>
-  <workMode dir="@ThisDir@/config/WorkMode_Test1" id="1" name="Test1"/>
+  <workMode dir="@ThisDir@/config/WorkMode_Test2" id="1" name="Test1"/>
   <system>
     <language path="@FrameDir@/config/language" name="zh_CN"/>
   </system>
@@ -47,7 +47,7 @@
     <toolBar type="ribbonBar">
       <menuBar/>
       <toolButton/>
-      <ribbonBar minimized="false" visible="true"/>
+      <ribbonBar minimized="false" visible="false"/>
     </toolBar>
     <statusBar type=""/>
     <layout type="splitter"/>

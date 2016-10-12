@@ -22,7 +22,6 @@ bool JIceNotify::initialize(const std::string &service)
     return result;
 }
 
-
 bool JIceNotify::setCurrentService(const std::string &service)
 {
     return true;

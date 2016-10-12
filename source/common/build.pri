@@ -187,6 +187,15 @@ contains(DEFINES, JWT_LIB):!contains(DEFINES, JWT_BUILD) {
     DEPENDPATH += $$JFRAME_DIR/include/3rdpart/jwt
 }
 
+contains(DEFINES, JCUSTOMPLOT_LIB):!contains(DEFINES, JCUSTOMPLOT_BUILD) {
+    ## import jcustomplot library
+    win32:CONFIG(release, debug|release):LIBS += -L$$JFRAME_DIR/lib/3rdpart -ljcustomplot
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$JFRAME_DIR/lib/3rdpart -ljcustomplotd
+    else:unix:LIBS += -L$$JFRAME_DIR/lib/3rdpart -ljcustomplot
+    INCLUDEPATH += $$JFRAME_DIR/include/3rdpart/jcustomplot
+    DEPENDPATH += $$JFRAME_DIR/include/3rdpart/jcustomplot
+}
+
 contains(DEFINES, BCG_LIB):!contains(DEFINES, BCG_BUILD) {
     ## import BCGCBPro library
     error(not supported!)

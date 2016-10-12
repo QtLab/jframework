@@ -1,0 +1,6 @@
+﻿#ifndef JCUSTOMPLOT_INC_H
+#define JCUSTOMPLOT_INC_H
+
+//
+
+#endif // JCUSTOMPLOT_INC_H

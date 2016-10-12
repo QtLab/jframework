@@ -73,3 +73,6 @@ win32|unix: {
 
     QMAKE_POST_LINK += $$commands
 }
+
+DISTFILES += \
+    private/slice/icenotify.ice

@@ -89,6 +89,10 @@
 #include "jwt_inc.h"
 #endif
 
+#if defined(JCUSTOMPLOT_LIB) && !defined(JCUSTOMPLOT_BUILD)
+#include "jcustomplot_inc.h"
+#endif
+
 //
 #if QT_VERSION < 0x050000
 #ifndef QStringLiteral

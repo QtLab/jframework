@@ -16,9 +16,11 @@ contains(DEFINES, PACKAGE) {
         win32 {
             srcdir = $$replace(srcdir, /, \\)
             dstdir = $$replace(dstdir, /, \\)
-            srcfiles += jwt*.dll log4cpp*.dll qtribbon*.dll qtwinmigrate*.dll tinyxml*.dll
+            srcfiles += jwt*.dll jcustomplot*.dll log4cpp*.dll \
+                qtribbon*.dll qtwinmigrate*.dll tinyxml*.dll
         } else:unix {
-            srcfiles += libjwt*.so* liblog4cpp*.so* libqtribbon*.so* libqtwinmigrate*.so* libtinyxml*.so*
+            srcfiles += libjwt*.so* libjcustomplot*.so* liblog4cpp*.so* \
+                libqtribbon*.so* libqtwinmigrate*.so* libtinyxml*.so*
         }
         !exists("$$dstdir") {
             commands += $(MKDIR) "$$dstdir" &

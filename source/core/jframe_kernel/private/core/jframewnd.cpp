@@ -301,18 +301,27 @@ bool JFrameWnd::loadConfig()
     /// for ribbon
     //
 
-    // 获取RibbonBar节点
-    QDomElement emRibbonBar = emMainWindow.firstChildElement("ribbonBar");
-    if (!emRibbonBar.isNull()) {
-        // font
-        ribbonBar()->setFont(QFont("microsoft yahei", 9));
-        // visible
-        if (emRibbonBar.hasAttribute("visible")) {
-            ribbonBar()->setVisible(QVariant(emRibbonBar.attribute("visible")).toBool());
-        }
-        // minimized
-        if (emRibbonBar.hasAttribute("minimized")) {
-            ribbonBar()->setMinimized(QVariant(emRibbonBar.attribute("minimized")).toBool());
+    // 获取 toolBar 节点
+    QDomElement emToolBar = emMainWindow.firstChildElement("toolBar");
+    if (!emToolBar.isNull()) {
+        const QString type = emToolBar.attribute("type").trimmed();
+        if (type == "ribbonBar") {
+            // 获取RibbonBar节点
+            QDomElement emRibbonBar = emToolBar.firstChildElement("ribbonBar");
+            if (!emRibbonBar.isNull()) {
+                // font
+                ribbonBar()->setFont(QFont("microsoft yahei", 9));
+                // visible
+                if (emRibbonBar.hasAttribute("visible")) {
+                    ribbonBar()->setVisible(QVariant(emRibbonBar.attribute("visible")).toBool());
+                }
+                // minimized
+                if (emRibbonBar.hasAttribute("minimized")) {
+                    ribbonBar()->setMinimized(QVariant(emRibbonBar.attribute("minimized")).toBool());
+                }
+            }
+        } else {
+            //
         }
     }
 

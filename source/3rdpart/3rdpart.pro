@@ -9,7 +9,9 @@ CONFIG += ordered
 
 SUBDIRS += \
     jwt \
+    jcustomplot \
     log4cpp \
     qtribbon \
     qtwinmigrate \
+    qwt \
     tinyxml

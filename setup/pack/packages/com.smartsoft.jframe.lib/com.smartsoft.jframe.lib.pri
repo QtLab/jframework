@@ -35,6 +35,7 @@ contains(DEFINES, PACKAGE) {
             dstdir = $$replace(dstdir, /, \\)
             srcfiles += \
                 jwt*.lib \
+                jcustomplot*.lib \
                 log4cpp*.lib \
                 qtribbon*.lib \
                 qtwinmigrate*.lib \
@@ -43,6 +44,7 @@ contains(DEFINES, PACKAGE) {
         } else:unix {
             srcfiles += \
                 libjwt*.so* \
+                libjcustomplot*.so* \
                 liblog4cpp*.so* \
                 libqtribbon*.so* \
                 libqtwinmigrate*.so* \
@@ -69,6 +71,7 @@ contains(DEFINES, PACKAGE) {
             dstdir = $$replace(dstdir, /, \\)
             srcfiles += \
                 jwt*.pdb \
+                jcustomplot*.pdb \
                 log4cpp*.pdb \
                 qtribbon*.pdb \
                 qtwinmigrate*.pdb \
