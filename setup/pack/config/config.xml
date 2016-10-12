@@ -5,6 +5,6 @@
   <Title>JFramework框架</Title>
   <Publisher>smartsoft</Publisher>
   <StartMenuDir>Smartsoft Software</StartMenuDir>
-  <TargetDir>@HomeDir@/@Publisher@/@Name@/@Version@</TargetDir>
+  <TargetDir>@HomeDir@/Documents/@Publisher@/@Name@/@Version@</TargetDir>
   <MaintenanceToolName>Uninstall</MaintenanceToolName>
 </Installer>

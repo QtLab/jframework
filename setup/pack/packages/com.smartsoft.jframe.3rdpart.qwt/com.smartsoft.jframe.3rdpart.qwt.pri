@@ -11,7 +11,7 @@ commands += echo ----- $$PWD &
 contains(DEFINES, PACKAGE) {
     srcdir = "$$jframe_dir/lib/3rdpart/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/qwt/"
+        dstdir = "$$PWD/data/3rdpart/"
         srcfiles =
         win32 {
             srcdir = $$replace(srcdir, /, \\)
@@ -29,7 +29,7 @@ contains(DEFINES, PACKAGE) {
         }
     }
 } else {
-    dstdir = "$$PWD/data/qwt/"
+    dstdir = "$$PWD/data/3rdpart/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
         commands += $$RM_DIR "$$dstdir" &

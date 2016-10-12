@@ -67,6 +67,7 @@ target/
 /.vscode/.BROWSE.*
 /.vscode
 /docs/html
+/setup/pack/bin/*
 /setup/pack/packages/com.smartsoft.jframe.*/data/*
 *.pro.user*
 *.user

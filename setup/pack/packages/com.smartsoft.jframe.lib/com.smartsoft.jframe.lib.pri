@@ -39,6 +39,7 @@ contains(DEFINES, PACKAGE) {
                 log4cpp*.lib \
                 qtribbon*.lib \
                 qtwinmigrate*.lib \
+                qwt*.lib \
                 tinyxml*.lib \
                 BCGCBPRO*u*.lib
         } else:unix {
@@ -48,6 +49,7 @@ contains(DEFINES, PACKAGE) {
                 liblog4cpp*.so* \
                 libqtribbon*.so* \
                 libqtwinmigrate*.so* \
+                libqwt*.so* \
                 libtinyxml*.so*
         }
         !exists("$$dstdir") {
@@ -75,6 +77,7 @@ contains(DEFINES, PACKAGE) {
                 log4cpp*.pdb \
                 qtribbon*.pdb \
                 qtwinmigrate*.pdb \
+                qwt*.pdb \
                 tinyxml*.pdb
         }
         !exists("$$dstdir") {
