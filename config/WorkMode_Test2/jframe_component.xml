@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version='1.0' encoding='utf-8'?>
 <jframe>
-  <component name="jcom_login" desc="登录管理组件" load="0" stay="1" dir="@FrameDir@/component/jframe" />
-  <component name="jcom_layout" desc="框架布局组件" load="0" stay="1" dir="@FrameDir@/component/jframe" />
-  <component name="com_customplot_test" desc="曲线图库测试组件" load="0" dir="@ThisDir@/component" />
+  <component load="0" dir="@FrameDir@/component/jframe" stay="1" desc="登录管理组件" name="jcom_login"/>
+  <component type="others" load="1" dir="@FrameDir@/component/jframe" stay="1" desc="框架布局组件" name="jcom_layout"/>
+  <component name="customplot_test" desc="曲线图库测试组件" load="1" dir="@ThisDir@/component" />
 </jframe>

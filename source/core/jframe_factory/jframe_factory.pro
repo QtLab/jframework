@@ -19,6 +19,10 @@ include($$THIS_DIR/source/common/build.pri)
 
 TARGET = $$qtLibraryTarget(jframe_factory)
 
+##
+INCLUDEPATH += \
+    $$PWD/private/slice
+
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
     jframe_factory.h \
@@ -28,7 +32,9 @@ HEADERS += \
     private/jlogmanager_p.h \
     private/jnotifier_p.h \
     private/jdbusnotify.h \
-    private/jicenotify.h
+    private/jicenotify.h \
+#    private/slice/IceNotify.h \
+#    private/slice/IceNotifyI.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -37,7 +43,12 @@ SOURCES += \
     private/jlogmanager_p.cpp \
     private/jnotifier_p.cpp \
     private/jdbusnotify.cpp \
-    private/jicenotify.cpp
+    private/jicenotify.cpp \
+#    private/slice/IceNotify.cpp \
+#    private/slice/IceNotifyI.cpp
+
+OTHER_FILES += \
+    private/slice/IceNotify.ice
 
 ###############################################################
 # resource files
@@ -54,7 +65,17 @@ RESOURCES +=
 ###############################################################
 
 win32|unix: {
-    commands += echo --- console - $$TARGET --- &
+    ##
+    exists("$$(ICE_HOME)") {
+        ##
+        commands = echo --- console - $$TARGET --- &
+
+        win32:commands += "\"%ICE_HOME%/bin/slice2cpp.exe\"" -I"\"%ICE_HOME%/slice\"" "\"$$PWD/private/slice/IceNotify.ice\"" --output-dir "\"$$PWD/private/slice"# --impl
+        unix:commands += "slice2cpp" -I"$(ICE_HOME)/slice" "$$PWD/private/slice/IceNotify.ice" --output-dir "$$PWD/private/slice"
+        QMAKE_PRE_LINK += $$commands
+    }
+    ##
+    commands = echo --- console - $$TARGET --- &
 
     excludefile = $$PWD/copy.ignore
     !exists("$$excludefile"):excludefile = "$$THIS_DIR/source/common/copy.ignore"

@@ -69,6 +69,8 @@ target/
 /docs/html
 /setup/pack/bin/*
 /setup/pack/packages/com.smartsoft.jframe.*/data/*
+/source/core/jframe_factory/private/slice/IceNotify.h
+/source/core/jframe_factory/private/slice/IceNotify.cpp
 *.pro.user*
 *.user
 *.ncb

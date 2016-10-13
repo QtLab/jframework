@@ -200,3 +200,29 @@ contains(DEFINES, BCG_LIB):!contains(DEFINES, BCG_BUILD) {
     ## import BCGCBPro library
     error(not supported!)
 }
+
+contains(DEFINES, ICE_LIB) {
+    exists("$(ICE_HOME)") {
+        ## import ice library
+        win32:CONFIG(release, debug|release):LIBS += -L$$(ICE_HOME)/lib -lice
+        else:win32:CONFIG(debug, debug|release):LIBS += -L$$(ICE_HOME)/lib -liced
+        else:unix:LIBS += -L$$(ICE_HOME)/lib -lice
+        INCLUDEPATH += $$(ICE_HOME)/include
+        DEPENDPATH += $$(ICE_HOME)/include
+    } else {
+        ##
+    }
+}
+
+contains(DEFINES, ICEGRID_LIB) {
+    exists("$(ICE_HOME)") {
+        ## import ice library
+        win32:CONFIG(release, debug|release):LIBS += -L$$(ICE_HOME)/lib -licegrid
+        else:win32:CONFIG(debug, debug|release):LIBS += -L$$(ICE_HOME)/lib -licegridd
+        else:unix:LIBS += -L$$(ICE_HOME)/lib -licegrid
+        INCLUDEPATH += $$(ICE_HOME)/include
+        DEPENDPATH += $$(ICE_HOME)/include
+    } else {
+        ##
+    }
+}

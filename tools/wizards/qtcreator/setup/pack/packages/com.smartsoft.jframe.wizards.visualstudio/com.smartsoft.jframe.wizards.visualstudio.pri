@@ -10,9 +10,9 @@ commands += echo ----- $$PWD &
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
     # --- wizards - visualstudio
-    srcdir = "$$jframe_dir/tools/wizards/visualstudio/"
+    srcdir = "$$jframe_dir/tools/wizards/visualstudio/qt5/"
     exists("$$srcdir") {
-        dstdir = "$$PWD/data/wizards/"
+        dstdir = "$$PWD/data/qt5/"
         srcfiles = *
         win32 {
             srcdir = $$replace(srcdir, /, \\)
@@ -26,7 +26,7 @@ contains(DEFINES, PACKAGE) {
         }
     }
 } else {
-    dstdir = "$$PWD/data/wizards/"
+    dstdir = "$$PWD/data/qt5/"
     exists("$$dstdir") {
         win32:dstdir = $$replace(dstdir, /, \\)
         commands += $$RM_DIR "$$dstdir" &
