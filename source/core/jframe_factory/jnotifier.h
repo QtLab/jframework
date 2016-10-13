@@ -395,6 +395,13 @@ public:
 class IIceNotify
 {
 public:
+    enum ReturnCode {
+        DomainFormatInvalid = -2,
+        ProxyInvalid = -2,
+        CallError = -1,
+        CallSuccess = 0,
+        InterruptBroadCast = 1,
+    };
     /**
      * @brief Îö¹¹º¯Êý
      */

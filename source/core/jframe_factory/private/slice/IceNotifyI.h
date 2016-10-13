@@ -3,29 +3,35 @@
 
 #include <IceNotify.h>
 
-namespace notify
+namespace Notify
 {
 
-class JIceNotifyDispI : virtual public JIceNotifyDisp
+class JIceNotifyI : virtual public JIceNotify
 {
 public:
 
-    virtual ::Ice::Int sendBuffer(const ::std::pair<const ::Ice::Byte*, const ::Ice::Byte*>&,
+    virtual ::Ice::Int sendBuffer(const ::std::string&,
+                                  const ::std::pair<const ::Ice::Byte*, const ::Ice::Byte*>&,
                                   const Ice::Current&);
 
     virtual ::Ice::Int sendString(const ::std::string&,
+                                  const ::std::string&,
                                   const Ice::Current&);
 
-    virtual ::Ice::Int sendList(const ::notify::StringList&,
+    virtual ::Ice::Int sendList(const ::std::string&,
+                                const ::Notify::StringList&,
                                 const Ice::Current&);
 
-    virtual void postBuffer(const ::std::pair<const ::Ice::Byte*, const ::Ice::Byte*>&,
+    virtual void postBuffer(const ::std::string&,
+                            const ::std::pair<const ::Ice::Byte*, const ::Ice::Byte*>&,
                             const Ice::Current&);
 
     virtual void postString(const ::std::string&,
+                            const ::std::string&,
                             const Ice::Current&);
 
-    virtual void postList(const ::notify::StringList&,
+    virtual void postList(const ::std::string&,
+                          const ::Notify::StringList&,
                           const Ice::Current&);
 };
 

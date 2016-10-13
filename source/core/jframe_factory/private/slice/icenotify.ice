@@ -5,17 +5,17 @@
 [["cpp:include:list"]]
 #include <Ice/BuiltinSequences.ice>
 
-module notify {
+module Notify {
     //
 	["cpp:type:::std::list< ::std::string>"] sequence<string> StringList;
 	
     // 
-    interface JIceNotifyDisp {
-    	int sendBuffer(["cpp:array"] Ice::ByteSeq buffer);
-    	int sendString(string msg);
-    	int sendList(StringList data);
-    	void postBuffer(["cpp:array"] Ice::ByteSeq buffer);
-    	void postString(string msg);
-    	void postList(StringList data);
+    interface JIceNotify {
+    	int sendBuffer(string domain, ["cpp:array"] Ice::ByteSeq buffer);
+    	int sendString(string domain, string msg);
+    	int sendList(string domain, StringList data);
+    	void postBuffer(string domain, ["cpp:array"] Ice::ByteSeq buffer);
+    	void postString(string domain, string msg);
+    	void postList(string domain, StringList data);
     };
 };

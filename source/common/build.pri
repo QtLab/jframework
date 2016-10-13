@@ -202,7 +202,7 @@ contains(DEFINES, BCG_LIB):!contains(DEFINES, BCG_BUILD) {
 }
 
 contains(DEFINES, ICE_LIB) {
-    exists("$(ICE_HOME)") {
+    exists("$$(ICE_HOME)") {
         ## import ice library
         win32:CONFIG(release, debug|release):LIBS += -L$$(ICE_HOME)/lib -lice
         else:win32:CONFIG(debug, debug|release):LIBS += -L$$(ICE_HOME)/lib -liced
@@ -215,7 +215,7 @@ contains(DEFINES, ICE_LIB) {
 }
 
 contains(DEFINES, ICEGRID_LIB) {
-    exists("$(ICE_HOME)") {
+    exists("$$(ICE_HOME)") {
         ## import ice library
         win32:CONFIG(release, debug|release):LIBS += -L$$(ICE_HOME)/lib -licegrid
         else:win32:CONFIG(debug, debug|release):LIBS += -L$$(ICE_HOME)/lib -licegridd

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "../jnotifier.h"
+#include "slice/IceNotify.h"
 
 class JNotifier;
 
@@ -11,6 +12,7 @@ class JIceNotify : public QObject, public IIceNotify
     Q_OBJECT
 public:
     explicit JIceNotify(JNotifier &notifier, QObject *parent = 0);
+    ~JIceNotify();
 
     // IIceNotify interface
 public:
@@ -34,6 +36,8 @@ public slots:
 
 private:
     JNotifier &q_notifier;
+    ::Notify::JIceNotify::ProxyType q_proxy;
+    QString q_currentService;
 };
 
 #endif // JICENOTIFY_H

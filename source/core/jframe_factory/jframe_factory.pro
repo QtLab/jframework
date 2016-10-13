@@ -13,15 +13,18 @@ DEFINES += \
     JFRAME_FACTORY_LIB \
     JFRAME_FACTORY_BUILD \
     JFRAME_NO_PRECOMPILED \
-    LOG4CPP_LIB
-
-include($$THIS_DIR/source/common/build.pri)
-
-TARGET = $$qtLibraryTarget(jframe_factory)
+    LOG4CPP_LIB \
+    ICE_LIB
 
 ##
 INCLUDEPATH += \
     $$PWD/private/slice
+DEPENDPATH += \
+    $$PWD/private/slice
+
+include($$THIS_DIR/source/common/build.pri)
+
+TARGET = $$qtLibraryTarget(jframe_factory)
 
 # The .h file which was generated for your project. Feel free to hack it.
 HEADERS += \
@@ -33,8 +36,8 @@ HEADERS += \
     private/jnotifier_p.h \
     private/jdbusnotify.h \
     private/jicenotify.h \
-#    private/slice/IceNotify.h \
-#    private/slice/IceNotifyI.h
+    private/slice/IceNotify.h \
+    private/slice/IceNotifyI.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -44,11 +47,11 @@ SOURCES += \
     private/jnotifier_p.cpp \
     private/jdbusnotify.cpp \
     private/jicenotify.cpp \
-#    private/slice/IceNotify.cpp \
-#    private/slice/IceNotifyI.cpp
+    private/slice/IceNotify.cpp \
+    private/slice/IceNotifyI.cpp
 
 OTHER_FILES += \
-    private/slice/IceNotify.ice
+#    private/slice/IceNotify.ice
 
 ###############################################################
 # resource files
@@ -72,7 +75,7 @@ win32|unix: {
 
         win32:commands += "\"%ICE_HOME%/bin/slice2cpp.exe\"" -I"\"%ICE_HOME%/slice\"" "\"$$PWD/private/slice/IceNotify.ice\"" --output-dir "\"$$PWD/private/slice"# --impl
         unix:commands += "slice2cpp" -I"$(ICE_HOME)/slice" "$$PWD/private/slice/IceNotify.ice" --output-dir "$$PWD/private/slice"
-        QMAKE_PRE_LINK += $$commands
+        #QMAKE_PRE_LINK += $$commands
     }
     ##
     commands = echo --- console - $$TARGET --- &
@@ -94,6 +97,3 @@ win32|unix: {
 
     QMAKE_POST_LINK += $$commands
 }
-
-DISTFILES += \
-    private/slice/icenotify.ice
