@@ -2,7 +2,6 @@
 #include "jframe_factory.h"
 #include "private/jframe_factory_p.h"
 
-
 //
 IJFrameFactory* jframeFactory()
 {

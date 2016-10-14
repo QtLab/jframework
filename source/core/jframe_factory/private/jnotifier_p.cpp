@@ -83,6 +83,16 @@ INotifier &JNotifier::endGroup()
     return *this;
 }
 
+INotifier &JNotifier::append(const std::string &id)
+{
+    return append(d->currObs, id, 0, d->currOffset);
+}
+
+INotifier &JNotifier::append(JObserver *obs, const std::string &id)
+{
+    return append(obs, id, 0, 0);
+}
+
 void JNotifier::remove(JObserver *obs)
 {
     if (!obs) {

@@ -128,6 +128,21 @@ public:
 
     /**
      * @brief 订阅消息
+     * @param id : 消息标识
+     * @return 消息分发器
+     */
+    virtual INotifier& append(const std::string &id) = 0;
+
+    /**
+     * @brief 订阅消息
+     * @param [in] obs : 观察者
+     * @param id : 消息标识
+     * @return 消息分发器
+     */
+    virtual INotifier& append(JObserver* obs, const std::string &id) = 0;
+
+    /**
+     * @brief 订阅消息
      * @param obs : 观察者
      * @param id : 消息标识
      * @param [in] cb : 消息响应函数接口
@@ -396,8 +411,9 @@ class IIceNotify
 {
 public:
     enum ReturnCode {
-        DomainFormatInvalid = -2,
-        ProxyInvalid = -2,
+        DomainFormatInvalid = -4,
+        ProxyInvalid = -3,
+        VariantNotSupported = -2,
         CallError = -1,
         CallSuccess = 0,
         InterruptBroadCast = 1,
@@ -416,18 +432,26 @@ public:
     /**
      * @brief 初始化 Ice 模块
      * @param service : 服务名称
-     * @param path : 路径
-     * @param iface : 接口名称
+     * @param host : 主机号
+     * @param port : 端口号
      * @return true，初始化成功；false，初始化失败
      */
-    virtual bool initialize(const std::string &service) = 0;
+    virtual bool initialize(const std::string &service, const std::string &host, unsigned int port) = 0;
 
     /**
-     * @brief setCurrentService
-     * @param service
+     * @brief 设置当前服务端代理
+     * @param service :服务端地址。格式：[IP]:[PORT]，如：192.168.0.1:10000
      * @return true，设置成功；false，设置失败
      */
     virtual bool setCurrentService(const std::string &service) = 0;
+
+    /**
+     * @brief 设置当前服务端代理
+     * @param host : 服务端IP地址
+     * @param port : 服务端端口号
+     * @return true，设置成功；false，设置失败
+     */
+    virtual bool setCurrentService(const std::string &host, unsigned int port) = 0;
 
     /**
      * @brief 发送数据（同步）

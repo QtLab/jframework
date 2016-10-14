@@ -1,4 +1,4 @@
-
+﻿
 #!/bin/sh
 
 # --------------------
@@ -167,6 +167,11 @@ cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so" "${jframe_dir}/bin/3rdpart/"
 cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so.1" "${jframe_dir}/bin/3rdpart/"
 cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so.1.0" "${jframe_dir}/bin/3rdpart/"
 cp -f "${jframe_dir}/lib/3rdpart/libtinyxml.so.1.0.0" "${jframe_dir}/bin/3rdpart/"
+
+cp -f "${jframe_dir}/lib/3rdpart/libqwt.so" "${jframe_dir}/bin/3rdpart/"
+cp -f "${jframe_dir}/lib/3rdpart/libqwt.so.1" "${jframe_dir}/bin/3rdpart/"
+cp -f "${jframe_dir}/lib/3rdpart/libqwt.so.1.0" "${jframe_dir}/bin/3rdpart/"
+cp -f "${jframe_dir}/lib/3rdpart/libqwt.so.1.0.0" "${jframe_dir}/bin/3rdpart/"
 
 # --------------------
 

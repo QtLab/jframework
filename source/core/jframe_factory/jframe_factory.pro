@@ -35,9 +35,7 @@ HEADERS += \
     private/jlogmanager_p.h \
     private/jnotifier_p.h \
     private/jdbusnotify.h \
-    private/jicenotify.h \
-    private/slice/IceNotify.h \
-    private/slice/IceNotifyI.h
+    private/jicenotify.h
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += \
@@ -46,9 +44,16 @@ SOURCES += \
     private/jlogmanager_p.cpp \
     private/jnotifier_p.cpp \
     private/jdbusnotify.cpp \
-    private/jicenotify.cpp \
-    private/slice/IceNotify.cpp \
-    private/slice/IceNotifyI.cpp
+    private/jicenotify.cpp
+
+contains(DEFINES, ICE_LIB) {
+    HEADERS += \
+        private/slice/IceNotify.h \
+        private/slice/IceNotifyI.h
+    SOURCES += \
+        private/slice/IceNotify.cpp \
+        private/slice/IceNotifyI.cpp
+}
 
 OTHER_FILES += \
 #    private/slice/IceNotify.ice

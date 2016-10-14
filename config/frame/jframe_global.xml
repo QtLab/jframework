@@ -6,6 +6,7 @@
         <item path="3rdpart"/>
         <item path="3rdpart/BCGCBPro"/>
         <item path="3rdpart/Qt"/>
+        <item path="3rdpart/ice"/>
         <item path="core"/>
       </path>
       <path type="append" base="@ThisDir@"/>
@@ -31,7 +32,7 @@
   <logging filePath="@ConfigDir@/frame/jframe_logging.conf"/>
   <dbus serviceName="com.smartsoft.jframe1" enabled="true" path="/com/smartsoft/jframe/notify"/>
   <ice enabled="true">
-    <server host="10.211.55.16" port="2000" />
+    <server serviceName="com.smartsoft.jframe1" host="10.211.55.16" port="20000" />
   </ice>
   <mainWindow
   windowTheme="Office2010Blue"

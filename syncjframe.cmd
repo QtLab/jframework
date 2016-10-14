@@ -1,4 +1,4 @@
-
+﻿
 @echo off
 
 echo --- %~dp0 ---
@@ -53,6 +53,7 @@ copy "%jframe_dir%\lib\3rdpart\log4cpp%debug_suffix%*.dll" "%jframe_dir%\bin\3rd
 copy "%jframe_dir%\lib\3rdpart\qtribbon%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
 copy "%jframe_dir%\lib\3rdpart\qtwinmigrate%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
 copy "%jframe_dir%\lib\3rdpart\tinyxml%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
+copy "%jframe_dir%\lib\3rdpart\qwt%debug_suffix%*.dll" "%jframe_dir%\bin\3rdpart\"
 
 rem -----
 

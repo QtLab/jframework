@@ -150,5 +150,6 @@ JLRESULT ComDemo1::helloworld(const std::string &id, JWPARAM wParam, JLPARAM lPa
 #else
     qDebug() << *(QVariant *)wParam;
 #endif
+    q_testWidget1->setText(QString::fromStdString(*str));
     return 10;
 }

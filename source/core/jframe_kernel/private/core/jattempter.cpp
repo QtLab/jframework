@@ -308,6 +308,21 @@ bool JAttempter::loadConfig()
     if (!emIce.isNull()) {
         // enabled
         if (QVariant(emIce.attribute("enabled", false)).toBool()) {
+            // 获取 server 节点
+            QDomElement emIceServer = emIce.firstChildElement("server");
+            if (!emIceServer.isNull()) {
+                // serviceName
+                const QString serviceName = emIceServer.attribute("serviceName");
+                // host
+                const QString host = emIceServer.attribute("host");
+                // port
+                const unsigned int port = emIceServer.attribute("port").toUInt();
+                bool result = q_notifier->ice().initialize(
+                            serviceName.toStdString(), host.toStdString(), port);
+                if (!result) {
+                    // initialize failure
+                }
+            }
             //
         }
     }

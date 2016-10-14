@@ -17,6 +17,10 @@ TestWidget1::TestWidget1(IJAttempter &attempter, QWidget *parent)
     buttonMsgTest->setMaximumWidth(200);
     vertLayoutMain->addWidget(buttonMsgTest, 0, Qt::AlignHCenter);
 
+    q_editTest = new QLineEdit(this);
+    q_editTest->setMaximumWidth(200);
+    vertLayoutMain->addWidget(q_editTest, 0, Qt::AlignHCenter);
+
     //
     connect(buttomModeTest, SIGNAL(clicked(bool)), SLOT(onButtonModeTestClicked()));
     connect(buttomCmdTest, SIGNAL(clicked(bool)), SLOT(onButtonCmdTestClicked()));
@@ -26,6 +30,11 @@ TestWidget1::TestWidget1(IJAttempter &attempter, QWidget *parent)
 TestWidget1::~TestWidget1()
 {
 
+}
+
+void TestWidget1::setText(const QString &text)
+{
+    q_editTest->setText(text);
 }
 
 void TestWidget1::onButtonModeTestClicked()
@@ -44,7 +53,9 @@ void TestWidget1::onButtonModeTestClicked()
 
 void TestWidget1::onButtonCmdTestClicked()
 {
-
+    q_attempter.notifier().ice().sendString(
+                "setValue@com_demo1@com.smartsoft.jframe1@10.211.55.16:20000",
+                "hello,world");
 }
 
 void TestWidget1::onButtonMsgTestClicked()

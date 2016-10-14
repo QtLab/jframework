@@ -95,6 +95,8 @@ public:
     // INotifier interface
 public:
     INotifier &endGroup();
+    INotifier &append(const std::string &id);
+    INotifier &append(JObserver* obs, const std::string &id);
     void remove(JObserver *obs);
     INotifier &remove(JObserver *obs, const std::string &id);
     INotifier &remove(const std::string &id);

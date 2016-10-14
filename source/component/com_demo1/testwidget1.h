@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class IJAttempter;
+class QLineEdit;
 
 class TestWidget1 : public QWidget
 {
@@ -11,6 +12,8 @@ class TestWidget1 : public QWidget
 public:
     explicit TestWidget1(IJAttempter &attempter, QWidget *parent = 0);
     ~TestWidget1();
+
+    void setText(const QString &text);
 
 signals:
 
@@ -21,6 +24,7 @@ public slots:
 
 private:
     IJAttempter &q_attempter;
+    QLineEdit *q_editTest;
 };
 
 #endif // TESTWIDGET1_H

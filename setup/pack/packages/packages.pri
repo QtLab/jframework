@@ -10,6 +10,7 @@ win32:include($$PWD/com.smartsoft.jframe.3rdpart.bcg/com.smartsoft.jframe.3rdpar
 include($$PWD/com.smartsoft.jframe.3rdpart.opengl/com.smartsoft.jframe.3rdpart.opengl.pri)
 include($$PWD/com.smartsoft.jframe.3rdpart.qt/com.smartsoft.jframe.3rdpart.qt.pri)
 include($$PWD/com.smartsoft.jframe.3rdpart.qwt/com.smartsoft.jframe.3rdpart.qwt.pri)
+include($$PWD/com.smartsoft.jframe.3rdpart.ice/com.smartsoft.jframe.3rdpart.ice.pri)
 include($$PWD/com.smartsoft.jframe.coms/com.smartsoft.jframe.coms.pri)
 include($$PWD/com.smartsoft.jframe.coms.com.demo1/com.smartsoft.jframe.coms.com.demo1.pri)
 include($$PWD/com.smartsoft.jframe.coms.com.demo2/com.smartsoft.jframe.coms.com.demo2.pri)
