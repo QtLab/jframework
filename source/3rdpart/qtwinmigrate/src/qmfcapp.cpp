@@ -79,10 +79,6 @@
 
 #endif
 
-#ifdef UNICODE
-#undef UNICODE
-#endif
-
 #include "qmfcapp.h"
 #if QT_VERSION >= 0x050000
 #include <QAbstractNativeEventFilter>
@@ -422,11 +418,14 @@ QMfcApp::QMfcApp(void *mfcApp, int &argc, char **argv)
     : QApplication(argc, argv), idleCount(0), doIdle(false)
 {
 #ifdef _MSC_VER
+    Q_UNUSED(mfcApp);
 #if QT_VERSION_MAJOR < 5
     QAbstractEventDispatcher::instance()->setEventFilter(qmfc_eventFilter);
 #else
+#ifdef QTWINMIGRATE_WITHMFC
     QMFCNativeEventFilter *evtFilter = new QMFCNativeEventFilter;
     installNativeEventFilter(evtFilter);
+#endif
 #endif
     setQuitOnLastWindowClosed(false);
 #else

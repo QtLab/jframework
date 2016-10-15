@@ -9,7 +9,7 @@ commands += echo ----- $$PWD &
 
 #-------------------------------------------------
 contains(DEFINES, PACKAGE) {
-    srcdir = "$$(ICE_HOME)/bin/"
+    srcdir = "$$(ICE_HOME)/bin/vc140/"
     exists("$$srcdir") {
         dstdir = "$$PWD/data/ice"
         srcfiles =

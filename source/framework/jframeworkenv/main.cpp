@@ -89,6 +89,18 @@ bool generatorLdConfig(const std::list<std::string> &paths)
 #endif
 
 /**
+ * @brief trimmedString
+ * @param input
+ * @return
+ */
+std::string &trimmedString(std::string &input)
+{
+    input.erase(0, input.find_first_not_of(" \t\n\r"));
+    input.erase(input.find_last_not_of(" \t\n\r") + 1);
+    return input;
+}
+
+/**
  * @brief frameVersion
  * @return
  */
@@ -137,6 +149,10 @@ bool loadConfig()
     const char* envPath = getenv("PATH");
     if (envPath) {
         paths = std::string(envPath);
+        paths = trimmedString(paths);
+        if (paths.find_last_of(";") != -1) {
+            paths.append(";");
+        }
     }
 #elif defined(__unix__)
     const char* envPath = getenv("PATH");

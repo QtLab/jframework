@@ -173,11 +173,11 @@ win32|unix: {
     ## copy files
     dstdir = $$THIS_DIR/include/3rdpart/qtribbon
     win32:dstdir = $$replace(dstdir, /, \\)
-    !exists("$${dstdir}"):commands += $(MKDIR) "\"$$dstdir\"" &
+    !exists("$$dstdir"):commands += $(MKDIR) "\"$$dstdir\"" &
     win32:srcdir = $$PWD/*.h
     unix:srcdir = $$PWD/
-    win32:srcfile = $$replace(srcfile, /, \\)
-    win32:commands += $(COPY_DIR) "\"$$srcfile\"" "\"$$dstdir\"" /exclude:"$$excludefile" &
+    win32:srcdir = $$replace(srcdir, /, \\)
+    win32:commands += $(COPY_DIR) "\"$$srcdir\"" "\"$$dstdir\"" /exclude:"$$excludefile" &
     unix:commands += "\"$$THIS_DIR/tools/xcopy.py\"" "\"$$srcdir\"" "\"$$dstdir\"" "*.h" &
 
     QMAKE_POST_LINK += $$commands

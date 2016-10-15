@@ -18,8 +18,7 @@ DEFINES += \
     QTWINMIGRATE_BUILD
 
 win32: {
-    DEFINES -= UNICODE
-    DEFINES += _AFXDLL
+    DEFINES += _AFXDLL _UNICODE
 }
 
 TARGET = $$qtLibraryTarget(qtwinmigrate)

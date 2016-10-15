@@ -16,10 +16,18 @@ jcustomplot_headers += \
     $$PWD/jcustomplot_inc.h
 
 HEADERS += \
-    $$jcustomplot_headers
+    $$jcustomplot_headers \
+    $$PWD/jchartview.h \
+    $$PWD/jchart.h \
+    $$PWD/jabstractchart.h \
+    $$PWD/jabstractseries.h
 
 SOURCES += \
-    $$PWD/jcustomplot_global.cpp
+    $$PWD/jcustomplot_global.cpp \
+    $$PWD/jchartview.cpp \
+    $$PWD/jchart.cpp \
+    $$PWD/jabstractchart.cpp \
+    $$PWD/jabstractseries.cpp
 
 ################################################
 ## framework

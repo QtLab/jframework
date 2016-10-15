@@ -15,6 +15,9 @@ class JDBusNotify : public QObject, public IDBusNotify
     Q_OBJECT
 public:
     explicit JDBusNotify(JNotifier &notifier, QObject* parent = 0);
+    ~JDBusNotify();
+
+    void shutdown();
 
     // IDBusNotify interface
 public:

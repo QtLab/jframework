@@ -33,6 +33,18 @@ public:
         }
     }
 
+    void release()
+    {
+        //
+        if (dbus) {
+            dbus->shutdown();
+        }
+        //
+        if (ice) {
+            ice->shutdown();
+        }
+    }
+
 private:
     JObserver* currObs;
     int currOffset;
@@ -73,7 +85,7 @@ unsigned int JNotifier::interfaceVersion() const
 
 void JNotifier::releaseInterface()
 {
-
+    d->release();
 }
 
 INotifier &JNotifier::endGroup()

@@ -36,10 +36,10 @@ commands += echo ----- $$PWD --- generate $$INSTALLER ----- &
 }
 
 #-------------------------------------------------
-win32:QTIFW_DIR =
-unix:QTIFW_DIR = /opt/Qt/QtIFW2.0.3/bin/
+win32:QTIFW_CREATOR = $$(QTIFW_DIR)\\bin\\binarycreator.exe
+unix:QTIFW_CREATOR = /opt/Qt/QtIFW2.0.3/bin/binarycreator
 commands += echo generating $$INSTALLER file...please wait... &
-commands += $${QTIFW_DIR}binarycreator --verbose --offline-only -c "$$PWD/config/config.xml" -p \
+commands += "$$QTIFW_CREATOR" --verbose --offline-only -c "$$PWD/config/config.xml" -p \
     "$$PWD/packages" "$$PWD/bin/$$INSTALLER" &
 
 #-------------------------------------------------

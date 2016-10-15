@@ -17,6 +17,8 @@ public:
     explicit JIceNotify(JNotifier &notifier, QObject *parent = 0);
     ~JIceNotify();
 
+    void shutdown();
+
     // IIceNotify interface
 public:
     bool isConnected();
@@ -72,8 +74,9 @@ public:
     // IIceNotify interface
 public:
     bool isConnected() { return false; }
-    bool initialize(const std::string &, unsigned int) { return false; }
+    bool initialize(const std::string &, const std::string &, unsigned int) { return false; }
     bool setCurrentService(const std::string &) { return false; }
+    bool setCurrentService(const std::string &, unsigned int) { return false; }
 
     int sendBuffer(const std::string &, const char *, int) { return 0; }
     int sendString(const std::string &, const std::string &) { return 0; }

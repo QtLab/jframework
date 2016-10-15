@@ -88,3 +88,12 @@ if exist "%jframe_dir%\lib\core\jframe_facade%debug_suffix%.dll" (
     copy "%jframe_dir%\lib\core\jframe_facade%debug_suffix%.dll" "%jframe_dir%\bin\core\"
     copy "%jframe_dir%\lib\core\jframe_facade%debug_suffix%.pdb" "%jframe_dir%\bin\core\"
 )
+
+if exist "%ICE_HOME%\bin" (
+    if not exist "%jframe_dir%\bin\3rdpart\ice\" (
+        mkdir "%jframe_dir%\bin\3rdpart\ice\"
+    )
+    copy "%ICE_HOME%\bin\vc140\bzip2*.dll" "%jframe_dir%\bin\3rdpart\ice\"
+    copy "%ICE_HOME%\bin\vc140\ice36*.dll" "%jframe_dir%\bin\3rdpart\ice\"
+    copy "%ICE_HOME%\bin\vc140\iceutil36*.dll" "%jframe_dir%\bin\3rdpart\ice\"
+)

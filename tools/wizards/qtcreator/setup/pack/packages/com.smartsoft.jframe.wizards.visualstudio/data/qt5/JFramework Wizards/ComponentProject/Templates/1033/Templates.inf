@@ -1,0 +1,24 @@
+
+[!if INCLUDE_PRECOMPILED]
+stdafx.h
+stdafx.cpp
+[!endif]
+
+targetver.h
+dllmain.cpp
+Resource.h
+component.rc
+res/component.rc2
+
+OpenFile | component.h
+OpenFile | component.cpp
+
+[!if INCLUDE_CONFIG_FILE]
+component.xml
+[!endif]
+
+[!if INCLUDE_IJCOMPONENTUI]
+widget.h
+widget.cpp
+[!endif]
+

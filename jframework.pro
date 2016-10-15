@@ -11,7 +11,7 @@ SUBDIRS += \
 #    docs \
     source \
     setup \
-    tools
+#    tools
 
 include($$PWD/config/config.pri)
 

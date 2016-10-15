@@ -54,8 +54,8 @@ void TestWidget1::onButtonModeTestClicked()
 void TestWidget1::onButtonCmdTestClicked()
 {
     q_attempter.notifier().ice().sendString(
-                "setValue@com_demo1@com.smartsoft.jframe1@10.211.55.16:20000",
-                "hello,world");
+                "helloworld@com_demo1@com.smartsoft.jframe1@10.211.55.16:20000",
+                "hello,world^^^");
 }
 
 void TestWidget1::onButtonMsgTestClicked()

@@ -19,11 +19,14 @@ JIceNotify::JIceNotify(JNotifier &notifier, QObject *parent)
 
 JIceNotify::~JIceNotify()
 {
+
+}
+
+void JIceNotify::shutdown()
+{
     //
     if (q_commPtr) {
         q_commPtr->shutdown();
-        q_commPtr->waitForShutdown();
-        //q_commPtr->destroy();
     }
 }
 
@@ -53,7 +56,7 @@ bool JIceNotify::initialize(const std::string &service, const std::string &host,
         //
         q_commPtr = ::Ice::initialize(_args);
         if (!q_commPtr) {
-            return false;       // initialize failure
+            throw "invalid communicator!";
         }
         // serice
         QThreadPool::globalInstance()->start(this);
@@ -71,7 +74,6 @@ bool JIceNotify::initialize(const std::string &service, const std::string &host,
         std::cout << msg << std::endl;
         return false;
     }
-    //
 
     return result;
 }
@@ -99,11 +101,11 @@ bool JIceNotify::setCurrentService(const std::string &host, unsigned int port)
         Ice::ObjectPrx base = q_commPtr->stringToProxy(
                     "JIceNotify:default -h " + host + " -p " + QString::number(port).toStdString());
         if (!base) {
-            return false;
+            throw "invalid proxy!";
         }
         q_proxy = ::Notify::JIceNotifyPrx::checkedCast(base);
         if (!q_proxy) {
-            return false;
+            throw "invalid proxy!";
         }
     }
     catch (const Ice::Exception& e) {
@@ -221,10 +223,11 @@ void JIceNotify::run()
         q_adapterPtr = q_commPtr->createObjectAdapterWithEndpoints(
                     q_service, "default -p " + QString::number(q_port).toStdString());
         if (!q_adapterPtr) {
-            return;
+            throw "invalid adapter!";
         }
         //
         q_iceNotifyIPtr = new ::Notify::JIceNotifyI(q_notifier);
+        //
         q_adapterPtr->add(q_iceNotifyIPtr, ::Ice::stringToIdentity("JIceNotify"));
         //
         q_adapterPtr->activate();
@@ -239,6 +242,12 @@ void JIceNotify::run()
     catch (const char* msg) {
         std::cout << msg << std::endl;
         return;
+    }
+
+    //
+    if (q_commPtr) {
+        q_commPtr->destroy();
+        q_commPtr = 0;
     }
 }
 
@@ -255,18 +264,30 @@ void JIceNotify::run()
         return q_proxy;   //
     }
     //
-    Ice::ObjectPrx base = q_commPtr->stringToProxy(
+    try {
+        Ice::ObjectPrx base = q_commPtr->stringToProxy(
                 "JIceNotify:default -h " + iceService.replace(":", " -p ").toStdString());
-    if (!base) {
+        if (!base) {
+            throw "invalid proxy!";
+        }
+        //
+        ::Notify::JIceNotifyPrx proxy = ::Notify::JIceNotifyPrx::checkedCast(base);
+        if (!proxy) {
+            throw "invalid proxy!";
+        }
+        //
+        return proxy;
+    }
+    catch (const Ice::Exception& e) {
+        std::cout << e << std::endl;
         return 0;
     }
-    //
-    ::Notify::JIceNotifyPrx proxy = ::Notify::JIceNotifyPrx::checkedCast(base);
-    if (!proxy) {
+    catch (const char* msg) {
+        std::cout << msg << std::endl;
         return 0;
     }
 
-    return proxy;
+    return 0;
 }
 
 #endif

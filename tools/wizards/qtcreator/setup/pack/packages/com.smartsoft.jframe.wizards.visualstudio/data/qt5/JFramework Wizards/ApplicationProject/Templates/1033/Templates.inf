@@ -1,0 +1,17 @@
+
+CopyOnly | source/framework/application/res/Application.ico
+source/framework/application/res/Application.rc2
+source/framework/application/Application.cpp
+source/framework/application/Application.h
+source/framework/application/Application.rc
+source/framework/application/ChildView.cpp
+source/framework/application/ChildView.h
+OpenFile | source/framework/application/MainFrm.cpp
+source/framework/application/MainFrm.h
+source/framework/application/Resource.h
+[!if INCLUDE_PRECOMPILED]
+source/framework/application/stdafx.cpp
+source/framework/application/stdafx.h
+[!endif]
+source/framework/application/targetver.h
+

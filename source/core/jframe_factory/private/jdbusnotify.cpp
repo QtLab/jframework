@@ -12,6 +12,25 @@ JDBusNotify::JDBusNotify(JNotifier &notifier, QObject *parent)
 
 }
 
+JDBusNotify::~JDBusNotify()
+{
+
+}
+
+void JDBusNotify::shutdown()
+{
+    bool result = true;
+
+    //
+    if (QDBusConnection::sessionBus().isConnected()) {
+        QDBusConnection::sessionBus().unregisterObject(q_path);
+        result = QDBusConnection::sessionBus().unregisterService(q_service);
+        if (!result) {
+            return;   //
+        }
+    }
+}
+
 bool JDBusNotify::isConnected()
 {
 #ifdef QT_DBUS_LIB
