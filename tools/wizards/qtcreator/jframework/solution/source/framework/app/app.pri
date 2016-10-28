@@ -1,0 +1,16 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2016-07-18T18:18:11
+#
+#-------------------------------------------------
+
+##
+THIS_DIR = $$PWD/../../..
+win32:$$replace(THIS_DIR, /, \\)
+
+##
+win32:CONFIG(debug, debug|release):debug_suffix=d
+
+##
+win32:commands += "$$THIS_DIR\\syncjframe.cmd" $$QT_MAJOR_VERSION $$debug_suffix &
+unix:commands += "$$THIS_DIR/syncjframe.sh" $$QT_MAJOR_VERSION $$QT_MINOR_VERSION $$QT_VERSION $$debug_suffix &

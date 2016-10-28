@@ -1,0 +1,6 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<jframe>
+  <component load='0' dir='@FrameDir@/component/jframe' stay='1' desc='登录管理组件' name='jcom_login'/>
+  <component type='others' load='1' dir='@FrameDir@/component/jframe' stay='1' desc='框架布局组件' name='jcom_layout'/>
+  <component type='others' load='0' dir='@ThisDir@/component/%{ProjectName}' stay='0' desc='demo1组件' name='com_demo1'/>
+</jframe>

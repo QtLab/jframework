@@ -13,7 +13,8 @@
     "options": [
         { "key": "ProFileName", "value": "%{JS: Util.fileName('%{ProjectDirectory}/%{ProjectName}', 'pro')}" },
         { "key": "IsTopLevelProject", "value": "%{JS: !'%{Exists:ProjectExplorer.Profile.Ids}' }" },
-        { "key": "MainCppName", "value": "%{JS: 'main.' + Util.preferredSuffix('text/x-c++src') }" }
+        { "key": "MainCppName", "value": "%{JS: 'main.' + Util.preferredSuffix('text/x-c++src') }" },
+        { "key": "AppNameUpper", "value": "%{JS: Cpp.classToHeaderGuard('%{ProjectName}', '')}" }
     ],
 
     "pages": [{
@@ -35,19 +36,7 @@
     "generators": [{
         "typeId": "File",
         "data": [{
-            "source": "bin",
-            "target": "bin",
-            "isBinary": true
-        }, {
-            "source": "config",
-            "target": "config",
-            "isBinary": true
-        }, {
-            "source": "source",
-            "target": "source",
-            "isBinary": true
-        }, {
-            "source": "jframework.pro",
+            "source": "app.pro",
             "target": "%{ProFileName}",
             "isBinary": true,
             "openAsProject": true
@@ -55,6 +44,59 @@
             "source": "git.ignore",
             "target": ".gitignore",
             "condition": "%{JS: ( %{IsTopLevelProject} && '%{VersionControl}' === 'G.Git' )}"
+        }, {
+            "source": "bin",
+            "target": "bin",
+            "isBinary": true
+        }, {
+            "source": "config/config.pri",
+            "target": "config/config.pri"
+        }, {
+            "source": "config/app/app.pri",
+            "target": "config/%{ProjectName}/%{ProjectName}.pri"
+        }, {
+            "source": "config/app/jframe_global.xml",
+            "target": "config/%{ProjectName}/jframe_global.xml"
+        }, {
+            "source": "config/app/jframe_logging.conf",
+            "target": "config/%{ProjectName}/jframe_logging.conf"
+        }, {
+            "source": "config/app/resource",
+            "target": "config/%{ProjectName}/resource",
+            "isBinary": true
+        }, {
+            "source": "config/app/workmode_1",
+            "target": "config/%{ProjectName}/workmode_1"
+        }, {
+            "source": "source/source.pro",
+            "target": "source/source.pro"
+        }, {
+            "source": "source/3rdpart/3rdpart.pro",
+            "target": "source/3rdpart/3rdpart.pro"
+        }, {
+            "source": "source/common",
+            "target": "source/common"
+        }, {
+            "source": "source/component/component.pro",
+            "target": "source/component/component.pro"
+        }, {
+            "source": "source/component/app/app.pro",
+            "target": "source/component/%{ProjectName}/%{ProjectName}.pro"
+        }, {
+            "source": "source/core",
+            "target": "source/core"
+        }, {
+            "source": "source/framework/framework.pro",
+            "target": "source/framework/framework.pro"
+        }, {
+            "source": "source/framework/app/app.pro",
+            "target": "source/framework/%{ProjectName}/%{ProjectName}.pro"
+        }, {
+            "source": "source/framework/app/app.pri",
+            "target": "source/framework/%{ProjectName}/%{ProjectName}.pri"
+        }, {
+            "source": "source/framework/app/main.cpp",
+            "target": "source/framework/%{ProjectName}/main.cpp"
         }]
     }]
 }

@@ -19,9 +19,9 @@ J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
 }
 
 %{ComponentClass}::%{ComponentClass}(IJAttempter *attemper)
-    : q_attempter(attemper)
+    : d_attempter(attemper)
 @if '%{IncludeIJComponentUi}'
-    , q_ui(0)
+    , d_ui(0)
 @endif
 {
 
@@ -30,9 +30,9 @@ J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
 %{ComponentClass}::~%{ComponentClass}()
 {
 @if '%{IncludeIJComponentUi}'
-    if (q_ui) {
-        q_ui->deleteLater();
-        q_ui = 0;
+    if (d_ui) {
+        d_ui->deleteLater();
+        d_ui = 0;
     }
 @endif
 }
@@ -41,7 +41,7 @@ bool %{ComponentClass}::loadInterface()
 {
 @if !'%{IncludeDynamicLayout}' && '%{IncludeJObserver}'
     // 订阅消息
-    q_attempter->notifier().beginGroup(this)
+    d_attempter->notifier().beginGroup(this)
             .endGroup();
 
 @endif
@@ -67,7 +67,7 @@ void %{ComponentClass}::releaseInterface()
 @if !'%{IncludeDynamicLayout}' && '%{IncludeJObserver}'
 
     // 取消订阅消息
-    q_attempter->notifier().remove(this);
+    d_attempter->notifier().remove(this);
 @endif
 }
 
@@ -105,7 +105,7 @@ void %{ComponentClass}::attach()
 {
 @if  '%{IncludeJObserver}'
     // 订阅消息
-    q_attempter->notifier().beginGroup(this)
+    d_attempter->notifier().beginGroup(this)
             .endGroup();
 
 @endif
@@ -118,7 +118,7 @@ void %{ComponentClass}::detach()
 
 @if  '%{IncludeJObserver}'
     // 取消订阅消息
-    q_attempter->notifier().remove(this);
+    d_attempter->notifier().remove(this);
 @endif
 }
 
@@ -130,15 +130,15 @@ void *%{ComponentClass}::createWindow(void *parent, const std::string &objectNam
     Q_UNUSED(objectName);
 
     //
-    if (q_ui) {
+    if (d_ui) {
         Q_ASSERT(false);
         return 0;
     }
 
     //
-    q_ui = new %{UiClassName}(*q_attempter);
+    d_ui = new %{UiClassName}(*d_attempter);
 
-    return qobject_cast<QWidget *>(q_ui);
+    return qobject_cast<QWidget *>(d_ui);
 }
 
 @endif

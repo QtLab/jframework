@@ -23,7 +23,7 @@ private:
 @if '%{IncludeQSharedData}'
     , data(new %{UiClassName}Data(attempter)
 @else
-    , q_attempter(attempter)
+    , d_attempter(attempter)
 @endif
 @elsif '%{UiClassBase}' === 'QWidget' || '%{UiClassBase}' === 'QDialog' || '%{UiClassBase}' === 'QMainWindow'
 %{UiClassName}::%{UiClassName}(IJAttempter &attempter, QWidget *parent)
@@ -31,14 +31,14 @@ private:
 @if '%{IncludeQSharedData}'
     , data(new %{UiClassName}Data(attempter)
 @else
-    , q_attempter(attempter)
+    , d_attempter(attempter)
 @endif
 @else
 %{UiClassName}::%{UiClassName}(IJAttempter &attempter)
 @if '%{IncludeQSharedData}'
     : data(new %{UiClassName}Data(attempter)
 @else
-    : q_attempter(attempter)
+    : d_attempter(attempter)
 @endif
 @endif
 {

@@ -48,7 +48,7 @@ private:
 @if '%{IncludeQSharedData}'
     QSharedDataPointer<%{UiClassName}Data> data;
 @else
-    IJAttempter &q_attempter;
+    IJAttempter &d_attempter;
 @endif
 };
 %{JS: Cpp.closeNamespaces('%{UiClass}')}

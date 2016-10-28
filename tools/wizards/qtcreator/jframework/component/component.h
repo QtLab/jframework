@@ -71,9 +71,9 @@ public:
 protected:
 
 private:
-    IJAttempter *q_attempter;
+    IJAttempter *d_attempter;
 @if '%{IncludeIJComponentUi}'
-    %{UiClassName} *q_ui;
+    %{UiClassName} *d_ui;
 @endif
 };
 
