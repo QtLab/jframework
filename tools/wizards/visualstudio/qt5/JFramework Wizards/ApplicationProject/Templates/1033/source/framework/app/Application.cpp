@@ -69,7 +69,7 @@ IJFrameFacade * C[!output APP_CLASS_NAME]App::LoadFrameFacade()
 	}
 
 	// 获取 FrameFacadeInstance 导出接口
-	typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int);
+	typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int, const char*);
 	FrameFacadeInstace frameFacadeInstace =
 		(FrameFacadeInstace)::GetProcAddress(hFrameworkDir, "FrameFacadeInstace");
 	if (frameFacadeInstace == NULL)
@@ -85,6 +85,7 @@ IJFrameFacade * C[!output APP_CLASS_NAME]App::LoadFrameFacade()
 #else
 			0
 #endif
+            , "[!output APP_NAME]"
 		)));
 	if (frameFacade == NULL)
 	{

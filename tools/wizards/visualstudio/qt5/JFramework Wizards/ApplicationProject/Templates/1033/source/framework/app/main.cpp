@@ -16,7 +16,7 @@ J_EXTERN_C J_ATTR_EXPORT const char* appDirPath()
 {
     static std::string _path = "";
     if (_path.empty()) {
-#ifdef __unix_
+#ifdef __unix__
         std::stringstream ss;
         ss << "/proc/" << getpid() << "/exe";
 #endif
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
             .append("jframeworkdir").append(librarySuffix(false));
 
     // 获取 FrameFacadeInstace 导出接口
-    typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int);
+    typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int, const char*);
     FrameFacadeInstace frameFacadeInstace = (FrameFacadeInstace)
             JLibrary::resolve(filePath, "FrameFacadeInstace");
     if (!frameFacadeInstace) {
@@ -150,6 +150,7 @@ int main(int argc, char *argv[])
                            #else
                                0
                            #endif  // _MSC_VER
+                               , "[!output APP_NAME]"
                                )));
     if (!frameFacade) {
         return -1;      // 获取实例失败

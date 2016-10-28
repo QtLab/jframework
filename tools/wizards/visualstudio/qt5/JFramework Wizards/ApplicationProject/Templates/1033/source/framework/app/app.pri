@@ -5,6 +5,10 @@
 #-------------------------------------------------
 
 ##
+THIS_DIR = $$PWD/../../..
+win32:$$replace(THIS_DIR, /, \\)
+
+##
 win32:CONFIG(debug, debug|release):debug_suffix=d
 
 ##

@@ -21,9 +21,9 @@ J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
 }
 
 [!output COMPONENT_CLASS_NAME]::[!output COMPONENT_CLASS_NAME](IJAttempter *attemper)
-    : q_attempter(attemper)
+    : d_attempter(attemper)
 [!if INCLUDE_IJCOMPONENTUI]
-    , q_ui(0)
+    , d_ui(0)
 [!endif]
 {
 
@@ -32,9 +32,9 @@ J_EXTERN_C J_ATTR_EXPORT void *CreateComponent(void* attemper)
 [!output COMPONENT_CLASS_NAME]::~[!output COMPONENT_CLASS_NAME]()
 {
 [!if INCLUDE_IJCOMPONENTUI]
-    if (q_ui) {
-        q_ui->deleteLater();
-        q_ui = 0;
+    if (d_ui) {
+        d_ui->deleteLater();
+        d_ui = 0;
     }
 [!endif]
 }
@@ -43,7 +43,7 @@ bool [!output COMPONENT_CLASS_NAME]::loadInterface()
 {
 [!if !INCLUDE_DYNAMIC_LAYOUT && INCLUDE_JOBSERVER]
     // 订阅消息
-    q_attempter->notifier().beginGroup(this)
+    d_attempter->notifier().beginGroup(this)
             .endGroup();
 
 [!endif]
@@ -69,7 +69,7 @@ void [!output COMPONENT_CLASS_NAME]::releaseInterface()
 [!if !INCLUDE_DYNAMIC_LAYOUT && INCLUDE_JOBSERVER]
 
     // 取消订阅消息
-    q_attempter->notifier().remove(this);
+    d_attempter->notifier().remove(this);
 [!endif]
 }
 
@@ -107,7 +107,7 @@ void [!output COMPONENT_CLASS_NAME]::attach()
 {
 [!if INCLUDE_JOBSERVER]
     // 订阅消息
-    q_attempter->notifier().beginGroup(this)
+    d_attempter->notifier().beginGroup(this)
             .endGroup();
 
 [!endif]
@@ -120,7 +120,7 @@ void [!output COMPONENT_CLASS_NAME]::detach()
 
 [!if INCLUDE_JOBSERVER]
     // 取消订阅消息
-    q_attempter->notifier().remove(this);
+    d_attempter->notifier().remove(this);
 [!endif]
 }
 
@@ -132,15 +132,15 @@ void *[!output COMPONENT_CLASS_NAME]::createWindow(void *parent, const std::stri
     Q_UNUSED(objectName);
 
     //
-    if (q_ui) {
+    if (d_ui) {
         Q_ASSERT(false);
         return 0;
     }
 
     //
-    q_ui = new [!output COMPONENT_UI_CLASS_NAME](*q_attempter);
+    d_ui = new [!output COMPONENT_UI_CLASS_NAME](*d_attempter);
 
-    return qobject_cast<QWidget *>(q_ui);
+    return qobject_cast<QWidget *>(d_ui);
 }
 
 [!endif]

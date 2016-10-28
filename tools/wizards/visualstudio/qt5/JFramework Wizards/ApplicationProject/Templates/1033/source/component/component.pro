@@ -4,11 +4,31 @@
 #
 #-------------------------------------------------
 
+##
+JFrameAppName = $$(JFRAME_APPNAME)
+
+## check
+equals(JFrameAppName, "") {
+    error("Please set the project environment 'JFRAME_APPNAME'!")
+}
+
 TEMPLATE = subdirs
 CONFIG += ordered
 
+## default subdirs
 SUBDIRS += \
-    jframe \
-    com_demo1 \
-    com_demo2 \
-    com_demo3
+
+## for project [!output APP_NAME]
+equals(JFrameAppName, "[!output APP_NAME]") {
+
+    SUBDIRS += \
+        $$JFrameAppName
+
+} else:
+
+## for project xxx
+equals(JFrameAppName, "xxx") {
+
+    SUBDIRS += \
+
+}

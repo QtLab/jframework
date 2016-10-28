@@ -22,8 +22,9 @@ function OnFinish(selProj, selObj) {
         var templatePath = wizard.FindSymbol("TEMPLATES_PATH");
         //var exclusive = wizard.FindSymbol("CLOSE_SOLUTION");
         // modules
-        //var appName = wizard.FindSymbol("APP_NAME");
+        var appName = wizard.FindSymbol("APP_NAME");
         //var appClassName = wizard.FindSymbol("APP_CLASS_NAME");
+        var workModeName = wizard.FindSymbol("WORK_MODE_NAME");
 
         //////////
 
@@ -78,8 +79,10 @@ strProjectPath: The path that the project will be created in
 ******************************************************************************/
 function CreateQtProject(projectName, projectPath) {
     try {
+        var appName = wizard.FindSymbol("APP_NAME");
+        var workModeName = wizard.FindSymbol("WORK_MODE_NAME");
         var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
-        var projectTemplatePath = templatePath + "source\\framework\\application\\";
+        var projectTemplatePath = templatePath + "source\\framework\\app\\";
         var solutionPath = wizard.FindSymbol("SOLUTION_PATH");
         var solution = dte.Solution;
         var solutionName = "";
@@ -126,24 +129,27 @@ function AddSolutionFolders() {
     var projectName = wizard.FindSymbol("PROJECT_NAME");
     var templatePath = wizard.FindSymbol("TEMPLATES_PATH") + "\\";
     var solution = dte.Solution;
+    var appName = wizard.FindSymbol("APP_NAME");
+    var workModeName = wizard.FindSymbol("WORK_MODE_NAME");
     /// ---------------------------------------
     // -- config --
     var configProjItem = solution.AddSolutionFolder("config");
-    // -- config/frame --
-    var frameProjItem = configProjItem.Object.AddSolutionFolder("frame");
-    // -- config/frame - files --
-    AddSolutionFile(frameProjItem, GetTargetName("config/frame/jframe_global.xml"), true);
-    AddSolutionFile(frameProjItem, GetTargetName("config/frame/jframe_layout.xml"), true);
-    AddSolutionFile(frameProjItem, GetTargetName("config/frame/jframe_logging.conf"), true);
-    // -- config/workmode_1 -- 
-    var workMode1ProjItem = configProjItem.Object.AddSolutionFolder("workmode_1");
-    AddSolutionFile(workMode1ProjItem, GetTargetName("config/workmode_1/jframe_component.xml"), true);
+    // -- config/app --
+    var appProjItem = configProjItem.Object.AddSolutionFolder(appName);
+    AddSolutionFile(appProjItem, GetTargetName("config/" + appName + "/jframe_global.xml"), true);
+    AddSolutionFile(appProjItem, GetTargetName("config/" + appName + "/jframe_logging.conf"), true);
+    // -- config/workmode -- 
+    var workModeProjItem = appProjItem.Object.AddSolutionFolder("workmode_1");
+    AddSolutionFile(workModeProjItem, GetTargetName("config/" + appName + "/workmode_1/jframe_component.xml"), true);
+    AddSolutionFile(workModeProjItem, GetTargetName("config/" + appName + "/workmode_1/jframe_layout.xml"), true);
     // -- 3rdpart --
     var thirdPartProjItem = solution.AddSolutionFolder("3rdpart");
     // -- core --
     var coreProjItem = solution.AddSolutionFolder("core");
     // -- component --
     var componentProjItem = solution.AddSolutionFolder("component");
+    // -- component/app --
+    var componentAppProjItem = componentProjItem.AddSolutionFolder(appName);
     /// ---------------------------------------
 
     /// remove folders
@@ -242,8 +248,10 @@ function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
         var targetName = sourceName;
         var solutionPath = wizard.FindSymbol('SOLUTION_PATH');
         var projectName = wizard.FindSymbol('PROJECT_NAME');
+        var appName = wizard.FindSymbol("APP_NAME");
+        var workModeName = wizard.FindSymbol("WORK_MODE_NAME");
         // -- . --
-        if (sourceName == "jframework.pro") {
+        if (sourceName == "app.pro") {
             targetName = solutionPath + "" + wizard.FindSymbol("VS_SOLUTION_NAME") + ".pro";
         }
         // -- bin --
@@ -254,29 +262,35 @@ function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
         else if (sourceName == "config/config.pri") {
             targetName = solutionPath + "config/config.pri";
         }
-        // -- config/frame --
-        else if (sourceName == "config/frame/jframe_global.xml") {
-            targetName = solutionPath + "config/frame/jframe_global.xml";
-        } else if (sourceName == "config/frame/jframe_layout.xml") {
-            targetName = solutionPath + "config/frame/jframe_layout.xml";
-        } else if (sourceName == "config/frame/jframe_logging.conf") {
-            targetName = solutionPath + "config/frame/jframe_logging.conf";
+        // -- config/app --
+        else if (sourceName == "config/app/app.pri") {
+            targetName = solutionPath + "config/" + appName + "/" + appName + ".pri";
+        } else if (sourceName == "config/app/jframe_global.xml") {
+            targetName = solutionPath + "config/" + appName + "/jframe_global.xml";
+        } else if (sourceName == "config/app/jframe_logging.conf") {
+            targetName = solutionPath + "config/" + appName + "/jframe_logging.conf";
         }
-        // -- config/resource --
-        else if (sourceName == "config/resource/app.ico") {
-            targetName = solutionPath + "config/resource/app.ico";
-        } else if (sourceName == "config/resource/finish.png") {
-            targetName = solutionPath + "config/resource/finish.png";
-        } else if (sourceName == "config/resource/splash.png") {
-            targetName = solutionPath + "config/resource/splash.png";
+        // -- config/app/resource --
+        else if (sourceName == "config/app/resource/app.ico") {
+            targetName = solutionPath + "config/" + appName + "/resource/app.ico";
+        } else if (sourceName == "config/app/resource/finish.png") {
+            targetName = solutionPath + "config/" + appName + "/resource/finish.png";
+        } else if (sourceName == "config/app/resource/splash.png") {
+            targetName = solutionPath + "config/" + appName + "/resource/splash.png";
         }
         // -- config/workmode_1 --
-        else if (sourceName == "config/workmode_1/jframe_component.xml") {
-            targetName = solutionPath + "config/workmode_1/jframe_component.xml";
+        else if (sourceName == "config/app/workmode_1/jframe_component.xml") {
+            targetName = solutionPath + "config/" + appName + "/" + workModeName + "/jframe_component.xml";
+        } else if (sourceName == "config/app/workmode_1/jframe_layout.xml") {
+            targetName = solutionPath + "config/" + appName + "/" + workModeName + "/jframe_layout.xml";
         }
         // -- source -- 
         else if (sourceName == "source/source.pro") {
             targetName = solutionPath + "source/source.pro";
+        }
+        // -- source/3rdpart --
+        else if (sourceName == "source/3rdpart/3rdpart.pro") {
+            targetName = solutionPath + "source/3rdpart/3rdpart.pro";
         }
         // -- source/common --
         else if (sourceName == "source/common/build.pri") {
@@ -290,42 +304,50 @@ function GetTargetName(sourceName, projectName, resourcePath, helpPath) {
         else if (sourceName == "source/component/component.pro") {
             targetName = solutionPath + "source/component/component.pro";
         }
+        // -- source/component/app --
+        else if (sourceName == "source/component/app/app.pro") {
+            targetName = solutionPath + "source/component/" + appName + "/" + appName + ".pro";
+        }
+        // -- source/core --
+        else if (sourceName == "source/core/core.pro") {
+            targetName = solutionPath + "source/core/core.pro";
+        }
         // -- source/framework --
         else if (sourceName == "source/framework/framework.pro") {
             targetName = solutionPath + "source/framework/framework.pro";
         }
         // -- source/framework/application --
-        else if (sourceName == "source/framework/application/res/Application.ico") {
+        else if (sourceName == "source/framework/app/app.pri") {
+            targetName = appName + ".pri";
+        } else if (sourceName == "source/framework/app/app.pro") {
+            targetName = appName + ".pro";
+        } else if (sourceName == "source/framework/app/res/app.ico") {
             targetName = "res/" + projectName + ".ico";
-        } else if (sourceName == "source/framework/application/res/Application.rc2") {
+        } else if (sourceName == "source/framework/app/res/Application.rc2") {
             targetName = "res/" + projectName + ".rc2";
-        } else if (sourceName == "source/framework/application/Application.cpp") {
+        } else if (sourceName == "source/framework/app/Application.cpp") {
             targetName = projectName + ".cpp";
-        } else if (sourceName == "source/framework/application/Application.h") {
+        } else if (sourceName == "source/framework/app/Application.h") {
             targetName = projectName + ".h";
-        } else if (sourceName == "source/framework/application/Application.pri") {
-            targetName = projectName + ".pri";
-        } else if (sourceName == "source/framework/application/Application.pro") {
-            targetName = projectName + ".pro";
-        } else if (sourceName == "source/framework/application/Application.rc") {
+        } else if (sourceName == "source/framework/app/Application.rc") {
             targetName = projectName + ".rc";
-        } else if (sourceName == "source/framework/application/ChildView.cpp") {
+        } else if (sourceName == "source/framework/app/ChildView.cpp") {
             targetName = "ChildView.cpp";
-        } else if (sourceName == "source/framework/application/ChildView.h") {
+        } else if (sourceName == "source/framework/app/ChildView.h") {
             targetName = "ChildView.h";
-        } else if (sourceName == "source/framework/application/main.cpp") {
+        } else if (sourceName == "source/framework/app/main.cpp") {
             targetName = "main.cpp";
-        } else if (sourceName == "source/framework/application/MainFrm.cpp") {
+        } else if (sourceName == "source/framework/app/MainFrm.cpp") {
             targetName = "MainFrm.cpp";
-        } else if (sourceName == "source/framework/application/MainFrm.h") {
+        } else if (sourceName == "source/framework/app/MainFrm.h") {
             targetName = "MainFrm.h";
-        } else if (sourceName == "source/framework/application/Resource.h") {
+        } else if (sourceName == "source/framework/app/Resource.h") {
             targetName = "Resource.h";
-        } else if (sourceName == "source/framework/application/stdafx.cpp") {
+        } else if (sourceName == "source/framework/app/stdafx.cpp") {
             targetName = "stdafx.cpp";
-        } else if (sourceName == "source/framework/application/stdafx.h") {
+        } else if (sourceName == "source/framework/app/stdafx.h") {
             targetName = "stdafx.h";
-        } else if (sourceName == "source/framework/application/targetver.h") {
+        } else if (sourceName == "source/framework/app/targetver.h") {
             targetName = "targetver.h";
         }
         return targetName;
@@ -349,35 +371,42 @@ function CopyCustomFiles(selProj) {
 
     try {
         // -- . --
-        CopyFileWithTargetName("jframework.pro", templatePath, projectName);
+        CopyFileWithTargetName("app.pro", templatePath, projectName);
         // -- bin --
         CopyFileWithTargetName("bin/jframeworkdir.dll", templatePath, projectName);
         // -- config --
         CopyFileWithTargetName("config/config.pri", templatePath, projectName);
-        // -- config/frame --
-        CopyFileWithTargetName("config/frame/jframe_global.xml", templatePath, projectName);
-        CopyFileWithTargetName("config/frame/jframe_layout.xml", templatePath, projectName);
-        CopyFileWithTargetName("config/frame/jframe_logging.conf", templatePath, projectName);
-        // -- config/resource --
-        CopyFileWithTargetName("config/resource/app.ico", templatePath, projectName);
-        CopyFileWithTargetName("config/resource/finish.png", templatePath, projectName);
-        CopyFileWithTargetName("config/resource/splash.png", templatePath, projectName);
-        // -- config/workmode_1 --
-        CopyFileWithTargetName("config/workmode_1/jframe_component.xml", templatePath, projectName);
+        // -- config/app --
+        CopyFileWithTargetName("config/app/app.pri", templatePath, projectName);
+        CopyFileWithTargetName("config/app/jframe_global.xml", templatePath, projectName);
+        CopyFileWithTargetName("config/app/jframe_logging.conf", templatePath, projectName);
+        // -- config/app/resource --
+        CopyFileWithTargetName("config/app/resource/app.ico", templatePath, projectName);
+        CopyFileWithTargetName("config/app/resource/finish.png", templatePath, projectName);
+        CopyFileWithTargetName("config/app/resource/splash.png", templatePath, projectName);
+        // -- config/app/workmode_1 --
+        CopyFileWithTargetName("config/app/workmode_1/jframe_component.xml", templatePath, projectName);
+        CopyFileWithTargetName("config/app/workmode_1/jframe_layout.xml", templatePath, projectName);
         // -- source --
         CopyFileWithTargetName("source/source.pro", templatePath, projectName);
+        // -- source/3rdpart --
+        CopyFileWithTargetName("source/3rdpart/3rdpart.pro", templatePath, projectName);
         // -- source/comon --
         CopyFileWithTargetName("source/common/build.pri", templatePath, projectName);
         CopyFileWithTargetName("source/common/copy.ignore", templatePath, projectName);
         CopyFileWithTargetName("source/common/precomp.h", templatePath, projectName);
         // -- source/component --
         CopyFileWithTargetName("source/component/component.pro", templatePath, projectName);
+        // -- source/component/app --
+        CopyFileWithTargetName("source/component/app/app.pro", templatePath, projectName);
+        // -- source/core --
+        CopyFileWithTargetName("source/core/core.pro", templatePath, projectName);
         // -- source/framework --
         CopyFileWithTargetName("source/framework/framework.pro", templatePath, projectName);
-        // -- source/application --
-        CopyFileWithTargetName("source/framework/application/Application.pri", templatePath, projectName);
-        CopyFileWithTargetName("source/framework/application/Application.pro", templatePath, projectName);
-        CopyFileWithTargetName("source/framework/application/main.cpp", templatePath, projectName);
+        // -- source/framework/app --
+        CopyFileWithTargetName("source/framework/app/app.pri", templatePath, projectName);
+        CopyFileWithTargetName("source/framework/app/app.pro", templatePath, projectName);
+        CopyFileWithTargetName("source/framework/app/main.cpp", templatePath, projectName);
     } catch (e) {
         if (e.description.length != 0)
             SetErrorInfo(e);

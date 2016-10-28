@@ -4,4 +4,8 @@
 #
 #-------------------------------------------------
 
-include($$PWD/$$(JFRAME_APPNAME)/$$(JFRAME_APPNAME).pri)
+OTHER_FILES += \
+    $$PWD/*.xml \
+    $$PWD/*.conf \
+    $$PWD/*.ini \
+    $$PWD/workmode_1/*.*

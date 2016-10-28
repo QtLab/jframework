@@ -3,9 +3,7 @@
 
 #ifdef _AFXDLL
 #include <afxwin.h>
-#endif
-
-#ifdef WIN32
+#elif defined(WIN32) && defined(DEBUG)
 #include <Windows.h>
 #endif
 
@@ -89,11 +87,17 @@
 #include "jwt_inc.h"
 #endif
 
+#if defined(JCUSTOMPLOT_LIB) && !defined(JCUSTOMPLOT_BUILD)
+#include "jcustomplot_inc.h"
+#endif
+
 //
 #if QT_VERSION < 0x050000
 #ifndef QStringLiteral
 #define QStringLiteral(_str_) QString(_str_)
 #endif
 #endif
+
+// customer
 
 #endif // PRECOMP_H

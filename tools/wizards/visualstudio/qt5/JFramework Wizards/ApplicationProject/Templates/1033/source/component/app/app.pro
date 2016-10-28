@@ -4,4 +4,7 @@
 #
 #-------------------------------------------------
 
-include($$PWD/$$(JFRAME_APPNAME)/$$(JFRAME_APPNAME).pri)
+TEMPLATE = subdirs
+CONFIG += ordered
+
+SUBDIRS += \

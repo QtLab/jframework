@@ -6,6 +6,9 @@
 
 THIS_DIR = $$PWD/../../..
 
+##
+JFrameAppName = $$(JFRAME_APPNAME)
+
 QT     -= core gui
 CONFIG -= app_bundle
 #CONFIG -= qt
@@ -17,13 +20,13 @@ DESTDIR = $$THIS_DIR/bin
 ##
 win32:{
     lessThan(QT_MAJOR_VERSION, 5):{
-        CONFIG(debug, debug|release):TARGET = [!output APP_NAME]d
-        else:TARGET = [!output APP_NAME]
+        CONFIG(debug, debug|release):TARGET = $${JFrameAppName}d
+        else:TARGET = $${JFrameAppName}
     } else {
-        TARGET = $$qtLibraryTarget([!output APP_NAME])
+        TARGET = $$qtLibraryTarget($${JFrameAppName})
     }
 } else {
-    TARGET = $$qtLibraryTarget([!output APP_NAME])
+    TARGET = $$qtLibraryTarget($${JFrameAppName})
 }
 
 ## use JLibrary class
@@ -48,10 +51,10 @@ OTHER_FILES += \
 #######################################################
 
 QMAKE_TARGET_COMPANY = "Smartsoft"
-QMAKE_TARGET_DESCRIPTION = "[!output PROJECT_NAME] Instance"
+QMAKE_TARGET_DESCRIPTION = "$${JFrameAppName}"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2016 Smartsoft Inc."
 
-win32:RC_ICONS = $$THIS_DIR/config/resource/app.ico
+win32:RC_ICONS = $$THIS_DIR/config/$${JFrameAppName}/resource/app.ico
 
 VER_MAJ = 1
 VER_MIN = 0
@@ -109,12 +112,12 @@ win32|unix: {
     ## remove files
     dstdir = $$DESTDIR/
     win32:dstdir = $$replace(dstdir, /, \\)
-    exists("$${dstdir}[!output APP_NAME]*.exp"):commands += $(DEL_FILE) "$${dstdir}[!output APP_NAME]*.exp" &
-    exists("$${dstdir}[!output APP_NAME]*.ilk"):commands += $(DEL_FILE) "$${dstdir}[!output APP_NAME]*.ilk" &
-    exists("$${dstdir}[!output APP_NAME]*.lib"):commands += $(DEL_FILE) "$${dstdir}[!output APP_NAME]*.lib" &
+    exists("$${dstdir}$${JFrameAppName}*.exp"):commands += $(DEL_FILE) "$${dstdir}$${JFrameAppName}*.exp" &
+    exists("$${dstdir}$${JFrameAppName}*.ilk"):commands += $(DEL_FILE) "$${dstdir}$${JFrameAppName}*.ilk" &
+    exists("$${dstdir}$${JFrameAppName}*.lib"):commands += $(DEL_FILE) "$${dstdir}$${JFrameAppName}*.lib" &
 
     #
-    exists($$PWD/[!output APP_NAME].pri):include($$PWD/[!output APP_NAME].pri)
+    exists($$PWD/$${JFrameAppName}.pri):include($$PWD/$${JFrameAppName}.pri)
 
     QMAKE_POST_LINK += $$commands
 }

@@ -25,7 +25,7 @@ private:
 [!if INCLUDE_QSHAREDDATA]
     , data(new [!output COMPONENT_UI_CLASS_NAME]Data(attempter)
 [!else]
-    , q_attempter(attempter)
+    , d_attempter(attempter)
 [!endif]
 [!else]
 [!if UI_BASE_CLASS_INERITS_QWIDGET]
@@ -34,14 +34,14 @@ private:
 [!if INCLUDE_QSHAREDDATA]
     , data(new [!output COMPONENT_UI_CLASS_NAME]Data(attempter)
 [!else]
-    , q_attempter(attempter)
+    , d_attempter(attempter)
 [!endif]
 [!else]
 [!output COMPONENT_UI_CLASS_NAME]::[!output COMPONENT_UI_CLASS_NAME](IJAttempter &attempter)
 [!if INCLUDE_QSHAREDDATA]
     : data(new [!output COMPONENT_UI_CLASS_NAME]Data(attempter)
 [!else]
-    : q_attempter(attempter)
+    : d_attempter(attempter)
 [!endif]
 [!endif]
 [!endif]

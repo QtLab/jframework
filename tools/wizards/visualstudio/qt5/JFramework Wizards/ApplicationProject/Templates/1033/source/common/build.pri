@@ -85,7 +85,7 @@ contains(DEFINES, PRO_COMPONENT) {
         DESTDIR = $$THIS_DIR/component/jframe/$$TARGET
     } else {
         ##
-        DESTDIR = $$THIS_DIR/component/$$TARGET
+        DESTDIR = $$THIS_DIR/component/$$(JFRAME_APPNAME)/$$TARGET
     }
 
     !contains(DEFINES, NO_JFRAME_LIBS) {
@@ -187,7 +187,45 @@ contains(DEFINES, JWT_LIB):!contains(DEFINES, JWT_BUILD) {
     DEPENDPATH += $$JFRAME_DIR/include/3rdpart/jwt
 }
 
+contains(DEFINES, JCUSTOMPLOT_LIB):!contains(DEFINES, JCUSTOMPLOT_BUILD) {
+    ## import jcustomplot library
+    win32:CONFIG(release, debug|release):LIBS += -L$$JFRAME_DIR/lib/3rdpart -ljcustomplot
+    else:win32:CONFIG(debug, debug|release):LIBS += -L$$JFRAME_DIR/lib/3rdpart -ljcustomplotd
+    else:unix:LIBS += -L$$JFRAME_DIR/lib/3rdpart -ljcustomplot
+    INCLUDEPATH += $$JFRAME_DIR/include/3rdpart/jcustomplot
+    DEPENDPATH += $$JFRAME_DIR/include/3rdpart/jcustomplot
+}
+
 contains(DEFINES, BCG_LIB):!contains(DEFINES, BCG_BUILD) {
     ## import BCGCBPro library
     error(not supported!)
 }
+
+contains(DEFINES, ICE_LIB) {
+    exists("$$(ICE_HOME)") {
+        ## import ice library
+        win32:CONFIG(release, debug|release):LIBS += -L$$(ICE_HOME)/lib -lice
+        else:win32:CONFIG(debug, debug|release):LIBS += -L$$(ICE_HOME)/lib -liced
+        else:unix:LIBS += -L$$(ICE_HOME)/lib -lice
+        INCLUDEPATH += $$(ICE_HOME)/include
+        DEPENDPATH += $$(ICE_HOME)/include
+    } else {
+        ##
+    }
+}
+
+contains(DEFINES, ICEGRID_LIB) {
+    exists("$$(ICE_HOME)") {
+        ## import ice library
+        win32:CONFIG(release, debug|release):LIBS += -L$$(ICE_HOME)/lib -licegrid
+        else:win32:CONFIG(debug, debug|release):LIBS += -L$$(ICE_HOME)/lib -licegridd
+        else:unix:LIBS += -L$$(ICE_HOME)/lib -licegrid
+        INCLUDEPATH += $$(ICE_HOME)/include
+        DEPENDPATH += $$(ICE_HOME)/include
+    } else {
+        ##
+    }
+}
+
+## customer
+

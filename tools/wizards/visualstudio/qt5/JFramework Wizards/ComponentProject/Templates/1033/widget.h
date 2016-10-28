@@ -54,7 +54,7 @@ private:
 [!if INCLUDE_QSHAREDDATA]
     QSharedDataPointer<[!output COMPONENT_UI_CLASS_NAME]Data> data;
 [!else]
-    IJAttempter &q_attempter;
+    IJAttempter &d_attempter;
 [!endif]
 };
 

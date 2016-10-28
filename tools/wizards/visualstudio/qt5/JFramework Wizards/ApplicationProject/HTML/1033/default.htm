@@ -13,6 +13,7 @@
     <symbol name="BCG_MODULE" type="checkbox" value="true"></symbol>
     <!-- modules -->
     <symbol name="APP_NAME" type="text" value=""></symbol>
+    <symbol name="WORK_MODE_NAME" type="text" value=""></symbol>
     <symbol name="APP_CLASS_NAME" type="text" value=""></symbol>
     <symbol name="INCLUDE_PRECOMPILED" type="checkbox" value="true"></symbol>
 </head>
@@ -292,6 +293,7 @@
             !window.external.dte.VCLanguageManager.IsReservedName(friendlyProjectName)) {
             // modules
             window.external.AddSymbol("APP_NAME", friendlyProjectName);
+            window.external.AddSymbol("WORK_MODE_NAME", "workmode_1");
             //
             window.external.AddSymbol("APP_CLASS_NAME", UnderScoreCaseToCamelCase(friendlyProjectName));
         }
