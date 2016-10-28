@@ -9,6 +9,7 @@
 struct FrameFilterData;
 class IJAttempter;
 class QWidget;
+class QDomElement;
 
 class FrameFilter : public QObject
 {
@@ -31,6 +32,8 @@ protected:
 private:
     QWidget *parseMainWindow();
     bool loadConfig();
+
+    static QDomElement findAppElement(const QDomElement &emParent);
 
 private:
     FrameFilterData *data;

@@ -181,11 +181,50 @@ bool FrameFilter::loadConfig()
         return false;
     }
 
+    // 查找指定软件名称节点
+    QDomElement emApp = findAppElement(emRoot);
+    if (emApp.isNull()) {
+        return false;   // 未找到
+    }
+
     // 获取MainWindow节点
-    QDomElement emMainWindow = emRoot.firstChildElement("mainWindow");
+    QDomElement emMainWindow = emApp.firstChildElement("mainWindow");
     if (emMainWindow.isNull()) {
         return false;
     }
 
     return true;
+}
+
+QDomElement FrameFilter::findAppElement(const QDomElement &emParent)
+{
+    // 参数检测
+    if (emParent.isNull()) {
+        return QDomElement();   // 无效
+    }
+
+    // 获取软件名称
+    const QString appName = QString::fromStdString(jframeFacade()->appName());
+
+    // 查找指定软件名称节点
+    QDomElement emApp;
+    for (emApp = emParent.firstChildElement("app");
+         !emApp.isNull();
+         emApp = emApp.nextSiblingElement("app")) {
+        if (emApp.hasAttribute("name") && emApp.attribute("name") == appName) {
+            break;
+        }
+    }
+
+    // 未找到，则默认使用第一个没有指定软件名称的节点
+    if (emApp.isNull()) {
+        emApp = emParent.firstChildElement("app");
+        if (emApp.isNull()
+                || emApp.hasAttribute("name")
+                && !emApp.attribute("name").isEmpty()) {
+            return QDomElement();   // 未找到
+        }
+    }
+
+    return emApp;
 }

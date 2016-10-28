@@ -167,17 +167,17 @@ std::list<IJComponent *> JAttempter::allComponents() const
     return components;
 }
 
-int JAttempter::currentWorkModeId() const
+int JAttempter::workModeId() const
 {
     return q_workModeId;
 }
 
-std::string JAttempter::currentWorkModeName() const
+std::string JAttempter::workModeName() const
 {
     return q_workModeName;
 }
 
-std::string JAttempter::currentWorkModeConfigDirName() const
+std::string JAttempter::workModeDir() const
 {
     return q_workModeDir;
 }
@@ -271,8 +271,14 @@ bool JAttempter::loadConfig()
         return false;   // 无效
     }
 
+    // 查找指定软件名称节点
+    QDomElement emApp = JFrameLayout::findAppElement(emRoot);
+    if (emApp.isNull()) {
+        return false;   // 未找到
+    }
+
     // 获取工作模式节点
-    QDomElement emWorkMode = emRoot.firstChildElement("workMode");
+    QDomElement emWorkMode = emApp.firstChildElement("workMode");
     if (emWorkMode.isNull()) {
         return false;   // 无效
     }
@@ -285,7 +291,7 @@ bool JAttempter::loadConfig()
     q_workModeDir = jframeFacade()->parsePath(emWorkMode.attribute("dir").toStdString());
 
     // 获取 dbus 节点
-    QDomElement emDBus = emRoot.firstChildElement("dbus");
+    QDomElement emDBus = emApp.firstChildElement("dbus");
     if (!emDBus.isNull()) {
         // enabled
         if (QVariant(emDBus.attribute("enabled", false)).toBool()) {
@@ -304,7 +310,7 @@ bool JAttempter::loadConfig()
     }
 
     // 获取 ice 节点
-    QDomElement emIce = emRoot.firstChildElement("ice");
+    QDomElement emIce = emApp.firstChildElement("ice");
     if (!emIce.isNull()) {
         // enabled
         if (QVariant(emIce.attribute("enabled", false)).toBool()) {
@@ -360,12 +366,12 @@ bool JAttempter::loadInitComponent()
 bool JAttempter::loadAllComponent()
 {
     //
-    const std::string currentWorkModeConfigDirName = this->currentWorkModeConfigDirName();
+    const std::string workModeDir = this->workModeDir();
     std::string frameComponentPath;
-    if (currentWorkModeConfigDirName.empty()) {
-        frameComponentPath = jframeFacade()->configDirPath() + "/frame";
+    if (workModeDir.empty()) {
+        frameComponentPath = jframeFacade()->configDirPath();
     } else {
-        frameComponentPath = currentWorkModeConfigDirName;
+        frameComponentPath = workModeDir;
     }
     frameComponentPath.append("/jframe_component.xml");
 

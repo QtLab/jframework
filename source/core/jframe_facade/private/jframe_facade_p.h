@@ -7,6 +7,7 @@
 // class JFrameFacade
 
 struct JFrameFacadeData;
+class TiXmlElement;
 
 class JFrameFacade : public IJFrameFacade
 {
@@ -27,12 +28,12 @@ public:
 
     // IJFrameFacade interface
 public:
+    std::string appName() const;
     std::string appDirPath() const;
     std::string configDirPath() const;
     std::string thisDirPath() const;
     std::string frameDirPath() const;
     std::string frameGlobalPath() const;
-    std::string frameLayoutPath() const;
 
     std::string frameVersion() const;
     bool frameVersion(int &major, int &minor, int &patch) const;
@@ -103,6 +104,8 @@ private:
 
     //
     bool loadFrameworkDirMethods();
+
+    TiXmlElement *findAppElement(TiXmlElement *emParent);
 
 private:
     bool invokeLog(const std::string &method, int argc, va_list ap);

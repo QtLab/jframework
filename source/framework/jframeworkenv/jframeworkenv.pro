@@ -47,10 +47,8 @@ OTHER_FILES += \
 #######################################################
 
 QMAKE_TARGET_COMPANY = "Smartsoft"
-QMAKE_TARGET_DESCRIPTION = "jframeworkld"
+QMAKE_TARGET_DESCRIPTION = "jframeworkenv"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2016 Smartsoft Inc."
-
-win32:RC_ICONS = $$THIS_DIR/config/resource/app.ico
 
 #VER_MAJ = 1
 #VER_MIN = 0

@@ -39,6 +39,12 @@ public:
     virtual std::string interfaceIdentity() const { return IID_IJFrameLayout; }
 
     /**
+     * @brief 获取框架布局配置文件路径
+     * @return 框架布局配置文件路径
+     */
+    virtual std::string layoutDirPath() const = 0;
+
+    /**
      * @brief 获取接口版本
      * @return 接口版本
      */

@@ -250,53 +250,67 @@ IJFrameLogin *JFrameKernel::frameLogin()
 
 bool JFrameKernel::loadConfig()
 {
-    if (!QFileInfo(QString::fromStdString(jframeFacade()->frameGlobalPath())).isReadable()) {
-        Q_ASSERT_X(false, "Warning", QStringLiteral("框架全局配置文件不存在！")
-                   .toUtf8().data());
+    // 打开框架全局配置文件
+    QFile file(QString::fromStdString(jframeFacade()->frameGlobalPath()));
+    if (!file.exists()) {
+        const QString text = QStringLiteral("框架全局配置文件\"%1\"不存在！")
+                .arg(file.fileName());
+        QMessageBox::warning(jframeLayout()->mainWindow(),
+                             QStringLiteral("警告"), text);
+        return false;   // 文件不存在
+    }
+
+    // 打开文件
+    if (!file.open(QFile::ReadWrite)) {
+        return false;   // 打开失败
+    }
+
+    // 解析文件
+    QString errorMsg;
+    int errorLine = 0, errorColumn = 0;
+    QDomDocument document;
+    if (!document.setContent(&file, &errorMsg, &errorLine, &errorColumn)) {
+        const QString text =
+                QStringLiteral("框架全局配置文件\"%1\"解析失败！\n错误描述：%2\n错误位置：（行号：%3，列号：%4）")
+                .arg(file.fileName())
+                .arg(errorMsg).arg(errorLine).arg(errorColumn);
+        QMessageBox::warning(jframeLayout()->mainWindow(),
+                             QStringLiteral("警告"), text);
         return false;
     }
 
-    // 读取配置文件
-    TiXmlDocument document(jframeFacade()->frameGlobalPath());
-    if (!document.LoadFile(TIXML_ENCODING_UTF8)) {
-        Q_ASSERT_X(false, "Warning",
-                   QStringLiteral("框架全局配置配置文件打\"%1\"开失败！\n错误标识：%2\n错误描述：%3\n错误位置：[%4, %5]")
-                   .arg(QString::fromStdString(jframeFacade()->frameGlobalPath()))
-                   .arg(document.ErrorId()).arg(QString::fromLatin1(document.ErrorDesc()))
-                   .arg(document.ErrorRow()).arg(document.ErrorCol())
-                   .toUtf8().data());
-        return false;
-    }
+    // 关闭文件
+    file.close();
 
     // 获取根节点
-    TiXmlElement *emRoot = document.RootElement();
-    if (!emRoot) {
-        return false;
+    QDomElement emRoot = document.documentElement();
+    if (emRoot.isNull()) {
+        return false;   // 无效
     }
 
-    // 获取logging节点
-    TiXmlElement *emLogging = emRoot->FirstChildElement("logging");
-    if (!emLogging) {
-        return false;
+    // 查找指定软件名称节点
+    QDomElement emApp = JFrameLayout::findAppElement(emRoot);
+    if (emApp.isNull()) {
+        return false;   // 未找到
     }
 
-    //
-    std::string sVal;
+    // 获取 logging 节点
+    QDomElement emLogging = emApp.firstChildElement("logging");
+    if (emLogging.isNull()) {
+        return false;
+    }
 
     // filePath
-    if (emLogging->QueryStringAttribute("filePath", &sVal) != TIXML_SUCCESS) {
+    if (!emLogging.hasAttribute("filePath")) {
         Q_ASSERT_X(false, "Warning", QStringLiteral("未指定框架日志配置文件！[文件：%1]")
                    .arg(jframeFacade()->frameGlobalPath().c_str())
                    .toUtf8().data());
         return false;
     }
 
-    // 替换框架内部变量
-    QString filePath = QString::fromUtf8(emLogging->Attribute("filePath"));
-    filePath.replace("@ConfigDir@", QString::fromStdString(jframeFacade()->configDirPath()));
-
-    // 读取日志配置文件路径属性
-    data->loggingFilePath = filePath.toStdString();
+    // 读取日志配置文件路径属性（并替换框架内部变量）
+    data->loggingFilePath = jframeFacade()->parsePath(
+                emLogging.attribute("filePath").toStdString());
 
     // 文件有效性检测
     if (!QFile::exists(QString::fromStdString(data->loggingFilePath))) {

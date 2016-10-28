@@ -85,7 +85,7 @@ contains(DEFINES, PRO_COMPONENT) {
         DESTDIR = $$THIS_DIR/component/jframe/$$TARGET
     } else {
         ##
-        DESTDIR = $$THIS_DIR/component/$$TARGET
+        DESTDIR = $$THIS_DIR/component/$$(JFRAME_APPNAME)/$$TARGET
     }
 
     !contains(DEFINES, NO_JFRAME_LIBS) {

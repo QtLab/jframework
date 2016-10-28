@@ -357,6 +357,12 @@ public:
     virtual unsigned int interfaceVersion() const { return VER_IJFrameFacade; }
 
     /**
+     * @brief 获取软件名称
+     * @return 软件名称
+     */
+    virtual std::string appName() const = 0;
+
+    /**
      * @brief 获取软件实体路径
      * @return 软件实体路径
      */
@@ -385,12 +391,6 @@ public:
      * @return 框架全局配置文件路径
      */
     virtual std::string frameGlobalPath() const = 0;
-
-    /**
-     * @brief 获取框架布局配置文件路径
-     * @return 框架布局配置文件路径
-     */
-    virtual std::string frameLayoutPath() const = 0;
 
     /**
      * @brief 获取框架版本

@@ -56,7 +56,7 @@ private:
     QString currentConfigModule(const QDomElement &emSystem);
 
     // 解析系统状态
-    bool parseSystemStatus(QDomElement &emRoot, const QString &section,
+    bool parseSystemStatus(QDomElement &emApp, const QString &section,
                            QDomElement &emSystem, QDomElement &emModule);
 
     // 递归创建视图窗口布局

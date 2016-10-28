@@ -1,6 +1,7 @@
 ﻿#include "precomp.h"
 #include "jframewnd.h"
 #include "jattempter.h"
+#include "../layout/jframe_layout_p.h"
 
 JFrameWnd::JFrameWnd(JAttempter *attempter, QWidget *parent, Qt::WindowFlags f)
     : QtRibbon::RibbonMainWindow(parent, f)
@@ -239,8 +240,14 @@ bool JFrameWnd::loadConfig()
         return false;
     }
 
+    // 查找指定软件名称节点
+    QDomElement emApp = JFrameLayout::findAppElement(emRoot);
+    if (emApp.isNull()) {
+        return false;   // 未找到
+    }
+
     // 获取 MainWindow 节点
-    QDomElement emMainWindow = emRoot.firstChildElement("mainWindow");
+    QDomElement emMainWindow = emApp.firstChildElement("mainWindow");
     if (emMainWindow.isNull()) {
         return false;
     }

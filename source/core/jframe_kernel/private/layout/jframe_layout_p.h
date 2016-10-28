@@ -59,6 +59,7 @@ class LayoutManager;
 class MainViewManager;
 class ModuleManager;
 class NotifyManager;
+class QDomElement;
 
 class JFrameLayout : public IJFrameLayout
 {
@@ -79,6 +80,7 @@ public:
 
     // IJFrameLayout interface
 public:
+    std::string layoutDirPath() const;
     QWidget *mainWindow();
     QWidget *mainView();
     INotifier &notifier();
@@ -87,6 +89,10 @@ public:
     int componentPowerLevel(const std::string &componentName) const;
     std::string currentSystem() const;
     std::string currentModule() const;
+
+    // global
+public:
+    static QDomElement findAppElement(const QDomElement &emParent);
 
 private:
     bool attachComponent(IJComponent *component, bool stayOn);

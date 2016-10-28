@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
             .append("jframeworkdir").append(librarySuffix(false));
 
     // 获取 FrameFacadeInstace 导出接口
-    typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int);
+    typedef void* (J_ATTR_CDECL*FrameFacadeInstace)(int, const char*);
     FrameFacadeInstace frameFacadeInstace = (FrameFacadeInstace)
             JLibrary::resolve(filePath, "FrameFacadeInstace");
     if (!frameFacadeInstace) {
@@ -150,6 +150,7 @@ int main(int argc, char *argv[])
                            #else
                                0
                            #endif  // _MSC_VER
+                               , "app"
                                )));
     if (!frameFacade) {
         return -1;      // 获取实例失败

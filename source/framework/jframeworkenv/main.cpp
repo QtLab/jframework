@@ -24,6 +24,7 @@
 #endif
 
 // export from jframeworkdir library
+J_EXTERN_C J_EXTERN const char* appName();
 J_EXTERN_C J_EXTERN const char* appDirPath();
 J_EXTERN_C J_EXTERN const char* thisDirPath();
 J_EXTERN_C J_EXTERN const char* frameDirPath();
@@ -107,8 +108,8 @@ std::string &trimmedString(std::string &input)
 bool loadConfig()
 {
     // 生成框架全局配置文件路径
-    std::string filePath = std::string(thisDirPath())
-            .append("/config/frame/jframe_global.xml");
+    std::string filePath = std::string(thisDirPath()).append("/config/")
+            .append(std::string(::appName())).append("/jframe_global.xml");
 
     // 检测文件是否存在
     if (!fileExists(filePath.c_str())) {
@@ -128,8 +129,30 @@ bool loadConfig()
         return false;   // no root node
     }
 
+    // 查找指定软件名称节点
+    std::string sVal;
+    TiXmlElement *emApp = 0;
+    for (emApp = emRoot->FirstChildElement("app");
+         emApp != 0;
+         emApp = emApp->NextSiblingElement("app")) {
+        if (emApp->QueryStringAttribute("name", &sVal) == TIXML_SUCCESS
+                && sVal == std::string(::appName())) {
+            break;
+        }
+    }
+
+    // 未找到，则默认使用第一个没有指定软件名称的节点
+    if (emApp == 0) {
+        emApp = emRoot->FirstChildElement("app");
+        if (emApp == 0
+                || emApp->QueryStringAttribute("name", &sVal) == TIXML_SUCCESS
+                && !sVal.empty()) {
+            return false;   // 未找到
+        }
+    }
+
     // 获取环境变量配置项
-    TiXmlElement *emEnvval = emRoot->FirstChildElement("envval");
+    TiXmlElement *emEnvval = emApp->FirstChildElement("envval");
     if (!emEnvval) {
         return false;
     }
@@ -139,9 +162,6 @@ bool loadConfig()
     if (!emGlobal) {
         return false;
     }
-
-    //
-    std::string sVal;
 
     // 设置环境变量
     std::string paths;
@@ -178,7 +198,9 @@ bool loadConfig()
         // 替换特殊字段
         std::string pathBase = sVal;
         replaceString(pathBase, "@FrameDir@", frameDirPath());
+        replaceString(pathBase, "@AppDir@", appDirPath());
         replaceString(pathBase, "@ThisDir@", thisDirPath());
+        replaceString(pathBase, "@ConfigDir@", std::string(thisDirPath()).append(::appName()));
 
         // 路径有效性检测
         if (!fileExists(pathBase.c_str())) {
@@ -239,7 +261,7 @@ bool loadConfig()
     /// for qt.conf
 
     // 获取qtconf节点
-    TiXmlElement *emQtConf = emRoot->FirstChildElement("qtconf");
+    TiXmlElement *emQtConf = emApp->FirstChildElement("qtconf");
     if (!emQtConf) {
         return false;
     }
@@ -272,7 +294,9 @@ bool loadConfig()
         // 替换特殊字段
         std::string pathValue = sVal;
         replaceString(pathValue, "@FrameDir@", frameDirPath());
+        replaceString(pathValue, "@AppDir@", appDirPath());
         replaceString(pathValue, "@ThisDir@", thisDirPath());
+        replaceString(pathValue, "@ConfigDir@", std::string(thisDirPath()).append(::appName()));
 
         // 路径有效性检测
         if (!fileExists(pathValue.c_str())) {

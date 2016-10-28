@@ -78,9 +78,9 @@ public:
     IJMainWindow *mainWindow();
     void *queryInterface(const std::string &componentName, const std::string &iid, unsigned int ver);
     std::list<IJComponent *> allComponents() const;
-    int currentWorkModeId() const;
-    std::string currentWorkModeName() const;
-    std::string currentWorkModeConfigDirName() const;
+    int workModeId() const;
+    std::string workModeName() const;
+    std::string workModeDir() const;
 
     INotifier &notifier();
 

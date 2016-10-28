@@ -16,8 +16,22 @@
 #include "core/jframe_facade.h"
 
 /**
+ * @brief _g_app_name
+ */
+static std::string _g_app_name = "";
+
+/**
+ * @brief appDirPath : 获取软件名称
+ * @return 软件名称
+ */
+J_EXTERN_C J_ATTR_EXPORT const char* appName()
+{
+    return _g_app_name.c_str();
+}
+
+/**
  * @brief appDirPath : 获取 application 所在路径（不包含文件名称）
- * @return : application 所在路径（不包含文件名称）
+ * @return application 所在路径（不包含文件名称）
  */
 J_EXTERN_C J_ATTR_EXPORT const char* appDirPath()
 {
@@ -189,8 +203,8 @@ J_EXTERN_C J_ATTR_EXPORT const char* frameVersion()
     }
 
     // 生成框架全局配置文件路径
-    std::string filePath = std::string(thisDirPath())
-            .append("/config/frame/jframe_global.xml");
+    std::string filePath = std::string(thisDirPath()).append("/config/")
+            .append(_g_app_name).append("/jframe_global.xml");
 
     // 检测文件是否存在
     if (!fileExists(filePath.c_str())) {
@@ -212,8 +226,30 @@ J_EXTERN_C J_ATTR_EXPORT const char* frameVersion()
         return _version.c_str();   // no root node
     }
 
+    // 查找指定软件名称节点
+    std::string sVal;
+    TiXmlElement *emApp = 0;
+    for (emApp = emRoot->FirstChildElement("app");
+         emApp != 0;
+         emApp = emApp->NextSiblingElement("app")) {
+        if (emApp->QueryStringAttribute("name", &sVal) == TIXML_SUCCESS
+                && sVal == _g_app_name) {
+            break;
+        }
+    }
+
+    // 未找到，则默认使用第一个没有指定软件名称的节点
+    if (emApp == 0) {
+        emApp = emRoot->FirstChildElement("app");
+        if (emApp == 0
+                || emApp->QueryStringAttribute("name", &sVal) == TIXML_SUCCESS
+                && !sVal.empty()) {
+            return false;   // 未找到
+        }
+    }
+
     // 获取框架版本号
-    if (emRoot->QueryStringAttribute("version", &_version) != TIXML_SUCCESS) {
+    if (emApp->QueryStringAttribute("frameVersion", &_version) != TIXML_SUCCESS) {
         assert(false);
         return _version.c_str();
     }
@@ -233,7 +269,7 @@ J_EXTERN_C J_ATTR_EXPORT const char* frameDirPath()
         // 获取框架版本号
         std::string version = frameVersion();
         if (version.empty()) {
-            version = "1.0.0";  // default version
+            version = "1.2.0";  // default version
         }
 
         // 获取框架部署路径
@@ -358,10 +394,19 @@ J_EXTERN_C J_ATTR_EXPORT bool LoadFrameworkEnv(int config)
 /**
  * @brief ...
  * @param config : 1, debug; other, release. valid for windows system
- * @return
+ * @param appName : 软件名称
+ * @return 框架门面接口
  */
-J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
+J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config, const char *appName)
 {
+    // 参数检测
+    if (!appName) {
+        return 0;   // 无效
+    }
+
+    // 存储软件名称
+    _g_app_name = std::string(appName);
+
     // 加载 jframeworkenv 模块
     if (!LoadFrameworkEnv(config)) {
         return 0;
@@ -395,32 +440,4 @@ J_EXTERN_C J_ATTR_EXPORT void* FrameFacadeInstace(int config)
     }
 
     return jframeFacade;
-}
-
-/**
- * \brief Obtain current list of path
- *
- * \param [out] paths a pointer to an array of strings
- * \param [out] count indicating the count of path.
- *
- * \note
- * This function will allocate memory for path array. So caller must free the array, but should not free each item.
- *
- * \return #API_RESULT_CODE indicating whether this call success or failed.
- *
- * \par Sample code:
- * \code
- *    char **path = NULL;
- *    int count = 0;
- *    test_get_paths(&path, &count);
- *    // use the path
- *    free(path);
- *    path = NULL;
- * \endcode
- */
-int test_get_paths(char ***paths, int *count)
-{
-    (void)paths;
-    (void)count;
-    return 0;
 }

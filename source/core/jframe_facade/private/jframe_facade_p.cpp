@@ -82,6 +82,7 @@ const char* _static_appDirPath()
 }
 
 // export from jframeworkdir library
+typedef const char* (J_ATTR_CDECL*AppName)();
 typedef const char* (J_ATTR_CDECL*ThisDirPath)();
 typedef const char* (J_ATTR_CDECL*FrameDirPath)();
 typedef const char* (J_ATTR_CDECL*FrameVersion)();
@@ -95,6 +96,7 @@ struct JFrameFacadeData
     IJUnknown* frameFactory;    // 框架工厂系统部件
     IJUnknown* frameKernel;     // 框架内核系统部件
 
+    std::string appName;        // 软件名称
     std::string appDirPath;     // 软件实体路径
     std::string configDirPath;  // 框架配置文件夹路径
     std::string thisDirPath;    // 软件实体部署路径（application可执行文件上一级路径）
@@ -104,7 +106,6 @@ struct JFrameFacadeData
 
     //
     std::string frameGlobalPath;    // 框架全局配置文件路径
-    std::string frameLayoutPath;    // 框架布局配置文件路径
 
     //
     std::string language;           // 软件系统语言（如："zh_CN"）
@@ -113,6 +114,7 @@ struct JFrameFacadeData
     std::list<std::string> arguments;   // 重启框架命令行参数临时存放变量
 
     // export from jframeworkdir library
+    AppName fAppName;               //
     ThisDirPath fThisDirPath;       //
     FrameDirPath fFrameDirPath;     //
     FrameVersion fFrameVersion;     //
@@ -122,6 +124,7 @@ struct JFrameFacadeData
         , frameFactory(0)
         , frameKernel(0)
         //
+        , fAppName(0)
         , fThisDirPath(0)
         , fFrameDirPath(0)
         , fFrameVersion(0)
@@ -245,6 +248,11 @@ bool JFrameFacade::invokeMethod(const std::string &method, int argc, ...)
     return result;
 }
 
+std::string JFrameFacade::appName() const
+{
+    return data->appName;
+}
+
 std::string JFrameFacade::appDirPath() const
 {
     return _static_appDirPath();
@@ -268,11 +276,6 @@ std::string JFrameFacade::frameDirPath() const
 std::string JFrameFacade::frameGlobalPath() const
 {
     return data->frameGlobalPath;
-}
-
-std::string JFrameFacade::frameLayoutPath() const
-{
-    return data->frameLayoutPath;
 }
 
 std::string JFrameFacade::frameVersion() const
@@ -424,10 +427,10 @@ std::string JFrameFacade::language() const
 std::string JFrameFacade::parsePath(const std::string &path) const
 {
     QString temp = QString::fromStdString(path)
+            .replace("@FrameDir@", QString::fromStdString(frameDirPath()))
             .replace("@AppDir@", QString::fromStdString(appDirPath()))
             .replace("@ConfigDir@", QString::fromStdString(configDirPath()))
-            .replace("@ThisDir@", QString::fromStdString(thisDirPath()))
-            .replace("@FrameDir@", QString::fromStdString(frameDirPath()));
+            .replace("@ThisDir@", QString::fromStdString(thisDirPath()));
     return temp.toStdString();
 }
 
@@ -582,6 +585,12 @@ bool JFrameFacade::loadConfig()
     TiXmlElement *emRoot = document.RootElement();
     if (!emRoot) {
         return false;
+    }
+
+    // 查找指定软件名称节点
+    TiXmlElement *emApp = findAppElement(emRoot);
+    if (emApp == 0) {
+        return false;   // 未找到
     }
 
     // 解析系统节点信息
@@ -773,12 +782,19 @@ bool JFrameFacade::loadTextCodecConfig()
         return false;
     }
 
+    // 查找指定软件名称节点
+    TiXmlElement *emApp = findAppElement(emRoot);
+    if (emApp == 0) {
+        return false;   // 未找到
+    }
+
     // 获取框架文本编码节点
-    TiXmlElement *emTextCodec = emRoot->FirstChildElement("textCodec");
+    TiXmlElement *emTextCodec = emApp->FirstChildElement("textCodec");
     if (!emTextCodec) {
         return false;
     }
 
+    //
     std::string sVal;
 
     // framework encoding
@@ -814,6 +830,13 @@ bool JFrameFacade::loadFrameworkDirMethods()
         return false;
     }
 
+    // appName
+    if (result) {
+        data->fAppName = (AppName)lib.resolve("appName");
+        if (!data->fAppName) {
+            result = false;
+        }
+    }
     // thisDirPath
     if (result) {
         data->fThisDirPath = (ThisDirPath)lib.resolve("thisDirPath");
@@ -837,6 +860,38 @@ bool JFrameFacade::loadFrameworkDirMethods()
     }
 
     return result;
+}
+
+TiXmlElement *JFrameFacade::findAppElement(TiXmlElement *emParent)
+{
+    // 参数检测
+    if (!emParent) {
+        return 0;   // 无效
+    }
+
+    // 查找指定软件名称节点
+    std::string sVal;
+    TiXmlElement *emApp = 0;
+    for (emApp = emParent->FirstChildElement("app");
+         emApp != 0;
+         emApp = emApp->NextSiblingElement("app")) {
+        if (emApp->QueryStringAttribute("name", &sVal) == TIXML_SUCCESS
+                && sVal == data->appName) {
+            break;
+        }
+    }
+
+    // 未找到，则默认使用第一个没有指定软件名称的节点
+    if (emApp == 0) {
+        emApp = emParent->FirstChildElement("app");
+        if (emApp == 0
+                || emApp->QueryStringAttribute("name", &sVal) == TIXML_SUCCESS
+                && !sVal.empty()) {
+            return 0;   // 未找到
+        }
+    }
+
+    return emApp;
 }
 
 bool JFrameFacade::invokeLog(const std::string &method, int argc, va_list ap)
@@ -1017,11 +1072,17 @@ JFrameFacade::JFrameFacade()
     if (data->fFrameDirPath) {
         data->frameDirPath = data->fFrameDirPath();
     }
+    if (data->fAppName) {
+        data->appName = data->fAppName();
+    }
+    if (data->appName.empty()) {
+        data->configDirPath = data->thisDirPath + "/config";
+    } else {
+        data->configDirPath = data->thisDirPath + "/config/" + data->appName;
+    }
 
     // 初始化框架各配置文件路径
-    data->configDirPath = data->thisDirPath + "/config";
-    data->frameGlobalPath = data->configDirPath + "/frame/jframe_global.xml";
-    data->frameLayoutPath = data->configDirPath + "/frame/jframe_layout.xml";
+    data->frameGlobalPath = data->configDirPath + "/jframe_global.xml";
 
     // 加载Qt系统文本编码配置信息
     if (!loadTextCodecConfig()) {

@@ -3,9 +3,7 @@
 
 #ifdef _AFXDLL
 #include <afxwin.h>
-#endif
-
-#ifdef WIN32
+#elif defined(WIN32) && defined(DEBUG)
 #include <Windows.h>
 #endif
 

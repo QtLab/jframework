@@ -44,6 +44,8 @@ Notify::JIceNotifyI::sendVariant(const ::std::string& domain,
                                  const ::std::string& s,
                                  const Ice::Current&)
 {
+    Q_UNUSED(domain);
+    Q_UNUSED(s);
     return 0;
 }
 
@@ -78,5 +80,6 @@ Notify::JIceNotifyI::postVariant(const ::std::string& domain,
                                  const ::std::string& s,
                                  const Ice::Current&)
 {
-
+    Q_UNUSED(domain);
+    Q_UNUSED(s);
 }

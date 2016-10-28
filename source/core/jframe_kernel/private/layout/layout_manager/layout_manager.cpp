@@ -58,7 +58,7 @@ bool LayoutManager::updateLayout(const QString &section)
     q_frameLayout->moduleManager()->inactivateAllComponent();
 
     // 打开框架布局配置文件
-    QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
+    QFile file(QString::fromStdString(jframeLayout()->layoutDirPath()));
     if (!file.exists()) {
         const QString text = QStringLiteral("框架布局配置文件\"%1\"不存在！")
                 .arg(file.fileName());
@@ -93,9 +93,15 @@ bool LayoutManager::updateLayout(const QString &section)
         return false;   // 获取失败
     }
 
+    // 查找指定软件名称节点
+    QDomElement emApp = JFrameLayout::findAppElement(emRoot);
+    if (emApp.isNull()) {
+        return false;   // 未找到
+    }
+
     // 解析系统状态
     QDomElement emSystem, emModule;
-    if (!parseSystemStatus(emRoot, section, emSystem, emModule)) {
+    if (!parseSystemStatus(emApp, section, emSystem, emModule)) {
         return false;
     }
 
@@ -131,7 +137,7 @@ bool LayoutManager::updateLayout(const QString &section)
 bool LayoutManager::loadLayoutConfig()
 {
     // 解析框架布局配置文件
-    QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
+    QFile file(QString::fromStdString(jframeLayout()->layoutDirPath()));
     if (!file.exists()) {
         const QString text = QStringLiteral("框架布局配置文件\"%1\"不存在！")
                 .arg(file.fileName());
@@ -166,8 +172,14 @@ bool LayoutManager::loadLayoutConfig()
         return false;   // 无效
     }
 
+    // 查找指定软件名称节点
+    QDomElement emApp = JFrameLayout::findAppElement(emRoot);
+    if (emApp.isNull()) {
+        return false;   // 未找到
+    }
+
     // 获取配置节点
-    const QDomElement emConfig = emRoot.firstChildElement("config");
+    const QDomElement emConfig = emApp.firstChildElement("config");
     if (emConfig.isNull()) {
         return true;    // 没有配置项，忽略
     }
@@ -230,7 +242,7 @@ bool LayoutManager::loadLayoutConfig()
 bool LayoutManager::resetModuleElement()
 {
     // 打开框架布局配置文件
-    QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
+    QFile file(QString::fromStdString(jframeLayout()->layoutDirPath()));
     if (!file.exists()) {
         const QString text = QStringLiteral("框架布局配置文件\"%1\"不存在！")
                 .arg(file.fileName());
@@ -265,8 +277,14 @@ bool LayoutManager::resetModuleElement()
         return false;   // 无效
     }
 
+    // 查找指定软件名称节点
+    QDomElement emApp = JFrameLayout::findAppElement(emRoot);
+    if (emApp.isNull()) {
+        return false;   // 未找到
+    }
+
     // system - module
-    for (QDomElement emSystem = emRoot.firstChildElement("system");
+    for (QDomElement emSystem = emApp.firstChildElement("system");
          !emSystem.isNull();
          emSystem = emSystem.nextSiblingElement("system")) {
         //
@@ -359,10 +377,10 @@ QString LayoutManager::currentConfigModule(const QDomElement &emSystem)
     return emItem.attribute("module").replace("@", ">>");
 }
 
-bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &section, QDomElement &emSystem, QDomElement &emModule)
+bool LayoutManager::parseSystemStatus(QDomElement &emApp, const QString &section, QDomElement &emSystem, QDomElement &emModule)
 {
     // 参数检测
-    if (emRoot.isNull()) {
+    if (emApp.isNull()) {
         return false;   // 无效
     }
 
@@ -374,7 +392,7 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
         system = QStringLiteral("管理员系统");
         module = QStringLiteral("权限管理");
     } else {
-        system = emRoot.attribute("system");
+        system = emApp.attribute("system");
         if (system.isEmpty()) {
             QMessageBox::critical(q_frameLayout->mainViewManager(),
                                   QStringLiteral("错误"),
@@ -384,12 +402,12 @@ bool LayoutManager::parseSystemStatus(QDomElement &emRoot, const QString &sectio
     }
 
     // find current system
-    emSystem = findSystemNode(emRoot, system);
+    emSystem = findSystemNode(emApp, system);
     if (emSystem.isNull()) {
         QMessageBox::critical(q_frameLayout->mainViewManager(),
                               QStringLiteral("错误"),
                               QStringLiteral("没有找到有效的系统节点[系统：%2]，请检查框架布局配置文件\"%1\"！")
-                              .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
+                              .arg(QString::fromStdString(jframeLayout()->layoutDirPath()))
                               .arg(system));
         return false;
     }
@@ -460,7 +478,7 @@ JSplitter *LayoutManager::createView(const QDomElement &emSplitter, QWidget *par
         splitter = createSplitter(emSplitter, parent);
         if (!splitter) {
             const QString msg = QStringLiteral("窗口分割器创建失败！（文件：%1，位置[%2，%3]）")
-                    .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
+                    .arg(QString::fromStdString(jframeLayout()->layoutDirPath()))
                     .arg(emSplitter.lineNumber()).arg(emSplitter.columnNumber());
             jframeLogWarning(msg.toLocal8Bit().data());
             QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), msg);
@@ -629,7 +647,7 @@ bool LayoutManager::loadModuleViewNode(const QDomElement &emView)
         splitter = createView(emSplitter, q_frameLayout->mainViewManager());
         if (!splitter) {
             const QString msg = QStringLiteral("视图创建失败！（文件：%1，位置[$2，%3]）")
-                    .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
+                    .arg(QString::fromStdString(jframeLayout()->layoutDirPath()))
                     .arg(emView.lineNumber()).arg(emView.columnNumber());
             jframeLogWarning(msg.toLocal8Bit().data());
             QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), msg);
@@ -884,7 +902,7 @@ JComponentInfo *LayoutManager::activateComponent(const QDomElement &emComponent,
     if (!componentInfo) {
         const QString msg = QStringLiteral("组件[%1]未加载！（文件：%2，位置[%3，%4]）")
                 .arg(componentId)
-                .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
+                .arg(QString::fromStdString(jframeLayout()->layoutDirPath()))
                 .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
         jframeLogWarning(msg.toLocal8Bit().data());
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), msg);
@@ -894,7 +912,7 @@ JComponentInfo *LayoutManager::activateComponent(const QDomElement &emComponent,
     if (!isComponentAttachEnabled(componentInfo)) {
         const QString msg = QStringLiteral("组件[%1]不能挂载！（文件：%2，位置[%3，%4]）")
                 .arg(componentId)
-                .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
+                .arg(QString::fromStdString(jframeLayout()->layoutDirPath()))
                 .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
         jframeLogWarning(msg.toLocal8Bit().data());
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), msg);
@@ -904,7 +922,7 @@ JComponentInfo *LayoutManager::activateComponent(const QDomElement &emComponent,
     if (!q_frameLayout->moduleManager()->attachComponentUi(componentInfo)) {
         const QString msg = QStringLiteral("组件[%1]界面挂载失败！（文件：%2，位置[%3，%4]）")
                 .arg(componentId)
-                .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
+                .arg(QString::fromStdString(jframeLayout()->layoutDirPath()))
                 .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
         jframeLogWarning(msg.toLocal8Bit().data());
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), msg);
@@ -914,7 +932,7 @@ JComponentInfo *LayoutManager::activateComponent(const QDomElement &emComponent,
     if (!q_frameLayout->moduleManager()->attachComponent(componentInfo, show)) {
         const QString msg = QStringLiteral("组件[%1]挂载失败！（文件：%2，位置[%3，%4]）")
                 .arg(componentId)
-                .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
+                .arg(QString::fromStdString(jframeLayout()->layoutDirPath()))
                 .arg(emComponent.lineNumber()).arg(emComponent.columnNumber());
         jframeLogWarning(msg.toLocal8Bit().data());
         QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("警告"), msg);
@@ -947,7 +965,7 @@ JSplitter *LayoutManager::createSplitter(const QDomElement &emSplitter, QWidget 
         } else {
             const QString msg = QStringLiteral("不支持的布局节点[%1]！（文件：%2，位置[%3，%4]）")
                     .arg(nodeName)
-                    .arg(QString::fromStdString(jframeFacade()->frameLayoutPath()))
+                    .arg(QString::fromStdString(jframeLayout()->layoutDirPath()))
                     .arg(emSplitter.lineNumber()).arg(emSplitter.columnNumber());
             jframeLogWarning(msg.toLocal8Bit().data());
             QMessageBox::warning(q_frameLayout->mainViewManager(), QStringLiteral("创建布局"), msg);
@@ -1053,7 +1071,7 @@ bool LayoutManager::saveCurrentSplitterScales()
     }
 
     // 打开框架布局配置文件
-    QFile file(QString::fromStdString(jframeFacade()->frameLayoutPath()));
+    QFile file(QString::fromStdString(jframeLayout()->layoutDirPath()));
     if (!file.exists()) {
         const QString text = QStringLiteral("框架布局配置文件\"%1\"不存在！")
                 .arg(file.fileName());
@@ -1088,12 +1106,18 @@ bool LayoutManager::saveCurrentSplitterScales()
         return false;   // 无效
     }
 
+    // 查找指定软件名称节点
+    QDomElement emApp = JFrameLayout::findAppElement(emRoot);
+    if (emApp.isNull()) {
+        return false;   // 未找到
+    }
+
     // 获取当前系统和模式
     const QString currentSystem = QString::fromStdString(q_frameLayout->currentSystem());
     const QString currentModule = QString::fromStdString(q_frameLayout->currentModule());
 
     // 查找系统节点
-    QDomElement emSystem = findSystemNode(emRoot, currentSystem);
+    QDomElement emSystem = findSystemNode(emApp, currentSystem);
     if (emSystem.isNull()) {
         return false;   // 未找到
     }

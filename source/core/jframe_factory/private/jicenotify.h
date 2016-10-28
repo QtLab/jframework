@@ -71,6 +71,8 @@ public:
     explicit JIceNotify(JNotifier &, QObject * = 0) {}
     ~JIceNotify() {}
 
+    void shutdown(){}
+
     // IIceNotify interface
 public:
     bool isConnected() { return false; }

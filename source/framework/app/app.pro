@@ -6,6 +6,9 @@
 
 THIS_DIR = $$PWD/../../..
 
+##
+JFrameAppName = $$(JFRAME_APPNAME)
+
 QT     -= core gui
 CONFIG -= app_bundle
 #CONFIG -= qt
@@ -17,13 +20,13 @@ DESTDIR = $$THIS_DIR/bin
 ##
 win32:{
     lessThan(QT_MAJOR_VERSION, 5):{
-        CONFIG(debug, debug|release):TARGET = applicationd
-        else:TARGET = application
+        CONFIG(debug, debug|release):TARGET = $${JFrameAppName}d
+        else:TARGET = $${JFrameAppName}
     } else {
-        TARGET = $$qtLibraryTarget(application)
+        TARGET = $$qtLibraryTarget($${JFrameAppName})
     }
 } else {
-    TARGET = $$qtLibraryTarget(application)
+    TARGET = $$qtLibraryTarget($${JFrameAppName})
 }
 
 ## use JLibrary class
@@ -48,10 +51,10 @@ OTHER_FILES += \
 #######################################################
 
 QMAKE_TARGET_COMPANY = "Smartsoft"
-QMAKE_TARGET_DESCRIPTION = "jframework"
+QMAKE_TARGET_DESCRIPTION = "$${JFrameAppName}"
 QMAKE_TARGET_COPYRIGHT = "Copyright (C) 2016 Smartsoft Inc."
 
-win32:RC_ICONS = $$THIS_DIR/config/resource/app.ico
+win32:RC_ICONS = $$THIS_DIR/config/$${JFrameAppName}/resource/app.ico
 
 VER_MAJ = 1
 VER_MIN = 0
@@ -109,12 +112,12 @@ win32|unix: {
     ## remove files
     dstdir = $$DESTDIR/
     win32:dstdir = $$replace(dstdir, /, \\)
-    exists("$${dstdir}application*.exp"):commands += $(DEL_FILE) "$${dstdir}application*.exp" &
-    exists("$${dstdir}application*.ilk"):commands += $(DEL_FILE) "$${dstdir}application*.ilk" &
-    exists("$${dstdir}application*.lib"):commands += $(DEL_FILE) "$${dstdir}application*.lib" &
+    exists("$${dstdir}$${JFrameAppName}*.exp"):commands += $(DEL_FILE) "$${dstdir}$${JFrameAppName}*.exp" &
+    exists("$${dstdir}$${JFrameAppName}*.ilk"):commands += $(DEL_FILE) "$${dstdir}$${JFrameAppName}*.ilk" &
+    exists("$${dstdir}$${JFrameAppName}*.lib"):commands += $(DEL_FILE) "$${dstdir}$${JFrameAppName}*.lib" &
 
     #
-    exists($$PWD/application.pri):include($$PWD/application.pri)
+    exists($$PWD/$${JFrameAppName}.pri):include($$PWD/$${JFrameAppName}.pri)
 
     QMAKE_POST_LINK += $$commands
 }

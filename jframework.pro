@@ -10,7 +10,7 @@ CONFIG += ordered
 SUBDIRS += \
 #    docs \
     source \
-    setup \
+#    setup \
 #    tools
 
 include($$PWD/config/config.pri)

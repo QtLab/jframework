@@ -360,22 +360,22 @@ public:
     virtual std::list<IJComponent *> allComponents() const = 0;
 
     /**
-     * @brief 获取当前工作模式标识
-     * @return 当前工作模式标识
+     * @brief 获取工作模式标识
+     * @return 工作模式标识
      */
-    virtual int currentWorkModeId() const = 0;
+    virtual int workModeId() const = 0;
 
     /**
-     * @brief 获取当前工作模式名称
-     * @return 当前工作模式名称
+     * @brief 获取工作模式名称
+     * @return 工作模式名称
      */
-    virtual std::string currentWorkModeName() const = 0;
+    virtual std::string workModeName() const = 0;
 
     /**
-     * @brief 获取当前工作模式配置文件夹名称
-     * @return 当前工作模式配置文件夹名称
+     * @brief 获取工作模式路径
+     * @return 工作模式配置路径
      */
-    virtual std::string currentWorkModeConfigDirName() const = 0;
+    virtual std::string workModeDir() const = 0;
 
     /**
      * @brief 获取消息分发器
